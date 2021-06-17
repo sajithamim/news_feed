@@ -26,12 +26,14 @@ SECRET_KEY = '@6p-h7#oy4unyb4+(@i&3eq(knbkvjkeyv&@*8+a%f45b@mfm1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'corsheaders',
     'drf_yasg',
     'authentication',
 ]
@@ -87,15 +88,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'clinictopic.wsgi.application'
 
 # CORS WHITELIST
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "https://relaxed-curie-e9a516.netlify.app",
-    "http://127.0.0.1:8080"
-]
+#CORS_ORIGIN_WHITELIST = [
+#    "http://localhost:3000",
+#    "https://relaxed-curie-e9a516.netlify.app",
+#    "http://127.0.0.1:8080"
+#]
 
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https://\w+\.netlify\.app$",
-]
+#CORS_ORIGIN_REGEX_WHITELIST = [
+#    r"^https://\w+\.netlify\.app$",
+#]
 
 
 # Database
@@ -103,8 +104,12 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'clinicdb',
+        'USER': 'clinicuser',
+        'PASSWORD': 'agree27producein19623972letequal',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -147,7 +152,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
