@@ -108,7 +108,7 @@ DATABASES = {
         'NAME': 'clinicdb',
         'USER': 'clinicuser',
         'PASSWORD': 'agree27producein19623972letequal',
-        'HOST': '178.18.246.233',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
