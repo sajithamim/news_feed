@@ -23,7 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         email = attrs.get('email', '')
         username = attrs.get('username', '')
-        phone = attrs.get('username', '')
+        phone = attrs.get('phone', '')
         if not phone.isnumeric():
             raise serializers.ValidationError(
                 self.default_error_messages)
@@ -76,8 +76,8 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Invalid credentials, try again')
         if not user.is_active:
             raise AuthenticationFailed('Account disabled, contact admin')
-        if not user.is_verified:
-            raise AuthenticationFailed('Email is not verified')
+        # if not user.is_verified:
+        #     raise AuthenticationFailed('Email is not verified')
 
         return {
             'email': user.email,
