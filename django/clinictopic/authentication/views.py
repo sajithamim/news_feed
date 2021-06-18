@@ -36,6 +36,7 @@ class RegisterView(generics.GenericAPIView):
         try:
             user = request.data
             serializer = self.serializer_class(data=user)
+            user['password'] = os.environ.get('SOCIAL_SECRET')
             serializer.is_valid(raise_exception=True)
             serializer.save()
             user_data = serializer.data
