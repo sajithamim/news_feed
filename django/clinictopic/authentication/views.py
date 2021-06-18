@@ -63,7 +63,6 @@ class RegisterView(generics.GenericAPIView):
             'status code' : status_code,
             'message': 'user registered',
             'data':user_data,
-            'otp':1234
             }
             return Response(response,status=status.HTTP_201_CREATED)
         except Exception as e:

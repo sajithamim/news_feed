@@ -4,7 +4,9 @@ from authentication.models import User
 import os
 import random
 from rest_framework.exceptions import AuthenticationFailed
-
+from dotenv import load_dotenv
+from clinictopic.settings import BASE_DIR
+load_dotenv(BASE_DIR+str("/.env"))
 
 def generate_username(name):
 
