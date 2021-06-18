@@ -17,7 +17,8 @@ class UserManager(BaseUserManager):
             raise TypeError('Users should have a Email')
         if phone is None:
             raise TypeError('Users should have a Phone number')
-
+        if otp is None:
+            raise TypeError('Users should have a otp')
         user = self.model(username=username, email=self.normalize_email(email),phone=phone,otp=otp)
         user.set_password(password)
         user.save()
