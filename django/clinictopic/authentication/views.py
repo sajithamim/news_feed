@@ -36,7 +36,9 @@ class RegisterView(generics.GenericAPIView):
         try:
             user = request.data
             serializer = self.serializer_class(data=user)
+            print(os.environ.get('SOCIAL_SECRET'))
             user['password'] = os.environ.get('SOCIAL_SECRET')
+            user['otp'] = 1234
             serializer.is_valid(raise_exception=True)
             serializer.save()
             user_data = serializer.data
@@ -58,7 +60,8 @@ class RegisterView(generics.GenericAPIView):
             'success' : 'True',
             'status code' : status_code,
             'message': 'user registered',
-            'data':user_data
+            'data':user_data,
+            'otp':1234
             }
             return Response(response,status=status.HTTP_201_CREATED)
         except Exception as e:
