@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
 from .serializers import RegisterSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, LoginSerializer, LogoutSerializer
@@ -20,7 +21,9 @@ from .utils import Util
 from django.shortcuts import redirect
 from django.http import HttpResponsePermanentRedirect
 import os
-
+from dotenv import load_dotenv
+from clinictopic.settings import BASE_DIR
+load_dotenv(BASE_DIR+str("/.env"))
 
 class CustomRedirect(HttpResponsePermanentRedirect):
 
@@ -36,7 +39,6 @@ class RegisterView(generics.GenericAPIView):
         try:
             user = request.data
             serializer = self.serializer_class(data=user)
-            print(os.environ.get('SOCIAL_SECRET'))
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = 1234
             serializer.is_valid(raise_exception=True)
