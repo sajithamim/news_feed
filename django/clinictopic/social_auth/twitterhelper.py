@@ -1,7 +1,9 @@
 import twitter
 import os
 from rest_framework import serializers
-
+from dotenv import load_dotenv
+from clinictopic.settings import BASE_DIR
+load_dotenv(BASE_DIR+str("/.env"))
 
 class TwitterAuthTokenVerification:
     """

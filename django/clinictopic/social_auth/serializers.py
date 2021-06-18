@@ -3,7 +3,9 @@ from . import google, facebook, twitterhelper
 from .register import register_social_user
 import os
 from rest_framework.exceptions import AuthenticationFailed
-
+from dotenv import load_dotenv
+from clinictopic.settings import BASE_DIR
+load_dotenv(BASE_DIR+str("/.env"))
 
 class FacebookSocialAuthSerializer(serializers.Serializer):
     """Handles serialization of facebook related data"""
