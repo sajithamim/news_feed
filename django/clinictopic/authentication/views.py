@@ -187,3 +187,19 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# import http.client
+
+# conn = http.client.HTTPSConnection("api.msg91.com")
+
+# payload = "{\"Value1\":\"Param1\",\"Value2\":\"Param2\",\"Value3\":\"Param3\"}"
+
+# headers = { 'content-type': "application/json" }
+
+# conn.request("GET", "/api/v5/otp?template_id=60cc993e650f4d3cf74e7e9e&mobile=919847846110&authkey=362791AzG86a8K60cc822eP1&otp=1234", payload, headers)
+
+# res = conn.getresponse()
+# data = res.read()
+
+# print(data.decode("utf-8"))

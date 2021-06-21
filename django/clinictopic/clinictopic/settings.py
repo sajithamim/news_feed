@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'authentication',
+    'social_auth',
 ]
 
 SWAGGER_SETTINGS = {
