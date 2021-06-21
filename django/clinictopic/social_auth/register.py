@@ -22,12 +22,12 @@ def register_social_user(provider, user_id, email, name):
     filtered_user_by_email = User.objects.filter(email=email)
 
     if filtered_user_by_email.exists():
-        print(filtered_user_by_email)
+        print(filtered_user_by_email[0].auth_provider)
         if provider == filtered_user_by_email[0].auth_provider:
 
             registered_user = authenticate(
                 email=email, password=os.environ.get('SOCIAL_SECRET'))
-
+            # print()
             return {
                 'username': registered_user.username,
                 'email': registered_user.email,
