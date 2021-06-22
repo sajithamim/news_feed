@@ -217,7 +217,7 @@ def sendmessage(self,request):
 
 class OtpAPIView(generics.GenericAPIView):
     def get(self, request):
-        send_opt('9847846110','1234')
+        send_opt('9895203267','1234')
         return HttpResponse("sent")
 
 
