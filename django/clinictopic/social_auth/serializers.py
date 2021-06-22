@@ -14,6 +14,7 @@ class FacebookSocialAuthSerializer(serializers.Serializer):
     def validate_auth_token(self, auth_token):
         user_data = facebook.Facebook.validate(auth_token)
         print(user_data)
+        print("sdfkjjhdkjfg")
 
         try:
             user_id = user_data['id']
