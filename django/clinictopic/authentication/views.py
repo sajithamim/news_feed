@@ -23,6 +23,7 @@ from django.http import HttpResponsePermanentRedirect
 import os
 from dotenv import load_dotenv
 from clinictopic.settings import BASE_DIR
+import random
 load_dotenv(BASE_DIR+str("/.env"))
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -40,7 +41,25 @@ class RegisterView(generics.GenericAPIView):
             user = request.data
             serializer = self.serializer_class(data=user)
             user['password'] = os.environ.get('SOCIAL_SECRET')
-            user['otp'] = 1234
+            user['otp'] = random.randrange(1000,9999)
+            email_verify = User.objects.filter(email=user['email']).first()
+            if email_verify:
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'User with this email already exists',
+                }
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            phone_verify = User.objects.filter(phone=user['phone']).first()
+            if phone_verify:
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'User with this email already exists',
+                }
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             user_data = serializer.data
@@ -187,6 +206,19 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+from .otp import send_opt
+def sendmessage(self,request):
+    if request.method =="GET":
+        send_opt('9895203267','1234')
+        return HttpResponse("sent")
+
+
+class OtpAPIView(generics.GenericAPIView):
+    def get(self, request):
+        send_opt('9847846110','1234')
+        return HttpResponse("sent")
 
 
 # import http.client

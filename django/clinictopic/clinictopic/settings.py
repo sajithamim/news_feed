@@ -105,16 +105,16 @@ WSGI_APPLICATION = 'clinictopic.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'clinicdb',
-        'USER': 'clinicuser',
-        'PASSWORD': 'agree27producein19623972letequal',
-        'HOST': '178.18.246.233',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'clinicdb',
+#         'USER': 'clinicuser',
+#         'PASSWORD': 'agree27producein19623972letequal',
+#         'HOST': '178.18.246.233',
+#         'PORT': '5432',
+#     }
+# }
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -174,3 +174,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+AUTH_KEY ='362791AzG86a8K60cc822eP1'
