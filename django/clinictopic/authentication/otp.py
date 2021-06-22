@@ -1,4 +1,4 @@
-from clinictopic import settings
+# from clinictopic import settings
 import http
 def send_opt(mobile,otp):
         # print("FUNCTION CALLED")
