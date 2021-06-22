@@ -22,7 +22,7 @@ from django.shortcuts import redirect
 from django.http import HttpResponsePermanentRedirect
 import os
 from dotenv import load_dotenv
-from clinictopic.settings import BASE_DIR
+from clinictopic.settings.base import BASE_DIR
 import random
 load_dotenv(BASE_DIR+str("/.env"))
 

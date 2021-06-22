@@ -105,16 +105,6 @@ WSGI_APPLICATION = 'clinictopic.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'clinicdb',
-        'USER': 'clinicuser',
-        'PASSWORD': 'agree27producein19623972letequal',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
 
 
 REST_FRAMEWORK = {
