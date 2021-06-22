@@ -29,7 +29,7 @@ def register_social_user(provider, user_id, email, name):
                 email=email, password=os.environ.get('SOCIAL_SECRET'))
             # print()
             return {
-                'username': registered_user.username,
+                # 'username': registered_user.username,
                 'email': registered_user.email,
                 'tokens': registered_user.tokens()}
 
