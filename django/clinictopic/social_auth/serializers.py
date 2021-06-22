@@ -10,7 +10,7 @@ load_dotenv(BASE_DIR+str("/.env"))
 class FacebookSocialAuthSerializer(serializers.Serializer):
     """Handles serialization of facebook related data"""
     auth_token = serializers.CharField()
-
+    # sdkjhfsdjkhf
     def validate_auth_token(self, auth_token):
         user_data = facebook.Facebook.validate(auth_token)
         try:
