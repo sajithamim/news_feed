@@ -4,17 +4,15 @@ from .register import register_social_user
 import os
 from rest_framework.exceptions import AuthenticationFailed
 from dotenv import load_dotenv
-from clinictopic.settings import BASE_DIR
+from clinictopic.settings.base import BASE_DIR
 load_dotenv(BASE_DIR+str("/.env"))
 
 class FacebookSocialAuthSerializer(serializers.Serializer):
     """Handles serialization of facebook related data"""
     auth_token = serializers.CharField()
-
+    # sdkjhfsdjkhf
     def validate_auth_token(self, auth_token):
         user_data = facebook.Facebook.validate(auth_token)
-        print(user_data)
-
         try:
             user_id = user_data['id']
             email = user_data['email']

@@ -5,7 +5,8 @@ import os
 import random
 from rest_framework.exceptions import AuthenticationFailed
 from dotenv import load_dotenv
-from clinictopic.settings import BASE_DIR
+from clinictopic.settings.base import BASE_DIR
+
 load_dotenv(BASE_DIR+str("/.env"))
 
 def generate_username(name):
@@ -20,11 +21,9 @@ def generate_username(name):
 
 def register_social_user(provider, user_id, email, name):
     filtered_user_by_email = User.objects.filter(email=email)
-
     if filtered_user_by_email.exists():
         # print(filtered_user_by_email[0].auth_provider)
         if provider == filtered_user_by_email[0].auth_provider:
-
             registered_user = authenticate(
                 email=email, password=os.environ.get('SOCIAL_SECRET'))
             # print()
@@ -45,9 +44,9 @@ def register_social_user(provider, user_id, email, name):
         user.is_verified = True
         user.auth_provider = provider
         user.save()
-
         new_user = authenticate(
             email=email, password=os.environ.get('SOCIAL_SECRET'))
+        
         return {
             'email': new_user.email,
             'username': new_user.username,

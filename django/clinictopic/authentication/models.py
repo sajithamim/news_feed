@@ -24,16 +24,33 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, username, email, password=None):
-        if password is None:
-            raise TypeError('Password should not be none')
+    # def create_superuser(self, username, email, password=None):
+    #     if password is None:
+    #         raise TypeError('Password should not be none')
 
-        user = self.model(username, email=self.normalize_email(email))
-        user.set_password(password)
-        user.is_superuser = True
+    #     user = self.model(username, email=self.normalize_email(email))
+    #     user.set_password(password)
+    #     user.is_superuser = True
+    #     user.is_staff = True
+    #     user.is_verified = True
+    #     user.save()
+    #     return user
+    def create_superuser(self,username, email, password=None):
+        if not email:
+            raise ValueError("User must have an email")
+        if not password:
+            raise ValueError("User must have a password")
+
+
+        user = self.model(
+            email=self.normalize_email(email))
+        user.username = username
+        user.set_password(password)  # change password to hash
+        user.is_admin = True
         user.is_staff = True
+        user.is_superuser = True
         user.is_verified = True
-        user.save()
+        user.save(using=self._db)
         return user
 
 
@@ -43,7 +60,7 @@ AUTH_PROVIDERS = {'facebook': 'facebook', 'google': 'google',
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, db_index=True)
-    phone = models.CharField(max_length=255,blank=True,null=True)
+    phone = models.CharField(max_length=255,unique=True,db_index=True,blank=True,null=True)
     email = models.EmailField(max_length=255, unique=True, db_index=True)
     first_name = models.CharField(max_length=255,blank=True,null=True)
     last_name = models.CharField(max_length=255,blank=True,null=True)
@@ -75,3 +92,4 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
+

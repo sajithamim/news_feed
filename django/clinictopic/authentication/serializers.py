@@ -1,4 +1,3 @@
-
 from rest_framework import serializers
 from .models import User
 from django.contrib import auth
@@ -7,7 +6,10 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
+from clinictopic.settings.base import BASE_DIR
+from dotenv import load_dotenv
+load_dotenv(BASE_DIR+str("/.env"))
+import random
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -43,16 +45,17 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=255, min_length=3)
-    password = serializers.CharField(
-        max_length=68, min_length=6, write_only=True)
+    # email = serializers.EmailField(max_length=255, min_length=3)
+    phone = serializers.CharField(max_length=20,min_length=10)
+    # password = serializers.CharField(
+    #     max_length=68, min_length=6, write_only=True)
     username = serializers.CharField(
         max_length=255, min_length=3, read_only=True)
-
+    # otp = serializers.SerializerMethodField()
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
-        user = User.objects.get(email=obj['email'])
+        user = User.objects.get(phone=obj['phone'])
 
         return {
             'refresh': user.tokens()['refresh'],
@@ -61,29 +64,40 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'username', 'tokens']
+        fields = ['password', 'username', 'tokens','phone','otp']
 
     def validate(self, attrs):
-        email = attrs.get('email', '')
-        password = attrs.get('password', '')
-        filtered_user_by_email = User.objects.filter(email=email)
+        # email = attrs.get('email', '')
+        phone = attrs.get('phone','')
+        password = os.environ.get('SOCIAL_SECRET')
+        filtered_user_by_email = User.objects.filter(phone=phone)
+        email  = filtered_user_by_email.email
         user = auth.authenticate(email=email, password=password)
+        otp = random.randrange(1000,9999)
+        if not phone.isnumeric():
+            raise AuthenticationFailed('Invalid phone number!')
 
         if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
             raise AuthenticationFailed(
                 detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
 
+        if not email:
+            raise AuthenticationFailed('Invalid credentials, try again')
         if not user:
             raise AuthenticationFailed('Invalid credentials, try again')
         if not user.is_active:
             raise AuthenticationFailed('Account disabled, contact admin')
-        # if not user.is_verified:
-        #     raise AuthenticationFailed('Email is not verified')
+        if not user.is_verified:
+            raise AuthenticationFailed('user not verified')
+        if not user.phone_verified:
+            raise AuthenticationFailed('User not verified')
 
         return {
             'email': user.email,
             'username': user.username,
-            'tokens': user.tokens
+            'tokens': user.tokens,
+            'otp':otp,
+            'phone':user.phone
         }
 
         return super().validate(attrs)
