@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'authentication',
     'social_auth',
+    'specialization',
 ]
 
 SWAGGER_SETTINGS = {

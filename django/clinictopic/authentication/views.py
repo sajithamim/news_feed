@@ -57,7 +57,7 @@ class RegisterView(generics.GenericAPIView):
                 response = {
                 'success' : 'False',
                 'status code' : status_code,
-                'message': 'User with this email already exists',
+                'message': 'User with this phone number already exists',
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
             serializer.is_valid(raise_exception=True)
@@ -66,15 +66,12 @@ class RegisterView(generics.GenericAPIView):
             user = User.objects.get(email=user_data['email'])
             token = RefreshToken.for_user(user).access_token
             current_site = get_current_site(request).domain
-            # print(token)
-            # print(user_data)
             relativeLink = reverse('email-verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
             email_body = 'Hi '+user.username + \
                 ' Use the link below to verify your email \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Verify your email'}
-
             Util.send_email(data)
             status_code = status.HTTP_201_CREATED
             response = {
@@ -82,6 +79,7 @@ class RegisterView(generics.GenericAPIView):
             'status code' : status_code,
             'message': 'user registered',
             'data':user_data,
+            'tokens': user.tokens()
             }
             return Response(response,status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -103,6 +101,7 @@ class VerifyEmail(views.APIView):
 
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
+        print(request.user)
         token = request.GET.get('token')
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
@@ -235,3 +234,22 @@ class OtpAPIView(generics.GenericAPIView):
 # data = res.read()
 
 # print(data.decode("utf-8"))
+
+# class Verifyotp(generics):
+#     def otp(request):
+#         mobile = request.session['mobile']
+#         context = {'mobile':mobile}
+#         if request.method == 'POST':
+#             otp = request.POST.get('otp')
+#             profile = User.objects.filter(mobile=mobile).first()
+            
+#             if otp == profile.otp:
+#                 return redirect('cart')
+#             else:
+#                 print('Wrong')
+                
+#                 context = {'message' : 'Wrong OTP' , 'class' : 'danger','mobile':mobile }
+#                 return render(request,'otp.html' , context)
+                
+            
+#         return render(request,'otp.html' , context)
