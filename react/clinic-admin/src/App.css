@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 /* * {
   box-sizing: border-box;
@@ -21,24 +21,14 @@
   background-color: #fff;
 }
 
-
-.wrapper {
-  height: 100%;
-}
-
-.main-panel {
-  margin-top: 10px;
-  margin-left: 250px;
-
-}
-.container{
+.container {
   display: flex;
 }
-.others{
-  flex:4;
+.others {
+  flex: 4;
 }
 
-body{
+body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
