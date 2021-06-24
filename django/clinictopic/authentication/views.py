@@ -1,7 +1,9 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import RegisterSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, LoginSerializer, LogoutSerializer
+from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
+ ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
+ LoginSerializer, LogoutSerializer,Signinserializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -43,12 +45,13 @@ class RegisterView(generics.GenericAPIView):
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
             email_verify = User.objects.filter(email=user['email']).first()
+            user_provider = email_verify.auth_provider
             if email_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
                 'success' : 'False',
                 'status code' : status_code,
-                'message': 'User with this email already exists',
+                'message': 'User with this email already exists!.Please continue your login using ' + user_provider,
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
             phone_verify = User.objects.filter(phone=user['phone']).first()
@@ -79,7 +82,7 @@ class RegisterView(generics.GenericAPIView):
             'status code' : status_code,
             'message': 'user registered',
             'data':user_data,
-            'tokens': user.tokens()
+            # 'tokens': user.tokens()
             }
             return Response(response,status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -101,7 +104,7 @@ class VerifyEmail(views.APIView):
 
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
-        print(request.user)
+        # print(request.user)
         token = request.GET.get('token')
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
@@ -253,3 +256,39 @@ class OtpAPIView(generics.GenericAPIView):
                 
             
 #         return render(request,'otp.html' , context)
+
+class SignInOtpview(generics.GenericAPIView):
+    serializer_class = Signinserializer
+    def post(self,request):
+        try:
+            phone_verify = User.objects.filter(phone=request.data['phone']).first()
+            if not phone_verify:
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'user not found with this phone',
+                }
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            serializer = self.serializer_class(data=request.data)
+
+            serializer.is_valid(raise_exception=True)
+            # return HttpResponse("hi")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            # otp = random.randrange(1000,9999)
+            # phone_verify.otp = otp
+            # phone_verify.save()
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'False',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'error',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
+        
+
+
+
+

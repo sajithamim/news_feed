@@ -8,6 +8,7 @@ from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnico
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from clinictopic.settings.base import BASE_DIR
 from dotenv import load_dotenv
+import os
 load_dotenv(BASE_DIR+str("/.env"))
 import random
 
@@ -44,14 +45,43 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
         fields = ['token']
 
 
+class Signinserializer(serializers.ModelSerializer):
+    phone = serializers.CharField(max_length=20,min_length=10)
+    otp = serializers.CharField(read_only =True,max_length = 10)
+    default_error_messages = {
+        'phone': 'The phone should only contain numeric characters'}
+    
+    class Meta:
+        model = User
+        fields = ['phone','otp']
+
+    def validate(self, attrs):
+        phone = attrs.get('phone', '')
+        if not phone.isnumeric():
+            raise serializers.ValidationError(
+                self.default_error_messages)
+        phone_verify = User.objects.filter(phone=phone).first()
+        otp = random.randrange(1000,9999)
+        phone_verify.otp = otp
+        phone_verify.save()
+        # return attrs
+        return {
+            'email': phone_verify.email,
+            'username': phone_verify.username,
+            'phone':phone_verify.phone,
+            'otp':phone_verify.otp
+        }
+        return super().validate(attrs)
+
+
 class LoginSerializer(serializers.ModelSerializer):
     # email = serializers.EmailField(max_length=255, min_length=3)
     phone = serializers.CharField(max_length=20,min_length=10)
     # password = serializers.CharField(
     #     max_length=68, min_length=6, write_only=True)
-    username = serializers.CharField(
-        max_length=255, min_length=3, read_only=True)
-    # otp = serializers.SerializerMethodField()
+    # username = serializers.CharField(
+    #     max_length=255, min_length=3, read_only=True)
+    otp = serializers.CharField(max_length=20)
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
@@ -64,22 +94,36 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['password', 'username', 'tokens','phone','otp']
+        fields = ['tokens','phone','otp']
 
     def validate(self, attrs):
         # email = attrs.get('email', '')
         phone = attrs.get('phone','')
+        otp = attrs.get('otp','')
         password = os.environ.get('SOCIAL_SECRET')
         filtered_user_by_email = User.objects.filter(phone=phone)
-        email  = filtered_user_by_email.email
+        if not filtered_user_by_email:
+            raise AuthenticationFailed('user not found!')
+        # print(filtered_user_by_email)
+        for filtered_user_by_email in filtered_user_by_email:
+            email  = filtered_user_by_email.email
+            user_otp = filtered_user_by_email.otp
+        # print(user_otp)
+        # print(otp)
         user = auth.authenticate(email=email, password=password)
-        otp = random.randrange(1000,9999)
+        if int(otp) != int(user_otp):
+            raise AuthenticationFailed('Invalid otp, try again')
+        userobj = User.objects.get(phone = phone)
+        userobj.phone_verified = True
+        userobj.is_verified = True
+        userobj.save()
+        # otp = random.randrange(1000,9999)
         if not phone.isnumeric():
             raise AuthenticationFailed('Invalid phone number!')
 
-        if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
-            raise AuthenticationFailed(
-                detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
+        # if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
+        #     raise AuthenticationFailed(
+        #         detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
 
         if not email:
             raise AuthenticationFailed('Invalid credentials, try again')
@@ -96,8 +140,8 @@ class LoginSerializer(serializers.ModelSerializer):
             'email': user.email,
             'username': user.username,
             'tokens': user.tokens,
-            'otp':otp,
-            'phone':user.phone
+            'phone':user.phone,
+            'otp':user.otp
         }
 
         return super().validate(attrs)

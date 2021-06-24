@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (RegisterView, LogoutAPIView, SetNewPasswordAPIView, 
-VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,OtpAPIView)
+VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
+OtpAPIView,SignInOtpview)
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -16,6 +17,7 @@ urlpatterns = [
          name="request-reset-email"),
     path('password-reset/<uidb64>/<token>/',
          PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
-    path('password-reset-complete', SetNewPasswordAPIView.as_view(),name='password-reset-complete'),
-    path('otp',OtpAPIView.as_view(),name="sendmessage"),
+    path('password-reset-complete/', SetNewPasswordAPIView.as_view(),name='password-reset-complete'),
+    path('otp/',OtpAPIView.as_view(),name="sendmessage"),
+    path('signinotp/',SignInOtpview.as_view(),name="signinotp")
 ]
