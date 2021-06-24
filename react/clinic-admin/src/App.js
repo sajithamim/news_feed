@@ -5,9 +5,9 @@ import Login from './pages/Login/Login';
 // import { Reports, ReportsOne, ReportsTwo, ReportsThree } from './pages/Reports';
 // import Team from './pages/Team';
 import Specialization from './pages/Specialization/Specialization';
-// import Sidebar from './components/Sidebar/Sidebar';
 import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
+import Feedback from './pages/Feedback/Feedback';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
           <Route path='/data/Categories' exact component={Categories} />
           <Route path="/data/topics" exact component={Topics} />
           <Route path='/data/Specializations' exact component={Specialization} />
+          <Route path='/data/Feedback' exact component={Feedback} />
           {/* <Route path='/reports/reports2' exact component={ReportsTwo} /> */}
           {/* <Route path='/reports/reports3' exact component={ReportsThree} /> */}
           {/* <Route path='/team' exact component={Team} /> */}
