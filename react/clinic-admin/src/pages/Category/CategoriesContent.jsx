@@ -40,7 +40,7 @@ const CategoriesContent = () => {
     }
     return items;
   };
-  const specs = categoryGenerator(7);
+  const categories = categoryGenerator(7);
 
   const columns = [
     {
@@ -81,7 +81,7 @@ const CategoriesContent = () => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} dataSource={specs} />
+        <Table columns={columns} dataSource={categories} />
       </Card>
       <Drawer
         title={
