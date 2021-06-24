@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Specialization,SubSpecialization)
+from .models import (Specialization,SubSpecialization,Audience)
 
 class GetSubspecializationSerializer(serializers.ModelSerializer):
 
@@ -17,3 +17,10 @@ class GetSpecialization(serializers.ModelSerializer):
     class Meta:
         model = Specialization
         fields = ['id','name','icon','created_at','updated_at','specialization_id']
+
+
+class GetAudienceSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    class Meta:
+        model = Audience
+        fields = ['id','name']
