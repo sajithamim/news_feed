@@ -1,0 +1,13 @@
+.avatar-uploader > .ant-upload {
+    width: 128px;
+    height: 128px;
+  }
+
+  .modalStyle {
+    margin-top: 25px;
+  }
+
+  .labelStyle {
+    text-align: right;
+    margin-right: 15px;
+  }
