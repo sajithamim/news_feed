@@ -1,13 +1,14 @@
 import React from 'react';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
-import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock } from "react-icons/ai";
+import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUnlock } from "react-icons/ai";
 
 export const routes = [
   {
     title: 'Data',
     path: '/data',
     key: "data",
+    layout: "/admin",
     icon: <AiIcons.AiFillHome />,
     subNav: [
       {
@@ -42,4 +43,11 @@ export const routes = [
       },
     ]
   },
+  {
+    title: 'Login',
+    path: '/login',
+    layout: '/auth',
+    key: "login",
+    icon: <AiTwotoneUnlock />,
+  }
 ];
