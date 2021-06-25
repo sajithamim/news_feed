@@ -104,6 +104,8 @@ class LoginSerializer(serializers.ModelSerializer):
         filtered_user_by_email = User.objects.filter(phone=phone)
         if not filtered_user_by_email:
             raise AuthenticationFailed('user not found!')
+        if int(otp) != int(user_otp):
+            raise AuthenticationFailed('Invalid otp, try again')
         userobj = User.objects.get(phone = phone)
         userobj.phone_verified = True
         userobj.is_verified = True
@@ -115,9 +117,6 @@ class LoginSerializer(serializers.ModelSerializer):
         # print(user_otp)
         # print(otp)
         user = auth.authenticate(email=email, password=password)
-        if int(otp) != int(user_otp):
-            raise AuthenticationFailed('Invalid otp, try again')
-
         # otp = random.randrange(1000,9999)
         if not phone.isnumeric():
             raise AuthenticationFailed('Invalid phone number!')
