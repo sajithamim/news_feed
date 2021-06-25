@@ -45,9 +45,8 @@ class RegisterView(generics.GenericAPIView):
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
             email_verify = User.objects.filter(email=user['email']).first()
-            for email_verify in email_verify:
-                user_provider = email_verify.auth_provider
             if email_verify:
+                user_provider = email_verify.auth_provider
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
                 'success' : 'False',
