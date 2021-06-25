@@ -4,6 +4,7 @@ from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from specialization.models import UserSpecialization
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from clinictopic.settings.base import BASE_DIR
@@ -83,7 +84,12 @@ class LoginSerializer(serializers.ModelSerializer):
     #     max_length=255, min_length=3, read_only=True)
     otp = serializers.CharField(max_length=20)
     tokens = serializers.SerializerMethodField()
+    speccount = serializers.SerializerMethodField()
 
+    def get_speccount(self,obj):
+        userobj = User.objects.get(phone = obj['phone'])
+        userid = userobj.id
+        return UserSpecialization.objects.filter(user_id=userid).count()
     def get_tokens(self, obj):
         user = User.objects.get(phone=obj['phone'])
 
@@ -94,7 +100,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['tokens','phone','otp']
+        fields = ['tokens','phone','otp','speccount']
 
     def validate(self, attrs):
         # email = attrs.get('email', '')
