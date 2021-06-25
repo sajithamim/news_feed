@@ -45,7 +45,8 @@ class RegisterView(generics.GenericAPIView):
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
             email_verify = User.objects.filter(email=user['email']).first()
-            user_provider = email_verify.auth_provider
+            for email_verify in email_verify:
+                user_provider = email_verify.auth_provider
             if email_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
@@ -198,15 +199,11 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
 
 class LogoutAPIView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
-
     permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request):
-
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
