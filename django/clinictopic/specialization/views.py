@@ -69,19 +69,18 @@ class UserTypeView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
     # @csrf_exempt
-    # def post(self, request):
+    # def post(self,request):
     #     try:
-    #         # request.data['user_id'] = request.user.id
+    #         request.data['user_id'] = request.user
     #         serializer = self.serializer_class(data=request.data)
     #         serializer.is_valid(raise_exception=True)
-    #         user_id = User.objects.get(id =request.user.id )
-    #         serializer.save(user_id=user_id)
+    #         # serializer.save()
     #         status_code = status.HTTP_200_OK
     #         response = {
     #         'success' : 'True',
     #         'status code' : status_code,
     #         'message': 'user type created',
-    #         'data':serializers.data
+    #         # 'data':serializer.data
     #         }
     #         return Response(response,status=status.HTTP_200_OK)
     #     except Exception as e:
