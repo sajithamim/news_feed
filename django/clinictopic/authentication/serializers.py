@@ -104,16 +104,17 @@ class LoginSerializer(serializers.ModelSerializer):
         filtered_user_by_email = User.objects.filter(phone=phone)
         if not filtered_user_by_email:
             raise AuthenticationFailed('user not found!')
-        if int(otp) != int(user_otp):
-            raise AuthenticationFailed('Invalid otp, try again')
         userobj = User.objects.get(phone = phone)
         userobj.phone_verified = True
         userobj.is_verified = True
         userobj.save()
+
         # print(filtered_user_by_email)
         for filtered_user_by_email in filtered_user_by_email:
             email  = filtered_user_by_email.email
             user_otp = filtered_user_by_email.otp
+        if int(otp) != int(user_otp):
+            raise AuthenticationFailed('Invalid otp, try again')
         # print(user_otp)
         # print(otp)
         user = auth.authenticate(email=email, password=password)
