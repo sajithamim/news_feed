@@ -1,4 +1,3 @@
-
 from django.contrib.auth import authenticate
 from authentication.models import User
 import os
@@ -7,6 +6,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from dotenv import load_dotenv
 from clinictopic.settings.base import BASE_DIR
 from specialization.models import (UserSpecialization)
+from rest_framework import status
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -30,8 +30,12 @@ def register_social_user(provider, user_id, email, name):
         if provider == filtered_user_by_email[0].auth_provider:
             registered_user = authenticate(
                 email=email, password=os.environ.get('SOCIAL_SECRET'))
+            status_code = status.HTTP_200_OK
+
             # print()
             return {
+                'success' : 'True',
+                'status code' : status_code,
                 'username': registered_user.username,
                 'email': registered_user.email,
                 'speccount':count,
@@ -51,8 +55,12 @@ def register_social_user(provider, user_id, email, name):
         user.save()
         new_user = authenticate(
             email=email, password=os.environ.get('SOCIAL_SECRET'))
+        status_code = status.HTTP_200_OK
+
         
         return {
+            'success' : 'True',
+            'status code' : status_code,
             'email': new_user.email,
             'username': new_user.username,
             'tokens': new_user.tokens(),

@@ -206,17 +206,17 @@ class LogoutAPIView(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-from .otp import send_opt
-def sendmessage(self,request):
-    if request.method =="GET":
-        send_opt('9895203267','1234')
-        return HttpResponse("sent")
+# from .otp import send_opt
+# def sendmessage(self,request):
+#     if request.method =="GET":
+#         send_opt('9895203267','1234')
+#         return HttpResponse("sent")
 
 
-class OtpAPIView(generics.GenericAPIView):
-    def get(self, request):
-        send_opt('9895203267','1234')
-        return HttpResponse("sent")
+# class OtpAPIView(generics.GenericAPIView):
+#     def get(self, request):
+#         send_opt('9895203267','1234')
+#         return HttpResponse("sent")
 
 
 # import http.client
