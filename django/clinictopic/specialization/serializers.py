@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Specialization,SubSpecialization,Audience,UserType)
+from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,UserSubSpecialization)
 from rest_framework import  status
 
 class GetSubspecializationSerializer(serializers.ModelSerializer):
@@ -68,3 +68,33 @@ class userTypeSerializer(serializers.ModelSerializer):
         #     }
 
         
+class UserSubSpecializationSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    created_at = serializers.ReadOnlyField()
+    updated_at = serializers.ReadOnlyField()
+    user_spec_id = serializers.ReadOnlyField()
+    class Meta:
+        model = UserSubSpecialization
+        fields = ['id','user_spec_id','sub_spec_id','created_at','updated_at']
+
+class UserSpecializationSerializer(serializers.ModelSerializer):
+    sub_userspec_id = UserSubSpecializationSerializer(many=True)
+    id = serializers.ReadOnlyField()
+    user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    created_at = serializers.ReadOnlyField()
+    updated_at = serializers.ReadOnlyField()
+    spec_id = serializers.IntegerField()
+    class Meta:
+        model = UserSpecialization
+        fields = ['id','user_id', 'spec_id','created_at','updated_at','sub_userspec_id']
+
+    def create(self, validated_data):
+        print("dfh")
+        print(validated_data)
+        subspec = validated_data.pop('sub_userspec_id')
+        # print(**validated_data)
+        # print("sdfkh")
+        userspec = UserSpecialization.objects.create(**validated_data)
+        for subspec in subspec:
+            UserSubSpecialization.objects.create(user_spec_id=userspec, **subspec)
+        return userspec
