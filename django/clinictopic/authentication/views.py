@@ -125,7 +125,15 @@ class LoginAPIView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        status_code = status.HTTP_200_OK
+        response = {
+        'success' : 'True',
+        'status code' : status_code,
+        'message': 'user logged in',
+        'data':serializer.data
+            # 'tokens': user.tokens()
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class RequestPasswordResetEmail(generics.GenericAPIView):
