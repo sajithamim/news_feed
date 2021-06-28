@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from .models import (Audience, Specialization)
+from .models import (Audience, Specialization,UserSpecialization)
 from .serializers import (GetSpecialization,GetAudienceSerializer,userTypeSerializer,
-UserSpecializationSerializer)
+UserSpecializationSerializer,UserSpecgetserializer)
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -96,14 +96,23 @@ class UserTypeView(generics.ListCreateAPIView):
 
 
 class UserSpecializationApiView(generics.ListCreateAPIView):
-    serializer_class = UserSpecializationSerializer
+    serializer_class = UserSpecgetserializer
+    pagination_class = None
     permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
-    # def post(self,request):
+    def get_queryset(self):
+        # serializer_class = self.
+        return UserSpecialization.objects.filter(user_id=self.request.user)  
+    # def post(self,request, format=None):
     #     try:
-    #         # request.data['user_id'] = request.user
+
+    #         serializer = UserSpecializationSerializer(data=request.data)
+    #         if serializer.is_valid():
+    #             serializer.save(user_id = request.user)
+    #             return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     #         serializer = self.serializer_class(data=request.data)
     #         serializer.is_valid(raise_exception=True)
     #         serializer.save(user_id=self.request.user.id)

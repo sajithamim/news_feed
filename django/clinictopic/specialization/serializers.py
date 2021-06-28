@@ -83,18 +83,21 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
     created_at = serializers.ReadOnlyField()
     updated_at = serializers.ReadOnlyField()
-    spec_id = serializers.IntegerField()
     class Meta:
         model = UserSpecialization
         fields = ['id','user_id', 'spec_id','created_at','updated_at','sub_userspec_id']
 
     def create(self, validated_data):
-        print("dfh")
-        print(validated_data)
         subspec = validated_data.pop('sub_userspec_id')
-        # print(**validated_data)
-        # print("sdfkh")
         userspec = UserSpecialization.objects.create(**validated_data)
         for subspec in subspec:
             UserSubSpecialization.objects.create(user_spec_id=userspec, **subspec)
         return userspec
+
+class UserSpecgetserializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserSubSpecialization
+        fields = '__all__'
+        depth = 2
+        level= 2
