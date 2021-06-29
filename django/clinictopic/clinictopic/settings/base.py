@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'drf_yasg2',
     'authentication',
     'social_auth',
+    'topics',
     'specialization',
     'django_filters'
 ]
