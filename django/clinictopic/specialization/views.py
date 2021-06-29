@@ -111,9 +111,9 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         
         serializer.save(user_id=self.request.user)
-    # def get_queryset(self):
-    #     # serializer_class = self.
-    #     return UserSubSpecialization.objects.all()  
+    def get_queryset(self):
+        # serializer_class = self.
+        return UserSpecialization.objects.filter(user_id=self.request.user)  
     # def post(self,request, format=None):
     #     try:
 
