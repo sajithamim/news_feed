@@ -45,8 +45,8 @@ class RegisterView(generics.GenericAPIView):
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
             email_verify = User.objects.filter(email=user['email']).first()
-            user_provider = email_verify.auth_provider
             if email_verify:
+                user_provider = email_verify.auth_provider
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
                 'success' : 'False',
@@ -125,7 +125,15 @@ class LoginAPIView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        status_code = status.HTTP_200_OK
+        response = {
+        'success' : 'True',
+        'status code' : status_code,
+        'message': 'user logged in',
+        'data':serializer.data
+            # 'tokens': user.tokens()
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class RequestPasswordResetEmail(generics.GenericAPIView):
@@ -198,29 +206,25 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
 
 class LogoutAPIView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
-
     permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request):
-
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-from .otp import send_opt
-def sendmessage(self,request):
-    if request.method =="GET":
-        send_opt('9895203267','1234')
-        return HttpResponse("sent")
+# from .otp import send_opt
+# def sendmessage(self,request):
+#     if request.method =="GET":
+#         send_opt('9895203267','1234')
+#         return HttpResponse("sent")
 
 
-class OtpAPIView(generics.GenericAPIView):
-    def get(self, request):
-        send_opt('9895203267','1234')
-        return HttpResponse("sent")
+# class OtpAPIView(generics.GenericAPIView):
+#     def get(self, request):
+#         send_opt('9895203267','1234')
+#         return HttpResponse("sent")
 
 
 # import http.client
