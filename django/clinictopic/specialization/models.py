@@ -10,6 +10,9 @@ class Specialization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'Specialization'
 
@@ -19,12 +22,15 @@ class SubSpecialization(models.Model):
     icon = models.ImageField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = 'SubSpecialization'
 
 class Audience(models.Model):
     name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'Audience'
@@ -32,7 +38,7 @@ class Audience(models.Model):
 
 class UserSpecialization(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='spec_user_id')
-    spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='spec_id')
+    spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='spec_spec_id')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
