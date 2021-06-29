@@ -1,9 +1,10 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
-import { Input, Checkbox, Radio, Select, Upload, message } from "antd";
+import { Input, Checkbox, Radio, Select, Upload, message, Modal } from "antd";
 import { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import "./ModalContent.css";
+import PollContent from "./PollContent";
 
 const { Option } = Select;
 
@@ -26,13 +27,16 @@ function beforeUpload(file) {
 }
 
 const ModalContent = (props) => {
-  const [checkboxValue, setCheckboxValue] = useState(false);
+  const [checkboxValue, setCheckboxValue] = useState("");
   const [radioValue, setRadioValue] = useState("image");
   const [audience, setAudience] = useState(["a10", "c12"]);
   const [specialiasations, setSpecialiasations] = useState(["a10", "c12"]);
   const [category, setCategory] = useState("News & views");
   const [loadingUpload, setloadingUpload] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [noOfQuestions, setNoOfQuestions] = useState("");
+  const [noOfAnswers, setNoOfAnswers] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const children = [];
   for (let i = 10; i < 36; i++) {
@@ -75,11 +79,27 @@ const ModalContent = (props) => {
   };
 
   const checkboxOnChange = (e) => {
-    setCheckboxValue(e.target.value);
+    setCheckboxValue(e.target.checked);
+    if (e.target.checked === true) {
+      setIsModalVisible(true);
+    } else {
+      setIsModalVisible(false);
+      setNoOfQuestions("");
+      setNoOfAnswers("");
+    }
   };
   const radioOnChange = (e) => {
     setRadioValue(e.target.value);
   };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div>
       <div className="modalStyle">
@@ -183,6 +203,13 @@ const ModalContent = (props) => {
             />
           </Grid>
         </Grid>
+
+        {checkboxValue === true &&
+          noOfQuestions !== "" &&
+          noOfAnswers !== "" && (
+            <PollContent questions={noOfQuestions} answers={noOfAnswers} />
+          )}
+
         <Grid container direction="row" className="modalStyle">
           <Grid item md={3} className="labelStyle">
             <span>*Media type :</span>
@@ -229,6 +256,27 @@ const ModalContent = (props) => {
           </Grid>
         </Grid>
       </div>
+      <Modal
+        title="Poll"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <form>
+          <p className="modalStyle">How many question would you like to ask?</p>
+          <Input
+            type="number"
+            value={noOfQuestions}
+            onChange={(e) => setNoOfQuestions(e.target.value)}
+          />
+          <p className="modalStyle">How many answers per question?</p>
+          <Input
+            type="number"
+            value={noOfAnswers}
+            onChange={(e) => setNoOfAnswers(e.target.value)}
+          />
+        </form>
+      </Modal>
     </div>
   );
 };
