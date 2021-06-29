@@ -2,12 +2,14 @@ from django.shortcuts import render
 from .serializers import(CategorySerializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated,AllowAny
 
 from .models import (Categoeries)
 # Create your views here.
 class CategoryFileUploadView(generics.ListAPIView):
     parser_class = (FileUploadParser,)
     serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = Categoeries.objects.all()
