@@ -5,7 +5,9 @@ from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpec
 from rest_framework import  status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from authentication.models import User
-import json
+# import json
+from rest_framework import generics, status
+
 class GetSubspecializationSerializer(serializers.ModelSerializer):
 
     class Meta: 

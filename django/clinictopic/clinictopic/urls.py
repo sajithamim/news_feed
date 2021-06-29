@@ -48,4 +48,5 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc',
                                        cache_timeout=0), name='schema-redoc'),
     path('spec/',include('specialization.urls')),
+    path('topic/',include('topics.urls')),
 ]
