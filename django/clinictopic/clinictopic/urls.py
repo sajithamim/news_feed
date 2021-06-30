@@ -20,6 +20,9 @@ from rest_framework import permissions
 # from drf_yasg import openapi
 from drf_yasg2.views import get_schema_view
 from drf_yasg2 import openapi
+from django.conf.urls.static import static
+from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -49,4 +52,5 @@ urlpatterns = [
                                        cache_timeout=0), name='schema-redoc'),
     path('spec/',include('specialization.urls')),
     path('topic/',include('topics.urls')),
-]
+]+ static(MEDIA_URL, document_root = MEDIA_ROOT)
+
