@@ -176,8 +176,3 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
 #             return {}
 
 #         return OrderedDict([(item.id, str(item)) for item in queryset])
-class UserSpecgetserializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = UserSubSpecialization
-        fields = '__all__'
-        depth = 2

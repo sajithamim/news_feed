@@ -6,7 +6,7 @@
 # Node artifact files
 node_modules/
 dist/
-
+migrations/
 __pycache__/
 
 
@@ -39,6 +39,8 @@ TEST*.xml
 Thumbs.db
 development.py
 media/
+migrations/
+__pycache__/
 # Applications
 *.app
 *.exe
