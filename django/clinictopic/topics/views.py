@@ -12,13 +12,16 @@ import django_filters.rest_framework
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
 
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topics.objects.all()
     serializer_class = TopicSeriaizer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    ordering = ('title')
-
+    # ordering = ('title')
+    def get_queryset(self):
+        queryset = self.queryset
+        query_set = queryset.filter()
+        return query_set
