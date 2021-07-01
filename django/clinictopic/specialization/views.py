@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from .models import (Audience, Specialization,UserSpecialization)
+from .models import (Audience, Specialization,UserSpecialization,SubSpecialization)
 from .serializers import (GetSpecialization,GetAudienceSerializer,userTypeSerializer,
-UserSpecializationSerializer,UserSubSpecialization)
+UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
+GetSubspecializationSerializer)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import generics, status, views, permissions
+from rest_framework import viewsets, filters
 
 # Create your views here.
 
@@ -89,3 +91,11 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
 
 
 
+
+class SpecializationView(viewsets.ModelViewSet):
+    queryset = Specialization.objects.all()
+    serializer_class = GetSpecializationseriallizer
+
+class SubSpecializationView(viewsets.ModelViewSet):
+    queryset = SubSpecialization.objects.all()
+    serializer_class = GetSubspecializationSerializer
