@@ -212,3 +212,42 @@ class LogoutSerializer(serializers.Serializer):
 
         except TokenError:
             self.fail('bad_token')
+
+
+
+
+class AdminLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255, min_length=3)
+    password = serializers.CharField(
+        max_length=68, min_length=4, write_only=True)
+    tokens = serializers.SerializerMethodField()
+    def get_tokens(self, obj):
+        user = User.objects.get(email=obj['email'])
+
+        return {
+            'refresh': user.tokens()['refresh'],
+            'access': user.tokens()['access']
+        }
+
+    class Meta:
+        model = User
+        fields = ['tokens','email','password']
+        write_only_fields = ('password')
+
+
+    def validate(self, attrs):
+        email = attrs.get('email', '')
+        password = attrs.get('password','')
+        user = auth.authenticate(email=email, password=password)
+        if not user:
+            raise AuthenticationFailed('Invalid credentials, try again')
+
+        return {
+            'email': user.email,
+            'username': user.username,
+            'tokens': user.tokens,
+            'phone':user.phone,
+            'otp':user.otp
+        }
+
+        return super().validate(attrs)

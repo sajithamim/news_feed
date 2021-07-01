@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
- LoginSerializer, LogoutSerializer,Signinserializer)
+ LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -293,6 +293,18 @@ class SignInOtpview(generics.GenericAPIView):
             return Response(response, status=status_code)
         
 
+class AdminLoginAPIView(generics.GenericAPIView):
+    serializer_class = AdminLoginSerializer
 
-
-
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        status_code = status.HTTP_200_OK
+        response = {
+        'success' : 'True',
+        'status code' : status_code,
+        'message': 'user logged in',
+        'data':serializer.data
+            # 'tokens': user.tokens()
+        }
+        return Response(response, status=status.HTTP_200_OK)
