@@ -1,5 +1,8 @@
 from django.db import models
 import uuid
+
+from django.db.models.deletion import CASCADE
+from authentication.models import User
 from django.dispatch import receiver
 from clinictopic.settings.base import MEDIA_ROOT
 from specialization.models import (Specialization)
@@ -47,7 +50,12 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         if os.path.isfile(old_file.path):
                 os.remove(old_file.path)
 
+class UserCategory(models.Model):
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="user_category")
+    category_id = models.ForeignKey(Categoeries,on_delete=models.CASCADE,related_name="category_user_id")
 
+    class Meta:
+        db_table ="UserCategory"
 
 def get_image_path_topic(instance, filename):
     ext = filename.split('.')[-1]
@@ -60,6 +68,11 @@ def get_pdf_path(instance,filename):
 
 class Topics(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    AUDIENCE_CHOICES = (
+        ('doctor', 'doctor'),
+        ('general', 'general')
+    )
+    topic_audience = models.CharField(max_length=20,choices=AUDIENCE_CHOICES)
     category_id = models.ForeignKey(Categoeries,on_delete=models.CASCADE,related_name="topic_category")
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1000)
