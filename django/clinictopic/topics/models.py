@@ -57,10 +57,18 @@ class UserCategory(models.Model):
     class Meta:
         db_table ="UserCategory"
 
+
 def get_image_path_topic(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s"%(instance.id,ext)
     return "topic/image/{filename}".format(filename=filename)
+
+class Image(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # image = models.CharField(blank=True, null=True, max_length=50)
+    image = models.ImageField(blank=True, null=True, upload_to=get_image_path_topic)
+
+
 def get_pdf_path(instance,filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s"%(instance.id,ext)
@@ -88,7 +96,8 @@ class Topics(models.Model):
         ('video', 'video')
     )
     media_type = models.CharField(max_length=20,choices=MEDIA_CHOICES,blank=True,null=True)
-    image = models.ImageField(blank=True,null=True,upload_to=get_image_path_topic)
+    # image = models.ImageField(blank=True,null=True,upload_to=get_image_path_topic)
+    images = models.ManyToManyField(Image, related_name='posts')
     video_url = models.CharField(max_length=1000,blank=True,null=True)
     publishingtime = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
