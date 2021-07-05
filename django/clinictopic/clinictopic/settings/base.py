@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'social_auth',
     'topics',
     'specialization',
-    'django_filters'
+    'django_filters',
+    'rest_framework_swagger',
 ]
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
@@ -134,6 +135,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
+        # 'myproject.parsers.MultiPartJSONParser',
+
     ],
     # 'rest_framework.parsers.MultiPartParser'
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

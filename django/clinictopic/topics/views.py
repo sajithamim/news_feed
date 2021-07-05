@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
-userCategorySerializer)
+userCategorySerializer,PostSerializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -8,6 +8,9 @@ from rest_framework import viewsets, filters
 from .models import (Categoeries,TopicSpecialization,Topics,UserCategory)
 from django_filters import rest_framework as filters
 import django_filters.rest_framework
+from rest_framework.parsers import MultiPartParser, FormParser
+# from django_rest_swagger_swaggerdoc import swaggerdoc
+
 
 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
@@ -45,3 +48,33 @@ class UserCategoryApiView(generics.ListCreateAPIView):
         serializer.save(user_id=self.request.user)
     def get_queryset(self):
         return UserCategory.objects.filter(user_id=self.request.user)  
+
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    Post ModelViewSet.
+    """
+    queryset = Topics.objects.all()
+    serializer_class = PostSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    # permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    # @swaggerdoc('swaggerdoc/post.yml')
+    def create(self, request, *args, **kwargs):
+        
+        # print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
