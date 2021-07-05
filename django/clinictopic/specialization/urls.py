@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (GetSpecializations,GetAudienceView,UserTypeView,
-UserSpecializationApiView,SpecializationView,SubSpecializationView,SubspecializationApiview)
+UserSpecializationApiView,SpecializationView,SubSpecializationView)
 from django.conf.urls import url, include
 from rest_framework import routers
 
@@ -15,7 +15,7 @@ urlpatterns = [
         path('getaudience/',GetAudienceView.as_view()),
         path('usertype/',UserTypeView.as_view()),       
         path('userspec/',UserSpecializationApiView.as_view()),
-        path('getsubspecialization/',SubspecializationApiview.as_view()),
+        # path('getsubspecialization/',SubspecializationApiview.as_view()),
         url(r'^', include(router.urls)),
 
 ]

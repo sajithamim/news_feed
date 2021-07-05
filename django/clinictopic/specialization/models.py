@@ -6,7 +6,7 @@ from authentication.models import User
 # Create your models here.
 class Specialization(models.Model):
     name = models.CharField(max_length=255)
-    icon = models.ImageField(blank=True,null=True)
+    icon = models.ImageField(blank=True,null=True,upload_to="specializaion")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -19,7 +19,7 @@ class Specialization(models.Model):
 class SubSpecialization(models.Model):
     spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='specialization_id')
     name = models.CharField(max_length=255)
-    icon = models.ImageField(blank=True,null=True)
+    icon = models.ImageField(blank=True,null=True,upload_to="subspecialization")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):

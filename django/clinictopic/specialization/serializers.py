@@ -176,3 +176,15 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
 #             return {}
 
 #         return OrderedDict([(item.id, str(item)) for item in queryset])
+
+
+
+class SpecializationpicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specialization
+        fields = ['icon']
+
+class SubSpecializationpicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubSpecialization
+        fields = ['icon']
