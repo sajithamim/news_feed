@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import url, include
 from rest_framework import routers
-from .views import UploadedImagesViewSet,TopicViewSet,UserCategoryApiView,PostViewSet
+from .views import UploadedImagesViewSet,TopicViewSet,UserCategoryApiView
 from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
  
 
