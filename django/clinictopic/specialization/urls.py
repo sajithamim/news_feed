@@ -9,11 +9,13 @@ router.register('specialization',SpecializationView , 'speciaization')
 router.register('subspecialization',SubSpecializationView , 'subspeciaization')
 
 
+
 urlpatterns = [
         path('getspec/', GetSpecializations.as_view()),
         path('getaudience/',GetAudienceView.as_view()),
         path('usertype/',UserTypeView.as_view()),       
         path('userspec/',UserSpecializationApiView.as_view()),
+        # path('getsubspecialization/',SubspecializationApiview.as_view()),
         url(r'^', include(router.urls)),
 
 ]

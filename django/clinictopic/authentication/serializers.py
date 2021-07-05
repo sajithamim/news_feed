@@ -10,6 +10,8 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from clinictopic.settings.base import BASE_DIR
 from dotenv import load_dotenv
 import os
+from topics.models import (UserCategory)
+
 load_dotenv(BASE_DIR+str("/.env"))
 import random
 
@@ -85,6 +87,13 @@ class LoginSerializer(serializers.ModelSerializer):
     otp = serializers.CharField(max_length=20)
     tokens = serializers.SerializerMethodField()
     speccount = serializers.SerializerMethodField()
+    categorycount = serializers.SerializerMethodField()
+
+    def get_categorycount(self,obj):
+        userobj = User.objects.get(phone = obj['phone'])
+        userid = userobj.id
+        return UserCategory.objects.filter(user_id=userid).count()
+
 
     def get_speccount(self,obj):
         userobj = User.objects.get(phone = obj['phone'])
@@ -100,7 +109,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['tokens','phone','otp','speccount']
+        fields = ['tokens','phone','otp','speccount','categorycount']
 
     def validate(self, attrs):
         # email = attrs.get('email', '')
