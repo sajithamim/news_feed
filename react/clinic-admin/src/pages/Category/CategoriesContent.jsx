@@ -1,13 +1,25 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
 import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
 import DrawerContent from "./DrawerContent";
+import { getCategory } from "../../actions/category";
+import { deleteCategory } from "../../actions/category";
+
 
 const CategoriesContent = () => {
+  const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
+ 
 
+  useEffect(() => {
+    dispatch(getCategory());
+  }, [])
+
+  const { catlist }  = useSelector(state => state.category);
+  console.log('catlist', catlist)
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -22,35 +34,26 @@ const CategoriesContent = () => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (e) => {
-    message.success("Delete Category");
+  const onConfirm = (id) => {
+    dispatch(deleteCategory(id))
+    .then((res) => {
+      res.status == 204 ? message.success("Category is deleted successfully") : message.error("Category is not exist")
+    })
   };
 
   const cancel = (e) => {
-    message.error("Cancelled");
+   // message.error("Cancelled");
   };
-
-  const categoryGenerator = (quantity) => {
-    const items = [];
-    for (let i = 0; i < quantity; i++) {
-      items.push({
-        id: i,
-        name: `Item name ${i}`,
-      });
-    }
-    return items;
-  };
-  const categories = categoryGenerator(7);
 
   const columns = [
     {
       title: "Title",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "title",
+      key: "title",
     },
     {
       title: "Action",
-      key: "action",
+      key: "id",
       align: "center",
       render: (text, record) => (
         <Space size="middle">
@@ -59,7 +62,7 @@ const CategoriesContent = () => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this category?"
-            onConfirm={confirmDelete}
+            onConfirm={() => onConfirm(record.id)}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -81,7 +84,8 @@ const CategoriesContent = () => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} dataSource={categories} />
+        {catlist.results ? 
+        (<Table columns={columns} dataSource={catlist.results} />) : (<p> Loading...</p>)}
       </Card>
       <Drawer
         title={

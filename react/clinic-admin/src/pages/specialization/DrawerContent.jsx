@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
-import { Form, Input, Upload, Modal , Button} from "antd";
+import { Form, Input, Upload, Modal, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { postSubSpecialization } from "../../actions/spec";
 import "./Drawer.css";
@@ -31,8 +31,8 @@ const DrawerContent = () => {
   ]);
 
   const dispatch = useDispatch();
-  const {id} = useParams();
-  const [state , setState] = useState({
+  const { id } = useParams();
+  const [state, setState] = useState({
     name: "",
     spec_id: id
   })
@@ -58,36 +58,35 @@ const DrawerContent = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
-  
-  const handleSubmit =(e) => {
+
+  const handleSubmit = (e) => {
     dispatch(postSubSpecialization(state))
   }
 
   const handleChange = (e) => {
-    console.log('e', e.target.name)
-    setState({...state, [e.target.name]: e.target.value})
+    setState({ ...state, [e.target.name]: e.target.value })
   };
 
   const handleFileChange = ({ fileList }) => setFileList(fileList);
 
   return (
     <Form onFinish={handleSubmit}>
-    <div>
-      <div className="modalStyle">
-        <Grid container direction="row" className="modalStyle">
-          <Grid item md={3} className="labelStyle">
-            <span>*Name :</span>
+      <div>
+        <div className="modalStyle">
+          <Grid container direction="row" className="modalStyle">
+            <Grid item md={3} className="labelStyle">
+              <span>*Name :</span>
+            </Grid>
+            <Grid item md={6}>
+              <Input name="name" onChange={handleChange} value={state.name} />
+            </Grid>
           </Grid>
-          <Grid item md={6}>
-            <Input name="name" onChange={handleChange} value={state.name} />
-          </Grid>
-        </Grid>
-        <div className="submit">
-        <Button type="primary" htmlType="submit" >
-          Save
-        </Button>
-      </div>
-        {/* <Grid container direction="row" className="modalStyle">
+          <div className="submit">
+            <Button type="primary" htmlType="submit" >
+              Save
+            </Button>
+          </div>
+          {/* <Grid container direction="row" className="modalStyle">
           <Grid item md={3} className="labelStyle">
             <span>*Image :</span>
           </Grid>
@@ -111,8 +110,8 @@ const DrawerContent = () => {
             </Modal>
           </Grid>
         </Grid> */}
+        </div>
       </div>
-    </div>
     </Form>
   );
 };
