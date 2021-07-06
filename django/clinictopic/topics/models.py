@@ -121,3 +121,10 @@ class TopicSpecialization(models.Model):
 
 
 
+
+class Favourite(models.Model):
+    user_id  = models.ForeignKey(User,on_delete=models.CASCADE,related_name="favourite_user")
+    topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="favourite_topic")
+    
+    class Meta:
+        db_table = 'Favourite'
