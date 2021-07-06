@@ -1,13 +1,14 @@
 from django.urls import path
 from django.conf.urls import url, include
 from rest_framework import routers
-from .views import UploadedImagesViewSet,TopicViewSet,UserCategoryApiView
+from .views import UploadedImagesViewSet,TopicViewSet,UserCategoryApiView,UserFavouriteApiView
 from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
  
 
 router = routers.DefaultRouter()
 router.register('category', UploadedImagesViewSet, 'images')
 router.register('topic',TopicViewSet,'topic')
+# router.register('favourite',UserFavouriteApiView,'favourite')
 # router.register('topictest',PostViewSet,'topictest')
 # router.register('usercategory',UserCategoryApiView,'usercategory')
 
@@ -16,6 +17,7 @@ urlpatterns = [
         # path('category/',CategoryFileUploadView.as_view()),
         # path('', include(router.urls)),
         url(r'^', include(router.urls)),
-        path('usercategory',UserCategoryApiView.as_view(),name="usercategory")
+        path('usercategory',UserCategoryApiView.as_view(),name="usercategory"),
+        path('favourite',UserFavouriteApiView.as_view(),name="favourite")
 
 ]

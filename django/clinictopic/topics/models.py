@@ -63,10 +63,6 @@ def get_image_path_topic(instance, filename):
     filename = "%s.%s"%(instance.id,ext)
     return "topic/image/{filename}".format(filename=filename)
 
-class Image(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # image = models.CharField(blank=True, null=True, max_length=50)
-    image = models.ImageField(blank=True, null=True, upload_to=get_image_path_topic)
 
 
 def get_pdf_path(instance,filename):
@@ -98,7 +94,7 @@ class Topics(models.Model):
     )
     media_type = models.CharField(max_length=20,choices=MEDIA_CHOICES,blank=True,null=True)
     # image = models.ImageField(blank=True,null=True,upload_to=get_image_path_topic)
-    images = models.ManyToManyField(Image, related_name='posts')
+    # images = models.OneToMany(Image, related_name='posts')
     video_url = models.CharField(max_length=1000,blank=True,null=True)
     publishingtime = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -110,6 +106,11 @@ class Topics(models.Model):
     class Meta:
         db_table = 'Topics'
 
+class Image(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="topic_image")
+    # image = models.CharField(blank=True, null=True, max_length=50)
+    image = models.ImageField(blank=True, null=True, upload_to=get_image_path_topic)
 
 class TopicSpecialization(models.Model):
     spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name="Topic_specialization")
@@ -117,3 +118,13 @@ class TopicSpecialization(models.Model):
     
     class Meta:
         db_table = 'TopicSpecialization'
+
+
+
+
+class Favourite(models.Model):
+    user_id  = models.ForeignKey(User,on_delete=models.CASCADE,related_name="favourite_user")
+    topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="favourite_topic")
+    
+    class Meta:
+        db_table = 'Favourite'

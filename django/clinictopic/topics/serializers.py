@@ -1,12 +1,13 @@
+from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image)
+from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
 from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
 from authentication.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
-    image = serializers.ImageField(max_length=None, use_url=True, allow_null=False, required=True)
+    image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = Categoeries
         fields = ['id','title','image']
@@ -31,8 +32,9 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TopicSeriaizer(serializers.ModelSerializer):
-    images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
-    # images = ImageSerializer(many=True)
+    # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    # images = ImageSerializer(many=True,read_only=True)
+    topic_image = ImageSerializer(many=True, read_only=True)
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
     class Meta:
@@ -83,6 +85,8 @@ class userCategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # print (validated_data)
         return UserCategory.objects.create(**validated_data)
+
+
 
 
 
@@ -195,3 +199,51 @@ class Categorypicserializer(serializers.ModelSerializer):
     class Meta:
         model = Categoeries
         fields =['image']
+
+class Topicpdfserializer(serializers.ModelSerializer):
+    class Meta:
+        model =Topics
+        fields = ['pdf']
+
+class TopicImageSerializer(serializers.ModelSerializer):
+    # image = serializers.ListField(child=serializers.ImageField(max_length=100000,allow_empty_file=False,use_url=False))
+    class Meta:
+        model = Image
+        fields = ['image']
+    def create(self, validated_data):
+        image=validated_data.pop('image')
+        for img in image:
+            photo=Image.objects.create(image=img,**validated_data)
+        return photo
+
+
+class userFavouriteSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    # user_id = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # category_id = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Favourite
+        fields = ['id','user_id','topic_id']
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['topic_id'] = TopicSeriaizer(instance.topic_id).data
+        return response
+
+    def validate(self,attrs):
+        user_id = attrs.get('user_id','')
+        # category_id = attrs.get('category_id','')
+        # print(category_id.id)
+        # user_
+        user_data = User.objects.filter(email=user_id)
+        if not user_data:
+            raise serializers.ValidationError("invalid user!")
+        return attrs
+
+    
+    def create(self, validated_data):
+        # print (validated_data)
+        return Favourite.objects.create(**validated_data)
