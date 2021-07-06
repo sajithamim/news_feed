@@ -176,8 +176,15 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
 #             return {}
 
 #         return OrderedDict([(item.id, str(item)) for item in queryset])
-class UserSpecgetserializer(serializers.HyperlinkedModelSerializer):
+
+
+
+class SpecializationpicSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserSubSpecialization
-        fields = '__all__'
-        depth = 2
+        model = Specialization
+        fields = ['icon']
+
+class SubSpecializationpicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubSpecialization
+        fields = ['icon']

@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from .models import (Audience, Specialization,UserSpecialization)
+from .models import (Audience, Specialization,UserSpecialization,SubSpecialization)
 from .serializers import (GetSpecialization,GetAudienceSerializer,userTypeSerializer,
-UserSpecializationSerializer,UserSpecgetserializer,UserSubSpecialization)
+UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
+GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import generics, status, views, permissions
+from rest_framework import viewsets, filters
+# from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
+from rest_framework import parsers
 
 # Create your views here.
 
@@ -67,33 +72,7 @@ class UserTypeView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = userTypeSerializer
     def perform_create(self, serializer):
-        # for i in request.data:
             serializer.save(user_id=self.request.user,many=True)
-    # @csrf_exempt
-    # def post(self,request):
-    #     try:
-    #         request.data['user_id'] = request.user
-    #         serializer = self.serializer_class(data=request.data,many=True)
-    #         serializer.is_valid(raise_exception=True)
-    #         serializer.save(user_id=self.request.user)
-    #         print("hello")
-    #         status_code = status.HTTP_200_OK
-    #         response = {
-    #         'success' : 'True',
-    #         'status code' : status_code,
-    #         'message': 'user type created',
-    #         # 'data':serializer.data
-    #         }
-    #         return Response(response,status=status.HTTP_200_OK)
-    #     except Exception as e:
-    #         status_code = status.HTTP_400_BAD_REQUEST
-    #         response = {
-    #             'success': 'false',
-    #             'status code': status.HTTP_400_BAD_REQUEST,
-    #             'message': 'not found',
-    #             'error': str(e)
-    #             }
-    #         return Response(response, status=status_code)
 
 
 class UserSpecializationApiView(generics.ListCreateAPIView):
@@ -105,44 +84,73 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
         if isinstance(kwargs.get('data', {}), list):
             kwargs['many'] = True
         return super(UserSpecializationApiView, self).get_serializer(*args, **kwargs)
-
     @csrf_exempt
     def perform_create(self, serializer):
         
         serializer.save(user_id=self.request.user)
+    @csrf_exempt
     def get_queryset(self):
-        # serializer_class = self.
         return UserSpecialization.objects.filter(user_id=self.request.user)  
-    # def post(self,request, format=None):
-    #     try:
-
-    #         serializer = UserSpecializationSerializer(data=request.data)
-    #         # if serializer.is_valid():
-    #         #     serializer.save(user_id = request.user)
-    #         #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #         serializer = self.serializer_class(data=request.data,many=True)
-    #         print(serializer)
-    #         serializer.context["user_id"] = request.user.id
-    #         serializer.is_valid(raise_exception=True)
-    #         print(serializer.save(user_id=request.user))
-    #         # serializer.save(user_id=request.user)
-    #         status_code = status.HTTP_200_OK
-    #         response = {
-    #         'success' : 'True',
-    #         'status code' : status_code,
-    #         'message': 'specialization created',
-    #         'data':serializer.data
-    #         }
-    #         return Response(response,status=status.HTTP_200_OK)
-    #     except Exception as e:
-    #         status_code = status.HTTP_400_BAD_REQUEST
-    #         response = {
-    #             'success': 'false',
-    #             'status code': status.HTTP_400_BAD_REQUEST,
-    #             'message': 'not found',
-    #             'error': str(e)
-    #             }
-    #         return Response(response, status=status_code)
 
 
+
+
+class SpecializationView(viewsets.ModelViewSet):
+    queryset = Specialization.objects.all()
+    serializer_class = GetSpecializationseriallizer
+    @action(detail=True, methods=['get'])
+    def spubspec_list(self, request, pk=None):
+        spec = self.get_object() # retrieve an object by pk provided
+        spec_data = SubSpecialization.objects.filter(spec_id=spec).distinct()
+        spec_json = GetSubspecializationSerializer(spec_data, many=True)
+        return Response(spec_json.data)
+    @action(detail=True,methods=['PUT'],serializer_class=SpecializationpicSerializer,parser_classes=[parsers.MultiPartParser],)
+    def icon(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+
+class SubSpecializationView(viewsets.ModelViewSet):
+    queryset = SubSpecialization.objects.all()
+    serializer_class = GetSubspecializationSerializer
+    @action(detail=True,methods=['PUT'],serializer_class=SubSpecializationpicSerializer,parser_classes=[parsers.MultiPartParser],)
+    def icon(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+
+
+# class SubspecializationApiview(APIView):
+#     # permission_classes = (IsAuthenticated,)
+#     @csrf_exempt
+#     def get(self,request,specid):
+#         try:
+#             spec = SubSpecialization.objects.filter(spec_id = specid)
+#             serializers = GetSubspecializationSerializer(spec,many=True)
+#             status_code = status.HTTP_200_OK
+#             response = {
+#             'success' : 'True',
+#             'status code' : status_code,
+#             'message': 'sub specialization details',
+#             'data':serializers.data
+#             }
+#             return Response(response,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             status_code = status.HTTP_400_BAD_REQUEST
+#             response = {
+#                 'success': 'false',
+#                 'status code': status.HTTP_400_BAD_REQUEST,
+#                 'message': 'not found',
+#                 'error': str(e)
+#                 }
+#             return Response(response, status=status_code)
