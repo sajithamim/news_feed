@@ -6,6 +6,7 @@ import Login from './pages/Login/Login';
 // import Team from './pages/Team';
 // import Specialization from './pages/Specialization/Specialization';
 import Specialization from "./pages/specialization/Specialization";
+import SubSpecialization from "./pages/specialization/SubSpecializationContent";
 import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
@@ -21,6 +22,7 @@ function App() {
           <Route path='/data/Categories' exact component={Categories} />
           <Route path="/data/topics" exact component={Topics} />
           <Route path='/data/Specializations' exact component={Specialization} />
+          <Route path='/data/SubSpecialization/:id' exact component={SubSpecialization} />
           <Route path='/data/Feedback' exact component={Feedback} />
           {/* <Route path='/reports/reports2' exact component={ReportsTwo} /> */}
           {/* <Route path='/reports/reports3' exact component={ReportsThree} /> */}
