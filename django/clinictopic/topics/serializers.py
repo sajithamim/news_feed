@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image)
+from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
 from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
 from authentication.models import User
 
@@ -85,6 +85,8 @@ class userCategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # print (validated_data)
         return UserCategory.objects.create(**validated_data)
+
+
 
 
 
@@ -213,3 +215,35 @@ class TopicImageSerializer(serializers.ModelSerializer):
         for img in image:
             photo=Image.objects.create(image=img,**validated_data)
         return photo
+
+
+class userFavouriteSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    # user_id = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # category_id = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Favourite
+        fields = ['id','user_id','topic_id']
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['topic_id'] = TopicSeriaizer(instance.topic_id).data
+        return response
+
+    def validate(self,attrs):
+        user_id = attrs.get('user_id','')
+        # category_id = attrs.get('category_id','')
+        # print(category_id.id)
+        # user_
+        user_data = User.objects.filter(email=user_id)
+        if not user_data:
+            raise serializers.ValidationError("invalid user!")
+        return attrs
+
+    
+    def create(self, validated_data):
+        # print (validated_data)
+        return Favourite.objects.create(**validated_data)
