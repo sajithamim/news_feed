@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
-userCategorySerializer,Categorypicserializer)
+userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -16,8 +16,7 @@ from rest_framework.response import Response
 # from rest_framework.decorators import detail_route
 
 
-
-
+# category model 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all()
     serializer_class = CategorySerializer
@@ -47,6 +46,49 @@ class TopicViewSet(viewsets.ModelViewSet):
         if not user_type:
             query_set = queryset.filter()
         return query_set
+
+    @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser],)
+    def pdf(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+    '''/schema:
+        get:
+        tags:
+            - Schema
+        description: download schema file
+        responses:
+            "200":
+            description: success
+            content:
+                multipart/form-data:
+                schema:
+                    type: object
+                    properties:
+                    filename:
+                        type: array
+                        items:
+                        type: string
+                        format: binary
+            "400":
+            $ref: "#/components/responses/failed"
+            "404":
+            $ref: "#/components/responses/notExist"'''
+    @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
+    def images(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
 
 
 
