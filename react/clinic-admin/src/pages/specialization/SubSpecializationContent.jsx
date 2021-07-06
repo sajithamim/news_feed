@@ -13,14 +13,13 @@ const SubSpecializationContent = () => {
   const [drawerType, setDrawerType] = useState("");
   
   const {id} = useParams();
-  console.log("useparams",useParams() )
+ 
   useEffect(() => {
     dispatch(getSubSpecialisation(id));
   }, [])
   
-  const subspec = useSelector(state => {
-    console.log("subspec state" , state.spec.subspecialization);
-  })
+  const { subspecialization } = useSelector(state => state.spec);
+
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -95,7 +94,8 @@ const SubSpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} dataSource={specs} />
+        {subspecialization ? 
+        (<Table columns={columns} dataSource={subspecialization && subspecialization} />) : (<p> Loading...</p>)}
       </Card>
       <Drawer
         title={

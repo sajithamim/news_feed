@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
-import { Input, Upload, Modal } from "antd";
+import { Form, Input, Upload, Modal , Button} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { postSubSpecialization } from "../../actions/spec";
 import "./Drawer.css";
 
 function getBase64(file) {
@@ -12,6 +15,7 @@ function getBase64(file) {
     reader.onerror = (error) => reject(error);
   });
 }
+
 
 const DrawerContent = () => {
   const [specialiazation, setSpecialiazation] = useState("");
@@ -25,6 +29,14 @@ const DrawerContent = () => {
       url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
     },
   ]);
+
+  const dispatch = useDispatch();
+  const {id} = useParams();
+  const [state , setState] = useState({
+    name: "",
+    spec_id: id
+  })
+
   const [previewTitle, setPreviewTitle] = useState("");
 
   const handleCancel = () => setPreviewVisible(false);
@@ -46,14 +58,20 @@ const DrawerContent = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
+  
+  const handleSubmit =(e) => {
+    dispatch(postSubSpecialization(state))
+  }
 
-  const handleSpecChange = (value) => {
-    setSpecialiazation(value);
+  const handleChange = (e) => {
+    console.log('e', e.target.name)
+    setState({...state, [e.target.name]: e.target.value})
   };
 
   const handleFileChange = ({ fileList }) => setFileList(fileList);
 
   return (
+    <Form onFinish={handleSubmit}>
     <div>
       <div className="modalStyle">
         <Grid container direction="row" className="modalStyle">
@@ -61,10 +79,15 @@ const DrawerContent = () => {
             <span>*Name :</span>
           </Grid>
           <Grid item md={6}>
-            <Input onChange={handleSpecChange} value={specialiazation} />
+            <Input name="name" onChange={handleChange} value={state.name} />
           </Grid>
         </Grid>
-        <Grid container direction="row" className="modalStyle">
+        <div className="submit">
+        <Button type="primary" htmlType="submit" >
+          Save
+        </Button>
+      </div>
+        {/* <Grid container direction="row" className="modalStyle">
           <Grid item md={3} className="labelStyle">
             <span>*Image :</span>
           </Grid>
@@ -87,9 +110,10 @@ const DrawerContent = () => {
               <img alt="example" style={{ width: "100%" }} src={previewImage} />
             </Modal>
           </Grid>
-        </Grid>
+        </Grid> */}
       </div>
     </div>
+    </Form>
   );
 };
 

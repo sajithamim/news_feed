@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-const API_URL = "http://178.18.246.233:8000/auth/adminlogin/";
+const API_URL = "http://178.18.246.233:8000/";
 
-class AuthService {
-  login(username, password) {
+const login = (email, password) => {
     return axios
-      .post(API_URL + "signin", { username, password })
+      .post(API_URL + "auth/adminlogin/", { email, password })
       .then((response) => {
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
@@ -15,8 +14,13 @@ class AuthService {
       });
   }
 
-  logout() {
+const logout = () => {
     localStorage.removeItem("user");
   }
 
-  export default new AuthService();
+  const AuthService = {
+    login,
+    logout
+  };
+
+  export default  AuthService;

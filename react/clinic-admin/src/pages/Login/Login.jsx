@@ -1,34 +1,48 @@
 import React, { useState } from "react";
-import { Input, Button } from "antd";
+import { Form, Input, Button } from "antd";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../actions/auth.js"
 import "./Login.css";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email , setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading , setLoading] =useState("");
   let history = useHistory();
+  const dispatch = useDispatch();
 
   const signin = (e) => {
-    const loginData = {
-      email: username,
-      password: password,
-    };
-    if (loginData.email && loginData.password) {
+    //console.log('test');
+    //e.preventDefault();
+    // const loginData = {
+    //   email: email,
+    //   password: password,
+    // };
+    setLoading(true);
+    dispatch(login(email,password))
+    .then(() => {
       history.push("/data");
-    }
+      window.location.reload();
+    })
+    .catch(() => {
+      setLoading(false);
+    })
   };
+  
 
   return (
-    <div className="main">
+    <Form onFinish={signin}>
+      <div className="main">
       <div className="sign">Login</div>
       <div style={{ marginTop: "15px" }}>
         <p>Username</p>
         <Input
           style={{ borderRadius: "8px" }}
           className="un"
-          value={username}
+          value={email}
           placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div style={{ marginTop: "15px" }}>
@@ -43,11 +57,12 @@ const Login = () => {
         />
       </div>
       <div className="submit">
-        <Button type="primary" onClick={signin}>
+        <Button type="primary" htmlType="submit" disabled={loading}>
           Login
         </Button>
       </div>
     </div>
+    </Form>
   );
 };
 
