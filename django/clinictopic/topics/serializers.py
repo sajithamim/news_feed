@@ -4,6 +4,22 @@ from rest_framework import serializers
 from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
 from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
 from authentication.models import User
+# from poll.serializers import TopicPollSerializer
+# from poll.serializers import TopicPollSerializer
+from poll.models import TopicPoll,PollOption
+
+
+class GetPollOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PollOption
+        fields = '__all__'
+
+class GetTopicpollSerializers(serializers.ModelSerializer):
+    poll_option = GetPollOptionSerializer(many=True,read_only=True)
+    class Meta:
+        model = TopicPoll
+        fields ='__all__'
+
 
 class CategorySerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
@@ -40,6 +56,7 @@ class TopicFavouriteserializer(serializers.ModelSerializer):
 class TopicSeriaizer(serializers.ModelSerializer):
     # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     # images = ImageSerializer(many=True,read_only=True)
+    poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
     favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)

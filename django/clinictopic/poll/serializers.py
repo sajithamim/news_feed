@@ -1,14 +1,12 @@
 from rest_framework import serializers
 from .models import UserPoll,PollOption,TopicPoll
-
-
+from topics.serializers import TopicSeriaizer
 
 class PolloptionSerializer(serializers.ModelSerializer):
-    topic_poll_id = serializers.ReadOnlyField()
     class Meta: 
         model = PollOption
-        fields = '__all__'
-        # read_only_fields = ('topic_poll_id')
+        fields = ['answer']
+        write_only_fields = ('answer')
 
 
 class TopicPollSerializer(serializers.ModelSerializer):
@@ -16,12 +14,13 @@ class TopicPollSerializer(serializers.ModelSerializer):
     # topic_poll_id
     class Meta:
         model = TopicPoll
-        fields = '__all__'
-        # write_only_fields = ('topic_id','poll_option')
+        # fields = '__all__'
+        fields =  ('topic_id','poll_option','number_of_options')
+        write_only_fields = ('topic_id','poll_option','number_of_options')
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['poll_option'] = PolloptionSerializer(instance.poll_option).data
+        response['topic_id'] = TopicSeriaizer(instance.topic_id).data
         return response
 
 
@@ -34,5 +33,5 @@ class TopicPollSerializer(serializers.ModelSerializer):
                 option=PollOption.objects.create(topic_poll_id=topicpoll, **polloption)
             # print(usersubarray)
             # spec_id = {}
-            return {}
+            return topicpoll
     # def to_representation(s
