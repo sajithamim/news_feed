@@ -52,5 +52,6 @@ urlpatterns = [
                                        cache_timeout=0), name='schema-redoc'),
     path('spec/',include('specialization.urls')),
     path('topic/',include('topics.urls')),
+    path('poll/',include('poll.urls')),
 ]+ static(MEDIA_URL, document_root = MEDIA_ROOT)
 

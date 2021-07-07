@@ -31,15 +31,24 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = '__all__'
 
+class TopicFavouriteserializer(serializers.ModelSerializer):
+    # favourite = serializers.SerializerMethodField()
+    class Meta:
+        model = Favourite
+        fields=['id']
+
 class TopicSeriaizer(serializers.ModelSerializer):
     # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     # images = ImageSerializer(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
+    favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
+    # favourite = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
+
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -223,10 +232,14 @@ class userFavouriteSerializer(serializers.ModelSerializer):
     # user_id = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
     # category_id = serializers.StringRelatedField(many=True)
+    success = serializers.SerializerMethodField()
 
     class Meta:
         model = Favourite
-        fields = ['id','user_id','topic_id']
+        fields = ['success','id','user_id','topic_id']
+
+    def get_success(self,obj):
+        return 'True'
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
