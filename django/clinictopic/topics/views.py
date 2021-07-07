@@ -1,3 +1,4 @@
+from django.http import response
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
@@ -12,6 +13,11 @@ import django_filters.rest_framework
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import generics, status, views, permissions
+from rest_framework.views import APIView
+from django.shortcuts import get_list_or_404, get_object_or_404
+
+
 
 # from django_rest_swagger_swaggerdoc import swaggerdoc
 # from rest_framework.decorators import detail_route
@@ -120,7 +126,33 @@ class UserFavouriteApiView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
     def get_queryset(self):
-        return Favourite.objects.filter(user_id=self.request.user)  
+        return Favourite.objects.filter(user_id=self.request.user)
+
+
+class FavouriteDeleteView(APIView):
+    def delete(self, request, *args, **kwargs):
+        try:
+            delete_id = request.data["deleteid"]
+            print(delete_id)
+            if not delete_id:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            for i in delete_id:
+                get_object_or_404(Favourite, pk=int(i)).delete()
+            response={
+                "success":"True",
+                "message":"Deleted",
+                "status":status.HTTP_204_NO_CONTENT
+            }
+            return Response(response,status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not deleted",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_204_NO_CONTENT)
+
 
 
 # class PostViewSet(viewsets.ModelViewSet):
