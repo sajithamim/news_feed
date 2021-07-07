@@ -9,9 +9,11 @@ from rest_framework import viewsets, filters
 # from rest_framework.decorators import detail_route
 from rest_framework.decorators import action
 from rest_framework import parsers
-from .serializers import TopicPollSerializer
+from .serializers import TopicPollSerializer,UserPollSerializer
 from .models import TopicPoll
 from rest_framework import mixins
+from rest_framework import generics, status, views, permissions
+
 
 # Create your views here.
 
@@ -39,3 +41,16 @@ class PollView(generics.CreateAPIView):
     @csrf_exempt
     def perform_create(self, serializer):
         serializer.save()
+
+class userPollview(generics.CreateAPIView):
+    serializer_class = UserPollSerializer
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+    def get_serializer(self, *args, **kwargs):
+        """ if an array is passed, set serializer to many """
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super(userPollview, self).get_serializer(*args, **kwargs)
+    @csrf_exempt
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)

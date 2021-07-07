@@ -76,14 +76,6 @@ class userTypeSerializer(serializers.ModelSerializer):
         #             }
         #     }
 class UserSubSpecializationSerializer(serializers.ModelSerializer):
-    # id = serializers.ReadOnlyField()
-    # created_at = serializers.ReadOnlyField()
-    # updated_at = serializers.ReadOnlyField()
-    # user_spec_id = serializers.ReadOnlyField()
-    # user_spec_id = serializers.PrimaryKeyRelatedField(
-    #     queryset=UserSpecialization.objects.all()
-    # )
-
     class Meta:
         model = UserSubSpecialization
         fields = ['sub_spec_id']
@@ -95,51 +87,16 @@ class UserSubSpecializationSerializer(serializers.ModelSerializer):
         return response
 
 
-# class SubspecField(serializers.PrimaryKeyRelatedField):
-#     def to_representation(self, value):
-#         pk = super(SubspecField, self).to_representation(value)
-#         try:
-#            item = SubSpecialization.objects.get(pk=pk)
-#            serializer = UserSubSpecializationSerializer(item)
-#            return serializer.data
-#         except SubSpecialization.DoesNotExist:
-#            return None
-
-#     def get_choices(self, cutoff=None):
-#         queryset = self.get_queryset()
-#         if queryset is None:
-#             return {}
-
-#         return OrderedDict([(item.id, str(item)) for item in queryset])
-   
-
-
 class UserSpecializationSerializer(serializers.ModelSerializer):
     sub_userspec_id = UserSubSpecializationSerializer(many=True)
-    # id = serializers.ReadOnlyField()
+
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
 
-    # user_id = serializers.IntegerField()
-    # user_id = serializers.
-    # spec_id = serializers.IntegerField()
-    # user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),
-    #                                               many=False) 
-    # created_at = serializers.ReadOnlyField()
-    # updated_at = serializers.ReadOnlyField()
     class Meta:
         model = UserSpecialization
         fields = ['user_id','spec_id','sub_userspec_id']
         write_only_fields = ('user_id','spec_id','sub_userspec_id')
 
-
-    # def validate(self,attrs):
-    #     user_id = self.context["user_id"]
-    #     print(user_id)
-    #     return attrs
-    # def get_user_id(self, obj):
-    #     # return (now() - obj.date_joined).days
-    #     print(self.context["user_id"])
-    #     return self.context["user_id"]
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -154,29 +111,6 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
             # print(usersubarray)
             # spec_id = {}
             return userspec
-    # def to_representation(self, instance):
-    #     data = super(UserSpecializationSerializer, self).to_representation(instance)
-    #     data['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
-    #     return data
-
-# class SpecField(serializers.PrimaryKeyRelatedField):
-#     def to_representation(self, value):
-#         pk = super(SpecField, self).to_representation(value)
-#         try:
-#            item = Specialization.objects.get(pk=pk)
-#            serializer = UserSpecializationSerializer(item)
-#            return serializer.data
-#         except Specialization.DoesNotExist:
-#            return None
-
-#     def get_choices(self, cutoff=None):
-#         queryset = self.get_queryset()
-#         print(queryset)
-#         if queryset is None:
-#             return {}
-
-#         return OrderedDict([(item.id, str(item)) for item in queryset])
-
 
 
 class SpecializationpicSerializer(serializers.ModelSerializer):

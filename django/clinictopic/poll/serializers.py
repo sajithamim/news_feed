@@ -1,6 +1,8 @@
+from django.db import models
+from django.db.models import fields
 from rest_framework import serializers
 from .models import UserPoll,PollOption,TopicPoll
-from topics.serializers import TopicSeriaizer
+# from topics.serializers import TopicSeriaizer
 
 class PolloptionSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -35,3 +37,13 @@ class TopicPollSerializer(serializers.ModelSerializer):
             # spec_id = {}
             return topicpoll
     # def to_representation(s
+
+class UserPollSerializer(serializers.ModelSerializer):
+    user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model= UserPoll
+        fields="__all__"
+        def to_representation(self, instance):
+            response = super().to_representation(instance)
+            response['poll_option_id'] = PolloptionSerializer(instance.poll_option_id).data
+            return response
