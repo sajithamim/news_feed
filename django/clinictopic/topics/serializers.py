@@ -28,6 +28,18 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Categoeries
         fields = ['id','title','image']
 
+class CheckedCategorySerializer(serializers.ModelSerializer):
+    checked = serializers.SerializerMethodField()
+    id = serializers.ReadOnlyField()
+    image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    class Meta:
+        model = Categoeries
+        fields = ['id','title','image','checked']
+    def get_checked(self, obj):
+        user_id =self.context['request'].user
+        # print(user_id)
+        return UserCategory.objects.filter(user_id=user_id,category_id=obj.id).count()
+        # return "fsf"
 
 
 class TopicSpecializationSerializer(serializers.ModelSerializer):
