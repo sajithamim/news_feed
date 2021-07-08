@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
-import { Form, Input, Upload, Modal, Button } from "antd";
+import { Form, Input, Upload, Modal, Button, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { postSubSpecialization } from "../../actions/spec";
+import { postSpecialization, updateSpecialization } from "../../actions/spec";
 import "./Drawer.css";
 
 function getBase64(file) {
@@ -17,10 +18,12 @@ function getBase64(file) {
 }
 
 
-const DrawerContent = () => {
+const DrawerContent = (props) => {
+  //console.log('props', props)
   const [specialiazation, setSpecialiazation] = useState("");
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [state, setState] = useState(props.editData);
   const [fileList, setFileList] = useState([
     {
       uid: "-1",
@@ -29,14 +32,16 @@ const DrawerContent = () => {
       url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
     },
   ]);
+  const { updateData } = useSelector(state => state.spec);
+  useEffect(() => {
+    setState(props.editData);
+  }, [props.editData])
 
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [state, setState] = useState({
-    name: "",
-    spec_id: id
-  })
 
+  
+  //console.log('state11', state)
   const [previewTitle, setPreviewTitle] = useState("");
 
   const handleCancel = () => setPreviewVisible(false);
@@ -60,7 +65,45 @@ const DrawerContent = () => {
   );
 
   const handleSubmit = (e) => {
-    dispatch(postSubSpecialization(state))
+   let newData = state;
+    if(props.drawerType == "edit") {
+      const id = state.id;
+        delete newData["id"];
+        delete newData["icon"];
+        delete newData["updated_at"];
+        delete newData["created_at"];
+        if(props.type == "spec") {
+          dispatch(updateSpecialization(id, newData))
+          .then(() => {
+            message.success('Specialization edit successfully')
+          });
+        } else {
+          dispatch(updateSpecialization(id, newData))
+          .then(() => {
+            message.success('Sub Specialization edit successfully')
+          });
+        }
+      
+    } else {
+      if(props.type == "spec") {
+        dispatch(postSpecialization(newData))
+        .then(() => {
+          setState({});
+          message.success('Specialization added successfully')
+        });
+      } else {
+        newData['spec_id'] = id;
+        dispatch(postSubSpecialization(newData))
+        .then(() => {
+          setState({});
+          message.success('Sub Specialization added successfully')
+        });
+      }
+    }
+    
+    //console.log('123', state);
+  // props.drawerType == "edit" ? dispatch(updateSpecialization(id, state)) : null;
+  // props.type == "spec" ? dispatch(postSpecialization(state)) : dispatch(postSubSpecialization(state))
   }
 
   const handleChange = (e) => {
@@ -70,22 +113,35 @@ const DrawerContent = () => {
   const handleFileChange = ({ fileList }) => setFileList(fileList);
 
   return (
-    <Form onFinish={handleSubmit}>
+    <Form name="basic"
+    labelCol={{
+      span: 8,
+    }}
+    wrapperCol={{
+      span: 10,
+    }} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
-          <Grid container direction="row" className="modalStyle">
-            <Grid item md={3} className="labelStyle">
-              <span>*Name :</span>
-            </Grid>
-            <Grid item md={6}>
-              <Input name="name" onChange={handleChange} value={state.name} />
-            </Grid>
-          </Grid>
-          <div className="submit">
+             <Form.Item
+        label="Name"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+              <Input name="name" onChange={handleChange} value={state.name} required={true} />
+            </Form.Item>
+          <Form.Item
+        wrapperCol={{
+          offset: 8,
+          span: 16,
+        }}
+      >
             <Button type="primary" htmlType="submit" >
               Save
             </Button>
-          </div>
+          </Form.Item>
           {/* <Grid container direction="row" className="modalStyle">
           <Grid item md={3} className="labelStyle">
             <span>*Image :</span>

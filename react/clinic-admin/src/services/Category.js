@@ -9,7 +9,6 @@ const postCategory = (state) => {
 }
 
 const deleteCategory = (id) => {
-    console.log("id" , id);
     return http.delete(`topic/category/${id}`);
 }
 

@@ -1,6 +1,4 @@
 import {
-    REGISTER_SUCCESS,
-    REGISTER_FAIL,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
     LOGOUT,
@@ -17,31 +15,29 @@ import {
           payload: { user: data },
         });
   
-        return Promise.resolve();
+        return data;
       },
       (error) => {
+        //console.log('error12....', error.response.data)
         const message =
           (error.response &&
             error.response.data &&
-            error.response.data.message) ||
-          error.message ||
+            error.response.data.detail) ?
+            error.response.data.detail : 
           error.toString();
-  
+  //console.log('message', message)
         dispatch({
           type: LOGIN_FAIL,
+          payload: message
         });
-  
-        dispatch({
-          type: SET_MESSAGE,
-          payload: message,
-        });
-  
-        return Promise.reject();
+        return message;
+        //return Promise.reject();
       }
     );
   };
 
   export const logout = () => (dispatch) => {
+    console.log("getting logout");
     AuthService.logout();
   
     dispatch({

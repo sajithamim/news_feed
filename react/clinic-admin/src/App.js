@@ -11,8 +11,15 @@ import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
+import {  useSelector } from "react-redux";
 
 function App() {
+  
+  const { user } = useSelector(state => {
+    console.log("state,user" , state.auth)
+    return state.auth;
+  });
+
   return (
     <Router>
       <AdminLayout>

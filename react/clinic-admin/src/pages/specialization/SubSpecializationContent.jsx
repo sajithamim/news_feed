@@ -6,25 +6,33 @@ import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
 import { useParams } from "react-router-dom";
 import { getSubSpecialisation } from "../../actions/spec";
+import { deleteSubSpec } from "../../actions/spec";
+
 
 const SubSpecializationContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
-  
+  const [editData, setEditData] = useState({});
   const {id} = useParams();
  
+  // useEffect(() => {
+  //   dispatch(getSubSpecialisation(id));
+  // }, [])
+  
+  const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
+
   useEffect(() => {
     dispatch(getSubSpecialisation(id));
-  }, [])
-  
-  const { subspecialization } = useSelector(state => state.spec);
+    onClose();
+  }, [updateSubData, addSubData])
 
   const onClose = () => {
     setShowDrawer(false);
   };
 
-  const onEdit = () => {
+  const onEdit = (record) => {
+    setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -34,25 +42,16 @@ const SubSpecializationContent = () => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (e) => {
-    message.success("Delete Specialization");
+  const confirmDelete = (id) => {
+    dispatch(deleteSubSpec(id))
+    .then((res) => {
+      res.status == 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
+    })
   };
 
   const cancel = (e) => {
     message.error("Cancelled");
   };
-
-  const specsGenerator = (quantity) => {
-    const items = [];
-    for (let i = 0; i < quantity; i++) {
-      items.push({
-        id: i,
-        name: `Item name ${i}`,
-      });
-    }
-    return items;
-  };
-  const specs = specsGenerator(7);
 
   const columns = [
     {
@@ -66,12 +65,12 @@ const SubSpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={onEdit}>
+          <Button type="link" onClick={() => onEdit(record)}>
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this specialization?"
-            onConfirm={confirmDelete}
+            title="Are you sure to delete this sub specialization?"
+            onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -100,9 +99,9 @@ const SubSpecializationContent = () => {
       <Drawer
         title={
           drawerType === "edit"
-            ? "Edit Specialization"
+            ? "Edit Sub Specialization"
             : drawerType === "add"
-            ? "Add Specialization"
+            ? "Add  Sub Specialization"
             : ""
         }
         placement="right"
@@ -112,7 +111,7 @@ const SubSpecializationContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} />
+        <DrawerContent drawerType={drawerType}  type="sub_spec" editData={(drawerType == 'edit') ? editData: {}}/>
       </Drawer>
     </div>
   );

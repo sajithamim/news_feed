@@ -19,7 +19,7 @@ const CategoriesContent = () => {
   }, [])
 
   const { catlist }  = useSelector(state => state.category);
-  console.log('catlist', catlist)
+  
   const onClose = () => {
     setShowDrawer(false);
   };
