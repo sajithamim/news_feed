@@ -4,6 +4,22 @@ from rest_framework import serializers
 from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
 from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
 from authentication.models import User
+# from poll.serializers import TopicPollSerializer
+# from poll.serializers import TopicPollSerializer
+from poll.models import TopicPoll,PollOption
+
+
+class GetPollOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PollOption
+        fields = '__all__'
+
+class GetTopicpollSerializers(serializers.ModelSerializer):
+    poll_option = GetPollOptionSerializer(many=True,read_only=True)
+    class Meta:
+        model = TopicPoll
+        fields ='__all__'
+
 
 class CategorySerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
@@ -31,15 +47,25 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = '__all__'
 
+class TopicFavouriteserializer(serializers.ModelSerializer):
+    # favourite = serializers.SerializerMethodField()
+    class Meta:
+        model = Favourite
+        fields=['id']
+
 class TopicSeriaizer(serializers.ModelSerializer):
     # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     # images = ImageSerializer(many=True,read_only=True)
+    poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
+    favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
+    # favourite = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
+
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -223,10 +249,14 @@ class userFavouriteSerializer(serializers.ModelSerializer):
     # user_id = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
     # category_id = serializers.StringRelatedField(many=True)
+    success = serializers.SerializerMethodField()
 
     class Meta:
         model = Favourite
-        fields = ['id','user_id','topic_id']
+        fields = ['success','id','user_id','topic_id']
+
+    def get_success(self,obj):
+        return 'True'
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

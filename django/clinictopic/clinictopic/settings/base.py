@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'specialization',
     'django_filters',
     'rest_framework_swagger',
+    'poll',
 ]
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
