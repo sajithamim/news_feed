@@ -2,7 +2,7 @@ from django.http import response
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
-userFavouriteSerializer)
+userFavouriteSerializer,CheckedCategorySerializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from rest_framework import generics, status, views, permissions
 from rest_framework.views import APIView
 from django.shortcuts import get_list_or_404, get_object_or_404
+# from rest_framework.decorators import list_route
+
 
 
 
@@ -49,9 +51,11 @@ class TopicViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user_type = self.request.user.is_superuser
         queryset = self.queryset
+        # print(queryset.query)
         query_set = queryset.filter()
         if not user_type:
             query_set = queryset.filter()
+            # print(query_set.query)
         return query_set
 
     @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser],)
@@ -64,28 +68,18 @@ class TopicViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
-    '''/schema:
-        get:
-        tags:
-            - Schema
-        description: download schema file
-        responses:
-            "200":
-            description: success
-            content:
-                multipart/form-data:
-                schema:
-                    type: object
-                    properties:
-                    filename:
-                        type: array
-                        items:
-                        type: string
-                        format: binary
-            "400":
-            $ref: "#/components/responses/failed"
-            "404":
-            $ref: "#/components/responses/notExist"'''
+
+    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)')
+    def search(self, request, search_pk, pk=None):
+        # a =  self.kwargs['search_pk']
+        # print(a)
+        a = search_pk
+        # print()
+        # recent_users = User.objects.all().order('-last_login')
+        # page = self.paginate_queryset(recent_users)
+        # serializer = self.get_pagination_serializer(page)
+        return Response({"a":a})
+
     @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
     def images(self, request, pk):
         obj = self.get_object()
@@ -109,6 +103,7 @@ class UserCategoryApiView(generics.ListCreateAPIView):
             kwargs['many'] = True
         return super(UserCategoryApiView, self).get_serializer(*args, **kwargs)
     def perform_create(self, serializer):
+        usercategory = UserCategory.objects.filter(user_id=self.request.user).delete()
         serializer.save(user_id=self.request.user)
     def get_queryset(self):
         return UserCategory.objects.filter(user_id=self.request.user)  
@@ -151,34 +146,28 @@ class FavouriteDeleteView(APIView):
                 "status": status.HTTP_400_BAD_REQUEST,
                 "error":str(e)
             }
-            return Response(response,status=status.HTTP_204_NO_CONTENT)
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
 
+class CategoryselectedView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        try:
+            category = Categoeries.objects.all()
+            serializers = CheckedCategorySerializer(category,many=True,context = {'request':request})
+            response={
+                "success":"True",
+                "message":"Category list",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
-# class PostViewSet(viewsets.ModelViewSet):
-#     """
-#     Post ModelViewSet.
-#     """
-#     queryset = Topics.objects.all()
-#     serializer_class = PostSerializer
-#     parser_classes = (MultiPartParser, FormParser)
-#     # permission_classes = (IsAuthenticatedOrReadOnly,)
-
-#     # @swaggerdoc('swaggerdoc/post.yml')
-#     def create(self, request, *args, **kwargs):
-        
-#         # print(request.data)
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-#         headers = self.get_success_headers(serializer.data)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-#     def perform_create(self, serializer):
-#         serializer.save()
-
-#     def get_success_headers(self, data):
-#         try:
-#             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
-#         except (TypeError, KeyError):
-#             return {}
