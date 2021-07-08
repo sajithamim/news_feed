@@ -73,7 +73,7 @@ const AdminLayout = ({ children }) => {
                             style={{ textDecoration: "none" }}
                           >
                             {subroute.key !== 'logout' ? (<Menu.Item key={subroute.key} icon={subroute.icon}> {subroute.title}
-                            </Menu.Item>) : (<Button onClick={handleClick}>{subroute.title}</Button>)}
+                            </Menu.Item>) : (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
 
                           </NavLink>
                         ))}
