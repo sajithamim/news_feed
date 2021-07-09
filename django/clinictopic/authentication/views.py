@@ -3,7 +3,8 @@ from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
- LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer)
+ LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
+ ProfileUpdateSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -27,6 +28,9 @@ from dotenv import load_dotenv
 from clinictopic.settings.base import BASE_DIR
 import random
 from rest_framework.views import APIView
+from rest_framework import parsers
+from rest_framework import mixins
+from rest_framework import viewsets, filters
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -334,3 +338,36 @@ class UserProfile(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfilepicView(viewsets.ModelViewSet):
+    # class UserProfileViewViewSet(viewsets.ModelViewSet):
+        queryset = User.objects.all()
+        serializer_class = ProfileUpdateSerializer
+        permission_classes = (permissions.IsAuthenticated,)
+
+        def update(self, request, *args, **kwargs):
+            parser_classes=[parsers.MultiPartParser]
+            user_profile = self.get_object()
+            serializer = self.get_serializer(user_profile, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data)
+    # permission_classes = (permissions.IsAuthenticated,)
+    # parser_classes=[parsers.MultiPartParser]
+    # serializer_class=ProfileUpdateSerializer
+    # queryset = User.objects.all()
+    # def put(self, request, *args, **kwargs):
+    #     current_user = request.user
+    #     param = request.data
+    #     profile = User.objects.filter(email=current_user.pk)
+    #     if profile:
+    #         serializer = ProfileUpdateSerializer(profile)
+    #         return Response(serializer.data)
+    #     else:
+    #         serializer = ProfileUpdateSerializer(data=param)
+    #         if serializer.is_valid(raise_exception=True):
+    #             serializer.save(user=current_user)
+    #             new_data = serializer.data
+    #             return Response(new_data)
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

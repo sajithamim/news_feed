@@ -268,6 +268,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
     phone = serializers.ReadOnlyField()
+    profilepic = serializers.ReadOnlyField()
     class Meta:
         model = User
-        fields = ['username','email','phone']
+        fields = ['username','email','phone','profilepic']
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['profilepic']
+
+class PhoneUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['phone']
