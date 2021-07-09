@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://178.18.246.233:8000/";
+const API_URL = "http://178.18.246.233:8000/api/";
 
 const login = (email, password) => {
   return axios

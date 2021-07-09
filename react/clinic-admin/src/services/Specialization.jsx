@@ -1,7 +1,21 @@
-import {instance, http} from "../http-common";
+//import {instance, http} from "../http-common";
 import axios from 'axios';
 
 const API_URL = "http://178.18.246.233:8000/";
+
+const access = localStorage.getItem("accessToken")
+
+console.log('access', access)
+
+const http = axios.create({
+  
+  baseURL: "http://178.18.246.233:8000/api/",
+  headers: {
+    "Content-type": "application/json",
+    "Authorization": `Bearer ${window.localStorage.getItem('accessToken')}`
+    
+  }
+});
 
 const getAll = () => {
   return http.get("spec/specialization");
@@ -36,7 +50,8 @@ const updateSubSpec =(id, state) => {
 }
 
 const uploadImage =(id, imageUrl) => {
-  return instance.put(`spec/subspecialization/${id}/icon/` , imageUrl);
+  //console.log("getting put image" , imageUrl);
+  //return instance.put(`spec/subspecialization/${id}/icon/` , imageUrl);
 }
 
 

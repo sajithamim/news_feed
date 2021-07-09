@@ -19,6 +19,7 @@ const Login = () => {
 
   if (accessToken && accessToken !== undefined) {
     history.push("/data");
+    window.location.reload();
   }
 
   const signin = (e) => {

@@ -10,17 +10,17 @@ import { getSpecialization, postSpecialization, deleteSpec } from "../../actions
 
 
 const SpecializationContent = () => {
+  console.log(localStorage.getItem("accessToken"))
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { specList, updateData, addData } = useSelector(state => state.spec);
-  console.log('addData12333', addData)
 
   useEffect(() => {
     dispatch(getSpecialization());
-    onClose();
-  }, [updateData, addData])
+    //onClose();
+  }, [])
 
   const onClose = () => {
     setShowDrawer(false);

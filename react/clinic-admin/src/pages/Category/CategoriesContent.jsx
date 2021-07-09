@@ -14,21 +14,18 @@ const CategoriesContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { catlist , updateData } = useSelector(state => state.category);
-  console.log('updateData', updateData)
   useEffect(() => {
     dispatch(getCategory());
     onClose();
   }, [updateData])
 
-  //const { catlist } = useSelector(state => state.category);
-
+  
   const onClose = () => {
     setShowDrawer(false);
   };
 
   const onEdit = (record) => {
     setEditData(record);
-    console.log("editDataconsole", editData);
     setShowDrawer(true);
     setDrawerType("edit");
   };

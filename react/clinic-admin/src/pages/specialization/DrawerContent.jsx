@@ -5,13 +5,12 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { postSubSpecialization } from "../../actions/spec";
-import { postSpecialization, updateSpecialization } from "../../actions/spec";
+import { postSpecialization, updateSpecialization ,updateSubSpecialization } from "../../actions/spec";
 import "./Drawer.css";
 
 function getBase64(img, callback) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    console.log("readerresult", callback)
     reader.addEventListener("load", () => callback(reader.result));
     reader.readAsDataURL(img);
     reader.onload = () => resolve(reader.result);
@@ -21,7 +20,6 @@ function getBase64(img, callback) {
 
 function beforeUpload(file) {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  console.log("isJpgOrPng" , isJpgOrPng) ;
   if (!isJpgOrPng) {
     message.error("You can only upload JPG/PNG file!");
   }
@@ -95,11 +93,11 @@ const DrawerContent = (props) => {
             message.success('Specialization edit successfully')
           });
       } else {
-        dispatch(updateSpecialization(id, newData))
+        dispatch(updateSubSpecialization(id, newData))
           .then(() => {
             message.success('Sub Specialization edit successfully')
           });
-      }
+      } 
 
     } else {
       if (props.type == "spec") {
@@ -116,7 +114,7 @@ const DrawerContent = (props) => {
             message.success('Sub Specialization added successfully')
           });
       }
-    }
+    } 
   }
 
   const handleChange = (e) => {
@@ -124,7 +122,6 @@ const DrawerContent = (props) => {
   };
 
   const handleFileChange = (info) => {
-    console.log("infor" , info);
     if (info.file.status == "uploading") {
       setloading(true);
       return;

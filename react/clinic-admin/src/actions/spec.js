@@ -2,7 +2,7 @@
 import Specialization from "../services/Specialization";
 
 export const getSpecialization = () => async (dispatch) => {
-    console.log('calling ....')
+    console.log('token access')
     try {
         const res = await Specialization.getAll();
         dispatch({
@@ -15,6 +15,7 @@ export const getSpecialization = () => async (dispatch) => {
 }
 
 export const getSubSpecialisation = (id) => async (dispatch) => {
+    console.log('token access')
     try {
         const res = await Specialization.getAllSubSpec(id);
         dispatch({
@@ -40,11 +41,11 @@ export const postSpecialization = (state) => async (dispatch) => {
 
 export const updateSpecialization = (id, state , imageUrl)  => async (dispatch) => {
     try {
-        console.log("imageuel",imageUrl);
         const res = await Specialization.updateSpec(id, state);
+        console.log("updatespeciali" ,res.data);
+        console.log("updatespeciali" ,res.data.icon);
         if(res.data && imageUrl) {
             const icon = await Specialization.uploadImage(id , imageUrl);
-            console.log("action testing" , icon)
             // dispatch({
             //     type: 'ADD_IMAGE',
             //     payload: res.data,

@@ -7,7 +7,6 @@ const initialState = {
 
 
 export default (state = initialState, action) => {
-  console.log("EDIT_CATEGORY" , action.payload);
     switch (action.type) {
       case 'RETRIEVE_CATEGORY':
         return {...state , catlist:action.payload};

@@ -1,16 +1,20 @@
 import axios from "axios";
 
-const accessToken = localStorage.getItem('accessToken');
+const access = localStorage.getItem("accessToken")
+
+console.log('access', access)
 
 export const http = axios.create({
-  baseURL: "http://178.18.246.233:8000/",
+  
+  baseURL: "http://178.18.246.233:8000/api/",
   headers: {
     "Content-type": "application/json",
-    "Authorization":  `Bearer ${accessToken}`
+    "Authorization": `Bearer ${window.localStorage.getItem('accessToken')}`
+    
   }
 });
 
 export const instance = axios.create({
-  baseURL: "http://178.18.246.233:8000/",
-  headers: { "Content-Type": "multipart/form-data" },
+  baseURL: "http://178.18.246.233:8000/api/",
+  headers: { "Content-Type": "multipart/form-data"},
 });

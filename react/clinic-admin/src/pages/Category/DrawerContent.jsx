@@ -18,7 +18,6 @@ function getBase64(file) {
 }
 
 const DrawerContent = (props) => {
-  console.log("editprops" ,props);
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -39,7 +38,6 @@ const DrawerContent = (props) => {
 
   useEffect(() => {
     setState(props.editData)
-    console.log("useeffectstate" ,state);
   },[props.editData])
 
   const { id } = useParams();
