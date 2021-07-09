@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
- LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer)
+ LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -26,6 +26,8 @@ import os
 from dotenv import load_dotenv
 from clinictopic.settings.base import BASE_DIR
 import random
+from rest_framework.views import APIView
+
 load_dotenv(BASE_DIR+str("/.env"))
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -308,3 +310,27 @@ class AdminLoginAPIView(generics.GenericAPIView):
             # 'tokens': user.tokens()
         }
         return Response(response, status=status.HTTP_200_OK)
+
+
+
+class UserProfile(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        try:
+            user =User.objects.get(email=request.user)
+            serializers = UserProfileSerializer(user)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
