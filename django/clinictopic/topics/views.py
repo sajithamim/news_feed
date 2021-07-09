@@ -45,7 +45,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topics.objects.all()
     serializer_class = TopicSeriaizer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     # ordering = ('title')
     def get_queryset(self):
