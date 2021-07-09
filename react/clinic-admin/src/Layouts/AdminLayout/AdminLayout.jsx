@@ -1,49 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import "antd/dist/antd.css";
 import "./AdminLayout.css";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Button } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { routes } from "../../Routes";
 import { NavLink } from "react-router-dom";
+import { logout } from '../../actions/auth';
+import { useDispatch, useSelector } from "react-redux";
 import "./logo.css";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-class AdminLayout extends React.Component {
-  state = {
-    collapsed: false,
+const AdminLayout = ({ children }) => {
+  const dispatch = useDispatch();
+  const [collapsed, setCollapsed] = useState(false);
+
+  const accessToken = localStorage.getItem("accessToken");
+
+  const handleClick = () => {
+    dispatch(logout())
+  }
+
+  const toggle = () => {
+    setCollapsed(!collapsed)
   };
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  };
-
-  render() {
-    return (
-      <Layout>
-        {routes &&
-          routes.map(
-            (route) =>
-              route.layout &&
-              route.layout === "/admin" && (
-                <Sider
-                  trigger={null}
-                  collapsible
-                  collapsed={this.state.collapsed}
-                >
-                  <div className="sidebar-logo">
-                    <a href="/">
-                      <img
-                        src="https://ng.ant.design/assets/img/logo.svg"
-                        alt="logo"
-                      />
-                      <h1>Clinic Topics - Admin</h1>
-                    </a>
-                  </div>
-                  <Menu
+  return (
+    <Layout>
+      {routes &&
+        routes.map(
+          (route) =>
+            route.layout &&
+            route.layout === "/admin" && (
+              <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+              >
+                <div className="sidebar-logo">
+                  <a href="/">
+                    <img
+                      src="https://ng.ant.design/assets/img/logo.svg"
+                      alt="logo"
+                    />
+                    <h1>Clinic Topics - Admin</h1>
+                  </a>
+                </div>
+                {accessToken !== null && accessToken !== undefined ?
+                  (<Menu
                     theme="dark"
                     mode="inline"
                     defaultSelectedKeys={["1"]}
@@ -61,9 +66,9 @@ class AdminLayout extends React.Component {
                             to={subroute.path}
                             style={{ textDecoration: "none" }}
                           >
-                            <Menu.Item key={subroute.key} icon={subroute.icon}>
-                              {subroute.title}
-                            </Menu.Item>
+                            {subroute.key !== 'logout' ? (<Menu.Item key={subroute.key} icon={subroute.icon}> {subroute.title}
+                            </Menu.Item>) : (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
+
                           </NavLink>
                         ))}
                       </SubMenu>
@@ -78,35 +83,42 @@ class AdminLayout extends React.Component {
                         </Menu.Item>
                       </NavLink>
                     )}
-                  </Menu>
-                </Sider>
-              )
+                  </Menu>) : null}
+              </Sider>
+            )
+        )}
+      <Layout className="site-layout">
+        <Header className="site-layout-background" style={{ padding: 0 }}>
+          {React.createElement(
+            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+            {
+              className: "trigger",
+              onClick: toggle,
+            }
           )}
-        <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            {React.createElement(
-              this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: "trigger",
-                onClick: this.toggle,
-              }
-            )}
-          </Header>
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: "24px 16px",
-              padding: 24,
-              minHeight: 500,
-            }}
-          >
-            {React.Children.map(this.props.children, (child) =>
-              React.cloneElement(child)
-            )}
-          </Content>
-        </Layout>
+        </Header>
+        <Content
+          className="site-layout-background"
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            minHeight: 500,
+          }}
+        >
+          {React.Children.map(children, (child) =>
+            React.cloneElement(child)
+          )}
+        </Content>
       </Layout>
-    );
-  }
+    </Layout>
+  );
 }
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//       handleLogout: () => {
+//           dispatch(logout());
+//       },
+//   };
+// };
+
 export default AdminLayout;

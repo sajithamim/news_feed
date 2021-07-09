@@ -11,19 +11,33 @@ import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
+import { PrivateRoute } from './PrivateRoute';
+import {  useSelector } from "react-redux";
 
 function App() {
+  
+  const { user } = useSelector(state => {
+    console.log("state,user" , state.auth)
+    return state.auth;
+  });
+
   return (
     <Router>
       <AdminLayout>
         <Switch>
-          <Route path="/login" exact component={Login} />
-          <Route path="/data" exact component={Overview} />
+          <PrivateRoute path="/data" exact component={Overview} />
+          <PrivateRoute path="/data/Categories" exact component={Categories} />
+          <PrivateRoute path="/data/topics" exact component={Topics} />
+          <PrivateRoute path="/data/Specializations" exact component={Specialization} />
+          <PrivateRoute path="/data/SubSpecialization/:id" exact component={SubSpecialization} />
+          <PrivateRoute path="/data/Feedback" exact component={Feedback} />
+          <Route path="/login" component={Login} />
+          {/* <Route path="/data" exact component={Overview} />
           <Route path='/data/Categories' exact component={Categories} />
           <Route path="/data/topics" exact component={Topics} />
           <Route path='/data/Specializations' exact component={Specialization} />
           <Route path='/data/SubSpecialization/:id' exact component={SubSpecialization} />
-          <Route path='/data/Feedback' exact component={Feedback} />
+          <Route path='/data/Feedback' exact component={Feedback} /> */}
           {/* <Route path='/reports/reports2' exact component={ReportsTwo} /> */}
           {/* <Route path='/reports/reports3' exact component={ReportsThree} /> */}
           {/* <Route path='/team' exact component={Team} /> */}

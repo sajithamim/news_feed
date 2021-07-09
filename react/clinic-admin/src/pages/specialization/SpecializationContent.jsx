@@ -1,29 +1,33 @@
-import React, {useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
-import { getSpecialisation } from "../../actions/spec";
+import { getSpecialization, postSpecialization, deleteSpec } from "../../actions/spec";
+
+
 
 const SpecializationContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
+  const [editData, setEditData] = useState({});
+  const { specList, updateData, addData } = useSelector(state => state.spec);
+  console.log('addData12333', addData)
 
   useEffect(() => {
-    dispatch(getSpecialisation());
-  }, [])
-
-  const { specialization }  = useSelector(state => state.spec );
-   console.log("spec" ,specialization);
+    dispatch(getSpecialization());
+    onClose();
+  }, [updateData, addData])
 
   const onClose = () => {
     setShowDrawer(false);
   };
 
-  const onEdit = () => {
+  const onEdit = (record) => {
+    setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -33,30 +37,23 @@ const SpecializationContent = () => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (e) => {
-    message.success("Delete Specialization");
+  const confirmDelete = (id) => {
+    dispatch(deleteSpec(id))
+      .then((res) => {
+        res.status == 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+      })
   };
 
   const cancel = (e) => {
     message.error("Cancelled");
   };
-  
-  const specsGenerator = () => {
-    const items = [];
-    specialization && specialization.results && specialization.results.map((cvalue) => {
-      items.push(cvalue);
-    })
-    return items;
-  };
-  const specs = specsGenerator();
 
- 
   const columns = [
     {
       title: "Title",
       dataIndex: "name",
       key: "name",
-      render: (text,record) => (
+      render: (text, record) => (
         <Link to={"/data/SubSpecialization/" + record.id}>{text}</Link>
       ),
     },
@@ -66,12 +63,12 @@ const SpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={onEdit}>
+          <Button type="link" onClick={() => onEdit(record)}>
             Edit
           </Button>
           <Popconfirm
             title="Are you sure to delete this specialization?"
-            onConfirm={confirmDelete}
+            onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -86,7 +83,7 @@ const SpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Specializations" 
+        title="Specializations"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -94,16 +91,16 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        <div></div>
-        <Table columns={columns} dataSource={specs} />
+        {specList && specList.results ?
+          (<Table columns={columns} dataSource={specList.results} />) : (<p> Loading...</p>)}
       </Card>
       <Drawer
         title={
           drawerType === "edit"
             ? "Edit Specialization"
             : drawerType === "add"
-            ? "Add Specialization"
-            : ""
+              ? "Add Specialization"
+              : ""
         }
         placement="right"
         width={750}
@@ -112,7 +109,7 @@ const SpecializationContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} />
+        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType == 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );

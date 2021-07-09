@@ -3,24 +3,26 @@ import axios from 'axios';
 const API_URL = "http://178.18.246.233:8000/";
 
 const login = (email, password) => {
-    return axios
-      .post(API_URL + "auth/adminlogin/", { email, password })
-      .then((response) => {
-        if (response.data.accessToken) {
-          localStorage.setItem("user", JSON.stringify(response.data));
-        }
+  return axios
+    .post(API_URL + "auth/adminlogin/", { email, password })
+    .then((response) => {
+      if (response.data.accessToken) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
 
-        return response.data;
-      });
-  }
+      return response.data;
+    });
+}
 
 const logout = () => {
-    localStorage.removeItem("user");
-  }
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("success");
+}
 
-  const AuthService = {
-    login,
-    logout
-  };
+const AuthService = {
+  login,
+  logout
+};
 
-  export default  AuthService;
+export default AuthService;

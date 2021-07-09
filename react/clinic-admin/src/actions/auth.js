@@ -1,6 +1,4 @@
 import {
-    REGISTER_SUCCESS,
-    REGISTER_FAIL,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
     LOGOUT,
@@ -11,32 +9,24 @@ import {
 
   export const login = (email, password) => (dispatch) => {
     return AuthService.login(email, password).then(
-      (data) => {
-        dispatch({
+      
+      (res) => {
+        console.log("logincheck",res);
+         localStorage.setItem("refreshToken", res.data.tokens.refresh);
+         localStorage.setItem("accessToken", res.data.tokens.access);
+         localStorage.setItem("success", res.data.success);
+         dispatch({
           type: LOGIN_SUCCESS,
-          payload: { user: data },
+          refreshToken:  res.data.tokens.refresh,
+          accessToken: res.data.tokens.access,
+          success : res.data.success
         });
-  
-        return Promise.resolve();
       },
       (error) => {
-        const message =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-  
         dispatch({
           type: LOGIN_FAIL,
+          payload: error.response.data.detail
         });
-  
-        dispatch({
-          type: SET_MESSAGE,
-          payload: message,
-        });
-  
-        return Promise.reject();
       }
     );
   };
