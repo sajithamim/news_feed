@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (RegisterView, LogoutAPIView, SetNewPasswordAPIView, 
 VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
-SignInOtpview,AdminLoginAPIView)
+SignInOtpview,AdminLoginAPIView,UserProfile)
 # from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_simplejwt import views as jwt_views
 
@@ -23,5 +23,7 @@ urlpatterns = [
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(),name='password-reset-complete'),
     # path('otp/',OtpAPIView.as_view(),name="sendmessage"),
     path('signinotp/',SignInOtpview.as_view(),name="signinotp"),
-    path('adminlogin/',AdminLoginAPIView.as_view(),name="adminlogin")
+    path('adminlogin/',AdminLoginAPIView.as_view(),name="adminlogin"),
+    path('profile/',UserProfile.as_view(),name="userprofile"),
+
 ]

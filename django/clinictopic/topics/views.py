@@ -29,6 +29,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
     def icon(self, request, pk):
         obj = self.get_object()
@@ -125,6 +126,7 @@ class UserFavouriteApiView(generics.ListCreateAPIView):
 
 
 class FavouriteDeleteView(APIView):
+    permission_classes = (IsAuthenticated,)
     def delete(self, request, *args, **kwargs):
         try:
             delete_id = request.data["deleteid"]

@@ -1,3 +1,5 @@
+from django.db import models
+from django.db.models import fields
 from rest_framework import serializers
 from .models import User
 from django.contrib import auth
@@ -260,3 +262,12 @@ class AdminLoginSerializer(serializers.ModelSerializer):
         }
 
         return super().validate(attrs)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
+    email = serializers.ReadOnlyField()
+    phone = serializers.ReadOnlyField()
+    class Meta:
+        model = User
+        fields = ['username','email','phone']
