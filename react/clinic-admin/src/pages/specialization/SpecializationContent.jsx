@@ -91,8 +91,8 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results ? 
-        (<Table columns={columns} dataSource={specList.results} />) : (<p> Loading...</p>)}
+        {specList && specList.results ?
+          (<Table columns={columns} dataSource={specList.results} />) : (<p> Loading...</p>)}
       </Card>
       <Drawer
         title={
@@ -109,7 +109,7 @@ const SpecializationContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType == 'edit') ? editData: {}} />
+        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType == 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );

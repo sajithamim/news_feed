@@ -5,11 +5,12 @@ const initialState = {
   updateData: false,
   addData: false,
   updateSubData: false,
-  addSubData: false
-
+  addSubData: false,
+  image: {}
 };
 
 export default (state = initialState, action) => {
+  console.log("testing iamge" , action.payload);
   switch (action.type) {
     case 'RETRIEVE_SPECIALIZATION':
       return {...state , specList:action.payload, addData: false};
@@ -27,6 +28,8 @@ export default (state = initialState, action) => {
       return {...state, addSubData: true}
     case 'DELETE_SUB_SPECIALIZATION':
       return {...state , subspecialization: state.subspecialization && state.subspecialization.filter(item => item.id !== action.payload)};
+    case 'ADD_IMAGE': 
+      return {...state, image: action.payload}
     default:
       return state
   }

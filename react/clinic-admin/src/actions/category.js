@@ -41,4 +41,16 @@ export const deleteCategory = (id) => async (dispatch) => {
     }
 }
 
+export const updateCategory = (id, state) => async (dispatch) => {
+    console.log("getting action");
+    try {
+        const res = await Category.updateCat(id, state);
+        dispatch({
+            type: 'EDIT_CATEGORY',
+            payload: res.data,
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
 

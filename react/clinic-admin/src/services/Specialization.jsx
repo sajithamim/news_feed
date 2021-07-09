@@ -1,4 +1,4 @@
-import http from "../http-common";
+import {instance, http} from "../http-common";
 import axios from 'axios';
 
 const API_URL = "http://178.18.246.233:8000/";
@@ -35,6 +35,12 @@ const updateSubSpec =(id, state) => {
   return http.put(`spec/subspecialization/${id}/` , state);
 }
 
+const uploadImage =(id, imageUrl) => {
+  return instance.put(`spec/subspecialization/${id}/icon/` , imageUrl);
+}
+
+
+
 const Specialization = {
   getAll,
   getAllSubSpec,
@@ -43,7 +49,8 @@ const Specialization = {
   updateSubSpec,
   postSubSpec,
   deleteSpec,
-  deleteSubSpecialization
+  deleteSubSpecialization,
+  uploadImage
 };
   
 export default Specialization;

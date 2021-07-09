@@ -38,9 +38,18 @@ export const postSpecialization = (state) => async (dispatch) => {
     }
 }
 
-export const updateSpecialization = (id, state) => async (dispatch) => {
+export const updateSpecialization = (id, state , imageUrl)  => async (dispatch) => {
     try {
+        console.log("imageuel",imageUrl);
         const res = await Specialization.updateSpec(id, state);
+        if(res.data && imageUrl) {
+            const icon = await Specialization.uploadImage(id , imageUrl);
+            console.log("action testing" , icon)
+            // dispatch({
+            //     type: 'ADD_IMAGE',
+            //     payload: res.data,
+            // })
+        }
         dispatch({
             type: 'EDIT_SPECIALIZATION',
             payload: res.data,

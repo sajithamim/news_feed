@@ -16,17 +16,11 @@ const AdminLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
 
-  const { user, isLoggedIn } = useSelector(state => {
-    console.log("user selector" , state.auth.user)
-    return state.auth;
-  });
-
+  const accessToken = localStorage.getItem("accessToken");
 
   const handleClick = () => {
     dispatch(logout())
   }
-
-
 
   const toggle = () => {
     setCollapsed(!collapsed)
@@ -53,7 +47,7 @@ const AdminLayout = ({ children }) => {
                     <h1>Clinic Topics - Admin</h1>
                   </a>
                 </div>
-                {user !== null && isLoggedIn !== false ?
+                {accessToken !== null && accessToken !== undefined ?
                   (<Menu
                     theme="dark"
                     mode="inline"

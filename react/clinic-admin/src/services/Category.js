@@ -1,4 +1,4 @@
-import http from "../http-common";
+import {http} from "../http-common";
 
 const getAllCategory = () => {
     return http.get("topic/category");
@@ -12,10 +12,15 @@ const deleteCategory = (id) => {
     return http.delete(`topic/category/${id}`);
 }
 
+const updateCat = (id , state) => {
+    return http.put(`topic/category/${id}/` , state);
+}
+
 const Category = {
     getAllCategory,
     postCategory,
-    deleteCategory
+    deleteCategory,
+    updateCat
 }
 
 export default Category;

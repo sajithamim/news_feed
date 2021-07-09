@@ -9,35 +9,29 @@ import {
 
   export const login = (email, password) => (dispatch) => {
     return AuthService.login(email, password).then(
-      (data) => {
-        dispatch({
+      
+      (res) => {
+        console.log("logincheck",res);
+         localStorage.setItem("refreshToken", res.data.tokens.refresh);
+         localStorage.setItem("accessToken", res.data.tokens.access);
+         localStorage.setItem("success", res.data.success);
+         dispatch({
           type: LOGIN_SUCCESS,
-          payload: { user: data },
+          refreshToken:  res.data.tokens.refresh,
+          accessToken: res.data.tokens.access,
+          success : res.data.success
         });
-  
-        return data;
       },
       (error) => {
-        //console.log('error12....', error.response.data)
-        const message =
-          (error.response &&
-            error.response.data &&
-            error.response.data.detail) ?
-            error.response.data.detail : 
-          error.toString();
-  //console.log('message', message)
         dispatch({
           type: LOGIN_FAIL,
-          payload: message
+          payload: error.response.data.detail
         });
-        return message;
-        //return Promise.reject();
       }
     );
   };
 
   export const logout = () => (dispatch) => {
-    console.log("getting logout");
     AuthService.logout();
   
     dispatch({

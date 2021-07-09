@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
 import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
@@ -12,19 +12,23 @@ const CategoriesContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
- 
-
+  const [editData, setEditData] = useState({});
+  const { catlist , updateData } = useSelector(state => state.category);
+  console.log('updateData', updateData)
   useEffect(() => {
     dispatch(getCategory());
-  }, [])
+    onClose();
+  }, [updateData])
 
-  const { catlist }  = useSelector(state => state.category);
-  
+  //const { catlist } = useSelector(state => state.category);
+
   const onClose = () => {
     setShowDrawer(false);
   };
 
-  const onEdit = () => {
+  const onEdit = (record) => {
+    setEditData(record);
+    console.log("editDataconsole", editData);
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -36,13 +40,13 @@ const CategoriesContent = () => {
 
   const onConfirm = (id) => {
     dispatch(deleteCategory(id))
-    .then((res) => {
-      res.status == 204 ? message.success("Category is deleted successfully") : message.error("Category is not exist")
-    })
+      .then((res) => {
+        res.status == 204 ? message.success("Category is deleted successfully") : message.error("Category is not exist")
+      })
   };
 
   const cancel = (e) => {
-   // message.error("Cancelled");
+    // message.error("Cancelled");
   };
 
   const columns = [
@@ -57,7 +61,7 @@ const CategoriesContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={onEdit}>
+          <Button type="link" onClick={() => onEdit(record)}>
             Edit
           </Button>
           <Popconfirm
@@ -84,16 +88,16 @@ const CategoriesContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {catlist.results ? 
-        (<Table columns={columns} dataSource={catlist.results} />) : (<p> Loading...</p>)}
+        {catlist.results ?
+          (<Table columns={columns} dataSource={catlist.results} />) : (<p> Loading...</p>)}
       </Card>
       <Drawer
         title={
           drawerType === "edit"
             ? "Edit Category"
             : drawerType === "add"
-            ? "Add Category"
-            : ""
+              ? "Add Category"
+              : ""
         }
         placement="right"
         width={750}
@@ -102,7 +106,7 @@ const CategoriesContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} />
+        <DrawerContent drawerType={drawerType} type="cat" editData={(drawerType == 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );

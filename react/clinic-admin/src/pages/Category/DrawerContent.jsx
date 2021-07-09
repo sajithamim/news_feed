@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
-import { Form, Button ,Input, Upload, Modal } from "antd";
+import { Form, Button ,Input, Upload, Modal ,message } from "antd";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import "./Drawer.css";
 import { postCategory } from "../../actions/category";
-
+import { updateCategory } from "../../actions/category";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -16,11 +17,13 @@ function getBase64(file) {
   });
 }
 
-const DrawerContent = () => {
+const DrawerContent = (props) => {
+  console.log("editprops" ,props);
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [state, setState] = useState(props.editData);
   const [fileList, setFileList] = useState([
     {
       uid: "-1",
@@ -30,11 +33,16 @@ const DrawerContent = () => {
     },
   ]);
 
-  const [state, setState] = useState({
-    title: ""
-  })
+  // const [state, setState] = useState({
+  //   title: ""
+  // })
 
+  useEffect(() => {
+    setState(props.editData)
+    console.log("useeffectstate" ,state);
+  },[props.editData])
 
+  const { id } = useParams();
   const [previewTitle, setPreviewTitle] = useState("");
 
   const handleCancel = () => setPreviewVisible(false);
@@ -63,8 +71,21 @@ const DrawerContent = () => {
 
   const handleFileChange = ({ fileList }) => setFileList(fileList);
 
-  const handleSubmit = () => {
-    dispatch(postCategory(state));
+  const handleSubmit = (e) => {
+    let newData = state;
+    if(props.drawerType == 'edit')
+    {
+      const id = state.id;
+      delete newData["id"];
+      delete newData["image"];
+      dispatch(updateCategory(id,newData))
+      .then(() => {
+        message.success('Category edited successfully')
+      });
+    }
+    else{
+      dispatch(postCategory(state));
+    }
   }
   return (
     <Form onFinish={handleSubmit}>
@@ -75,7 +96,7 @@ const DrawerContent = () => {
               <span>*Name :</span>
             </Grid>
             <Grid item md={6}>
-              <Input name="title" onChange={handleChange} value={state.title} />
+              <Input name="title" onChange={handleChange} value={state.title} required={true} />
             </Grid>
           </Grid>
           <Grid container direction="row" className="modalStyle">

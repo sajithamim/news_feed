@@ -8,11 +8,19 @@ import "./Login.css";
 const Login = () => {
   const [email , setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading , setLoading] =useState("");
   let history = useHistory();
+
   const dispatch = useDispatch();
   const { user, userErr } = useSelector(state => state.auth);
- // console.log('userrr', userErr);
+  
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (accessToken && accessToken !== undefined) {
+    history.push("/data");
+  }
+
   const signin = (e) => {
     setLoading(true);
     dispatch(login(email,password))
