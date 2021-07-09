@@ -41,7 +41,6 @@ class CheckedCategorySerializer(serializers.ModelSerializer):
         return UserCategory.objects.filter(user_id=user_id,category_id=obj.id).count()
         # return "fsf"
 
-
 class TopicSpecializationSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     class Meta:
