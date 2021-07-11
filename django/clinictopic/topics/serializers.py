@@ -58,9 +58,16 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = '__all__'
 
+class FilteredListSerializer(serializers.ListSerializer):
+
+    def to_representation(self, data):
+        data = data.filter(user_id=self.context['request'].user)
+        return super(FilteredListSerializer, self).to_representation(data)
+
 class TopicFavouriteserializer(serializers.ModelSerializer):
     # favourite = serializers.SerializerMethodField()
     class Meta:
+        list_serializer_class = FilteredListSerializer
         model = Favourite
         fields=['id']
 
@@ -70,6 +77,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
     poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
     favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
+    # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
@@ -77,6 +85,12 @@ class TopicSeriaizer(serializers.ModelSerializer):
         model = Topics
         fields = '__all__'
 
+
+    # def get_car_types(self, instance):
+    #     # Filter using the Car model instance and the CarType's related_name
+    #     # (which in this case defaults to car_types_set)
+    #     ypes_instances = instance.favourite_set.filter(brand="Toyota")
+    #     return CarTypesSerializer(car_types_instances, many=True).data
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

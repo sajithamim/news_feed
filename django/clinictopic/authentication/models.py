@@ -65,6 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255,blank=True,null=True)
     profilepic = models.ImageField(blank=True,null=True,upload_to="profile")
     last_name = models.CharField(max_length=255,blank=True,null=True)
+    optvalid = models.DateTimeField(blank=True,null=True)
     otp = models.IntegerField(blank=True,null=True)
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
