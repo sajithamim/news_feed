@@ -120,9 +120,16 @@ class UserFavouriteApiView(generics.ListCreateAPIView):
             kwargs['many'] = True
         return super(UserFavouriteApiView, self).get_serializer(*args, **kwargs)
     def perform_create(self, serializer):
+        # serializer = userFavouriteSerializer(data=self.request.data, context = {'request':self.request})
+        # if serializer.is_valid():
+        #             serializer.save(user_id=self.request.user)
         serializer.save(user_id=self.request.user)
     def get_queryset(self):
         return Favourite.objects.filter(user_id=self.request.user)
+    # def get_serializer_context(self):
+    #     context = super(UserFavouriteApiView, self).get_serializer_context()
+    #     context.update({"request": self.request})
+    #     return context
 
 
 class FavouriteDeleteView(APIView):
@@ -130,7 +137,7 @@ class FavouriteDeleteView(APIView):
     def delete(self, request, *args, **kwargs):
         try:
             delete_id = request.data["deleteid"]
-            print(delete_id)
+            # print(delete_id)
             if not delete_id:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             for i in delete_id:
