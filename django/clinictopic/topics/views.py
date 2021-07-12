@@ -27,7 +27,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 
 # category model 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
-    queryset = Categoeries.objects.all()
+    queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
@@ -44,7 +44,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 
 
 class TopicViewSet(viewsets.ModelViewSet):
-    queryset = Topics.objects.all()
+    queryset = Topics.objects.all().order_by('title')
     serializer_class = TopicSeriaizer
     permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
@@ -162,7 +162,7 @@ class CategoryselectedView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            category = Categoeries.objects.all()
+            category = Categoeries.objects.all().order_by('title')
             serializers = CheckedCategorySerializer(category,many=True,context = {'request':request})
             response={
                 "success":"True",
