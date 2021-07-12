@@ -2,7 +2,7 @@ from django.http import response
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
-userFavouriteSerializer,CheckedCategorySerializer)
+userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -15,7 +15,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import generics, status, views, permissions
 from rest_framework.views import APIView
+from authentication.models import User
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.db.models import Q
+
 # from rest_framework.decorators import list_route
 
 
@@ -23,11 +26,34 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 
 # from django_rest_swagger_swaggerdoc import swaggerdoc
 # from rest_framework.decorators import detail_route
-
-
+class GetUserCategoryApiview(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self,request,pk):
+        try:
+            # specids = UserSpecialization.objects.filter()
+            user = User.objects.get(email=pk)
+            spec = UserCategory.objects.filter(user_id=user.id).order_by('id')
+            serializers = userCategorySerializer(spec,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'category details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
 # category model 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
-    queryset = Categoeries.objects.all()
+    queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
@@ -44,7 +70,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 
 
 class TopicViewSet(viewsets.ModelViewSet):
-    queryset = Topics.objects.all()
+    queryset = Topics.objects.all().order_by('title')
     serializer_class = TopicSeriaizer
     permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
@@ -70,17 +96,16 @@ class TopicViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)')
+    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)',serializer_class=GetTopicSeriaizer)
     def search(self, request, search_pk, pk=None):
+        queryset = Topics.objects.filter(Q(title__icontains=search_pk)|Q(description__icontains=search_pk)).order_by('title')
         # a =  self.kwargs['search_pk']
-        # print(a)
-        a = search_pk
-        # print()
-        # recent_users = User.objects.all().order('-last_login')
-        # page = self.paginate_queryset(recent_users)
-        # serializer = self.get_pagination_serializer(page)
-        return Response({"a":a})
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
+        serializer = self.get_serializer(queryset, many=True)
     @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
     def images(self, request, pk):
         obj = self.get_object()
@@ -162,7 +187,7 @@ class CategoryselectedView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            category = Categoeries.objects.all()
+            category = Categoeries.objects.all().order_by('title')
             serializers = CheckedCategorySerializer(category,many=True,context = {'request':request})
             response={
                 "success":"True",

@@ -218,7 +218,13 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        status_code=status.HTTP_204_NO_CONTENT
+        response = {
+        'success' : 'True',
+        'status code' : status_code,
+        'message': 'user logged out',
+        }
+        return Response(response,status=status.HTTP_204_NO_CONTENT)
 
 
 # from .otp import send_opt
@@ -378,3 +384,26 @@ class UserProfilepicView(viewsets.ModelViewSet):
             }
             return Response(response,
                                  status=status.HTTP_200_OK)
+
+
+class Userlist(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        try:
+            user =User.objects.filter(is_superuser=False).order_by('email')
+            serializers = UserProfileSerializer(user,many=True)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
