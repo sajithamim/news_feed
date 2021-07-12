@@ -3,7 +3,8 @@ from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
- LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer)
+ LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
+ ProfileUpdateSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -27,6 +28,10 @@ from dotenv import load_dotenv
 from clinictopic.settings.base import BASE_DIR
 import random
 from rest_framework.views import APIView
+from rest_framework import parsers
+from rest_framework import mixins
+from rest_framework import viewsets, filters
+from rest_framework.decorators import action
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -334,3 +339,42 @@ class UserProfile(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfilepicView(viewsets.ModelViewSet):
+        queryset = User.objects.filter()
+        serializer_class = ProfileUpdateSerializer
+        permission_classes = (permissions.IsAuthenticated,)
+        http_method_names = ['get','put','delete']
+
+        def list(self, request):
+            pic  =User.objects.get(email=request.user)
+            # print(pic.profilepic)
+            serializer = self.serializer_class(pic)
+            return Response(serializer.data)
+        def update(self, request, pk=None):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        def destroy(self, request, pk=None):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        @action(detail=False,methods=['PUT'],serializer_class=ProfileUpdateSerializer,parser_classes=[parsers.MultiPartParser],)
+        def profilepicadd(self, request):
+            obj = User.objects.get(email=request.user)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+        @action(detail=False,methods=['PUT'])
+        def profilepicremove(self, request):
+            obj = User.objects.get(email=request.user)
+            obj.profilepic = None
+            obj.save()
+            response={
+                "success":"True",
+                "message":"profile deleted",
+                "status":status.HTTP_200_OK,
+            }
+            return Response(response,
+                                 status=status.HTTP_200_OK)

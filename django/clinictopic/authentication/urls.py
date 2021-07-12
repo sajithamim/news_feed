@@ -1,9 +1,14 @@
 from django.urls import path
+from django.conf.urls import url, include
 from .views import (RegisterView, LogoutAPIView, SetNewPasswordAPIView, 
 VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
-SignInOtpview,AdminLoginAPIView,UserProfile)
+SignInOtpview,AdminLoginAPIView,UserProfile,UserProfilepicView)
 # from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_simplejwt import views as jwt_views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register('profilepic', UserProfilepicView, 'images')
 
 # from rest_framework_simplejwt.views import (
 #     TokenRefreshView,
@@ -25,5 +30,8 @@ urlpatterns = [
     path('signinotp/',SignInOtpview.as_view(),name="signinotp"),
     path('adminlogin/',AdminLoginAPIView.as_view(),name="adminlogin"),
     path('profile/',UserProfile.as_view(),name="userprofile"),
+    url(r'^', include(router.urls)),
+
+#     path('profilepic/',UserProfilepicView.as_view(),name="profilepic"),
 
 ]

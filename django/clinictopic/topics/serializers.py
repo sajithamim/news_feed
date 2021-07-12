@@ -41,7 +41,6 @@ class CheckedCategorySerializer(serializers.ModelSerializer):
         return UserCategory.objects.filter(user_id=user_id,category_id=obj.id).count()
         # return "fsf"
 
-
 class TopicSpecializationSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     class Meta:
@@ -59,9 +58,38 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = '__all__'
 
+class FilteredListSerializer(serializers.ListSerializer):
+
+    def to_representation(self, data):
+        data = data.filter(user_id=self.context['request'].user)
+        return super(FilteredListSerializer, self).to_representation(data)
+
+
+class GetTopicFavouriteserializer(serializers.ModelSerializer):
+    # favourite = serializers.SerializerMethodField()
+    class Meta:
+        # list_serializer_class = FilteredListSerializer
+        model = Favourite
+        fields=['id']
+
+class GetTopicSeriaizer(serializers.ModelSerializer):
+    # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    # images = ImageSerializer(many=True,read_only=True)
+    # poll_topic = GetTopicpollSerializers(many=True,read_only=True)
+    topic_image = ImageSerializer(many=True, read_only=True)
+    # favourite_topic = GetTopicFavouriteserializer(many=True,read_only=True)
+    # favourite = serializers.SerializerMethodField()
+    pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
+    # topic_topic = TopicSpecializationSerializer(many=True)
+    # favourite = serializers.SerializerMethodField()
+    class Meta:
+        model = Topics
+        fields = '__all__'
+
 class TopicFavouriteserializer(serializers.ModelSerializer):
     # favourite = serializers.SerializerMethodField()
     class Meta:
+        list_serializer_class = FilteredListSerializer
         model = Favourite
         fields=['id']
 
@@ -71,6 +99,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
     poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
     favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
+    # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
@@ -78,6 +107,12 @@ class TopicSeriaizer(serializers.ModelSerializer):
         model = Topics
         fields = '__all__'
 
+
+    # def get_car_types(self, instance):
+    #     # Filter using the Car model instance and the CarType's related_name
+    #     # (which in this case defaults to car_types_set)
+    #     ypes_instances = instance.favourite_set.filter(brand="Toyota")
+    #     return CarTypesSerializer(car_types_instances, many=True).data
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -266,13 +301,16 @@ class userFavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = ['success','id','user_id','topic_id']
+        # extra_kwargs = {
+        #     'topic_id': {'write_only': True}
+        # }
 
     def get_success(self,obj):
         return 'True'
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['topic_id'] = TopicSeriaizer(instance.topic_id).data
+        response['topic_id'] = GetTopicSeriaizer(instance.topic_id).data
         return response
 
     def validate(self,attrs):
