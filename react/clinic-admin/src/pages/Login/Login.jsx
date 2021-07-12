@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, Alert ,Empty  } from "antd";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../actions/auth.js"
@@ -13,26 +13,20 @@ const Login = () => {
   let history = useHistory();
 
   const dispatch = useDispatch();
-  const { user, userErr } = useSelector(state => state.auth);
-  
+  const { error } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
-
-  if (accessToken && accessToken !== undefined) {
-    history.push("/data");
-  }
 
   const signin = (e) => {
     setLoading(true);
     dispatch(login(email,password))
-    .then((res) => {
-      res && res.success && res.success == "True" ? history.push("/data") : message.error(res);
-      setLoading(false);
-    })
+    //error ? message.error(error) : null;
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  if (accessToken && accessToken !== undefined) {
+    history.push("/data");
+    //window.location.reload();
+  }
+
   
   const validateMessages = {
     required: '${label} is required!',
@@ -42,11 +36,12 @@ const Login = () => {
   };
 
   return (
+    <>
+    {error ? (<Alert type="error" message={error} banner closable />) : null}
     <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
       <div className="main">
       <div className="sign">Login</div>
-      {/* <div style={{ marginTop: "15px" }}>
-        <p>Username</p> */}
+    
         <Form.Item
         label="Email"
         name="email"
@@ -92,6 +87,7 @@ const Login = () => {
       </div>
     </div>
     </Form>
+    </>
   );
 };
 

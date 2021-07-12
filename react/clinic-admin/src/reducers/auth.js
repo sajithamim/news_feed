@@ -9,7 +9,7 @@ import {
     refreshToken: "",
     accessToken: "",
     success: "",
-    error: {},
+    error: null,
   }
   // const user = JSON.parse(localStorage.getItem("user"));
   // const initialState = user
@@ -18,7 +18,6 @@ import {
   
   export default function (state = initialState, action) {
     const { type, payload } = action;
-    console.log('payload', payload)
     switch (type) {
       case LOGIN_SUCCESS:
         return {

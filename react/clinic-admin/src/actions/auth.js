@@ -1,40 +1,39 @@
 import {
-    LOGIN_SUCCESS,
-    LOGIN_FAIL,
-    LOGOUT,
-    SET_MESSAGE,
-  } from "./type";
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGOUT,
+  SET_MESSAGE,
+} from "./type";
 
-  import AuthService from "../services/auth.service";
+import AuthService from "../services/auth.service";
 
-  export const login = (email, password) => (dispatch) => {
-    return AuthService.login(email, password).then(
-      
-      (res) => {
-        console.log("logincheck",res);
-         localStorage.setItem("refreshToken", res.data.tokens.refresh);
-         localStorage.setItem("accessToken", res.data.tokens.access);
-         localStorage.setItem("success", res.data.success);
-         dispatch({
-          type: LOGIN_SUCCESS,
-          refreshToken:  res.data.tokens.refresh,
-          accessToken: res.data.tokens.access,
-          success : res.data.success
-        });
-      },
-      (error) => {
-        dispatch({
-          type: LOGIN_FAIL,
-          payload: error.response.data.detail
-        });
-      }
-    );
-  };
+export const login = (email, password) => (dispatch) => {
+  return AuthService.login(email, password).then(
 
-  export const logout = () => (dispatch) => {
-    AuthService.logout();
-  
-    dispatch({
-      type: LOGOUT,
-    });
-  };
+    (res) => {
+      localStorage.setItem("refreshToken", res.data.tokens.refresh);
+      localStorage.setItem("accessToken", res.data.tokens.access);
+      localStorage.setItem("success", res.data.success);
+      dispatch({
+        type: LOGIN_SUCCESS,
+        refreshToken: res.data.tokens.refresh,
+        accessToken: res.data.tokens.access,
+        success: res.data.success
+      });
+    },
+    (error) => {
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: error.response.data.detail
+      });
+    }
+  );
+};
+
+export const logout = () => (dispatch) => {
+  AuthService.logout();
+
+  dispatch({
+    type: LOGOUT,
+  });
+};

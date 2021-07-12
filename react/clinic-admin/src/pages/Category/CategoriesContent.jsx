@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin} from "antd";
 import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,22 +13,20 @@ const CategoriesContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist , updateData } = useSelector(state => state.category);
-  console.log('updateData', updateData)
+  const { catlist , updateData  } = useSelector(state => state.category);
   useEffect(() => {
-    dispatch(getCategory());
-    onClose();
+    dispatch(getCategory()).then((res) => {
+      onClose();
+    });
   }, [updateData])
 
-  //const { catlist } = useSelector(state => state.category);
-
+  
   const onClose = () => {
     setShowDrawer(false);
   };
 
   const onEdit = (record) => {
     setEditData(record);
-    console.log("editDataconsole", editData);
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -89,7 +87,7 @@ const CategoriesContent = () => {
         style={{ width: "100%" }}
       >
         {catlist.results ?
-          (<Table columns={columns} dataSource={catlist.results} />) : (<p> Loading...</p>)}
+          (<Table columns={columns} dataSource={catlist.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

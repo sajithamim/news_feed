@@ -18,28 +18,21 @@ function getBase64(file) {
 }
 
 const DrawerContent = (props) => {
-  console.log("editprops" ,props);
+console.log("category props" , props)
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
+
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [state, setState] = useState(props.editData);
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
 
-  // const [state, setState] = useState({
-  //   title: ""
-  // })
+  const [image, setImage] = useState("");
+  const [imgData, setImgData] = useState(props.editData.image);
+
+  const [state, setState] = useState(props.editData);  
 
   useEffect(() => {
     setState(props.editData)
-    console.log("useeffectstate" ,state);
+    setImgData(props.editData.image);
   },[props.editData])
 
   const { id } = useParams();
@@ -69,24 +62,39 @@ const DrawerContent = (props) => {
     setState({ ...state, [e.target.name]: e.target.value })
   };
 
-  const handleFileChange = ({ fileList }) => setFileList(fileList);
+  const handleFileChange = (info) => {
+   setImage(info.target.files[0]);
+   const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImgData(reader.result);
+    });
+    reader.readAsDataURL(info.target.files[0]);
+  };
 
   const handleSubmit = (e) => {
     let newData = state;
+    const id = state.id;
+    let form_data = null;
+    if(image && image.name) {
+      form_data = new FormData();
+      form_data.append('icon', image, image.name);  
+    }
+    
+    
     if(props.drawerType == 'edit')
     {
-      const id = state.id;
       delete newData["id"];
       delete newData["image"];
-      dispatch(updateCategory(id,newData))
+      dispatch(updateCategory(id, newData, form_data))
       .then(() => {
         message.success('Category edited successfully')
       });
     }
     else{
-      dispatch(postCategory(state));
+      dispatch(postCategory(state, form_data));
     }
   }
+
   return (
     <Form onFinish={handleSubmit}>
       <div>
@@ -104,15 +112,11 @@ const DrawerContent = (props) => {
               <span>*Image :</span>
             </Grid>
             <Grid item md={6}>
-              <Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleFileChange}
-              >
-                {fileList.length >= 8 ? null : uploadButton}
-              </Upload>
+              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" src={imgData} />) : null}
+            <Input type="file"
+                id="image"
+                accept="image/png, image/jpeg" onChange={handleFileChange} />
+              <i aria-label="icon: plus" class="anticon anticon-plus"></i>
               <Modal
                 visible={previewVisible}
                 title={previewTitle}

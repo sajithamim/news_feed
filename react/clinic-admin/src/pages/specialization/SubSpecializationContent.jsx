@@ -1,5 +1,5 @@
 import React, {useState , useEffect} from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message ,Spin} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
@@ -14,17 +14,14 @@ const SubSpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const {id} = useParams();
+  const {specId} = useParams();
  
-  // useEffect(() => {
-  //   dispatch(getSubSpecialisation(id));
-  // }, [])
-  
   const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
 
   useEffect(() => {
-    dispatch(getSubSpecialisation(id));
-    onClose();
+    dispatch(getSubSpecialisation(specId)).then((res) => {
+      onClose();
+    });
   }, [updateSubData, addSubData])
 
   const onClose = () => {
@@ -94,7 +91,7 @@ const SubSpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {subspecialization ? 
-        (<Table columns={columns} dataSource={subspecialization && subspecialization} />) : (<p> Loading...</p>)}
+        (<Table columns={columns} dataSource={subspecialization && subspecialization} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

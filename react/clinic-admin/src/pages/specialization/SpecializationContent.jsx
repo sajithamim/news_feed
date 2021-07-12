@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin  } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
@@ -10,16 +10,17 @@ import { getSpecialization, postSpecialization, deleteSpec } from "../../actions
 
 
 const SpecializationContent = () => {
+  console.log(localStorage.getItem("accessToken"))
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { specList, updateData, addData } = useSelector(state => state.spec);
-  console.log('addData12333', addData)
 
   useEffect(() => {
-    dispatch(getSpecialization());
-    onClose();
+    dispatch(getSpecialization()).then(res => {
+      onClose();
+    })
   }, [updateData, addData])
 
   const onClose = () => {
@@ -92,7 +93,7 @@ const SpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {specList && specList.results ?
-          (<Table columns={columns} dataSource={specList.results} />) : (<p> Loading...</p>)}
+          (<Table columns={columns} dataSource={specList.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

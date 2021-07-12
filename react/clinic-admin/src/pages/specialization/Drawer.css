@@ -11,3 +11,9 @@
     text-align: right;
     margin-right: 15px;
   }
+
+  .spinner {
+    margin: 20px 0;
+    margin-bottom: 20px;
+    text-align: center;
+  }

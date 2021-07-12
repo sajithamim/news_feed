@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import { Form, Input, Upload, Modal, Button, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { postSubSpecialization } from "../../actions/spec";
-import { postSpecialization, updateSpecialization } from "../../actions/spec";
+import { postSpecialization, updateSpecialization, updateSubSpecialization, image } from "../../actions/spec";
 import "./Drawer.css";
+import axios from 'axios';
 
-function getBase64(img, callback) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    console.log("readerresult", callback)
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(img);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
+
+// function getBase64(img, callback) {
+//   const reader = new FileReader();
+//   reader.addEventListener('load', () => callback(reader.result));
+//   reader.readAsDataURL(img);
+// }
 
 function beforeUpload(file) {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  console.log("isJpgOrPng" , isJpgOrPng) ;
   if (!isJpgOrPng) {
     message.error("You can only upload JPG/PNG file!");
   }
@@ -44,79 +40,67 @@ const DrawerContent = (props) => {
   const [previewTitle, setPreviewTitle] = useState("");
 
   const [imageUrl, setimageUrl] = useState("");
+  const [image, setImage] = useState("");
 
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
+  const [imgData, setImgData] = useState("");
+  
   const { updateData } = useSelector(state => state.spec);
   useEffect(() => {
     setState(props.editData);
+    setImgData(props.editData.icon);
   }, [props.editData])
 
   const dispatch = useDispatch();
-  const { id } = useParams();
-
-  const handleCancel = () => setPreviewVisible(false);
-
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewVisible(true);
-    setPreviewTitle(
-      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
-    );
-  };
-
+  const { specId } = useParams();
+ 
   const uploadButton = (
     <div>
-      <PlusOutlined />
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
 
   const handleSubmit = (e) => {
     let newData = state;
+    const id = state.id;
+    let form_data = null;
+    if(image && image.name) {
+      form_data = new FormData();
+      form_data.append('icon', image, image.name);  
+    }
+    
     if (props.drawerType == "edit") {
-      const id = state.id;
       delete newData["id"];
       delete newData["icon"];
       delete newData["updated_at"];
       delete newData["created_at"];
       if (props.type == "spec") {
-        dispatch(updateSpecialization(id, newData , imageUrl))
+        dispatch(updateSpecialization(id, newData, form_data))
           .then(() => {
             message.success('Specialization edit successfully')
           });
       } else {
-        dispatch(updateSpecialization(id, newData))
+        dispatch(updateSubSpecialization(id, newData ,form_data))
           .then(() => {
             message.success('Sub Specialization edit successfully')
           });
-      }
-
+      } 
     } else {
       if (props.type == "spec") {
-        dispatch(postSpecialization(newData))
+        dispatch(postSpecialization(newData , form_data))
           .then(() => {
             setState({});
             message.success('Specialization added successfully')
           });
       } else {
-        newData['spec_id'] = id;
-        dispatch(postSubSpecialization(newData))
+        newData['spec_id'] = specId;
+        dispatch(postSubSpecialization(newData , form_data))
           .then(() => {
             setState({});
             message.success('Sub Specialization added successfully')
           });
       }
-    }
+    } 
   }
 
   const handleChange = (e) => {
@@ -124,18 +108,15 @@ const DrawerContent = (props) => {
   };
 
   const handleFileChange = (info) => {
-    console.log("infor" , info);
-    if (info.file.status == "uploading") {
-      setloading(true);
-      return;
-    }
-    if (info.file.status == "done") {
-      getBase64(info.file.originFileObj, (imageUrl) => {
-        setimageUrl(imageUrl);
-        setloading(false);
-      });
-    }
+    setImage(info.target.files[0]);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImgData(reader.result);
+    });
+    reader.readAsDataURL(info.target.files[0]);
   }
+
+
 
   return (
     <Form name="basic"
@@ -161,16 +142,13 @@ const DrawerContent = (props) => {
           <Form.Item
             label="Image"
           >
-            <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              listType="picture-card"
-              //fileList={fileList}
-              beforeUpload={beforeUpload}
-              onPreview={handlePreview}
-              onChange={handleFileChange}
-            >
-              {fileList.length >= 8 ? null : uploadButton}
-            </Upload>
+            <div>
+              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" src={imgData} />) : null }
+              <Input type="file"
+                id="image"
+                accept="image/png, image/jpeg" onChange={handleFileChange} />
+              <i aria-label="icon: plus" class="anticon anticon-plus"></i>
+            </div>
           </Form.Item>
         </div>
       </div>
