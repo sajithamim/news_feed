@@ -21,7 +21,7 @@ class GetSpecializations(APIView):
     @csrf_exempt
     def get(self,request):
         try:
-            spec = Specialization.objects.all()
+            spec = Specialization.objects.all().order_by('name')
             serializers = GetSpecialization(spec,many=True)
             status_code = status.HTTP_200_OK
             response = {
@@ -47,7 +47,7 @@ class GetAudienceView(APIView):
     @csrf_exempt
     def get(self,request):
         try:
-            spec = Audience.objects.all()
+            spec = Audience.objects.all().order_by('name')
             serializers = GetAudienceSerializer(spec,many=True)
             status_code = status.HTTP_200_OK
             response = {
@@ -96,7 +96,7 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
 
 
 class SpecializationView(viewsets.ModelViewSet):
-    queryset = Specialization.objects.all()
+    queryset = Specialization.objects.all().order_by('name')
     serializer_class = GetSpecializationseriallizer
     @action(detail=True, methods=['get'])
     def spubspec_list(self, request, pk=None):
@@ -116,7 +116,7 @@ class SpecializationView(viewsets.ModelViewSet):
                                  status.HTTP_400_BAD_REQUEST)
 
 class SubSpecializationView(viewsets.ModelViewSet):
-    queryset = SubSpecialization.objects.all()
+    queryset = SubSpecialization.objects.all().order_by('name')
     serializer_class = GetSubspecializationSerializer
     @action(detail=True,methods=['PUT'],serializer_class=SubSpecializationpicSerializer,parser_classes=[parsers.MultiPartParser],)
     def icon(self, request, pk):
