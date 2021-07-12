@@ -12,7 +12,7 @@ from rest_framework import viewsets, filters
 # from rest_framework.decorators import detail_route
 from rest_framework.decorators import action
 from rest_framework import parsers
-
+from authentication.models import User
 # Create your views here.
 
 # get specialization with sub specialization
@@ -23,6 +23,64 @@ class GetSpecializations(APIView):
         try:
             spec = Specialization.objects.all().order_by('name')
             serializers = GetSpecialization(spec,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'Specialization details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
+
+
+
+class GetUserSpecializationsApiview(APIView):
+    permission_classes = (IsAuthenticated,)
+    @csrf_exempt
+    def get(self,request,pk):
+        try:
+            # specids = UserSpecialization.objects.filter()
+            user = User.objects.get(email=pk)
+            print(user)
+            spec = UserSpecialization.objects.filter(user_id=user.id).order_by('spec_id__name')
+            serializers = UserSpecializationSerializer(spec,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'Specialization details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
+            
+class GetUserCategoryApiview(APIView):
+    permission_classes = (IsAuthenticated,)
+    @csrf_exempt
+    def get(self,request,pk):
+        try:
+            # specids = UserSpecialization.objects.filter()
+            user = User.objects.get(email=pk)
+            print(user)
+            spec = UserSpecialization.objects.filter(user_id=user.id).order_by('spec_id__name')
+            serializers = UserSpecializationSerializer(spec,many=True)
             status_code = status.HTTP_200_OK
             response = {
             'success' : 'True',

@@ -15,6 +15,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import generics, status, views, permissions
 from rest_framework.views import APIView
+from authentication.models import User
 from django.shortcuts import get_list_or_404, get_object_or_404
 # from rest_framework.decorators import list_route
 
@@ -23,8 +24,31 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 
 # from django_rest_swagger_swaggerdoc import swaggerdoc
 # from rest_framework.decorators import detail_route
-
-
+class GetUserCategoryApiview(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self,request,pk):
+        try:
+            # specids = UserSpecialization.objects.filter()
+            user = User.objects.get(email=pk)
+            spec = UserCategory.objects.filter(user_id=user.id).order_by('id')
+            serializers = userCategorySerializer(spec,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'category details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
 # category model 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
