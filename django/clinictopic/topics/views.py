@@ -2,7 +2,7 @@ from django.http import response
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
-userFavouriteSerializer,CheckedCategorySerializer)
+userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -17,6 +17,8 @@ from rest_framework import generics, status, views, permissions
 from rest_framework.views import APIView
 from authentication.models import User
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.db.models import Q
+
 # from rest_framework.decorators import list_route
 
 
@@ -94,17 +96,16 @@ class TopicViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)')
+    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)',serializer_class=GetTopicSeriaizer)
     def search(self, request, search_pk, pk=None):
+        queryset = Topics.objects.filter(Q(title__icontains=search_pk)|Q(description__icontains=search_pk)).order_by('title')
         # a =  self.kwargs['search_pk']
-        # print(a)
-        a = search_pk
-        # print()
-        # recent_users = User.objects.all().order('-last_login')
-        # page = self.paginate_queryset(recent_users)
-        # serializer = self.get_pagination_serializer(page)
-        return Response({"a":a})
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
+        serializer = self.get_serializer(queryset, many=True)
     @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
     def images(self, request, pk):
         obj = self.get_object()
