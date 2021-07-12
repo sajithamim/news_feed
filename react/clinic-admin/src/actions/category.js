@@ -13,13 +13,17 @@ export const getCategory = () => async (dispatch) => {
     }
 }
 
-export const postCategory = (state) => async (dispatch) => {
+export const postCategory = (state, imageData) => async (dispatch) => {
     try {
         const res = await Category.postCategory(state);
-        dispatch({
-            type: 'ADD_CATEGORY',
-            payload: res.data,
-        });
+        console.log("post res", res);
+        if (res.data.id && imageData) {
+            const res1 = await Category.updateImageCat(res.data.id, imageData);
+            dispatch({
+                type: 'ADD_CATEGORY',
+                payload: res.data,
+            });
+        }
     }
     catch (err) {
         console.log("error");
@@ -34,17 +38,24 @@ export const deleteCategory = (id) => async (dispatch) => {
             payload: id,
         });
         return res;
-        
+
     }
     catch (err) {
         return err;
     }
 }
 
-export const updateCategory = (id, state) => async (dispatch) => {
+export const updateCategory = (id, state, imageData) => async (dispatch) => {
     try {
         const res = await Category.updateCat(id, state);
-        console.log("category res" ,res);
+        if (res && imageData) {
+            const res1 = await Category.updateImageCat(id, imageData);
+            console.log("updatecategory", res1)
+            // dispatch({
+            //     type: "ADD_CAT_IMAGE",
+            //     payload: res.data,
+            // })
+        }
         dispatch({
             type: 'EDIT_CATEGORY',
             payload: res.data,

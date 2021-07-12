@@ -25,7 +25,7 @@ function App() {
           <PrivateRoute path="/data/Categories" exact component={Categories} />
           <PrivateRoute path="/data/topics" exact component={Topics} />
           <PrivateRoute path="/data/Specializations" exact component={Specialization} />
-          <PrivateRoute path="/data/SubSpecialization/:id" exact component={SubSpecialization} />
+          <PrivateRoute path="/data/SubSpecialization/:specId" exact component={SubSpecialization} />
           <PrivateRoute path="/data/Feedback" exact component={Feedback} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />

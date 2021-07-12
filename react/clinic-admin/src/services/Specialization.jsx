@@ -1,21 +1,7 @@
-//import {instance, http} from "../http-common";
+import {instance, http} from "../http-common";
 import axios from 'axios';
 
-const API_URL = "http://178.18.246.233:8000/";
-
-const access = localStorage.getItem("accessToken")
-
-console.log('access', access)
-
-const http = axios.create({
-  
-  baseURL: "http://178.18.246.233:8000/api/",
-  headers: {
-    "Content-type": "application/json",
-    "Authorization": `Bearer ${window.localStorage.getItem('accessToken')}`
-    
-  }
-});
+const API_URL = "http://178.18.246.233:8000/api/";
 
 const getAll = () => {
   return http.get("spec/specialization");
@@ -29,8 +15,8 @@ const postSpec =(state) => {
   return http.post("spec/specialization/" , state);
 }
 
-const updateSpec =(id, state) => {
-  return http.put(`spec/specialization/${id}/` , state);
+const updateSpec =(id, data) => {
+  return http.put(`spec/specialization/${id}/`, data);
 }
 
 const deleteSpec = (id) => {
@@ -45,15 +31,35 @@ const postSubSpec =(state) => {
   return http.post("spec/subspecialization/" , state);
 }
 
-const updateSubSpec =(id, state) => {
-  return http.put(`spec/subspecialization/${id}/` , state);
+const updateSubSpec =(id, imageData) => {
+  return http.put(`spec/subspecialization/${id}/` , imageData);
 }
 
-const uploadImage =(id, imageUrl) => {
-  //console.log("getting put image" , imageUrl);
-  //return instance.put(`spec/subspecialization/${id}/icon/` , imageUrl);
+const uploadImage =(id, imageData) => {
+  let url = `http://178.18.246.233:8000/api/spec/specialization/${id}/icon/`;
+  axios.put(url, imageData, {
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  })
+  .then(res => {
+  return res
+  })
+  .catch(err => err)
 }
 
+const uploadSubImage = (id, imageData) => {
+  let url = `http://178.18.246.233:8000/api/spec/subspecialization/${id}/icon/`;
+  axios.put(url, imageData, {
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  })
+  .then(res => {
+  return res;
+  })
+  .catch(err => err)
+}
 
 
 const Specialization = {
@@ -65,7 +71,8 @@ const Specialization = {
   postSubSpec,
   deleteSpec,
   deleteSubSpecialization,
-  uploadImage
+  uploadImage,
+  uploadSubImage
 };
   
 export default Specialization;
