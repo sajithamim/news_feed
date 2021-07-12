@@ -7,6 +7,8 @@ import SubSpecialization from "./pages/specialization/SubSpecializationContent";
 import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
+import Users from './pages/Users/Users';
+import UserDetails from './pages/Users/UserDetails';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import {  useSelector } from "react-redux";
@@ -27,6 +29,8 @@ function App() {
           <PrivateRoute path="/data/Specializations" exact component={Specialization} />
           <PrivateRoute path="/data/SubSpecialization/:specId" exact component={SubSpecialization} />
           <PrivateRoute path="/data/Feedback" exact component={Feedback} />
+          <PrivateRoute path="/data/Users" exact component={Users} />
+          <PrivateRoute path="/data/UserDetails" exact component={UserDetails} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />
         </Switch>

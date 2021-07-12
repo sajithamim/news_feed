@@ -18,7 +18,6 @@ function getBase64(file) {
 }
 
 const DrawerContent = (props) => {
-console.log("category props" , props)
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
 

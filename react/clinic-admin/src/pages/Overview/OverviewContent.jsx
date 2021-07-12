@@ -2,7 +2,6 @@ import React from "react";
 import "./Overview.css";
 
 const OverviewContent = () => {
-  console.log(localStorage.getItem("accessToken"))
   return (
     <div className="OverviewStyle">
       <h3>CLINICTOPICS</h3>

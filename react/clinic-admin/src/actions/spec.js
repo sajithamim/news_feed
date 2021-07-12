@@ -2,21 +2,17 @@ import axios from "axios";
 import Specialization from "../services/Specialization";
 
 export const getSpecialization = () => async (dispatch) => {
-    console.log('token access')
     try {
         const res = await Specialization.getAll();
-        console.log("getting specialisation", res);
         dispatch({
             type: 'RETRIEVE_SPECIALIZATION',
             payload: res.data,
         });
     } catch (err) {
-        console.log(err);
     }
 }
 
 export const getSubSpecialisation = (id) => async (dispatch) => {
-    console.log('token access')
     try {
         const res = await Specialization.getAllSubSpec(id);
         dispatch({
@@ -24,7 +20,6 @@ export const getSubSpecialisation = (id) => async (dispatch) => {
             payload: res.data,
         });
     } catch (err) {
-        console.log(err);
     }
 }
 
@@ -39,7 +34,6 @@ export const postSpecialization = (state, imageData) => async (dispatch) => {
             });
         }
     } catch (err) {
-        console.log(err);
     }
 }
 
@@ -67,7 +61,6 @@ export const updateSubSpecialization = (id, state, imageData) => async (dispatch
         const res = await Specialization.updateSubSpec(id, state);
         if (res.data && imageData) {
             const imageSubRes = await Specialization.uploadSubImage(id, imageData);
-            console.log("imageSubRes", imageSubRes);
             dispatch({
                 type: 'ADD_SUB_IMAGE',
                 payload: res.data,

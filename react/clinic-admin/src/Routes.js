@@ -14,6 +14,12 @@ export const routes = [
     icon: <AiIcons.AiFillHome />,
     subNav: [
       {
+        title: 'Users',
+        path: '/data/Users',
+        key: "feed",
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
         title: 'Specializations',
         path: '/data/Specializations',
         key: "spec",
