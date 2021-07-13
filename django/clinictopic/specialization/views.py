@@ -50,7 +50,7 @@ class GetUserSpecializationsApiview(APIView):
         try:
             # specids = UserSpecialization.objects.filter()
             user = User.objects.get(email=pk)
-            print(user)
+            # print(user)
             spec = UserSpecialization.objects.filter(user_id=user.id).order_by('spec_id__name')
             serializers = UserSpecializationSerializer(spec,many=True)
             status_code = status.HTTP_200_OK

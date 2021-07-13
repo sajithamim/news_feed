@@ -1,3 +1,4 @@
+# from typing_extensions import Required
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -13,6 +14,8 @@ from clinictopic.settings.base import BASE_DIR
 from dotenv import load_dotenv
 import os
 from topics.models import (UserCategory)
+from .utils import Util
+
 
 load_dotenv(BASE_DIR+str("/.env"))
 import random
@@ -51,24 +54,36 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
 
 
 class Signinserializer(serializers.ModelSerializer):
-    phone = serializers.CharField(max_length=20,min_length=10)
+    phone = serializers.CharField(required=False,allow_null=True,allow_blank=True)
+    email = serializers.EmailField(required=False,allow_null=True,allow_blank=True)
     otp = serializers.CharField(read_only =True,max_length = 10)
     default_error_messages = {
         'phone': 'The phone should only contain numeric characters'}
     
     class Meta:
         model = User
-        fields = ['phone','otp']
+        fields = ['phone','otp','email']
 
     def validate(self, attrs):
-        phone = attrs.get('phone', '')
-        if not phone.isnumeric():
-            raise serializers.ValidationError(
-                self.default_error_messages)
-        phone_verify = User.objects.filter(phone=phone).first()
-        otp = random.randrange(1000,9999)
-        phone_verify.otp = otp
-        phone_verify.save()
+        if attrs.get('phone', ''):
+            phone = attrs.get('phone', '')
+            if not phone.isnumeric():
+                raise serializers.ValidationError(
+                    self.default_error_messages)
+            phone_verify = User.objects.filter(phone=phone).first()
+            otp = random.randrange(1000,9999)
+            phone_verify.otp = otp
+            phone_verify.save()
+        if attrs.get('email',''):
+            email = attrs.get('email', '')
+            phone_verify = User.objects.filter(email=email).first()
+            otp = random.randrange(1000,9999)
+            phone_verify.otp = otp
+            phone_verify.save()
+            email_body = "Dear "+email+" , Your OTP is " +str(otp) + ". Use this Passcode to complete your Login into ClinicTopics. Thank you."
+            data = {'email_body': email_body, 'to_email': email,
+                    'email_subject': 'Login otp'}
+            Util.send_email(data)
         # return attrs
         return {
             'email': phone_verify.email,
@@ -82,6 +97,8 @@ class Signinserializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.ModelSerializer):
     # email = serializers.EmailField(max_length=255, min_length=3)
     phone = serializers.CharField(max_length=20,min_length=10)
+    # phone = serializers.CharField(max_length=100,min_length=3,required=False)
+
     # password = serializers.CharField(
     #     max_length=68, min_length=6, write_only=True)
     # username = serializers.CharField(
