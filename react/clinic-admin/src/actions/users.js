@@ -15,3 +15,16 @@ export const getUsersList = () => async(dispatch) => {
         console.log(err);
     }
 }
+
+export const getUserCategory = (emailId) => async(dispatch) => {
+    try{
+        const res = await Users.getUserCategory(emailId);
+        dispatch({
+            type: 'GET_USER_CATEGORY',
+            payload: res.data,
+        })
+    }catch (err) {
+        console.log(err);
+    }
+}
+

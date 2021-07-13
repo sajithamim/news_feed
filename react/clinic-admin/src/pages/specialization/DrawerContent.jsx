@@ -10,12 +10,6 @@ import "./Drawer.css";
 import axios from 'axios';
 
 
-// function getBase64(img, callback) {
-//   const reader = new FileReader();
-//   reader.addEventListener('load', () => callback(reader.result));
-//   reader.readAsDataURL(img);
-// }
-
 function beforeUpload(file) {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
   if (!isJpgOrPng) {

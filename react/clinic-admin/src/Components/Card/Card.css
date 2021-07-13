@@ -1,0 +1,61 @@
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 100%;
+    height: 100%;
+    border: 1px;
+    border-color: black;
+    border-radius: 1px;
+  }
+  
+  .card .header {
+    text-align: start;
+    font-weight: bold;
+    font-size: medium;
+    color: rgb(77, 74, 74);
+  }
+  
+  .card .card-body h6 {
+    color: blue;
+  }
+  
+  .card .card-footer {
+    text-align: start;
+    background-color: #ffffff;
+    font-size: smaller;
+    color: rgb(77, 74, 74);
+  }
+  
+  .card .content-heading {
+    color: gray;
+    font-weight: bold;
+  }
+  
+  .card .content-heading-innerpage {
+    color: gray;
+    font-weight: bold;
+    text-align: center;
+    font-size: large;
+  }
+  
+  .card .content-content {
+    padding: 5px;
+  }
+  
+  .card .content-content-service-category {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    text-align: center;
+  }
+  
+  .card .content-content-profile-verification {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    text-align: center;
+  }
+  
+  .card .content-content .figure {
+    color: rgb(140, 140, 202);
+    font-weight: bold;
+  }
+  

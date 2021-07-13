@@ -39,7 +39,7 @@ const UserContent = () => {
       dataIndex: "username",
       key: "username",
       render: (text, record) => (
-        <Link to="">{text}</Link>
+        <Link to={"/data/UserDetails/"+ record.email}>{text}</Link>
       ),
     },
     {

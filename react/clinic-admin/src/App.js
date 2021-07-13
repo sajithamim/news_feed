@@ -30,7 +30,7 @@ function App() {
           <PrivateRoute path="/data/SubSpecialization/:specId" exact component={SubSpecialization} />
           <PrivateRoute path="/data/Feedback" exact component={Feedback} />
           <PrivateRoute path="/data/Users" exact component={Users} />
-          <PrivateRoute path="/data/UserDetails" exact component={UserDetails} />
+          <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />
         </Switch>

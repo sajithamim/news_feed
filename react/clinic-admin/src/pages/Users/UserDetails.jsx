@@ -1,67 +1,86 @@
-import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space,  Popconfirm, message , Spin  } from "antd";
-import "antd/dist/antd.css";
-import { Link } from 'react-router-dom';
-import { Icon, IconButton } from "@material-ui/core";
-import { useDispatch , useSelector} from "react-redux";
-import { getUsersList  } from "../../actions/users"
+
+import React, { useEffect } from "react";
+import { Table } from "antd";
+import { Container } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Breadcrumb from "../../Breadcrumb/Breadcrumb";
+import Card from "../../Components/Card/Card";
+import { Link, useParams } from 'react-router-dom';
+import DetailContent from "./DetailContent";
+import { getUserCategory } from "../../actions/users";
+
+
+const columns = [
+  {
+    title: "Title",
+    dataIndex: "title",
+    key: "title",
+    render: (text, record) => (
+      <Link to="">{text}</Link>
+    ),
+  }
+];
+
 
 const UserDetails = () => {
+  const dispatch = useDispatch();
+  const { userCategory } = useSelector(state => state.users);
+  const { emailId } = useParams();
+  useEffect(() => {
+    dispatch(getUserCategory(emailId))
+  })
   
-  const onClose = () => {
-    
-  };
 
-  const onEdit = (record) => {
-  };
+const catGenerator = () => {
+  const items = []
+    userCategory && userCategory.data && userCategory.data.map(item => {
+    items.push(item.category_id);
+  }); 
+  return items
+}
 
-  const onAdd = () => {
-    //setShowDrawer(true);
-    //setDrawerType("add");
-  };
-
-  const confirmDelete = () => {
-    
-  };
-
-  const cancel = (e) => {
-    message.error("Cancelled");
-  };
-
-  const columns = [
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      render: (text, record) => (
-        <Link to="">{text}</Link>
-      ),
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-  ];
-
+const catList = catGenerator();
+  
   return (
-    <div style={{ margin: "10px" }}>
-      <Card
-        title="Users"
-        extra={
-          <IconButton onClick={onAdd}>
-            <Icon>add</Icon>
-          </IconButton>
-        }
-        style={{ width: "100%" }}
-      > 
-          <Table columns={columns} dataSource= "abcd" /> 
-      </Card>
+    <div className="main-content">
+      <Container fluid>
+        <div>
+          <Breadcrumb path="Reports / Report Details" />
+          <Card
+            content={
+              <div>
+                <div
+                  className="content-heading-innerpage"
+                >
+                  Report Details
+                </div>
+                <div className="content-content">
+                  <DetailContent />
+                </div>
+              </div>
+            }
+            title={false}
+            footer={false}
+          />
+          <Card
+            content={
+              <div>
+                <div
+                  className="content-heading-innerpage"
+                >
+                  Report Details
+                </div>
+                <div className="content-content">
+                  <Table columns={columns} dataSource={catList} />
+                </div>
+              </div>
+            }
+            title={false}
+            footer={false}
+          />
+        </div>
+
+      </Container>
     </div>
   );
 };
