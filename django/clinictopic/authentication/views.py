@@ -278,13 +278,16 @@ class SignInOtpview(generics.GenericAPIView):
     serializer_class = Signinserializer
     def post(self,request):
         try:
-            phone_verify = User.objects.filter(phone=request.data['phone']).first()
+            if 'phone' in request.data:
+                phone_verify = User.objects.filter(phone=request.data['phone']).first()
+            if 'email' in request.data:
+                phone_verify = User.objects.filter(email=request.data['email']).first()
             if not phone_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
                 'success' : 'False',
                 'status code' : status_code,
-                'message': 'user not found with this phone',
+                'message': 'user not found with this credential!',
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
             serializer = self.serializer_class(data=request.data)
