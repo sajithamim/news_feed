@@ -4,7 +4,7 @@ import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
-import { getTopic } from "../../actions/topic";
+import { getTopic , deleteTopic} from "../../actions/topic";
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -13,7 +13,7 @@ const TopicsContent = (props) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getTopic())
-  })
+  }, [])
 
   const { topicList }= useSelector(state => state.topic);
   
@@ -31,8 +31,8 @@ const TopicsContent = (props) => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (e) => {
-    message.success('Delete topic');
+  const confirmDelete = (id) => {
+    delete(deleteTopic(id))
   }
   
   const cancel = (e) => {
@@ -42,7 +42,7 @@ const TopicsContent = (props) => {
   const topicGenerator = (quantity) => {
     const items = [];
     topicList && topicList.results && topicList.results.map(item => {
-      items.push({
+      return items.push({
         id: item.id,
         title: item.title,
         category_id: item.category_id.title
@@ -56,12 +56,12 @@ const TopicsContent = (props) => {
 
   const columns = [
     {
-      title: "title",
+      title: "Title",
       dataIndex: "title",
       key: "title",
     },
     {
-      title: "category_id",
+      title: "Category",
       dataIndex: "category_id",
       key: "category_id",
     },
@@ -76,14 +76,12 @@ const TopicsContent = (props) => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this topic?"
-            onConfirm={confirmDelete}
+            onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
           >
-            <Button type="link">
-              Delete
-            </Button>
+            <Button type="link">Delete</Button>
           </Popconfirm>
         </Space>
       ),

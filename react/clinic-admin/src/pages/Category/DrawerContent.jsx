@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
-import { Form, Button ,Input, Upload, Modal ,message } from "antd";
+import { Form, Button ,Input, Modal ,message } from "antd";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { PlusOutlined } from "@ant-design/icons";
 import "./Drawer.css";
 import { postCategory } from "../../actions/category";
 import { updateCategory } from "../../actions/category";
 
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
+
 
 const DrawerContent = (props) => {
   const dispatch = useDispatch();
-  const [category, setCategory] = useState("");
 
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -34,28 +25,10 @@ const DrawerContent = (props) => {
     setImgData(props.editData.image);
   },[props.editData])
 
-  const { id } = useParams();
+  //const { id } = useParams();
   const [previewTitle, setPreviewTitle] = useState("");
 
   const handleCancel = () => setPreviewVisible(false);
-
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewVisible(true);
-    setPreviewTitle(
-      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
-    );
-  };
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -80,7 +53,7 @@ const DrawerContent = (props) => {
     }
     
     
-    if(props.drawerType == 'edit')
+    if(props.drawerType === 'edit')
     {
       delete newData["id"];
       delete newData["image"];
@@ -111,7 +84,7 @@ const DrawerContent = (props) => {
               <span>*Image :</span>
             </Grid>
             <Grid item md={6}>
-              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" src={imgData} />) : null}
+              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" alt={imgData} src={imgData} />) : null}
             <Input type="file"
                 id="image"
                 accept="image/png, image/jpeg" onChange={handleFileChange} />

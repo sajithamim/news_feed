@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { Grid } from "@material-ui/core";
-import { Input } from "antd";
 
 const PollContent = (props) => {
   const [questonFields, setQuestionFields] = useState([{ value: null }]);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Alert ,Empty  } from "antd";
+import { Form, Input, Button, Alert } from "antd";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../actions/auth.js"
@@ -29,9 +29,9 @@ const Login = () => {
 
   
   const validateMessages = {
-    required: '${label} is required!',
+    required: "'${label}' is required!",
     types: {
-      email: '${label} is not a valid email!',
+      email: "'${label}' is not a valid email!",
     },
   };
 

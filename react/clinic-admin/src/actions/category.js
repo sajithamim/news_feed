@@ -17,7 +17,8 @@ export const postCategory = (state, imageData) => async (dispatch) => {
     try {
         const res = await Category.postCategory(state);
         if (res.data.id && imageData) {
-            const res1 = await Category.updateImageCat(res.data.id, imageData);
+            //const res1 = await Category.updateImageCat(res.data.id, imageData);
+            await Category.updateImageCat(res.data.id, imageData);
             dispatch({
                 type: 'ADD_CATEGORY',
                 payload: res.data,
@@ -48,11 +49,8 @@ export const updateCategory = (id, state, imageData) => async (dispatch) => {
     try {
         const res = await Category.updateCat(id, state);
         if (res && imageData) {
-            const res1 = await Category.updateImageCat(id, imageData);
-            // dispatch({
-            //     type: "ADD_CAT_IMAGE",
-            //     payload: res.data,
-            // })
+            //const res1 = await Category.updateImageCat(id, imageData);
+            await Category.updateImageCat(id, imageData);
         }
         dispatch({
             type: 'EDIT_CATEGORY',

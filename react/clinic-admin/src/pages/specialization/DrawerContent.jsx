@@ -1,44 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
-import { Form, Input, Upload, Modal, Button, message } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { Form, Input, Button, message } from "antd";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { postSubSpecialization } from "../../actions/spec";
-import { postSpecialization, updateSpecialization, updateSubSpecialization, image } from "../../actions/spec";
+import { postSpecialization, updateSpecialization, updateSubSpecialization } from "../../actions/spec";
 import "./Drawer.css";
-import axios from 'axios';
-
-
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-}
-
 
 const DrawerContent = (props) => {
-  const [specialiazation, setSpecialiazation] = useState("");
-  const [previewVisible, setPreviewVisible] = useState(false);
 
-  const [previewImage, setPreviewImage] = useState("");
   const [state, setState] = useState(props.editData);
 
-  const [loading, setloading] = useState(false);
-  const [previewTitle, setPreviewTitle] = useState("");
-
-  const [imageUrl, setimageUrl] = useState("");
   const [image, setImage] = useState("");
 
   const [imgData, setImgData] = useState("");
   
-  const { updateData } = useSelector(state => state.spec);
+  //const { updateData } = useSelector(state => state.spec);
   useEffect(() => {
     setState(props.editData);
     setImgData(props.editData.icon);
@@ -47,13 +23,7 @@ const DrawerContent = (props) => {
   const dispatch = useDispatch();
   const { specId } = useParams();
  
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
+  
   const handleSubmit = (e) => {
     let newData = state;
     const id = state.id;
@@ -63,12 +33,12 @@ const DrawerContent = (props) => {
       form_data.append('icon', image, image.name);  
     }
     
-    if (props.drawerType == "edit") {
+    if (props.drawerType === "edit") {
       delete newData["id"];
       delete newData["icon"];
       delete newData["updated_at"];
       delete newData["created_at"];
-      if (props.type == "spec") {
+      if (props.type ==="spec") {
         dispatch(updateSpecialization(id, newData, form_data))
           .then(() => {
             message.success('Specialization edit successfully')
@@ -80,7 +50,7 @@ const DrawerContent = (props) => {
           });
       } 
     } else {
-      if (props.type == "spec") {
+      if (props.type === "spec") {
         dispatch(postSpecialization(newData , form_data))
           .then(() => {
             setState({});
@@ -137,7 +107,7 @@ const DrawerContent = (props) => {
             label="Image"
           >
             <div>
-              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" src={imgData} />) : null }
+              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" alt={imgData} src={imgData} />) : null }
               <Input type="file"
                 id="image"
                 accept="image/png, image/jpeg" onChange={handleFileChange} />

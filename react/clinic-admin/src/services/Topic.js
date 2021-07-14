@@ -1,14 +1,18 @@
-import {instance, http} from "../http-common";
-import axios from 'axios';
-
-const API_URL = "http://178.18.246.233:8000/api/";
+import { http} from "../http-common";
 
 const getTopic = () => {
   return http.get("topic/topic");
 };
-
+const deleteTopic = (id) => {
+  return http.delete(`topic/topic/${id}`);
+};
+const postTopic = (state) => {
+  return http.post(`topic/topic/`, state);
+};
 const Topic = {
-  getTopic
+  getTopic,
+  deleteTopic,
+  postTopic
 };
   
 export default Topic;

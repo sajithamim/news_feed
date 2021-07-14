@@ -1,13 +1,11 @@
 
 import React, { useEffect } from "react";
-import { Table } from "antd";
+import { Table, Col, Row , Card} from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Breadcrumb from "../../Breadcrumb/Breadcrumb";
-import Card from "../../Components/Card/Card";
 import { Link, useParams } from 'react-router-dom';
 import DetailContent from "./DetailContent";
-import { getUserCategory } from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails } from "../../actions/users";
 
 
 const columns = [
@@ -24,62 +22,72 @@ const columns = [
 
 const UserDetails = () => {
   const dispatch = useDispatch();
-  const { userCategory } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
   const { emailId } = useParams();
+
   useEffect(() => {
+    dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
-  })
-  
+    dispatch(getUserSpecialization(emailId))
+  }, [])
 
-const catGenerator = () => {
-  const items = []
-    userCategory && userCategory.data && userCategory.data.map(item => {
-    items.push(item.category_id);
-  }); 
-  return items
-}
+  const catList = []
+  userCategory && userCategory.data && userCategory.data.map(item => {
+    catList.push(item.category_id.title);
+    console.log("catlist" , catList);
+  });
+ 
 
-const catList = catGenerator();
-  
+
+  const renderTable = () => {
+    const specList = [];
+    userSpec && userSpec.data && userSpec.data.map(item => {
+      specList.push(<tr><td>{item.spec_id.name}</td></tr>)
+      item.sub_userspec_id && item.sub_userspec_id.map(subItem => {
+        specList.push(<tr><td>{subItem.sub_spec_id.name}</td></tr>)
+      })
+    })
+    return specList;
+  }
+
   return (
     <div className="main-content">
       <Container fluid>
-        <div>
-          <Breadcrumb path="Reports / Report Details" />
-          <Card
-            content={
-              <div>
-                <div
-                  className="content-heading-innerpage"
-                >
-                  Report Details
-                </div>
-                <div className="content-content">
-                  <DetailContent />
-                </div>
-              </div>
-            }
-            title={false}
-            footer={false}
-          />
-          <Card
-            content={
-              <div>
-                <div
-                  className="content-heading-innerpage"
-                >
-                  Report Details
-                </div>
-                <div className="content-content">
-                  <Table columns={columns} dataSource={catList} />
-                </div>
-              </div>
-            }
-            title={false}
-            footer={false}
-          />
-        </div>
-
+        <Row gutter={16}>
+          <Col span={12}>
+            <Card title="User Details" bordered={true}>
+              <p>User Name : {userDetails.data && userDetails.data.username}</p>
+              <p>Email : {userDetails.data && userDetails.data.email}</p>
+              <p>Phone Number : {userDetails.data && userDetails.data.phone}</p>
+            </Card>
+          </Col>
+          <Col span={12}>
+            {/* <Card title="Card title" bordered={false}> */}
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Specialization</th>
+                  {/* <th scope="col">Size</th>
+                    <th scope="col">Type</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-depth="1">
+                  {renderTable()}
+                </tr>
+              </tbody>
+            </table>
+            {/* </Card> */}
+          </Col>
+        </Row>
+        
+        <Row gutter={20}>
+          <Col span={20}>
+          <Card title="Category Details" bordered={true}>
+                <Table columns={columns} dataSource={catList} />
+          </Card>
+        </Col>
+        </Row>
       </Container>
     </div>
   );
