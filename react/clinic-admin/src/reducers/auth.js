@@ -11,10 +11,7 @@ import {
     success: "",
     error: null,
   }
-  // const user = JSON.parse(localStorage.getItem("user"));
-  // const initialState = user
-  //   ? { isLoggedIn: true, user, userErr: null }
-  //   : { isLoggedIn: false, user: null, userErr: null };
+ 
   
   export default function (state = initialState, action) {
     const { type, payload } = action;

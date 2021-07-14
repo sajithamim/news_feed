@@ -10,7 +10,6 @@ import { getSpecialization, postSpecialization, deleteSpec } from "../../actions
 
 
 const SpecializationContent = () => {
-  console.log(localStorage.getItem("accessToken"))
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");

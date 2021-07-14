@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
 import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
+import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
+import { getTopic } from "../../actions/topic";
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
+  
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getTopic())
+  })
 
+  const { topicList }= useSelector(state => state.topic);
+  
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -30,35 +39,31 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
 
-  const productsGenerator = (quantity) => {
+  const topicGenerator = (quantity) => {
     const items = [];
-    for (let i = 0; i < quantity; i++) {
+    topicList && topicList.results && topicList.results.map(item => {
       items.push({
-        id: i,
-        name: `Item name ${i}`,
-        category: "News & views",
-        likes: 2 + i,
-      });
-    }
+        id: item.id,
+        title: item.title,
+        category_id: item.category_id.title
+
+      })
+    });
     return items;
-  };
-  const products = productsGenerator(100);
+    }
+
+  const topics = topicGenerator();
 
   const columns = [
     {
-      title: "Title",
-      dataIndex: "name",
-      key: "name",
+      title: "title",
+      dataIndex: "title",
+      key: "title",
     },
     {
-      title: "Categories",
-      dataIndex: "category",
-      key: "category",
-    },
-    {
-      title: "Likes",
-      dataIndex: "likes",
-      key: "likes",
+      title: "category_id",
+      dataIndex: "category_id",
+      key: "category_id",
     },
     {
       title: "Action",
@@ -96,7 +101,7 @@ const TopicsContent = (props) => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} dataSource={products} />
+        <Table columns={columns} dataSource={topics} />
       </Card>
       <Drawer
         title={

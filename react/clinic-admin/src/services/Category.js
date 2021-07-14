@@ -19,7 +19,6 @@ const updateCat = (id , state) => {
 
 const updateImageCat = (id, imageData) => {
   let accessToken = localStorage.getItem("accessToken");
-  console.log("accesstoken" , accessToken);
   let url = `http://178.18.246.233:8000/api/topic/category/${id}/icon/`;
   axios.put(url, imageData, {
     headers: {
