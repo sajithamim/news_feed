@@ -5,19 +5,29 @@ from .models import UserPoll,PollOption,TopicPoll
 # from topics.serializers import TopicSeriaizer
 
 class PolloptionSerializer(serializers.ModelSerializer):
+    # checked = serializers.SerializerMethodField()
     class Meta: 
         model = PollOption
         fields = ['answer']
         write_only_fields = ('answer')
 
+    # def get_checked(self,obj):
+    #     print(obj.topic_poll_id.user_id)
+    #     # userobj = User.objects.get(phone = obj['phone'])
+    #     # userid = userobj.id
+    #     # return UserCategory.objects.filter(user_id=userid).count()
+    #     # user = obj.
+    #     return "1"
+
 
 class TopicPollSerializer(serializers.ModelSerializer):
     poll_option = PolloptionSerializer(many=True)
+    checked = serializers.SerializerMethodField()
     # topic_poll_id
     class Meta:
         model = TopicPoll
         # fields = '__all__'
-        fields =  ('topic_id','poll_option','number_of_options')
+        fields =  ('topic_id','poll_option','number_of_options','checked')
         write_only_fields = ('topic_id','poll_option','number_of_options')
 
     def to_representation(self, instance):
@@ -25,7 +35,14 @@ class TopicPollSerializer(serializers.ModelSerializer):
         response['topic_id'] = TopicSeriaizer(instance.topic_id).data
         return response
 
-
+    def get_checked(self,obj):
+        print(obj.topic_poll_id.user_id)
+        # if UserPoll.objects.filter(user_id=,poll_option_id__topic_poll_id__id =obj.id).exists():
+        # userobj = User.objects.get(phone = obj['phone'])
+        # userid = userobj.id
+        # return UserCategory.objects.filter(user_id=userid).count()
+        # user = obj.
+        return self.context['request'].user
     def create(self, validated_data):
             print(validated_data)
             polloption = validated_data.pop('poll_option')
