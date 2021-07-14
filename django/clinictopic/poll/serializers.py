@@ -11,6 +11,7 @@ class PolloptionSerializer(serializers.ModelSerializer):
         write_only_fields = ('answer')
 
 
+
 class TopicPollSerializer(serializers.ModelSerializer):
     poll_option = PolloptionSerializer(many=True)
     # topic_poll_id
@@ -30,13 +31,9 @@ class TopicPollSerializer(serializers.ModelSerializer):
             print(validated_data)
             polloption = validated_data.pop('poll_option')
             topicpoll = TopicPoll.objects.create(**validated_data)
-            # usersubarray=[]
             for polloption in polloption:
                 option=PollOption.objects.create(topic_poll_id=topicpoll, **polloption)
-            # print(usersubarray)
-            # spec_id = {}
             return topicpoll
-    # def to_representation(s
 
 class UserPollSerializer(serializers.ModelSerializer):
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())

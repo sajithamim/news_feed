@@ -33,10 +33,23 @@ class PollView(generics.CreateAPIView):
     serializer_class = TopicPollSerializer
     pagination_class = None
     permission_classes = (IsAuthenticated,)
+    # def get_serializer_context(self):
+    #     """
+    #     Extra context provided to the serializer class.
+    #     """
+    #     return {
+    #         'request': self.request
+    #     }
     def get_serializer(self, *args, **kwargs):
         """ if an array is passed, set serializer to many """
         if isinstance(kwargs.get('data', {}), list):
             kwargs['many'] = True
+        # if self.request.method == 'GET':
+        #     # return TopicPollSerializer
+        #     serializer_class = TopicPollSerializer
+        #     kwargs['context'] = self.get_serializer_context()
+            # return serializer_class(*args, **kwargs)    
+
         return super(PollView, self).get_serializer(*args, **kwargs)
     @csrf_exempt
     def perform_create(self, serializer):

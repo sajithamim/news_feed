@@ -1,9 +1,11 @@
+# from django.clinictopic.poll.models import UserPoll
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
 from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
 from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
 from authentication.models import User
+from poll.models import UserPoll
 # from poll.serializers import TopicPollSerializer
 # from poll.serializers import TopicPollSerializer
 from poll.models import TopicPoll,PollOption
@@ -15,10 +17,23 @@ class GetPollOptionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GetTopicpollSerializers(serializers.ModelSerializer):
+    checked = serializers.SerializerMethodField()
     poll_option = GetPollOptionSerializer(many=True,read_only=True)
     class Meta:
         model = TopicPoll
         fields ='__all__'
+
+    def get_checked(self,obj):
+        # print(obj.topic_poll_id.user_id)
+        user = self.context.get("request").user
+        # print(obj.poll_option)
+        if UserPoll.objects.filter(user_id__email=user,poll_option_id__topic_poll_id__id =obj.id).exists():
+            userdata = UserPoll.objects.get(user_id__email=user,poll_option_id__topic_poll_id__id =obj.id)
+            return str(userdata.poll_option_id.id)
+        # userobj = User.objects.get(phone = obj['phone'])
+        # userid = userobj.id
+        # return UserCategory.objects.filter(user_id=userid).count()
+        return "null"
 
 
 class CategorySerializer(serializers.ModelSerializer):
