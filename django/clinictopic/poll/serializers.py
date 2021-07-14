@@ -5,10 +5,12 @@ from .models import UserPoll,PollOption,TopicPoll
 # from topics.serializers import TopicSeriaizer
 
 class PolloptionSerializer(serializers.ModelSerializer):
+    # checked = serializers.SerializerMethodField()
     class Meta: 
         model = PollOption
         fields = ['answer']
         write_only_fields = ('answer')
+
 
 
 class TopicPollSerializer(serializers.ModelSerializer):
