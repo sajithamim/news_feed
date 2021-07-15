@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 import "./AdminLayout.css";
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { routes } from "../../Routes";
 import { NavLink } from "react-router-dom";
 import { logout } from '../../actions/auth';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./logo.css";
 
 const { Header, Sider, Content } = Layout;
@@ -34,6 +34,7 @@ const AdminLayout = ({ children }) => {
             route.layout &&
             route.layout === "/admin" && (
               <Sider
+                key={route}
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
@@ -61,14 +62,9 @@ const AdminLayout = ({ children }) => {
                         title={route.title}
                       >
                         {route.subNav.map((subroute) => (
-                          <NavLink
-                            key={subroute.key}
-                            to={subroute.path}
-                            style={{ textDecoration: "none" }}
-                          >
-                            {subroute.key !== 'logout' ? (<Menu.Item key={subroute.key} icon={subroute.icon}> {subroute.title}
-                            </Menu.Item>) : (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
-
+                          <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
+                            {subroute.key !== 'logout' ? (<Menu.Item icon={subroute.icon}> {subroute.title}
+                            </Menu.Item>) : (<Menu.Item icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
                           </NavLink>
                         ))}
                       </SubMenu>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space,  Popconfirm, message , Spin  } from "antd";
+import React, { useEffect } from "react";
+import { Card, Table , Spin  } from "antd";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
@@ -11,26 +11,12 @@ const UserContent = () => {
   const dispatch = useDispatch();
   useEffect(() => {
    dispatch(getUsersList())
-  })
+  }, [])
 
-  const onClose = () => {
-    
-  };
-
-  const onEdit = (record) => {
-  };
 
   const onAdd = () => {
     //setShowDrawer(true);
     //setDrawerType("add");
-  };
-
-  const confirmDelete = () => {
-    
-  };
-
-  const cancel = (e) => {
-    message.error("Cancelled");
   };
 
   const columns = [

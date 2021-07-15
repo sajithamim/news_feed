@@ -10,12 +10,23 @@ const getUserCategory = (emailId) => {
 }
 
 const getTopic = () => {
-    return http.get(`topic/topic}`)
+    return http.get(`topic/topic`)
 }
+
+const getUserSpec = (emailId) => {
+    return http.get(`spec/getuserspecialization/${emailId}`)
+}
+const getUserData = (emailId) => {
+    return http.get(`auth/userdetail/${emailId}`)
+}
+
+
 const Users = {
     getUsers,
     getUserCategory,
-    getTopic
+    getTopic,
+    getUserSpec,
+    getUserData
 }
 
 export default Users;

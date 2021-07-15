@@ -2,9 +2,7 @@ import React from 'react';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUnlock } from "react-icons/ai";
-const logout = () => {
-  console.log('test123')
-}
+
 export const routes = [
   {
     title: 'Data',
@@ -16,7 +14,7 @@ export const routes = [
       {
         title: 'Users',
         path: '/data/Users',
-        key: "feed",
+        key: "users",
         icon: <IoIcons.IoIosPaper />
       },
       {
@@ -47,7 +45,7 @@ export const routes = [
         title: 'Logout',
         path: '',
         key: "logout",
-        icon: <AiTwotoneLock onClick={logout}/>
+        icon: <AiTwotoneLock />
       },
     ]
   },

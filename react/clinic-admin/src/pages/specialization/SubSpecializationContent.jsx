@@ -42,7 +42,7 @@ const SubSpecializationContent = () => {
   const confirmDelete = (id) => {
     dispatch(deleteSubSpec(id))
     .then((res) => {
-      res.status == 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
+      res.status === 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
     })
   };
 
@@ -108,7 +108,7 @@ const SubSpecializationContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType}  type="sub_spec" editData={(drawerType == 'edit') ? editData: {}}/>
+        <DrawerContent drawerType={drawerType}  type="sub_spec" editData={(drawerType === 'edit') ? editData: {}}/>
       </Drawer>
     </div>
   );

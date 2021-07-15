@@ -1,62 +1,43 @@
 import React, { useEffect } from "react";
 import { Grid } from "@material-ui/core";
-import { Input, Checkbox, Radio, Select, Upload, message, Modal, Button } from "antd";
+import { Input, Radio, Select, Modal, Button } from "antd";
 import { useState } from "react";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import "./ModalContent.css";
 import PollContent from "./PollContent";
 import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
-import { getCategory } from "../../actions/category";
-import spec from "../../reducers/spec";
+import { getCategory  } from "../../actions/category";
+import { postTopic  } from "../../actions/topic";
+
 
 const { Option } = Select;
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
 
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-}
+
 
 const ModalContent = (props) => {
   const [checkboxValue, setCheckboxValue] = useState("");
   const [mediaType, setMediaType] = useState(null);
   const [radioValue , setRadioValue] = useState();
   const [deliveryType, setDeliveryType] = useState(null);
-  const [audience, setAudience] = useState(["a10", "c12"]);
   const [specialiasations, setSpecialiasations] = useState(["a10", "c12"]);
-  //const [category, setCategory] = useState("News & views");
-  const [loadingUpload, setloadingUpload] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
   const [noOfQuestions, setNoOfQuestions] = useState("");
   const [noOfAnswers, setNoOfAnswers] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [state, setState] = useState({});
+  const [state, setState] = useState({topic_audience: "doctor"});
   
   const { specList } =useSelector(state => state.spec);
   const { catlist } =useSelector(state => state.category);
 
   const specialization = [];
     specList && specList.results && specList.results.map(item => {
-      specialization.push(
+      return specialization.push(
         <Option key={item.id}>{item.name}</Option>
       );
     })
   
     const category = [];
       catlist && catlist.results && catlist.results.map(item => {
-        category.push(
+        return category.push(
           <Option key={item.id}>{item.title}</Option>
         );
       })
@@ -67,37 +48,25 @@ const ModalContent = (props) => {
     console.log("state handle" , state);
   };
 
-  const uploadButton = (
-    <div>
-      {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
-  const handleAudienceChange = (value) => {
-    setAudience(value);
-  };
-
+  
   const handleSpecChange = (value) => {
-    setSpecialiasations(value);
+    let topic = [];
+    value && value.map(item => {
+      topic.push({spec_id: item})
+    })
+
+    setState({ ...state, topic_topic: topic})
+    //setSpecialiasations(value);
+    //console.log("specal selevt value" , value);
   };
 
   const handleCategoryChange = (value) => {
-    console.log('value', value)
-    //setCategory(value);
+    setState({ ...state, category_id: value})
   };
 
-  const checkboxOnChange = (e) => {
-    setCheckboxValue(e.target.checked);
-    if (e.target.checked === true) {
-      setIsModalVisible(true);
-    } else {
-      setIsModalVisible(false);
-      setNoOfQuestions("");
-      setNoOfAnswers("");
-    }
-  };
+
   const radioOnChange = (e) => {
+    setRadioValue(e.target.value);
     setDeliveryType(e.target.value);
     setMediaType(e.target.value);
     console.log("mediaType" , e.target.value);
@@ -114,6 +83,7 @@ const ModalContent = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submit", state);
+    dispatch(postTopic(state))
   }
 
   const dispatch = useDispatch();
@@ -121,7 +91,7 @@ const ModalContent = (props) => {
   useEffect(() =>{
     dispatch(getSpecialization());
     dispatch(getCategory());
-  })
+  }, [])
 
   return (
     <div>
@@ -150,11 +120,10 @@ const ModalContent = (props) => {
             </Grid>
             <Grid item md={6}>
               <Select
-                //defaultValue="News & views"
                 style={{ width: "100%" }}
                 key="cat"
                 name="category_id"
-                value={category}
+                value={state.category_id}
                 onChange={handleCategoryChange}
               >{category}
                 {/* <Option value="jack">Jack</Option>
@@ -195,7 +164,7 @@ const ModalContent = (props) => {
               <Input name="source_url" type="text" onChange={handleChange} key="source" value={state.source_url} />
             </Grid>
           </Grid>
-          <Grid container direction="row" className="modalStyle">
+          {/* <Grid container direction="row" className="modalStyle">
             <Grid item md={3} className="labelStyle">
               <span>Enable Poll :</span>
             </Grid>
@@ -206,7 +175,7 @@ const ModalContent = (props) => {
                 value={checkboxValue}
               />
             </Grid>
-          </Grid>
+          </Grid> */}
 
           {checkboxValue === true &&
             noOfQuestions !== "" &&
@@ -234,7 +203,7 @@ const ModalContent = (props) => {
 
               </Grid>
               <Grid item md={6}>
-                {deliveryType !== null ? (deliveryType == 'pdf' ? (<><Input type="file" id="image" accept="image/png, image/jpeg" /> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="article" />)) : null}
+                {deliveryType !== null ? (deliveryType === 'pdf' ? (<><Input type="file" id="image" accept="image/png, image/jpeg" /> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="article" />)) : null}
               </Grid>
             </Grid>
           </Grid>
@@ -257,10 +226,10 @@ const ModalContent = (props) => {
           <Grid item md={3} className="labelStyle">
             </Grid>
           <Grid item md={6}>
-                {mediaType !== null ? (mediaType == 'image' ? (<><Input type="file" id="image" accept="image/png, image/jpeg" /> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="video" />)) : null}
+                {mediaType !== null ? (mediaType === 'image' ? (<><Input type="file" id="image" accept="image/png, image/jpeg" /> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="video" />)) : null}
           </Grid>
           </Grid>
-          <Grid container direction="row" className="modalStyle">
+          {/* <Grid container direction="row" className="modalStyle">
             <Grid item md={3} className="labelStyle">
               <span>*Image :</span>
             </Grid>
@@ -281,22 +250,22 @@ const ModalContent = (props) => {
                 )}
               </Upload>
             </Grid>
-          </Grid>
-          <Grid container direction="row" className="modalStyle">
+          </Grid> */}
+          {/* <Grid container direction="row" className="modalStyle">
             <Grid item md={3} className="labelStyle">
               <span>*Total likes :</span>
             </Grid>
             <Grid item md={6}>
               <Input type="number" key="likes" />
             </Grid>
-          </Grid>
+          </Grid>*/}
           <Grid container direction="row" className="modalStyle">
             <Grid item md={6} className="labelStyle">
               <Button type="primary" htmlType="submit" >
                 Save
               </Button>
             </Grid>
-          </Grid>
+          </Grid> 
         </div>
         <Modal
           title="Poll"

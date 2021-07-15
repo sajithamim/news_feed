@@ -39,7 +39,7 @@ const CategoriesContent = () => {
   const onConfirm = (id) => {
     dispatch(deleteCategory(id))
       .then((res) => {
-        res.status == 204 ? message.success("Category is deleted successfully") : message.error("Category is not exist")
+        res.status === 204 ? message.success("Category is deleted successfully") : message.error("Category is not exist")
       })
   };
 
@@ -104,7 +104,7 @@ const CategoriesContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} type="cat" editData={(drawerType == 'edit') ? editData : {}} />
+        <DrawerContent drawerType={drawerType} type="cat" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );

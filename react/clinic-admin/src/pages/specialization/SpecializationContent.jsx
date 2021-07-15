@@ -40,7 +40,7 @@ const SpecializationContent = () => {
   const confirmDelete = (id) => {
     dispatch(deleteSpec(id))
       .then((res) => {
-        res.status == 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+        res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
       })
   };
 
@@ -109,7 +109,7 @@ const SpecializationContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType == 'edit') ? editData : {}} />
+        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );
