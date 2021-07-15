@@ -9,19 +9,26 @@ import { getTopic , deleteTopic} from "../../actions/topic";
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
-  
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getTopic())
-  }, [])
 
-  const { topicList }= useSelector(state => state.topic);
+  const [editData , setEditData] = useState({});
   
+  const { topicList , postTopic }= useSelector(state => state.topic);
+  console.log('topicList', topicList)
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(getTopic()).then(res => {
+      onClose();
+    })
+  }, [ postTopic ])
+
+
   const onClose = () => {
     setShowDrawer(false);
   };
 
-  const onEdit = () => {
+  const onEdit = (record) => {
+    setEditData(record)
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -32,7 +39,11 @@ const TopicsContent = (props) => {
   };
 
   const confirmDelete = (id) => {
-    delete(deleteTopic(id))
+    dispatch(deleteTopic(id))
+    .then((res) => {
+      console.log("res",res);
+      res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+    })
   }
   
   const cancel = (e) => {
@@ -42,11 +53,17 @@ const TopicsContent = (props) => {
   const topicGenerator = (quantity) => {
     const items = [];
     topicList && topicList.results && topicList.results.map(item => {
+      console.log('item', item)
       return items.push({
         id: item.id,
         title: item.title,
-        category_id: item.category_id.title
-
+        category_id: item.category_id.title,
+        description: item.description,
+        source_url: item.source_url,
+        spec_id: item.topic_topic.map(listOne => listOne.spec_id.name),
+        publishingtime: item.publishingtime,
+        deliverytype: item.deliverytype,
+        mediatype: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
       })
     });
     return items;
@@ -71,7 +88,7 @@ const TopicsContent = (props) => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={onEdit}>
+          <Button type="link" onClick={() => {onEdit(record)}}>
             Edit
           </Button>
           <Popconfirm
@@ -116,7 +133,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} />
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? editData : null}/>
       </Drawer>
     </div>
   );

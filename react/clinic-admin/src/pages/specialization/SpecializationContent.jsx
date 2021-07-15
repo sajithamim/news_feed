@@ -15,7 +15,7 @@ const SpecializationContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { specList, updateData, addData } = useSelector(state => state.spec);
-
+  
   useEffect(() => {
     dispatch(getSpecialization()).then(res => {
       onClose();
