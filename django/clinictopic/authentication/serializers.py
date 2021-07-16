@@ -302,3 +302,8 @@ class PhoneUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['phone']
+
+class UsernameChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =User
+        fields = ['name']
