@@ -297,12 +297,7 @@ class TopicImageSerializer(serializers.ModelSerializer):
     # image = serializers.ListField(child=serializers.ImageField(max_length=100000,allow_empty_file=False,use_url=False))
     class Meta:
         model = Image
-        fields = ['image']
-    def create(self, validated_data):
-        image=validated_data.pop('image')
-        for img in image:
-            photo=Image.objects.create(image=img,**validated_data)
-        return photo
+        fields = ('image','topic_id')
 
 
 class userFavouriteSerializer(serializers.ModelSerializer):

@@ -205,3 +205,34 @@ class CategoryselectedView(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+
+def modify_input_for_multiple_files(topic_id, image):
+    dict = {}
+    dict['topic_id'] = topic_id
+
+    dict['image'] = image
+    return dict
+
+class TopicImageView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    # @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        topic_id = request.data['topic_id']
+        # converts querydict to original dict
+        images = dict((request.data).lists())['image']
+        flag = 1
+        arr = []
+        for img_name in images:
+            modified_data = modify_input_for_multiple_files(topic_id,
+                                                            img_name)
+            file_serializer = TopicImageSerializer(data=modified_data)
+            if file_serializer.is_valid():
+                file_serializer.save()
+                arr.append(file_serializer.data)
+            else:
+                flag = 0
+
+        if flag == 1:
+            return Response(arr, status=status.HTTP_201_CREATED)
+        else:
+            return Response(arr, status=status.HTTP_400_BAD_REQUEST)
