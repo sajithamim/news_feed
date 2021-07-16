@@ -60,7 +60,7 @@ const TopicsContent = (props) => {
         category_id: item.category_id.title,
         description: item.description,
         source_url: item.source_url,
-        spec_id: item.topic_topic.map(listOne => listOne.spec_id.name),
+        spec_id: item.topic_topic,
         publishingtime: item.publishingtime,
         deliverytype: item.deliverytype,
         mediatype: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',

@@ -26,6 +26,7 @@ const ModalContent = (props) => {
   const [imageUrl, setImageUrl] = useState("");
   const [pdfUrlData, setPdfData] = useState("");
   const [dateTime , setDateTime] = useState("");
+  const [specIds, setSpecId] = useState("");
   console.log('propssss', props.editData)
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
@@ -60,8 +61,18 @@ const ModalContent = (props) => {
   };
 
   useEffect(() => {
-    if(props.editData !== null)
-     setState(props.editData);
+    if(props.editData !== null) {
+      setState(props.editData);
+      const spec_id = [];
+      state.spec_id && state.spec_id.map(item => {
+        spec_id.push(item.spec_id.name)
+      });
+
+      var result = JSON.stringify(spec_id).replace('[','').replace(']', '');
+      setSpecId(`[${result}]`);
+      //var result1 = `[${result}]`;
+    }
+     
   }, [props.editData])
 
   const handleCategoryChange = (value) => {
@@ -145,9 +156,8 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
   }, [])
- const dummy = ["Dermatology", "Diabetes"];
- console.log('statettt', state.spec_id)
- console.log('dummy', dummy)
+ 
+ console.log('result', specIds)
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -161,7 +171,7 @@ const ModalContent = (props) => {
                 key="spec"
                 mode="multiple"
                 allowClear
-                defaultValue={state.spec_id && state.spec_id}
+                defaultValue={specIds && specIds}
                 style={{ width: "100%" }}
                 placeholder="Please select"
                 onChange={handleSpecChange}

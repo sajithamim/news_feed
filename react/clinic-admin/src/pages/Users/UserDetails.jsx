@@ -33,8 +33,9 @@ const UserDetails = () => {
 
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
-    catList.push(item.category_id.title);
-    console.log("catlist" , catList);
+    return catList.push({
+      title: item.category_id.title
+    })
   });
  
 
@@ -44,7 +45,7 @@ const UserDetails = () => {
     userSpec && userSpec.data && userSpec.data.map(item => {
       specList.push(<tr><td>{item.spec_id.name}</td></tr>)
       item.sub_userspec_id && item.sub_userspec_id.map(subItem => {
-        specList.push(<tr><td>{subItem.sub_spec_id.name}</td></tr>)
+        specList.push(<tr><td></td><td>{subItem.sub_spec_id.name}</td></tr>)
       })
     })
     return specList;
@@ -62,28 +63,23 @@ const UserDetails = () => {
             </Card>
           </Col>
           <Col span={12}>
-            {/* <Card title="Card title" bordered={false}> */}
+            <Card title="Specializations and Sub Specializations" bordered={true}>
             <table className="table table-bordered">
               <thead>
-                <tr>
-                  <th scope="col">Specialization</th>
-                  {/* <th scope="col">Size</th>
-                    <th scope="col">Type</th> */}
-                </tr>
+                <th>Specialization</th>
+                <th>Sub Specialization</th>
               </thead>
               <tbody>
-                <tr data-depth="1">
                   {renderTable()}
-                </tr>
               </tbody>
             </table>
-            {/* </Card> */}
+            </Card>
           </Col>
         </Row>
         
-        <Row gutter={20}>
-          <Col span={20}>
-          <Card title="Category Details" bordered={true}>
+        <Row gutter={12} style={{marginTop: "-121px"}}>
+          <Col span={12}>
+          <Card title="Category List" bordered={true}>
                 <Table columns={columns} dataSource={catList} />
           </Card>
         </Col>
