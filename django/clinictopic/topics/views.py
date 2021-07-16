@@ -7,7 +7,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import viewsets, filters
-from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Favourite)
+from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Favourite,Image)
 from django_filters import rest_framework as filters
 import django_filters.rest_framework
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -106,16 +106,16 @@ class TopicViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-    @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
-    def images(self, request, pk):
-        obj = self.get_object()
-        serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors,
-                                 status.HTTP_400_BAD_REQUEST)
+    # @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
+    # def images(self, request, pk):
+    #     obj = self.get_object()
+    #     serializer = self.serializer_class(obj, data=request.data,
+    #                                        partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors,
+    #                              status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -205,3 +205,55 @@ class CategoryselectedView(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+
+def modify_input_for_multiple_files(topic_id, image):
+    dict = {}
+    dict['topic_id'] = topic_id
+
+    dict['image'] = image
+    return dict
+
+class TopicImageView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
+    # @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        topic_id = request.data['topic_id']
+        # converts querydict to original dict
+        images = dict((request.data).lists())['image']
+        flag = 1
+        arr = []
+        for img_name in images:
+            modified_data = modify_input_for_multiple_files(topic_id,
+                                                            img_name)
+            file_serializer = TopicImageSerializer(data=modified_data)
+            if file_serializer.is_valid():
+                file_serializer.save()
+                arr.append(file_serializer.data)
+            else:
+                flag = 0
+
+        if flag == 1:
+            return Response(arr, status=status.HTTP_201_CREATED)
+        else:
+            return Response(arr, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Deleteimage(APIView):
+    # @csrf_exempt
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request,pk):
+        # print(id)
+        try:      
+            snippet = Image.objects.get(id=pk)
+            snippet.delete()
+            return Response({"status":"deleted","success":"True"},status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'invalid request',
+                'error': str(e)
+                }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
