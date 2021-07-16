@@ -289,7 +289,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = User
-        fields = ['username','email','phone','profilepic']
+        fields = ['username','email','phone','profilepic','name']
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
