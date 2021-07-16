@@ -8,26 +8,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";
 import { postTopic } from "../../actions/topic";
-import SkeletonImage from "antd/lib/skeleton/Image";
+import moment from 'moment';
 
 
 const { Option } = Select;
 
 const ModalContent = (props) => {
   const [checkboxValue, setCheckboxValue] = useState("");
-  const [mediaType, setMediaType] = useState(null);
-  const [deliveryType, setDeliveryType] = useState(null);
-  const [publishType, setPublishType] = useState(null);
   const [noOfQuestions, setNoOfQuestions] = useState("");
   const [noOfAnswers, setNoOfAnswers] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [state, setState] = useState({ topic_audience: "doctor" });
   const [pdfUrl, setPdfUrl] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setimageUrl] = useState([]);
+  const [imageFormData , setImageFormData] = useState([]);
+
   const [pdfUrlData, setPdfData] = useState("");
   const [dateTime , setDateTime] = useState("");
   const [specIds, setSpecId] = useState("");
-  console.log('propssss', props.editData)
+
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
 
@@ -48,12 +47,13 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
-    console.log("state handle", state);
+    //console.log("state handle", state);
   };
 
 
   const handleSpecChange = (value) => {
     let topic = [];
+    console.log("state spec", topic);
     value && value.map(item => {
       topic.push({ spec_id: item })
     })
@@ -62,7 +62,7 @@ const ModalContent = (props) => {
 
   useEffect(() => {
     if(props.editData !== null) {
-      setState(props.editData);
+      setState(...state, props.editData);
       const spec_id = [];
       state.spec_id && state.spec_id.map(item => {
         spec_id.push(item.spec_id.name)
@@ -84,25 +84,13 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
-    //setRadioValue(e.target.value);
-    console.log('val', val);
-    console.log('e', e)
     if(val === 'publish'){
-      setPublishType(e.target.value);
-      setState({ ...state, publish: e.target.value })
-    } else if(val === 'delivery'){
-      setDeliveryType(e.target.value);
-      setState({ ...state, deliverytype: e.target.value })
-    } else if(val === 'mediatype'){
-      setMediaType(e.target.value);
-      setState({ ...state, media: e.target.value })
-    }
- 
-    if( e.target.value == "now"){
       const crntDateTime = new Date().toISOString();
-      console.log("now" , new Date());
-      console.log("mediaType", crntDateTime);
-      setState({ ...state, publishingtime: crntDateTime })
+      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "" })
+    } else if(val === 'delivery'){
+      setState({ ...state, deliverytype: e.target.value })
+    } else if(val === 'media'){
+      setState({ ...state, mediatype: e.target.value })
     }
   };
 
@@ -116,39 +104,62 @@ const ModalContent = (props) => {
   
   const { RangePicker } = DatePicker;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let form_data = null;
-    if (pdfUrl && pdfUrl.name) {
-      form_data = new FormData();
-      form_data.append('pdf', pdfUrl, pdfUrl.name);
-    }
-    console.log("Submit", state);
-    dispatch(postTopic(state , form_data))
-    .then(() => {
-      setState({});
-      message.success('Specialization added successfully')
-    });
-  }
-
-  
   const onChange = (value , dateString) => {
     console.log('Selected Time: ', value);
     console.log('Formatted Selected Time: ', dateString);
     const laterTime = new Date(dateString).toISOString();
-    console.log("mediaType", laterTime);
     setState({ ...state , publishingtime: laterTime})
   }
 
-  const handleFileChange = (e) => {
-    console.log('egfhh', e.target.name)
-    // setPdfUrl(e.target.files[0]);
-    // const reader = new FileReader();
-    // reader.addEventListener("load", () => {
-    //   setPdfData(reader.result);
-    // });
-    // reader.readAsDataURL(e.target.files[0]);
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("specIid" ,state.topic_topic);
+//     let form_data = null;
+//     if (pdfUrl && pdfUrl.name) {
+//       form_data = new FormData();
+//       form_data.append('pdf', pdfUrl, pdfUrl.name);
+//     }
+//     let image_data = null;
+//     if(imageFormData) {
+//       image_data = new FormData();
+//       imageFormData.forEach((file, key) => {
+//         image_data.append('image', file, file.name);
+//       });
+//     }
+// console.log("specIid" ,state.spec_id);
+//     dispatch(postTopic(state , form_data, image_data))
+//     .then(() => {
+//       setState({});
+//       message.success('Specialization added successfully')
+//     });
   }
+
+  const handleFileChange = (e) => {
+    setPdfUrl(e.target.files[0]);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setPdfData(reader.result);
+    });
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
+  const handleFileChange1 = (e) => {
+    var numFiles = e.target.files.length; 
+    for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++){ 
+      var file = e.target.files[i];
+      if(!file.type.match('image'))
+      continue;
+        
+      setImageFormData(imageFormData => [...imageFormData, e.target.files[i]]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setimageUrl(imageUrl => [...imageUrl, reader.result]);
+      });
+      reader.readAsDataURL(e.target.files[i]);
+    }
+  }
+
 
   const dispatch = useDispatch();
 
@@ -157,7 +168,6 @@ const ModalContent = (props) => {
     dispatch(getCategory());
   }, [])
  
- console.log('result', specIds)
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -266,7 +276,7 @@ const ModalContent = (props) => {
 
               </Grid>
               <Grid item md={6}>
-                {deliveryType !== null ? (deliveryType === 'pdf' ? (<><Input type="file" name="pdf" accept="image/png, image/jpeg" onChange={handleFileChange} /> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="article" />)) : null}
+                {state.deliverytype !== null ? (state.deliverytype === 'pdf' ? (<><Input type="file" name="pdf" accept="image/png, image/jpeg" onChange={handleFileChange} /> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="article" />)) : null}
               </Grid>
             </Grid>
           </Grid>
@@ -289,7 +299,7 @@ const ModalContent = (props) => {
             <Grid item md={3} className="labelStyle">
             </Grid>
             <Grid item md={6}>
-              {mediaType !== null ? (mediaType === 'image' ? (<><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleFileChange}/> <i aria-label="icon: plus" class="anticon anticon-plus"></i></>) : (<Input type="text" id="video" />)) : null}
+              {state.mediatype !== null ? (state.mediatype === 'image' ? (<>{imageUrl.map((url) => (<img className="playerProfilePic_home_tile" width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleFileChange1} multiple/></>) : (<Input type="text" id="video" />)) : null}
             </Grid>
           </Grid>
           {/* <Grid container direction="row" className="modalStyle">
@@ -328,7 +338,7 @@ const ModalContent = (props) => {
               <span>*When to Publish :</span>
             </Grid>
             <Grid item md={6}>
-              <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publish}>
+              <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
                 <Radio value="now">
                   Publish Now
                 </Radio>
@@ -342,7 +352,7 @@ const ModalContent = (props) => {
 
               </Grid>
               <Grid item md={6}>
-                {publishType !== null ? (publishType === 'now' ? null : (<Space><DatePicker showTime onChange={onChange} onOk={onOk} /></Space>)) : null}
+                {(state.publishingtime && (state.publishtype && state.publishtype !== "now") ? (<Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime, 'YYYY-MM-DD HH:mm:ss')} /></Space>) : null)}
               </Grid>
             </Grid>
           </Grid>

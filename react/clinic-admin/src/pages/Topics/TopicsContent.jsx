@@ -11,9 +11,7 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
 
   const [editData , setEditData] = useState({});
-  
   const { topicList , postTopic }= useSelector(state => state.topic);
-  console.log('topicList', topicList)
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -53,7 +51,6 @@ const TopicsContent = (props) => {
   const topicGenerator = (quantity) => {
     const items = [];
     topicList && topicList.results && topicList.results.map(item => {
-      console.log('item', item)
       return items.push({
         id: item.id,
         title: item.title,
@@ -62,6 +59,7 @@ const TopicsContent = (props) => {
         source_url: item.source_url,
         spec_id: item.topic_topic,
         publishingtime: item.publishingtime,
+        publishtype: "later",
         deliverytype: item.deliverytype,
         mediatype: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
       })
