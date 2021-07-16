@@ -96,7 +96,7 @@ class TopicViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)',serializer_class=GetTopicSeriaizer)
+    @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)',serializer_class=TopicSeriaizer)
     def search(self, request, search_pk, pk=None):
         queryset = Topics.objects.filter(Q(title__icontains=search_pk)|Q(description__icontains=search_pk)).order_by('title')
         # a =  self.kwargs['search_pk']
