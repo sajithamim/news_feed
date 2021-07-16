@@ -1,10 +1,11 @@
 const initialState= {
     topicList:[],
-    postTopic: false
+    postTopic: false,
+    pdf:{}
 };
 
 export default (state = initialState , action) => {
-    console.log("reducer calling" , action.payload);
+    console.log('action.payload', action.payload)
     switch(action.type) {
         case 'GET_TOPIC':
         return {...state , topicList: action.payload }
@@ -12,6 +13,8 @@ export default (state = initialState , action) => {
         return {...state , topicList: Object.assign({},state.topicList,{results: state.topicList && state.topicList.results.filter(item => item.id !== action.payload)}) }
         case 'POST_TOPIC':
         return {...state , postTopic: true }
+        case 'PUT_TOPIC':
+        return {...state , pdf: action.payload}
         default: 
         return state;
     }

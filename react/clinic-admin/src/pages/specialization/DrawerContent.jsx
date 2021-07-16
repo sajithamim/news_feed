@@ -14,7 +14,6 @@ const DrawerContent = (props) => {
 
   const [imgData, setImgData] = useState("");
   
-  //const { updateData } = useSelector(state => state.spec);
   useEffect(() => {
     setState(props.editData);
     setImgData(props.editData.icon);
@@ -22,49 +21,49 @@ const DrawerContent = (props) => {
 
   const dispatch = useDispatch();
   const { specId } = useParams();
- 
-  
+
+
   const handleSubmit = (e) => {
     let newData = state;
     const id = state.id;
     let form_data = null;
-    if(image && image.name) {
+    if (image && image.name) {
       form_data = new FormData();
-      form_data.append('icon', image, image.name);  
+      form_data.append('icon', image, image.name);
     }
-    
+
     if (props.drawerType === "edit") {
       delete newData["id"];
       delete newData["icon"];
       delete newData["updated_at"];
       delete newData["created_at"];
-      if (props.type ==="spec") {
+      if (props.type === "spec") {
         dispatch(updateSpecialization(id, newData, form_data))
           .then(() => {
             message.success('Specialization edit successfully')
           });
       } else {
-        dispatch(updateSubSpecialization(id, newData ,form_data))
+        dispatch(updateSubSpecialization(id, newData, form_data))
           .then(() => {
             message.success('Sub Specialization edit successfully')
           });
-      } 
+      }
     } else {
       if (props.type === "spec") {
-        dispatch(postSpecialization(newData , form_data))
+        dispatch(postSpecialization(newData, form_data))
           .then(() => {
             setState({});
             message.success('Specialization added successfully')
           });
       } else {
         newData['spec_id'] = specId;
-        dispatch(postSubSpecialization(newData , form_data))
+        dispatch(postSubSpecialization(newData, form_data))
           .then(() => {
             setState({});
             message.success('Sub Specialization added successfully')
           });
       }
-    } 
+    }
   }
 
   const handleChange = (e) => {
@@ -107,7 +106,7 @@ const DrawerContent = (props) => {
             label="Image"
           >
             <div>
-              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" alt={imgData} src={imgData} />) : null }
+              {imgData ? (<img className="playerProfilePic_home_tile" width="128px" height="128px" alt={imgData} src={imgData} />) : null}
               <Input type="file"
                 id="image"
                 accept="image/png, image/jpeg" onChange={handleFileChange} />
