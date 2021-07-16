@@ -2,7 +2,8 @@ from django.urls import path
 from django.conf.urls import url, include
 from rest_framework import routers
 from .views import (UploadedImagesViewSet,TopicViewSet,UserCategoryApiView,
-UserFavouriteApiView,FavouriteDeleteView,CategoryselectedView,GetUserCategoryApiview,TopicImageView)
+UserFavouriteApiView,FavouriteDeleteView,CategoryselectedView,GetUserCategoryApiview,
+TopicImageView,Deleteimage)
 from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
  
 
@@ -24,5 +25,6 @@ urlpatterns = [
         path('checkcategory/',CategoryselectedView.as_view()),
         path('getusercategory/<str:pk>/',GetUserCategoryApiview.as_view()),
         path('topicimages/',TopicImageView.as_view()),
+        path('deletetopicimage/<str:pk>/',Deleteimage.as_view()),
 
 ]
