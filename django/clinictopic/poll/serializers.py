@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import UserPoll,PollOption,TopicPoll
+from .models import UserPoll,PollOption,TopicPoll,Feedback
+from authentication.models import User
 # from topics.serializers import TopicSeriaizer
 
 class PolloptionSerializer(serializers.ModelSerializer):
@@ -44,3 +45,20 @@ class UserPollSerializer(serializers.ModelSerializer):
             response = super().to_representation(instance)
             response['poll_option_id'] = PolloptionSerializer(instance.poll_option_id).data
             return response
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
+    name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
+    class Meta:
+        model = Feedback
+        fields = '__all__'
+
+    def get_name(self, obj):
+        user = User.objects.get(email =obj.user_id)
+        print(user)
+        return user.name
+
+    def get_email(self, obj):
+        user = User.objects.get(email =obj.user_id)
+        return user.email

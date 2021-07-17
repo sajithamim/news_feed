@@ -114,8 +114,7 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
             kwargs['many'] = True
         return super(UserSpecializationApiView, self).get_serializer(*args, **kwargs)
     @csrf_exempt
-    def perform_create(self, serializer):
-        
+    def perform_create(self, serializer): 
         serializer.save(user_id=self.request.user)
     @csrf_exempt
     def get_queryset(self):
