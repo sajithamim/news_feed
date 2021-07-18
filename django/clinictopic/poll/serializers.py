@@ -56,7 +56,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         user = User.objects.get(email =obj.user_id)
-        print(user)
+        # print(user)
         return user.name
 
     def get_email(self, obj):
