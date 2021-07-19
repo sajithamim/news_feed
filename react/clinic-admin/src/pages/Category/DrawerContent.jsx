@@ -25,7 +25,6 @@ const DrawerContent = (props) => {
     setImgData(props.editData.image);
   },[props.editData])
 
-  //const { id } = useParams();
   const [previewTitle, setPreviewTitle] = useState("");
 
   const handleCancel = () => setPreviewVisible(false);
@@ -51,8 +50,6 @@ const DrawerContent = (props) => {
       form_data = new FormData();
       form_data.append('icon', image, image.name);  
     }
-    
-    
     if(props.drawerType === 'edit')
     {
       delete newData["id"];

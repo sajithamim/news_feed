@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin } from "antd";
 import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,8 +12,10 @@ const TopicsContent = (props) => {
 
   const [editData , setEditData] = useState({});
   const { topicList , postTopic, updateTopic }= useSelector(state => state.topic);
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(5);
   const dispatch = useDispatch();
-  console.log("postTopic",postTopic);
+  
   useEffect(() => {
     dispatch(getTopic()).then(res => {
       onClose();
@@ -73,6 +75,18 @@ const TopicsContent = (props) => {
 
   const topics = topicGenerator();
 
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getTopic(page));
+  }
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    total: topicList.count
+  }
+
   const columns = [
     {
       title: "Title",
@@ -118,7 +132,8 @@ const TopicsContent = (props) => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} dataSource={topics} />
+        {topicList && topicList.results ?
+        (<Table columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={

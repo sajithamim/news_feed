@@ -14,6 +14,8 @@ const SpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(10);
   const { specList, updateData, addData } = useSelector(state => state.spec);
   
   useEffect(() => {
@@ -46,6 +48,18 @@ const SpecializationContent = () => {
   const cancel = (e) => {
     message.error("Cancelled");
   };
+  
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getSpecialization(page));
+  }
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    total: specList.count
+  }
 
   const columns = [
     {
@@ -91,7 +105,7 @@ const SpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {specList && specList.results ?
-          (<Table columns={columns} dataSource={specList.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+          (<Table columns={columns} pagination={pagination} dataSource={specList.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

@@ -11,6 +11,8 @@ import { deleteCategory } from "../../actions/category";
 const CategoriesContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(10);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { catlist , updateData  } = useSelector(state => state.category);
@@ -43,8 +45,19 @@ const CategoriesContent = () => {
       })
   };
 
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getCategory(page));
+  }
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    total: catlist.count
+  }
+
   const cancel = (e) => {
-    // message.error("Cancelled");
   };
 
   const columns = [
@@ -87,7 +100,7 @@ const CategoriesContent = () => {
         style={{ width: "100%" }}
       >
         {catlist.results ?
-          (<Table columns={columns} dataSource={catlist.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+          (<Table columns={columns} dataSource={catlist.results} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

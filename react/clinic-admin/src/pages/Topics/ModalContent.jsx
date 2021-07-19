@@ -128,10 +128,11 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    const id = state.id;
-    if(formValidation() && formSubmit) {
+    if(formValidation()) {
       
-    console.log("handlesubi t", props);
+    console.log("getting");
+      setErrors({});
+      const id = state.id;
       let form_data = null;
       if (pdfUrl && pdfUrl.name) {
         form_data = new FormData();
@@ -201,26 +202,32 @@ const ModalContent = (props) => {
 
   const dispatch = useDispatch();
 
-  const formValidation = () => {  
+  const formValidation = () => { 
     let entities = state;   
     const newErrorsState = {...errors}; 
+    
     if (!entities["title"]) {  
-      setFormSubmit(false); 
       newErrorsState.title = 'Title cannot be empty';
+      setErrors(newErrorsState); 
+      return false;
     } 
     if (!entities["category_id"]) {  
-      setFormSubmit(false); 
       newErrorsState.category_id = 'Category cannot be empty';
+      setErrors(newErrorsState); 
+      return false;
     }
     if (!entities["publishingtime"]) {  
-      setFormSubmit(false); 
       newErrorsState.publishingtime = 'Publish time cannot be empty';
+      setErrors(newErrorsState); 
+      return false;
     }
-    if (!entities["topic_topic"] && entities["topic_topic"].length) {  
-      setFormSubmit(false); 
+    if (!entities["topic_topic"] && entities["topic_topic"]) {  
       newErrorsState.publishingtime = 'Specialization cannot be empty';
+      setErrors(newErrorsState); 
+      return false;
     }
-    setErrors(newErrorsState); 
+    setErrors({}); 
+    return true;
   } 
   const specList1 = [];
   // state.spec_id && state.spec_id.map(item => {

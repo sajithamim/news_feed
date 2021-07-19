@@ -14,6 +14,8 @@ const SubSpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(10);
   const {specId} = useParams();
  
   const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
@@ -38,6 +40,18 @@ const SubSpecializationContent = () => {
     setShowDrawer(true);
     setDrawerType("add");
   };
+
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getSubSpecialisation(page));
+  }
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    total: subspecialization.count
+  }
 
   const confirmDelete = (id) => {
     dispatch(deleteSubSpec(id))
@@ -91,7 +105,7 @@ const SubSpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {subspecialization ? 
-        (<Table columns={columns} dataSource={subspecialization && subspecialization} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+        (<Table columns={columns} dataSource={subspecialization && subspecialization} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

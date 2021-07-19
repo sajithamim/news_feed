@@ -29,9 +29,7 @@ const DrawerContent = (props) => {
 
   const handleSubmit = (e) => {
     //formValidation();
-    console.log('formSubmit', formSubmit);
     if(formValidation()) {
-      console.log('enter')
       setErrors({});
       let newData = state;
       const id = state.id;
