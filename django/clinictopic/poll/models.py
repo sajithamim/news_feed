@@ -38,7 +38,5 @@ class Feedback(models.Model):
     feedback = models.CharField(max_length=2000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-
     class Meta:
         db_table = "Feedback"

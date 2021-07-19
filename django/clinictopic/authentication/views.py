@@ -4,7 +4,7 @@ from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
- ProfileUpdateSerializer)
+ ProfileUpdateSerializer,UsernameChangeSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -433,3 +433,17 @@ class UserDetailApiview(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+class UsernameAddview(generics.CreateAPIView):
+    serializer_class = UsernameChangeSerializer
+    pagination_class = None
+    permission_classes = (permissions.IsAuthenticated,)
+    def get_serializer(self, *args, **kwargs):
+        """ if an array is passed, set serializer to many """
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super(UsernameAddview, self).get_serializer(*args, **kwargs)
+    # @csrf_exempt
+    def perform_create(self, serializer):
+        serializer.save()
