@@ -55,17 +55,20 @@ export const postTopic = (state, form_data, image_data) => async (dispatch) => {
 }
 
 export const updateTopic = (id, state, form_data, image_data) => async (dispatch) => {
+    console.log("action state" , state);
     state.topic_audience = "doctor";
+    console.log("form_data" , form_data);
+    console.log("image_data" , image_data);
     try {
-        const res = await Topic.postTopic(id, state);
-        if (res && form_data) {
+        const res = await Topic.updateTopic(id, state);
+        if (res && form_data !== null) {
             await Topic.putPdfdata(id, form_data);
             dispatch({
                 type: 'UPDATE_TOPIC',
                 payload: res.data,
             })
         }
-        if(res && image_data) {
+        if(res && image_data !== null) {
             image_data.append('topic_id', id);
             await Topic.putImagedata(id, image_data);
             dispatch({

@@ -17,10 +17,15 @@ const DrawerContent = (props) => {
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
-  
+  console.log('props', props.editData)
   useEffect(() => {
     setState(props.editData);
-    setImgData(props.editData.icon);
+    if(props.editData.icon && props.editData.icon.startsWith("/media")) 
+      setImgData(`http://178.18.246.233:8000${props.editData.icon}`);
+    else
+      setImgData(props.editData.icon);
+     
+    
   }, [props.editData])
 
   const dispatch = useDispatch();
@@ -28,7 +33,6 @@ const DrawerContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    //formValidation();
     if(formValidation()) {
       setErrors({});
       let newData = state;
@@ -95,8 +99,7 @@ const DrawerContent = (props) => {
       newErrorsState.image = '';
       setErrors(newErrorsState);
       setFormSubmit(!formSubmit);
-    }
-    
+    }   
   }
 
   const formValidation = () => {  
@@ -107,11 +110,8 @@ const DrawerContent = (props) => {
       setErrors(newErrorsState); 
       return false;
     }  
-    setErrors({}); 
     return true;
   } 
-
-
 
   return (
     <Form name="basic"

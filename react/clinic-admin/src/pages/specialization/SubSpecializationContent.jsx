@@ -1,5 +1,5 @@
-import React, {useState , useEffect} from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message ,Spin} from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
@@ -15,9 +15,9 @@ const SubSpecializationContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(10);
-  const {specId} = useParams();
- 
+  const [pageSize, setPageSize] = useState(10);
+  const { specId } = useParams();
+
   const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
 
   useEffect(() => {
@@ -41,30 +41,50 @@ const SubSpecializationContent = () => {
     setDrawerType("add");
   };
 
-  const handleChange = (page , size , sorter) => {
+  
+  const handleChange = (page, size, sorter) => {
     setCurrent(page)
     dispatch(getSubSpecialisation(page));
   }
 
-  const pagination =  {
-    current ,
+  const pagination = {
+    current,
     pageSize,
-    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
     total: subspecialization.count
   }
 
   const confirmDelete = (id) => {
     dispatch(deleteSubSpec(id))
-    .then((res) => {
-      res.status === 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
-    })
+      .then((res) => {
+        res.status === 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
+      })
   };
 
   const cancel = (e) => {
     message.error("Cancelled");
   };
 
+  const subSpecGenerator = () => {
+    const items = [];
+    subspecialization.map((item, key) => {
+      key++;
+      items.push({
+        sl_no: key,
+        name: item.name,
+        icon: item.icon
+      })
+    })
+    return items;
+  }
+  const subSpec = subSpecGenerator();
+
   const columns = [
+    {
+      title: "Sl No",
+      dataIndex: "sl_no",
+      key: "sl_no",
+    },
     {
       title: "Title",
       dataIndex: "name",
@@ -96,7 +116,7 @@ const SubSpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Sub Specializations" 
+        title="Sub Specializations"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -104,16 +124,16 @@ const SubSpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {subspecialization ? 
-        (<Table columns={columns} dataSource={subspecialization && subspecialization} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+        {subspecialization ?
+          (<Table columns={columns} dataSource={subSpec && subSpec} pagination={pagination} />) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
       </Card>
       <Drawer
         title={
           drawerType === "edit"
             ? "Edit Sub Specialization"
             : drawerType === "add"
-            ? "Add  Sub Specialization"
-            : ""
+              ? "Add  Sub Specialization"
+              : ""
         }
         placement="right"
         width={750}
@@ -122,7 +142,7 @@ const SubSpecializationContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType}  type="sub_spec" editData={(drawerType === 'edit') ? editData: {}}/>
+        <DrawerContent drawerType={drawerType} type="sub_spec" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );

@@ -80,7 +80,7 @@ const UserDetails = () => {
         <Row gutter={12} style={{marginTop: "-121px"}}>
           <Col span={12}>
           <Card title="Category List" bordered={true}>
-                <Table columns={columns} dataSource={catList} />
+                <Table columns={columns} dataSource={catList} pagination = {false}/>
           </Card>
         </Col>
         </Row>

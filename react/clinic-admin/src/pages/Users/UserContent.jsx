@@ -16,8 +16,26 @@ const UserContent = () => {
 
   const onAdd = () => {
   };
-
+const userGenerator = () =>{
+  const Items = [];
+  userList && userList.data && userList.data.map((item ,key) => {
+    key++;
+    return Items.push({
+      sl_no: key,
+      name: item.name,
+      email:item.email,
+      phone:item.phone,
+    })
+  })
+  return Items;
+}
+const User = userGenerator();
   const columns = [
+    {
+      title: 'Sl No',
+      dataIndex: 'sl_no',
+      key: 'sl_no',
+    },
     {
       title: "Name",
       dataIndex: "name",
@@ -46,7 +64,7 @@ const UserContent = () => {
       <Card
         title="Users"
       > {userList && userList.data ?
-          (<Table columns={columns} dataSource={userList.data} />) :
+          (<Table columns={columns} dataSource={User} />) :
           (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
     </div>

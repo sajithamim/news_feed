@@ -17,9 +17,8 @@ const TopicsContent = (props) => {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    dispatch(getTopic()).then(res => {
-      onClose();
-    })
+    dispatch(getTopic())
+    onClose();
   }, [ postTopic, updateTopic ])
 
 
@@ -52,12 +51,14 @@ const TopicsContent = (props) => {
 
   const topicGenerator = (quantity) => {
     const items = [];
-    topicList && topicList.results && topicList.results.map(item => {
-      console.log("item data" ,item)
+    topicList && topicList.results && topicList.results.map((item , key) => {
+      key++;
       return items.push({
+        sl_no: key,
         id: item.id,
         title: item.title,
-        category_id: item.category_id.title,
+        category_title: item.category_id.title,
+        category_id: item.category_id.id,
         description: item.description,
         source_url: item.source_url,
         spec_id: item.topic_topic,
@@ -66,7 +67,8 @@ const TopicsContent = (props) => {
         deliverytype: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         topic_image: item.topic_image,
-        topic_videourl:item.video_url
+        topic_videourl:item.video_url,
+        pdf:item.pdf
       })
       
     });
@@ -89,14 +91,19 @@ const TopicsContent = (props) => {
 
   const columns = [
     {
+      title:"Sl No:",
+      dataIndex: "sl_no",
+      key:"sl_no"
+    },
+    {
       title: "Title",
       dataIndex: "title",
       key: "title",
     },
     {
       title: "Category",
-      dataIndex: "category_id",
-      key: "category_id",
+      dataIndex: "category_title",
+      key: "category_title",
     },
     {
       title: "Action",
@@ -150,7 +157,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? editData : null}/>
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? editData : {}}/>
       </Drawer>
     </div>
   );

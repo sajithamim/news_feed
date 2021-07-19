@@ -13,16 +13,16 @@ const [pageSize , setPageSize] = useState(10);
 
   const feedbackGenerator = (quantity) => {
     const items = [];
-    for (let i = 0; i < quantity; i++) {
-      items.push({
-        id: i,
-        name: `Item name ${i}`,
-        email: "Example@gmail.com",
-        feedback: "Test Feedback",
+    feedbackList && feedbackList.results && feedbackList.results.map((item,key) => {
+      key++;
+      return items.push({
+        sl_no:key,
+        email: item.email,
+        feedback: item.feedback,
       });
-    }
+    })
     return items;
-  };
+  }
   const feedbacks = feedbackGenerator(7);
 
   const handleChange = (page , size , sorter) => {
@@ -39,6 +39,12 @@ const [pageSize , setPageSize] = useState(10);
   }
 
   const columns = [
+    {
+      title: "Sl No",
+      dataIndex: "sl_no",
+      key: "sl_no",
+      
+    },
     {
       title: "Email",
       dataIndex: "email",
@@ -63,7 +69,7 @@ const [pageSize , setPageSize] = useState(10);
   return (
     <div style={{ margin: "10px" }}>
       <Card title="Feedback" style={{ width: "100%" }}>
-        <Table columns={columns} pagination={pagination} dataSource={feedbackList.results} />
+        <Table columns={columns} pagination={pagination} dataSource={feedbacks} />
       </Card>
     </div>
   );

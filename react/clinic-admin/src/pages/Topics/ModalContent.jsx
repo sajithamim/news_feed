@@ -56,7 +56,6 @@ const ModalContent = (props) => {
 
   const handleSpecChange = (value) => {
     let topic = [];
-    console.log("state spec", topic );
     value && value.map(item => {
       topic.push({ spec_id: item })
     })
@@ -65,18 +64,21 @@ const ModalContent = (props) => {
   };
   
   useEffect(() => {
+    console.log("props" ,props.editData)
+    setState(props.editData);
+    setimageUrl(props.editData);
     dispatch(getSpecialization());
     dispatch(getCategory());
     if (props.editData !== null) {
       setState(props.editData);
-      const spec_id = [];
-      props.editData.spec_id.map(item => {
-        spec_id.push(item.spec_id.name)
-      });
-      console.log('spec_idspec_id', spec_id)
+      // const spec_id = [];
+      // props.editData.spec_id.map(item => {
+      //   spec_id.push(item.spec_id.name)
+      // });
+
       //var result = JSON.stringify(spec_id).replace('[', '').replace(']', '');
       
-      setSpecId(spec_id)
+      //setSpecId(spec_id)
       //setSpecId(`[${result}]`);
       //var result1 = `[${result}]`;
 
@@ -98,7 +100,6 @@ const ModalContent = (props) => {
   
 
   const onOk = (value) => {
-
   }
 
   const radioOnChange = (val, e) => {
@@ -129,8 +130,6 @@ const ModalContent = (props) => {
 
   const handleSubmit = (e) => {
     if(formValidation()) {
-      
-    console.log("getting");
       setErrors({});
       const id = state.id;
       let form_data = null;
@@ -139,16 +138,25 @@ const ModalContent = (props) => {
         form_data.append('pdf', pdfUrl, pdfUrl.name);
       }
       let image_data = null;
-      if (imageFormData) {
+      if (imageFormData.length > 0) {
         image_data = new FormData();
         imageFormData.forEach((file, key) => {
           image_data.append('image', file, file.name);
         });
       }
-
       if(props.drawerType === 'edit')
       {
-        dispatch(updateTopic(id, state, form_data, image_data))
+        let newData = state;
+        delete newData["sl_no"];
+        delete newData["spec_id"];
+        delete newData["pdf"];
+        delete newData["topic_image"];
+        delete newData["category_title"];
+        delete newData["id"];
+        delete newData["topic_audience"];
+        delete newData["topic_topic"];
+        //console.log("newdata",newData);
+        dispatch(updateTopic(id, newData, form_data, image_data))
         .then(() => {
           message.success('Topic edited successfully')
         });
@@ -299,7 +307,7 @@ const ModalContent = (props) => {
             <Form.Item wrapperCol={{offset: 8, span: 10}}>
               {(state.deliverytype && state.deliverytype !== 'null' ? 
                 (state.deliverytype === 'pdf' ? 
-                  (<Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange}  />) : (<Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} />)) 
+                  (<>{state.pdf && <object data="your_url_to_pdf" type="application/pdf"><embed src={state.pdf} type="application/pdf" /></object>}{state.pdf}<Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange}  /></>) : (<Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} />)) 
                   : null)}
               <div className="errorMsg">{errors.pdf}</div>
             </Form.Item>

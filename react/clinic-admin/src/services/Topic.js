@@ -17,7 +17,7 @@ const postTopic = (state) => {
 };
 
 const updateTopic = (id , state) => {
-  return http.put(`topic/topic/${id}/` , state);
+  return http.patch(`topic/topic/${id}/` , state);
 }
 
 const putPdfdata =(id, pdfData) => {
