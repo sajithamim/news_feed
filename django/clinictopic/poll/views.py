@@ -13,7 +13,10 @@ from .serializers import TopicPollSerializer,UserPollSerializer,FeedbackSerializ
 from .models import Feedback, TopicPoll
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
+from rest_framework import pagination
 
+class TwentyPagination(pagination.PageNumberPagination):       
+       page_size = 20
 
 # Create your views here.
 
@@ -70,8 +73,8 @@ class userPollview(generics.CreateAPIView):
 
 class Feedbackview(generics.ListCreateAPIView):
     serializer_class = FeedbackSerializer
-    # pagination_class = None
-    permission_classes = (IsAuthenticated,)
+    pagination_class = TwentyPagination
+    # permission_classes = (IsAuthenticated,)
     def get_serializer(self, *args, **kwargs):
         """ if an array is passed, set serializer to many """
         if isinstance(kwargs.get('data', {}), list):
@@ -81,4 +84,4 @@ class Feedbackview(generics.ListCreateAPIView):
     # def perform_create(self, serializer):
     #     serializer.save(user_id=self.request.user)
     def get_queryset(self):
-        return Feedback.objects.all() 
+        return Feedback.objects.all().order_by('-id')
