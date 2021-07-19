@@ -1,6 +1,7 @@
 const initialState= {
     topicList:[],
     postTopic: false,
+    updateTopic: false,
     pdf:{}
 };
 
@@ -15,6 +16,8 @@ export default (state = initialState , action) => {
         return {...state , postTopic: true }
         case 'DELETE_IMAGE':
         return {...state , topicList:action.payload}
+        case 'UPDATE_TOPIC':
+            return { ...state , updateTopic: true}
         default: 
         return state;
     }

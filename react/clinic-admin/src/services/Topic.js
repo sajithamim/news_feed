@@ -16,6 +16,10 @@ const postTopic = (state) => {
   return http.post(`topic/topic/`, state);
 };
 
+const updateTopic = (id , state) => {
+  return http.put(`topic/topic/${id}/` , state);
+}
+
 const putPdfdata =(id, pdfData) => {
   let accessToken = localStorage.getItem("accessToken");
   let url = `http://178.18.246.233:8000/api/topic/topic/${id}/pdf/`;
@@ -52,7 +56,8 @@ const Topic = {
   postTopic,
   putPdfdata,
   putImagedata,
-  deleteImage
+  deleteImage,
+  updateTopic
 };
   
 export default Topic;

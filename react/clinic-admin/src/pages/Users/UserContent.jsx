@@ -15,8 +15,6 @@ const UserContent = () => {
 
 
   const onAdd = () => {
-    //setShowDrawer(true);
-    //setDrawerType("add");
   };
 
   const columns = [
@@ -44,12 +42,6 @@ const UserContent = () => {
     <div style={{ margin: "10px" }}>
       <Card
         title="Users"
-        extra={
-          <IconButton onClick={onAdd}>
-            <Icon>add</Icon>
-          </IconButton>
-        }
-        style={{ width: "100%" }}
       > {userList && userList.data ?
           (<Table columns={columns} dataSource={userList.data} />) :
           (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}

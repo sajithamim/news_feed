@@ -11,14 +11,14 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
 
   const [editData , setEditData] = useState({});
-  const { topicList , postTopic }= useSelector(state => state.topic);
+  const { topicList , postTopic, updateTopic }= useSelector(state => state.topic);
   const dispatch = useDispatch();
-  
+  console.log("postTopic",postTopic);
   useEffect(() => {
     dispatch(getTopic()).then(res => {
       onClose();
     })
-  }, [ postTopic ])
+  }, [ postTopic, updateTopic ])
 
 
   const onClose = () => {
@@ -40,7 +40,7 @@ const TopicsContent = (props) => {
     dispatch(deleteTopic(id))
     .then((res) => {
       console.log("res",res);
-      res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
     })
   }
   
@@ -51,6 +51,7 @@ const TopicsContent = (props) => {
   const topicGenerator = (quantity) => {
     const items = [];
     topicList && topicList.results && topicList.results.map(item => {
+      console.log("item data" ,item)
       return items.push({
         id: item.id,
         title: item.title,
@@ -61,8 +62,11 @@ const TopicsContent = (props) => {
         publishingtime: item.publishingtime,
         publishtype: "later",
         deliverytype: item.deliverytype,
-        mediatype: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
+        media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
+        topic_image: item.topic_image,
+        topic_videourl:item.video_url
       })
+      
     });
     return items;
     }

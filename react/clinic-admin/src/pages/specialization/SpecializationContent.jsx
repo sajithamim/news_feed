@@ -17,9 +17,8 @@ const SpecializationContent = () => {
   const { specList, updateData, addData } = useSelector(state => state.spec);
   
   useEffect(() => {
-    dispatch(getSpecialization()).then(res => {
-      onClose();
-    })
+    dispatch(getSpecialization())
+    onClose();
   }, [updateData, addData])
 
   const onClose = () => {
@@ -100,7 +99,7 @@ const SpecializationContent = () => {
             ? "Edit Specialization"
             : drawerType === "add"
               ? "Add Specialization"
-              : ""
+              : "" 
         }
         placement="right"
         width={750}
