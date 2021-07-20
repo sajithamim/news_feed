@@ -84,17 +84,20 @@ class GetUserCategoryApiview(APIView):
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
-    def icon(self, request, pk):
-        obj = self.get_object()
-        serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors,
-                                 status.HTTP_400_BAD_REQUEST)
+    def icon(self, request, pk,*args,**kwargs):
+        # try:
+            obj = self.get_object()
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                        status.HTTP_400_BAD_REQUEST)
+        # except Exception as e:
+        #     print(str(e))
     # permission_classes = (IsAuthenticated,)
 
 
