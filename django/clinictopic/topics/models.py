@@ -41,7 +41,11 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not instance.pk:
         return False
     try:
-        old_file = Categoeries.objects.get(pk=instance.pk).image
+        print(instance.pk)
+        old_file = Categoeries.objects.get(id=instance.pk).image
+        # print("old",old_file)
+        if not old_file:
+            return False
     except Categoeries.DoesNotExist:
         return False
 
