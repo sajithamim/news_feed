@@ -1,8 +1,9 @@
+from typing import List
 from django.http import response
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
-userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer)
+userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer,UpdateTopicSpecializationSerializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -18,11 +19,39 @@ from rest_framework.views import APIView
 from authentication.models import User
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.db.models import Q
-
+from specialization.models import UserSpecialization
 # from rest_framework.decorators import list_route
+from rest_framework import mixins
 
 
 
+class UpdateTopicSpecialization(APIView):
+    serializer_class = UpdateTopicSpecializationSerializer
+    pagination_class = None
+    # permission_classes = (IsAuthenticated,)
+    def put(self,request,pk):
+        try:
+            topic = TopicSpecialization.objects.filter(topic_id=pk).delete()
+            serializer = self.serializer_class(data=request.data,many=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'updated',
+            'data':serializer.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
 
 # from django_rest_swagger_swaggerdoc import swaggerdoc
 # from rest_framework.decorators import detail_route
@@ -55,22 +84,25 @@ class GetUserCategoryApiview(APIView):
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
-    def icon(self, request, pk):
-        obj = self.get_object()
-        serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors,
-                                 status.HTTP_400_BAD_REQUEST)
+    def icon(self, request, pk,*args,**kwargs):
+        # try:
+            obj = self.get_object()
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                        status.HTTP_400_BAD_REQUEST)
+        # except Exception as e:
+        #     print(str(e))
     # permission_classes = (IsAuthenticated,)
 
 
 class TopicViewSet(viewsets.ModelViewSet):
-    queryset = Topics.objects.all().order_by('title')
+    queryset = Topics.objects.all().order_by('-created_at')
     serializer_class = TopicSeriaizer
     permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
@@ -80,9 +112,14 @@ class TopicViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         # print(queryset.query)
         query_set = queryset.filter()
-        if not user_type:
-            query_set = queryset.filter()
-            # print(query_set.query)
+        # if not user_type:
+        #     userCategory = UserCategory.objects.filter(user_id=self.request.user)
+        #     ids = list(userCategory.category_id.id for userCategory in userCategory)
+        #     userspec = UserSpecialization.objects.filter(user_id=self.request.user)
+        #     ids = list(userspec.spec_id.id for userspec in userspec)
+        #     print(ids)
+        #     query_set = Topics.objects.filter(category_id__in=ids,topic_topic__spec_id__id__in=ids)
+        #     print(query_set.query)
         return query_set
 
     @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser],)
@@ -257,3 +294,5 @@ class Deleteimage(APIView):
                 'error': str(e)
                 }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
