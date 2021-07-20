@@ -17,15 +17,13 @@ const DrawerContent = (props) => {
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
-  console.log('props', props.editData)
+
   useEffect(() => {
     setState(props.editData);
-    if(props.editData.icon && props.editData.icon.startsWith("/media")) 
+    if(props.editData.icon && props.editData.icon.startsWith("/media"))
       setImgData(`http://178.18.246.233:8000${props.editData.icon}`);
     else
       setImgData(props.editData.icon);
-     
-    
   }, [props.editData])
 
   const dispatch = useDispatch();

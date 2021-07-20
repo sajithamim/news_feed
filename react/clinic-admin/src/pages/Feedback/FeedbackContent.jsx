@@ -28,12 +28,11 @@ const [pageSize , setPageSize] = useState(10);
   const handleChange = (page , size , sorter) => {
     setCurrent(page)
     dispatch(getFeedback(page));
-    console.log("filters", sorter)
   }
   const pagination =  {
     current ,
     pageSize,
-    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    onChange: (page, pageSize) => {handleChange(page, pageSize)},
     total: feedbackList.count
     
   }
@@ -49,8 +48,6 @@ const [pageSize , setPageSize] = useState(10);
       title: "Email",
       dataIndex: "email",
       key: "email",
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.email - b.email,
     },
     {
       title: "Feedback",

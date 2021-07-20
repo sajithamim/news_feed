@@ -36,6 +36,20 @@ export const routes = [
         icon: <AiFillContainer />
       },
       {
+        title: 'Settings',
+        path: '/data',
+        key: "settings",
+        icon: <IoIcons.IoIosPaper />,
+        subNavItem: [
+          {
+            title: 'Users',
+            path: '/data/Users',
+            key: "users",
+            icon: <IoIcons.IoIosPaper />,
+          },
+        ]
+      },
+      {
         title: 'Feedback',
         path: '/data/Feedback',
         key: "feed",

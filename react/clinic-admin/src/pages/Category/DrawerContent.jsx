@@ -57,20 +57,22 @@ const DrawerContent = (props) => {
   }
 
     const handleSubmit = (e) => {
-      console.log('errors', errors)
       if (formValidation()) {
         setErrors({});
         let newData = state;
         const id = state.id;
         let form_data = null;
+        console.log('image.name', image.name)
         if (image && image.name) {
           form_data = new FormData();
-          form_data.append('icon', image, image.name);
+          form_data.append('image', image, image.name);
         }
-        console.log('state', state)
+        
         if (props.drawerType === 'edit') {
+          delete newData["sl_no"];
           delete newData["id"];
           delete newData["image"];
+          
           dispatch(updateCategory(id, newData, form_data))
             .then(() => {
               message.success('Category edited successfully')
@@ -79,6 +81,7 @@ const DrawerContent = (props) => {
         else {
           dispatch(postCategory(state, form_data))
           .then(() => {
+            setState({});
             message.success('Category added successfully')
           });
         }

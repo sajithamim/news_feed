@@ -8,6 +8,7 @@ import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
 import Users from './pages/Users/Users';
+import Settings from './pages/Settings/Settings';
 import UserDetails from './pages/Users/UserDetails';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
@@ -30,6 +31,7 @@ function App() {
           <PrivateRoute path="/data/SubSpecialization/:specId" exact component={SubSpecialization} />
           <PrivateRoute path="/data/Feedback" exact component={Feedback} />
           <PrivateRoute path="/data/Users" exact component={Users} />
+          <PrivateRoute path="/data/Settings" exact component={Settings} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />

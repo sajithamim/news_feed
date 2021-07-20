@@ -6,7 +6,6 @@ const initialState= {
 };
 
 export default (state = initialState , action) => {
-    console.log('action.payload', action.payload)
     switch(action.type) {
         case 'GET_TOPIC':
         return {...state , topicList: action.payload }

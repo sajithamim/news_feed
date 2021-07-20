@@ -27,6 +27,7 @@ const updateImageCat = (id, imageData) => {
     }
   })
   .then(res => {
+    console.log('responseSSSSS', url)
   return res
   })
   .catch(err => err)

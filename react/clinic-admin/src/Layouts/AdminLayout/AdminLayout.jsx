@@ -63,8 +63,12 @@ const AdminLayout = ({ children }) => {
                       >
                         {route.subNav.map((subroute) => (
                           <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
-                            {subroute.key !== 'logout' ? (<Menu.Item icon={subroute.icon}> {subroute.title}
-                            </Menu.Item>) : (<Menu.Item icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
+                            {subroute.key !== 'logout' ? subroute.key !== 'settings' ? (<Menu.Item icon={subroute.icon}> {subroute.title}
+                            </Menu.Item>) : (<Menu theme="dark" mode="inline" defaultSelectedKeys={["2"]} style={{ height: "100%" }}><SubMenu key={subroute.key} icon={subroute.icon} title={subroute.title} style={{paddingLeft: '24px'}}>
+                              {subroute.subNavItem.map((subItem) => (
+                                <Menu.Item icon={subItem.icon}> {subItem.title}</Menu.Item>))}
+                              </SubMenu></Menu>) : 
+                            (<Menu.Item icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
                           </NavLink>
                         ))}
                       </SubMenu>

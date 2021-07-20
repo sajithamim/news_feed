@@ -17,7 +17,6 @@ export const deleteTopic = (id) => async (dispatch) => {
         const res = await Topic.deleteTopic(id)
         if(res.data && res.data.id){
             await Topic.deleteImage(id);
-            console.log("res");
         }
         dispatch({
             type: 'DELETE_IMAGE',
@@ -55,10 +54,8 @@ export const postTopic = (state, form_data, image_data) => async (dispatch) => {
 }
 
 export const updateTopic = (id, state, form_data, image_data) => async (dispatch) => {
-    console.log("action state" , state);
+   
     state.topic_audience = "doctor";
-    console.log("form_data" , form_data);
-    console.log("image_data" , image_data);
     try {
         const res = await Topic.updateTopic(id, state);
         if (res && form_data !== null) {

@@ -16,13 +16,12 @@ const CategoriesContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { catlist , updateData, addData  } = useSelector(state => state.category);
-  console.log('addData', addData)
+  
   useEffect(() => {
     dispatch(getCategory());
     onClose();
   }, [updateData, addData])
 
-  console.log("catlist",catlist);
 
   const onClose = () => {
     setShowDrawer(false);
@@ -60,7 +59,7 @@ const CategoriesContent = () => {
 
   const cancel = (e) => {
   };
-console.log("catlist" , catlist.results);
+  
   const catGenerator = () => {
     const items = [];
     catlist && catlist.results && catlist.results.map((item , key) => {

@@ -3,8 +3,6 @@ export const getSpecialization = () => async (dispatch) => {
     try {
         const res = await Specialization.getAll();
         //const data = await res.json()
-        //console.log('data', data)
-        console.log('res', res)
         dispatch({
             type: 'RETRIEVE_SPECIALIZATION',
             payload: res.data,
@@ -128,7 +126,6 @@ export const deleteSpec = (id) => async (dispatch) => {
     }
 
     export const image = () => async (dispatch) => {
-        console.log("testing action");
     }
 
 

@@ -11,16 +11,14 @@ const PollContent = (props) => {
   //   }
 
   if (props.questions && props.answers) {
-    console.log(props.questions && props.answers);
     for (let i = 0; i <= 2; i++) {
       const questions = [...questonFields];
 
-      console.log(i, props.questions);
+    
       questions.push({ value: null });
       setQuestionFields(questions);
     }
   }
-  console.log(questonFields);
 
   //   function handleAnswerChange(i, event) {
   //     const values = [...answerFields];
@@ -44,7 +42,6 @@ const PollContent = (props) => {
   return (
     <div>
       {questonFields.map((field, idx) => {
-        console.log(field, idx);
         return (
           <div key={`${field}-${idx}`}>
             <input

@@ -66,7 +66,7 @@ const ModalContent = (props) => {
   useEffect(() => {
     console.log("props" ,props.editData)
     setState(props.editData);
-    setimageUrl(props.editData);
+    setimageUrl(props.editData.topic_image.image);
     dispatch(getSpecialization());
     dispatch(getCategory());
     if (props.editData !== null) {
@@ -155,13 +155,11 @@ const ModalContent = (props) => {
         delete newData["id"];
         delete newData["topic_audience"];
         delete newData["topic_topic"];
-        //console.log("newdata",newData);
         dispatch(updateTopic(id, newData, form_data, image_data))
         .then(() => {
           message.success('Topic edited successfully')
         });
       } else {
-        console.log("add topic");
         dispatch(postTopic(state, form_data, image_data))
           .then(() => {
             setState({});
@@ -239,11 +237,9 @@ const ModalContent = (props) => {
   } 
   const specList1 = [];
   // state.spec_id && state.spec_id.map(item => {
-  //   //console.log('item', item)
   //   specList1.push(item.spec_id.name)
   // });
   // setState({ ...state, topic_topic: topic })
-  // console.log('specList123444', specList1)
   //var result = JSON.stringify(spec_id).replace('[', '').replace(']', ''); 
   const data = ['4','5']
   
