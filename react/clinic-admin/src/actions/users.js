@@ -38,10 +38,8 @@ export const getUserSpecialization = (emailId) => async(dispatch) => {
 }
 
 export const getUserDetails = (emailId) => async(dispatch) => {
-    console.log("hjhjhjh");
     try{
         const res = await Users.getUserData(emailId);
-        console.log("user details" ,res.data);
         dispatch({
             type: 'GET_USER_DETAILS',
             payload: res.data,

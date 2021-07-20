@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin } from "antd";
 import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,16 +11,15 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
 
   const [editData , setEditData] = useState({});
-  
-  const { topicList , postTopic }= useSelector(state => state.topic);
-  console.log('topicList', topicList)
+  const { topicList , postTopic, updateTopic }= useSelector(state => state.topic);
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(5);
   const dispatch = useDispatch();
   
   useEffect(() => {
-    dispatch(getTopic()).then(res => {
-      onClose();
-    })
-  }, [ postTopic ])
+    dispatch(getTopic())
+    onClose();
+  }, [ postTopic, updateTopic ])
 
 
   const onClose = () => {
@@ -42,7 +41,7 @@ const TopicsContent = (props) => {
     dispatch(deleteTopic(id))
     .then((res) => {
       console.log("res",res);
-      res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
     })
   }
   
@@ -52,26 +51,50 @@ const TopicsContent = (props) => {
 
   const topicGenerator = (quantity) => {
     const items = [];
-    topicList && topicList.results && topicList.results.map(item => {
-      console.log('item', item)
+    topicList && topicList.results && topicList.results.map((item , key) => {
+      key++;
       return items.push({
+        sl_no: key,
         id: item.id,
         title: item.title,
-        category_id: item.category_id.title,
+        category_title: item.category_id.title,
+        category_id: item.category_id.id,
         description: item.description,
         source_url: item.source_url,
         spec_id: item.topic_topic,
         publishingtime: item.publishingtime,
+        publishtype: "later",
         deliverytype: item.deliverytype,
-        mediatype: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
+        media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
+        topic_image: item.topic_image,
+        topic_videourl:item.video_url,
+        pdf:item.pdf
       })
+      
     });
     return items;
     }
 
   const topics = topicGenerator();
 
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getTopic(page));
+  }
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    total: topicList.count
+  }
+
   const columns = [
+    {
+      title:"Sl No:",
+      dataIndex: "sl_no",
+      key:"sl_no"
+    },
     {
       title: "Title",
       dataIndex: "title",
@@ -79,8 +102,8 @@ const TopicsContent = (props) => {
     },
     {
       title: "Category",
-      dataIndex: "category_id",
-      key: "category_id",
+      dataIndex: "category_title",
+      key: "category_title",
     },
     {
       title: "Action",
@@ -116,7 +139,8 @@ const TopicsContent = (props) => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} dataSource={topics} />
+        {topicList && topicList.results ?
+        (<Table columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={
@@ -133,7 +157,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? editData : null}/>
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? editData : {}}/>
       </Drawer>
     </div>
   );

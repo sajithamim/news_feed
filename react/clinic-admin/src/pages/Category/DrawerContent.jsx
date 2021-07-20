@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
-import { Form, Button ,Input, Modal ,message } from "antd";
+import { Form, Button, Input, Modal, message } from "antd";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import "./Drawer.css";
@@ -18,15 +18,16 @@ const DrawerContent = (props) => {
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
 
-  const [state, setState] = useState(props.editData);  
+  const [state, setState] = useState(props.editData);
+  const [errors, setErrors] = useState({ title: '' });
 
   useEffect(() => {
     setState(props.editData)
     setImgData(props.editData.image);
-  },[props.editData])
+  }, [props.editData])
 
-  //const { id } = useParams();
   const [previewTitle, setPreviewTitle] = useState("");
+  const [formSubmit, setFormSubmit] = useState(false);
 
   const handleCancel = () => setPreviewVisible(false);
 
@@ -35,79 +36,103 @@ const DrawerContent = (props) => {
   };
 
   const handleFileChange = (info) => {
-   setImage(info.target.files[0]);
-   const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      setImgData(reader.result);
-    });
-    reader.readAsDataURL(info.target.files[0]);
-  };
-
-  const handleSubmit = (e) => {
-    let newData = state;
-    const id = state.id;
-    let form_data = null;
-    if(image && image.name) {
-      form_data = new FormData();
-      form_data.append('icon', image, image.name);  
-    }
-    
-    
-    if(props.drawerType === 'edit')
-    {
-      delete newData["id"];
-      delete newData["image"];
-      dispatch(updateCategory(id, newData, form_data))
-      .then(() => {
-        message.success('Category edited successfully')
+    setImage(info.target.files[0]);
+    const imageFile = info.target.files[0];
+    const newErrorsState = { ...errors };
+    if (!imageFile.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      newErrorsState.image = 'Please select valid image.';
+      setErrors(newErrorsState);
+      setFormSubmit(!formSubmit);
+      return false;
+    } else {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result);
       });
-    }
-    else{
-      dispatch(postCategory(state, form_data));
+      reader.readAsDataURL(info.target.files[0]);
+      newErrorsState.image = '';
+      setErrors({});
+      setFormSubmit(!formSubmit);
     }
   }
 
-  return (
-    <Form onFinish={handleSubmit}>
-      <div>
-        <div className="modalStyle">
-          <Grid container direction="row" className="modalStyle">
-            <Grid item md={3} className="labelStyle">
-              <span>*Name :</span>
-            </Grid>
-            <Grid item md={6}>
-              <Input name="title" onChange={handleChange} value={state.title} required={true} />
-            </Grid>
-          </Grid>
-          <Grid container direction="row" className="modalStyle">
-            <Grid item md={3} className="labelStyle">
-              <span>*Image :</span>
-            </Grid>
-            <Grid item md={6}>
-              {imgData ? (<img className="playerProfilePic_home_tile"  width = "128px" height = "128px" alt={imgData} src={imgData} />) : null}
-            <Input type="file"
+    const handleSubmit = (e) => {
+      console.log('errors', errors)
+      if (formValidation()) {
+        setErrors({});
+        let newData = state;
+        const id = state.id;
+        let form_data = null;
+        if (image && image.name) {
+          form_data = new FormData();
+          form_data.append('icon', image, image.name);
+        }
+        console.log('state', state)
+        if (props.drawerType === 'edit') {
+          delete newData["id"];
+          delete newData["image"];
+          dispatch(updateCategory(id, newData, form_data))
+            .then(() => {
+              message.success('Category edited successfully')
+            });
+        }
+        else {
+          dispatch(postCategory(state, form_data))
+          .then(() => {
+            message.success('Category added successfully')
+          });
+        }
+      }
+    }
+
+    const formValidation = () => {
+      let entities = state;
+      const newErrorsState = { ...errors };
+      if (!entities["title"]) {
+        newErrorsState.title = 'Name cannot be empty';
+        setErrors(newErrorsState);
+        return false;
+      }
+      setErrors({});
+      return true;
+    }
+
+    return (
+      <Form name="basic"
+        labelCol={{
+          span: 8,
+        }}
+        wrapperCol={{
+          span: 10,
+        }} onFinish={handleSubmit}>
+        <div>
+          <div className="modalStyle">
+            <Form.Item label="Name">
+              <Input name="title" onChange={handleChange} value={state.title} />
+              <div className="errorMsg">{errors.title}</div>
+            </Form.Item>
+
+            <Form.Item label="Image">
+              {imgData ? (<img className="playerProfilePic_home_tile" width="128px" height="128px" alt={imgData} src={imgData} />) : null}
+              <Input type="file"
                 id="image"
                 accept="image/png, image/jpeg" onChange={handleFileChange} />
-              <i aria-label="icon: plus" class="anticon anticon-plus"></i>
-              <Modal
-                visible={previewVisible}
-                title={previewTitle}
-                footer={null}
-                onCancel={handleCancel}
-              >
-                <img alt="example" style={{ width: "100%" }} src={previewImage} />
-              </Modal>
-            </Grid>
-          </Grid>
+              <div className="errorMsg">{errors.image}</div>
+            </Form.Item>
+          </div>
         </div>
-      </div>
-      <div className="submit">
-        <Button type="primary" htmlType="submit" >
-          Save
-        </Button>
-      </div>
-    </Form>
-  );
-};
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Button type="primary" htmlType="submit" >
+            Save
+          </Button>
+        </Form.Item>
+      </Form>
+    );
+  };
 
-export default DrawerContent;
+  export default DrawerContent;

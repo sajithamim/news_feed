@@ -14,12 +14,13 @@ const SpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(10);
   const { specList, updateData, addData } = useSelector(state => state.spec);
-  
+ 
   useEffect(() => {
-    dispatch(getSpecialization()).then(res => {
-      onClose();
-    })
+    dispatch(getSpecialization())
+    onClose();
   }, [updateData, addData])
 
   const onClose = () => {
@@ -48,7 +49,39 @@ const SpecializationContent = () => {
     message.error("Cancelled");
   };
 
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getSpecialization(page));
+  }
+
+  const specGenerator = () => {
+    const items = [];
+    specList && specList.results && specList.results.map((item , key) => {
+      key++;
+      return items.push({
+        sl_no: key,
+        id: item.id,
+        name: item.name,
+        icon: item.icon
+      })
+    })
+    return items;
+  }
+  const spec = specGenerator();
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    total: specList.count
+  }
+
   const columns = [
+    {
+      title: "Sl No",
+      dataIndex: "sl_no",
+      key: "sl_no",
+    },
     {
       title: "Title",
       dataIndex: "name",
@@ -92,7 +125,7 @@ const SpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {specList && specList.results ?
-          (<Table columns={columns} dataSource={specList.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+          (<Table columns={columns} pagination={pagination} dataSource={spec} />) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={
@@ -100,15 +133,9 @@ const SpecializationContent = () => {
             ? "Edit Specialization"
             : drawerType === "add"
               ? "Add Specialization"
-              : ""
+              : "" 
         }
-        placement="right"
-        width={750}
-        closable={true}
-        onClose={onClose}
-        visible={showDrawer}
-        key="drawer"
-      >
+        placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
         <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>

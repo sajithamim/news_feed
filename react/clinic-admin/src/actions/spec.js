@@ -35,6 +35,11 @@ export const postSpecialization = (state, imageData) => async (dispatch) => {
                 type: 'ADD_SPECIALIZATION',
                 payload: res.data,
             });
+        } else {
+            dispatch({
+                type: 'ADD_SPECIALIZATION',
+                payload: res.data,
+            });
         }
     } catch (err) {
     }

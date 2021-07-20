@@ -15,15 +15,31 @@ const UserContent = () => {
 
 
   const onAdd = () => {
-    //setShowDrawer(true);
-    //setDrawerType("add");
   };
-
+const userGenerator = () =>{
+  const Items = [];
+  userList && userList.data && userList.data.map((item ,key) => {
+    key++;
+    return Items.push({
+      sl_no: key,
+      name: item.name,
+      email:item.email,
+      phone:item.phone,
+    })
+  })
+  return Items;
+}
+const User = userGenerator();
   const columns = [
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
+      title: 'Sl No',
+      dataIndex: 'sl_no',
+      key: 'sl_no',
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       render: (text, record) => (
         <Link to={"/data/UserDetails/"+ record.email}>{text}</Link>
       ),
@@ -32,6 +48,9 @@ const UserContent = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      render: (text, record) => (
+        <Link to={"/data/UserDetails/"+ record.email}>{text}</Link>
+      ),
     },
     {
       title: 'phone',
@@ -44,14 +63,8 @@ const UserContent = () => {
     <div style={{ margin: "10px" }}>
       <Card
         title="Users"
-        extra={
-          <IconButton onClick={onAdd}>
-            <Icon>add</Icon>
-          </IconButton>
-        }
-        style={{ width: "100%" }}
       > {userList && userList.data ?
-          (<Table columns={columns} dataSource={userList.data} />) :
+          (<Table columns={columns} dataSource={User} />) :
           (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
     </div>

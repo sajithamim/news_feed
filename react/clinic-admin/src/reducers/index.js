@@ -5,6 +5,7 @@ import message from "./message.js";
 import category from "./category.js";
 import users from "./users.js";
 import topic from "./topic.js";
+import feedback from "./feedback.js";
 
 export default combineReducers({
     spec,
@@ -12,5 +13,6 @@ export default combineReducers({
     auth,
     message,
     users,
-    topic
+    topic,
+    feedback
 });

@@ -11,16 +11,19 @@ import { deleteCategory } from "../../actions/category";
 const CategoriesContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
+  const [current, setCurrent] = useState(1);
+  const [pageSize , setPageSize] = useState(10);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist , updateData  } = useSelector(state => state.category);
+  const { catlist , updateData, addData  } = useSelector(state => state.category);
+  console.log('addData', addData)
   useEffect(() => {
-    dispatch(getCategory()).then((res) => {
-      onClose();
-    });
-  }, [updateData])
+    dispatch(getCategory());
+    onClose();
+  }, [updateData, addData])
 
-  
+  console.log("catlist",catlist);
+
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -43,11 +46,43 @@ const CategoriesContent = () => {
       })
   };
 
+  const handleChange = (page , size , sorter) => {
+    setCurrent(page)
+    dispatch(getCategory(page));
+  }
+
+  const pagination =  {
+    current ,
+    pageSize,
+    onChange: (page, pageSize) => {handleChange(page, pageSize)},
+    total: catlist.count
+  }
+
   const cancel = (e) => {
-    // message.error("Cancelled");
   };
+console.log("catlist" , catlist.results);
+  const catGenerator = () => {
+    const items = [];
+    catlist && catlist.results && catlist.results.map((item , key) => {
+      key++;
+      return items.push({
+      sl_no: key,
+      id: item.id,
+      title: item.title, 
+      image: item.image
+      })
+    });
+    return items;
+    }
+
+  const category = catGenerator();
 
   const columns = [
+    {
+      title: "Sl No:",
+      dataIndex: "sl_no",
+      key: "sl_no",
+    },
     {
       title: "Title",
       dataIndex: "title",
@@ -87,7 +122,7 @@ const CategoriesContent = () => {
         style={{ width: "100%" }}
       >
         {catlist.results ?
-          (<Table columns={columns} dataSource={catlist.results} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+          (<Table columns={columns} dataSource={category} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={
