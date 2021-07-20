@@ -337,3 +337,20 @@ class userFavouriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # print (validated_data)
         return Favourite.objects.create(**validated_data)
+
+
+class UpdateTopicSpecializationSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    class Meta:
+        model = TopicSpecialization
+        fields = ['id','spec_id','topic_id']
+
+    # def to_representation(self, instance):
+    #     response = super().to_representation(instance)
+    #     response['spec_id'] = GetSpecialization(instance.spec_id).data
+    #     return response
+
+    # def to_representation(self, instance):
+    #     response = super().to_representation(instance)
+    #     response['topic_id'] = GetTopicSeriaizer(instance.topic_id).data
+    #     return response
