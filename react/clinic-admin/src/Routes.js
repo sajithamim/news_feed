@@ -5,69 +5,71 @@ import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUn
 
 export const routes = [
   {
-    title: 'Data',
+    title: 'Users',
+    path: '/data/Users',
+    key: "users",
+    icon: <IoIcons.IoIosPaper />
+  },
+  {
+    title: 'Specializations',
+    path: '/data/Specializations',
+    key: "spec",
+    icon: <AiFillDatabase />
+  },
+  {
+    title: 'Categories',
+    path: '/data/Categories',
+    key: "cat",
+    icon: <AiFillCopy />
+  },
+  {
+    title: 'Topics',
+    path: '/data/topics',
+    key: "topic",
+    icon: <AiFillContainer />
+  },
+  {
+    title: 'Settings',
     path: '/data',
-    key: "data",
-    layout: "/admin",
-    icon: <AiIcons.AiFillHome />,
+    key: "settings",
+    icon: <IoIcons.IoIosPaper />,
     subNav: [
       {
-        title: 'Users',
-        path: '/data/Users',
-        key: "users",
-        icon: <IoIcons.IoIosPaper />
-      },
-      {
-        title: 'Specializations',
-        path: '/data/Specializations',
-        key: "spec",
-        icon: <AiFillDatabase />
-      },
-      {
-        title: 'Categories',
-        path: '/data/Categories',
-        key: "cat",
-        icon: <AiFillCopy />
-      },
-      {
-        title: 'Topics',
-        path: '/data/topics',
-        key: "topic",
-        icon: <AiFillContainer />
-      },
-      {
-        title: 'Settings',
-        path: '/data',
-        key: "settings",
+        title: 'Privacy policy',
+        path: '/data/Policy',
+        key: "Policy",
         icon: <IoIcons.IoIosPaper />,
-        subNavItem: [
-          {
-            title: 'Users',
-            path: '/data/Users',
-            key: "users",
-            icon: <IoIcons.IoIosPaper />,
-          },
-        ]
       },
       {
-        title: 'Feedback',
-        path: '/data/Feedback',
-        key: "feed",
-        icon: <IoIcons.IoIosPaper />
+        title: 'Terms And Conditions',
+        path: '/data/Terms',
+        key: "Terms",
+        icon: <IoIcons.IoIosPaper />,
       },
       {
-        title: 'Logout',
-        path: '',
-        key: "logout",
-        icon: <AiTwotoneLock />
+        title: 'Contact Us',
+        path: '/data/Contact',
+        key: "Contact",
+        icon: <IoIcons.IoIosPaper />,
+      },
+      {
+        title: 'About Us',
+        path: '/data/About',
+        key: "About",
+        icon: <IoIcons.IoIosPaper />,
       },
     ]
   },
   {
-    title: 'Login',
-    path: '/login',
-    layout: '/auth',
-    key: "login",
-    icon: <AiTwotoneUnlock />,
-  }
+    title: 'Feedback',
+    path: '/data/Feedback',
+    key: "feed",
+    icon: <IoIcons.IoIosPaper />
+  },
+  {
+    title: 'Logout',
+    path: '',
+    key: "logout",
+    icon: <AiTwotoneLock />
+  },
 ];

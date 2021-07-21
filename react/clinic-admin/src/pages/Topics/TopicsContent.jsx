@@ -52,6 +52,7 @@ const TopicsContent = (props) => {
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
       key++;
+      console.log("category_id" ,items.category_id);
       return items.push({
         sl_no: key,
         id: item.id,

@@ -28,65 +28,44 @@ const AdminLayout = ({ children }) => {
 
   return (
     <Layout>
-      {routes &&
-        routes.map(
-          (route) =>
-            route.layout &&
-            route.layout === "/admin" && (
-              <Sider
-                key={route}
-                trigger={null}
-                collapsible
-                collapsed={collapsed}
-              >
-                <div className="sidebar-logo">
-                  <a href="/">
-                    <img
-                      src="https://ng.ant.design/assets/img/logo.svg"
-                      alt="logo"
-                    />
-                    <h1>Clinic Topics - Admin</h1>
-                  </a>
-                </div>
-                {accessToken !== null && accessToken !== undefined ?
-                  (<Menu
-                    theme="dark"
-                    mode="inline"
-                    defaultSelectedKeys={["1"]}
-                    style={{ height: "100%" }}
-                  >
-                    {route.subNav && route.subNav.length > 0 ? (
-                      <SubMenu
-                        key={route.key}
-                        icon={route.icon}
-                        title={route.title}
-                      >
-                        {route.subNav.map((subroute) => (
-                          <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
-                            {subroute.key !== 'logout' ? subroute.key !== 'settings' ? (<Menu.Item icon={subroute.icon}> {subroute.title}
-                            </Menu.Item>) : (<Menu theme="dark" mode="inline" defaultSelectedKeys={["2"]} style={{ height: "100%" }}><SubMenu key={subroute.key} icon={subroute.icon} title={subroute.title} style={{paddingLeft: '24px'}}>
-                              {subroute.subNavItem.map((subItem) => (
-                                <Menu.Item icon={subItem.icon}> {subItem.title}</Menu.Item>))}
-                              </SubMenu></Menu>) : 
-                            (<Menu.Item icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>)}
-                          </NavLink>
-                        ))}
-                      </SubMenu>
-                    ) : (
-                      <NavLink
-                        key={route.key}
-                        to={route.path}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Menu.Item key={route.key} icon={route.icon}>
-                          {route.title}
-                        </Menu.Item>
-                      </NavLink>
-                    )}
-                  </Menu>) : null}
-              </Sider>
-            )
-        )}
+      <Sider
+        key={routes}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+      >
+        <div className="sidebar-logo">
+          <a href="/">
+            <img
+              src="https://ng.ant.design/assets/img/logo.svg"
+              alt="logo"
+            />
+            <h1>Clinic Topics - Admin</h1>
+          </a>
+        </div>
+        {accessToken !== null && accessToken !== undefined ? 
+          (<Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} style={{ height: "100%" }}>
+            {routes && routes.map((subroute) => subroute.key !== 'logout' ? subroute.key !== 'settings' ?
+              (<NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
+                <Menu.Item icon={subroute.icon}> {subroute.title}
+                </Menu.Item>
+              </NavLink>) :
+              (<NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
+                <SubMenu key={subroute.key} icon={subroute.icon} title={subroute.title}>
+                {subroute.subNav.map((subItem) => (
+                  <NavLink key={subItem.key} to={subItem.path} style={{ textDecoration: "none" }}>
+                    <Menu.Item key={subItem.key} icon={subItem.icon}>{subItem.title}</Menu.Item>
+                  </NavLink>
+                ))}
+                </SubMenu>
+              </NavLink>) :
+              (<NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
+              <Menu.Item icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>
+            </NavLink>)
+          )}
+          </Menu>) : null }
+      </Sider>
+
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>
           {React.createElement(
@@ -112,13 +91,5 @@ const AdminLayout = ({ children }) => {
       </Layout>
     </Layout>
   );
-}
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//       handleLogout: () => {
-//           dispatch(logout());
-//       },
-//   };
-// };
-
+};
 export default AdminLayout;

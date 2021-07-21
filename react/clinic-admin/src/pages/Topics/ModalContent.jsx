@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
 import { Grid } from "@material-ui/core";
-import { Input, Radio, Select, Modal, Button, DatePicker, Space, message, Form } from "antd";
+import { Input, Radio, Modal, Button, DatePicker, Space, message, Form } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import PollContent from "./PollContent";
 import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";
-import { postTopic , updateTopic} from "../../actions/topic";
+import { postTopic, updateTopic } from "../../actions/topic";
 import moment from 'moment';
+import Select from 'react-select';
 
 
 const { Option } = Select;
@@ -22,7 +23,8 @@ const ModalContent = (props) => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [imageUrl, setimageUrl] = useState([]);
   const [imageFormData, setImageFormData] = useState([]);
-
+  const [specSelectedOption ,setSpecSelectedOption ] = useState('');
+  const [categorySelectedOption ,setCategorySelectedOption] = useState('');
   const [pdfUrlData, setPdfData] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [specIds, setSpecId] = useState("");
@@ -32,59 +34,56 @@ const ModalContent = (props) => {
 
   const [formSubmit, setFormSubmit] = useState(true);
 
-  const [errors, setErrors] = useState({name: ''});
+  const [errors, setErrors] = useState({ name: '' });
 
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
     return specialization.push(
-      <Option key={item.id}>{item.name}</Option>
+      {value: item.id, label: item.name}
     );
   })
-
+ 
   const category = [];
   catlist && catlist.results && catlist.results.map(item => {
     return category.push(
-      <Option key={item.id}>{item.title}</Option>
+      {value: item.id , label: item.title}
     );
   })
 
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
+    console.log("e.target" , e.target.name);
   };
 
 
   const handleSpecChange = (value) => {
+    setSpecSelectedOption(value);
     let topic = [];
     value && value.map(item => {
-      topic.push({ spec_id: item })
+     topic.push({ spec_id: item.value})
     })
-    //setSpecId(...specIds, topic)
     setState({ ...state, topic_topic: topic })
   };
-  
+
   useEffect(() => {
-    console.log("props" ,props.editData)
-    setState(props.editData);
-    setimageUrl(props.editData.topic_image.image);
     dispatch(getSpecialization());
     dispatch(getCategory());
+    console.log("props.edit",props.editData.category_title);
     if (props.editData !== null) {
       setState(props.editData);
-      // const spec_id = [];
-      // props.editData.spec_id.map(item => {
-      //   spec_id.push(item.spec_id.name)
-      // });
+      const spec_id = [];
+      console.log("spec_id" , spec_id);
+      props.editData.spec_id.map(item => {
+      spec_id.push({value: item.spec_id.id , label: item.spec_id.name});
+      });
+      setSpecSelectedOption(spec_id);
 
-      //var result = JSON.stringify(spec_id).replace('[', '').replace(']', '');
-      
-      //setSpecId(spec_id)
-      //setSpecId(`[${result}]`);
-      //var result1 = `[${result}]`;
+      setCategorySelectedOption({value: props.editData.category_id , label: props.editData.category_title});
 
-      if( props.editData.topic_image !== null) {
+      if (props.editData.topic_image !== null) {
         const topic_image = [];
-        props.editData.topic_image && props.editData.topic_image.map(item =>{
+        props.editData.topic_image && props.editData.topic_image.map(item => {
           topic_image.push(item.image);
         })
         setimageUrl(topic_image);
@@ -94,10 +93,11 @@ const ModalContent = (props) => {
   }, [props.editData])
 
   const handleCategoryChange = (value) => {
-    setState({ ...state, category_id: value })
+    setCategorySelectedOption(value);
+    setState({ ...state, category_id: value.value });
   };
-  
-  
+
+
 
   const onOk = (value) => {
   }
@@ -129,7 +129,7 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    if(formValidation()) {
+    if (formValidation()) {
       setErrors({});
       const id = state.id;
       let form_data = null;
@@ -144,8 +144,7 @@ const ModalContent = (props) => {
           image_data.append('image', file, file.name);
         });
       }
-      if(props.drawerType === 'edit')
-      {
+      if (props.drawerType === 'edit') {
         let newData = state;
         delete newData["sl_no"];
         delete newData["spec_id"];
@@ -154,25 +153,31 @@ const ModalContent = (props) => {
         delete newData["category_title"];
         delete newData["id"];
         delete newData["topic_audience"];
-        delete newData["topic_topic"];
-        dispatch(updateTopic(id, newData, form_data, image_data))
-        .then(() => {
-          message.success('Topic edited successfully')
-        });
-      } else {
-        dispatch(postTopic(state, form_data, image_data))
-          .then(() => {
-            setState({});
-            message.success('Topic added successfully')
-          });
-      }
+        delete newData["deliverytype"];
+        delete newData["source_url"];
+        delete newData["external_url"];
+        delete newData["media_type"];
+        delete newData["video_url"];
+        
+        console.log("submit state" , state);
+          dispatch(updateTopic(id, newData, form_data, image_data))
+            .then(() => {
+              message.success('Topic edited successfully')
+            });
+        } else {
+          dispatch(postTopic(state, form_data, image_data))
+            .then(() => {
+              setState({});
+              message.success('Topic added successfully')
+            });
+        }
     }
   }
 
   const handleFileChange = (e) => {
     setPdfUrl(e.target.files[0]);
     const pdfFile = e.target.files[0];
-    const newErrorsState = {...errors};
+    const newErrorsState = { ...errors };
     if (!pdfFile.name.match(/\.(pdf)$/)) {
       newErrorsState.pdf = 'Please select valid pdf.';
       setErrors(newErrorsState);
@@ -188,7 +193,7 @@ const ModalContent = (props) => {
 
   const handleMultipleFile = (e) => {
     var numFiles = e.target.files.length;
-    const newErrorsState = {...errors};
+    const newErrorsState = { ...errors };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
       var file = e.target.files[i];
       if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -208,65 +213,74 @@ const ModalContent = (props) => {
 
   const dispatch = useDispatch();
 
-  const formValidation = () => { 
-    let entities = state;   
-    const newErrorsState = {...errors}; 
-    
-    if (!entities["title"]) {  
+  const formValidation = () => {
+    let entities = state;
+    const newErrorsState = { ...errors };
+
+    if (!entities["title"]) {
       newErrorsState.title = 'Title cannot be empty';
-      setErrors(newErrorsState); 
+      setErrors(newErrorsState);
       return false;
-    } 
-    if (!entities["category_id"]) {  
+    }
+    if (!entities["category_id"]) {
       newErrorsState.category_id = 'Category cannot be empty';
-      setErrors(newErrorsState); 
+      setErrors(newErrorsState);
       return false;
     }
-    if (!entities["publishingtime"]) {  
+    if (!entities["publishingtime"]) {
       newErrorsState.publishingtime = 'Publish time cannot be empty';
-      setErrors(newErrorsState); 
+      setErrors(newErrorsState);
       return false;
     }
-    if (!entities["topic_topic"] && entities["topic_topic"]) {  
+    if (!entities["topic_topic"] && entities["topic_topic"]) {
       newErrorsState.publishingtime = 'Specialization cannot be empty';
-      setErrors(newErrorsState); 
+      setErrors(newErrorsState);
       return false;
     }
-    setErrors({}); 
+    setErrors({});
     return true;
-  } 
+  }
   const specList1 = [];
   // state.spec_id && state.spec_id.map(item => {
   //   specList1.push(item.spec_id.name)
   // });
   // setState({ ...state, topic_topic: topic })
   //var result = JSON.stringify(spec_id).replace('[', '').replace(']', ''); 
-  const data = ['4','5']
-  
+  const data = ['4', '5']
+
   return (
     <div>
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
           <Form.Item label="Specializations">
-            <Select name="specialization" mode="multiple" allowClear style={{ width: "100%" }} placeholder="Please select" onChange={handleSpecChange}>
-              {specialization}
-            </Select>
+            <Select
+              isMulti={true}
+              value={specSelectedOption}
+              onChange={handleSpecChange}
+              options={specialization}
+            />
+
             <div className="errorMsg">{errors.specialization}</div>
           </Form.Item>
           <Form.Item label="Category">
-            <Select style={{ width: "100%" }} key="cat" name="category_id" value={state.category_id} onChange={handleCategoryChange}>{category}</Select>
+            <Select
+              isMulti={false}
+              value={categorySelectedOption}
+              onChange={handleCategoryChange}
+              options={category}
+            />
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Title">
-              <Input name="title" type="text" onChange={handleChange} value={state.title} />
-              <div className="errorMsg">{errors.title}</div>
+            <Input name="title" type="text" onChange={handleChange} value={state.title} />
+            <div className="errorMsg">{errors.title}</div>
           </Form.Item>
           <Form.Item label="Description">
-              <Input name="description" type="text" onChange={handleChange} key="desc" value={state.description} />
-              <div className="errorMsg">{errors.description}</div>
+            <Input name="description" type="text" onChange={handleChange} key="desc" value={state.description} />
+            <div className="errorMsg">{errors.description}</div>
           </Form.Item>
           <Form.Item label="Source Url">
-              <Input name="source_url" type="text" onChange={handleChange} key="source" value={state.source_url} />
+            <Input name="source_url" type="text" onChange={handleChange} key="source" value={state.source_url} />
             {/* <div className="errorMsg">{errors.name}</div> */}
           </Form.Item>
           {/* <Grid container direction="row" className="modalStyle">
@@ -289,39 +303,39 @@ const ModalContent = (props) => {
             )} */}
 
 
-            <Form.Item label="Delivery Type">  
-              <Radio.Group onChange={(e) => radioOnChange('delivery', e)} value={state.deliverytype}>
-                <Radio value="pdf">
-                  PDF
-                </Radio>
-                <Radio value="external">
-                  Article
-                </Radio>
-              </Radio.Group>
-             {/* <div className="errorMsg">{errors.publishingtime}</div> */}
-            </Form.Item>
-            <Form.Item wrapperCol={{offset: 8, span: 10}}>
-              {(state.deliverytype && state.deliverytype !== 'null' ? 
-                (state.deliverytype === 'pdf' ? 
-                  (<>{state.pdf && <object data="your_url_to_pdf" type="application/pdf"><embed src={state.pdf} type="application/pdf" /></object>}{state.pdf}<Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange}  /></>) : (<Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} />)) 
-                  : null)}
-              <div className="errorMsg">{errors.pdf}</div>
-            </Form.Item>
-            <Form.Item label="Media Type"> 
-              <Radio.Group onChange={(e) => radioOnChange('media', e)} value={state.media_type}>
-                <Radio value="image">
-                  Image
-                </Radio>
-                <Radio value="video">
-                  Video
-                </Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item wrapperCol={{offset: 8, span: 10}}>
-            {state.media_type && state.media_type !== null ? 
-              (state.media_type === 'image' ? 
-                (<>{imageUrl.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url}/>)) : null}
-            </Form.Item>
+          <Form.Item label="Delivery Type">
+            <Radio.Group onChange={(e) => radioOnChange('delivery', e)} value={state.deliverytype}>
+              <Radio value="pdf">
+                PDF
+              </Radio>
+              <Radio value="external">
+                Article
+              </Radio>
+            </Radio.Group>
+            {/* <div className="errorMsg">{errors.publishingtime}</div> */}
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
+            {(state.deliverytype && state.deliverytype !== 'null' ?
+              (state.deliverytype === 'pdf' ?
+                (<><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></>) : (<Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} />))
+              : null)}
+            <div className="errorMsg">{errors.pdf}</div>
+          </Form.Item>
+          <Form.Item label="Media Type">
+            <Radio.Group onChange={(e) => radioOnChange('media', e)} value={state.media_type}>
+              <Radio value="image">
+                Image
+              </Radio>
+              <Radio value="video">
+                Video
+              </Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
+            {state.media_type && state.media_type !== null ?
+              (state.media_type === 'image' ?
+                (<>{imageUrl.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url} />)) : null}
+          </Form.Item>
           {/* <Grid container direction="row" className="modalStyle">
             <Grid item md={3} className="labelStyle">
               <span>*Image :</span>
@@ -353,7 +367,7 @@ const ModalContent = (props) => {
             </Grid>
           </Grid>*/}
 
-          <Form.Item label="When to Publish"> 
+          <Form.Item label="When to Publish">
             <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
               <Radio value="now">
                 Publish Now
@@ -362,13 +376,13 @@ const ModalContent = (props) => {
                 Later
               </Radio>
             </Radio.Group>
-            <div className="errorMsg">{errors.publishingtime }</div>
+            <div className="errorMsg">{errors.publishingtime}</div>
           </Form.Item>
-          <Form.Item wrapperCol={{offset: 8, span: 14}}>
-              {(state.publishtype && state.publishtype !== "now") ? (<Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime, 'YYYY-MM-DD HH:mm:ss')} /></Space>) : null}
+          <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
+            {(state.publishtype && state.publishtype !== "now") ? (<Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime, 'YYYY-MM-DD HH:mm:ss')} /></Space>) : null}
           </Form.Item>
-          <Form.Item wrapperCol={{offset: 8, span: 10}}>
-              <Button type="primary" htmlType="submit">Save</Button>
+          <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
+            <Button type="primary" htmlType="submit">Save</Button>
           </Form.Item>
         </div>
         {/* <Modal
