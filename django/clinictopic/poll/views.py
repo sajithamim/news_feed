@@ -9,8 +9,8 @@ from rest_framework import viewsets, filters
 # from rest_framework.decorators import detail_route
 from rest_framework.decorators import action
 from rest_framework import parsers
-from .serializers import TopicPollSerializer,UserPollSerializer,FeedbackSerializer
-from .models import Feedback, TopicPoll
+from .serializers import TopicPollSerializer,UserPollSerializer,FeedbackSerializer,SettingsSerializer
+from .models import Feedback, Settings, TopicPoll
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
@@ -85,3 +85,9 @@ class Feedbackview(generics.ListCreateAPIView):
     #     serializer.save(user_id=self.request.user)
     def get_queryset(self):
         return Feedback.objects.all().order_by('-id')
+
+
+class SettingsViewSet(viewsets.ModelViewSet):
+    queryset = Settings.objects.all().order_by('id')
+    serializer_class = SettingsSerializer
+    # permission_classes = (IsAuthenticated,)

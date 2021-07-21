@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import UserPoll,PollOption,TopicPoll,Feedback
+from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings
 from authentication.models import User
 # from topics.serializers import TopicSeriaizer
 
@@ -63,3 +63,9 @@ class FeedbackSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         user = User.objects.get(email =obj.user_id)
         return user.email
+
+
+class SettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        fields = '__all__'

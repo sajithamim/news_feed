@@ -41,7 +41,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not instance.pk:
         return False
     try:
-        print(instance.pk)
+        # print(instance.pk)
         old_file = Categoeries.objects.get(id=instance.pk).image
         # print("old",old_file)
         if not old_file:
@@ -132,3 +132,11 @@ class Favourite(models.Model):
     
     class Meta:
         db_table = 'Favourite'
+
+
+
+class Settings(models.Model):
+    tos = models.CharField(max_length=3000)
+    privacy_policy = models.CharField(max_length=3000)
+    about_us = models.CharField(max_length=3000)
+    contact_us = models.CharField(max_length=255)
