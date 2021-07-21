@@ -28,7 +28,7 @@ from rest_framework import mixins
 class UpdateTopicSpecialization(APIView):
     serializer_class = UpdateTopicSpecializationSerializer
     pagination_class = None
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def put(self,request,pk):
         try:
             topic = TopicSpecialization.objects.filter(topic_id=pk).delete()
@@ -84,7 +84,7 @@ class GetUserCategoryApiview(APIView):
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
     def icon(self, request, pk,*args,**kwargs):
         # try:
@@ -112,14 +112,13 @@ class TopicViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         # print(queryset.query)
         query_set = queryset.filter()
-        # if not user_type:
-        #     userCategory = UserCategory.objects.filter(user_id=self.request.user)
-        #     ids = list(userCategory.category_id.id for userCategory in userCategory)
-        #     userspec = UserSpecialization.objects.filter(user_id=self.request.user)
-        #     ids = list(userspec.spec_id.id for userspec in userspec)
-        #     print(ids)
-        #     query_set = Topics.objects.filter(category_id__in=ids,topic_topic__spec_id__id__in=ids)
-        #     print(query_set.query)
+        if not user_type:
+            userCategory = UserCategory.objects.filter(user_id=self.request.user)
+            idscat = list(userCategory.category_id.id for userCategory in userCategory)
+            userspec = UserSpecialization.objects.filter(user_id=self.request.user)
+            idsspec = list(userspec.spec_id.id for userspec in userspec)
+            query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat)
+            # print(query_set.query)
         return query_set
 
     @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser],)

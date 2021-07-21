@@ -1,9 +1,9 @@
 from django.urls import path
 from django.conf.urls import url, include
 from rest_framework import routers
-from .views import PollView,userPollview,Feedbackview
+from .views import PollView,userPollview,Feedbackview,SettingsViewSet
 router = routers.DefaultRouter()
-# router.register('poll',PollView , 'poll')
+router.register('settings',SettingsViewSet , 'settings')
 
 urlpatterns = [
 
