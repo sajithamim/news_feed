@@ -79,6 +79,7 @@ const DrawerContent = (props) => {
             });
         }
         else {
+          console.log("hghhg");
           dispatch(postCategory(state, form_data))
           .then(() => {
             setState({});

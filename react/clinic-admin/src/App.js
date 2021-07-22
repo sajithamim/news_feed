@@ -14,6 +14,7 @@ import Terms from './pages/Settings/Terms';
 import About from './pages/Settings/About';
 import Contact from './pages/Settings/Contact';
 import UserDetails from './pages/Users/UserDetails';
+import Ads from './pages/Ads/Ads';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import {  useSelector } from "react-redux";
@@ -38,6 +39,7 @@ function App() {
           <PrivateRoute path="/data/Policy" exact component={Policy} />
           <PrivateRoute path="/data/About" exact component={About} />
           <PrivateRoute path="/data/Contact" exact component={Contact} />
+          <PrivateRoute path="/data/Ads" exact component={Ads} />
           <PrivateRoute path="/data/Terms" exact component={Terms} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/login" component={Login} />

@@ -1,0 +1,19 @@
+.avatar-uploader > .ant-upload {
+    width: 128px;
+    height: 128px;
+  }
+
+  .modalStyle {
+    margin-top: 25px;
+  }
+
+  .labelStyle {
+    text-align: right;
+    margin-right: 15px;
+  }
+
+  .spinner {
+    margin: 20px 0;
+    margin-bottom: 20px;
+    text-align: center;
+  }

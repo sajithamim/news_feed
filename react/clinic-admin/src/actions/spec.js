@@ -2,7 +2,6 @@ import Specialization from "../services/Specialization";
 export const getSpecialization = () => async (dispatch) => {
     try {
         const res = await Specialization.getAll();
-        //const data = await res.json()
         dispatch({
             type: 'RETRIEVE_SPECIALIZATION',
             payload: res.data,

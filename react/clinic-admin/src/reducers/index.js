@@ -6,6 +6,8 @@ import category from "./category.js";
 import users from "./users.js";
 import topic from "./topic.js";
 import feedback from "./feedback.js";
+import settings from "./settings.js";
+import ads from "./ads.js";
 
 export default combineReducers({
     spec,
@@ -14,5 +16,7 @@ export default combineReducers({
     message,
     users,
     topic,
-    feedback
+    feedback,
+    settings,
+    ads
 });

@@ -52,7 +52,10 @@ const TopicsContent = (props) => {
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
       key++;
-      console.log("category_id" ,items.category_id);
+      const topics = [];
+      item.topic_topic && item.topic_topic.map(item => {
+        topics.push({spec_id: item.spec_id.id})
+      });
       return items.push({
         sl_no: key,
         id: item.id,
@@ -62,6 +65,7 @@ const TopicsContent = (props) => {
         description: item.description,
         source_url: item.source_url,
         spec_id: item.topic_topic,
+        topic_topic: topics,
         publishingtime: item.publishingtime,
         publishtype: "later",
         deliverytype: item.deliverytype,

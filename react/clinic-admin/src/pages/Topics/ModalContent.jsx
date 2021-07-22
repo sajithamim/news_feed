@@ -69,18 +69,16 @@ const ModalContent = (props) => {
   useEffect(() => {
     dispatch(getSpecialization());
     dispatch(getCategory());
-    console.log("props.edit",props.editData.category_title);
     if (props.editData !== null) {
       setState(props.editData);
       const spec_id = [];
-      console.log("spec_id" , spec_id);
-      props.editData.spec_id.map(item => {
+      props.editData.spec_id && props.editData.spec_id.map(item => {
       spec_id.push({value: item.spec_id.id , label: item.spec_id.name});
       });
       setSpecSelectedOption(spec_id);
-
+     // setState({ ...state, topic_topic: spec_id })
       setCategorySelectedOption({value: props.editData.category_id , label: props.editData.category_title});
-
+      //setState({ ...state, category_id: {value: props.editData.category_id , label: props.editData.category_title} });
       if (props.editData.topic_image !== null) {
         const topic_image = [];
         props.editData.topic_image && props.editData.topic_image.map(item => {
@@ -154,12 +152,11 @@ const ModalContent = (props) => {
         delete newData["id"];
         delete newData["topic_audience"];
         delete newData["deliverytype"];
-        delete newData["source_url"];
-        delete newData["external_url"];
-        delete newData["media_type"];
-        delete newData["video_url"];
-        
-        console.log("submit state" , state);
+        //delete newData["source_url"];
+        ////delete newData["publishtype"];
+        delete newData["topic_videourl"];
+        delete newData["publishtype"];
+        console.log("submit state" , newData);
           dispatch(updateTopic(id, newData, form_data, image_data))
             .then(() => {
               message.success('Topic edited successfully')
