@@ -32,7 +32,7 @@ from rest_framework import parsers
 from rest_framework import mixins
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
-
+from specialization.models import UserSpecialization
 load_dotenv(BASE_DIR+str("/.env"))
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -227,53 +227,6 @@ class LogoutAPIView(generics.GenericAPIView):
         return Response(response,status=status.HTTP_204_NO_CONTENT)
 
 
-# from .otp import send_opt
-# def sendmessage(self,request):
-#     if request.method =="GET":
-#         send_opt('9895203267','1234')
-#         return HttpResponse("sent")
-
-
-# class OtpAPIView(generics.GenericAPIView):
-#     def get(self, request):
-#         send_opt('9895203267','1234')
-#         return HttpResponse("sent")
-
-
-# import http.client
-
-# conn = http.client.HTTPSConnection("api.msg91.com")
-
-# payload = "{\"Value1\":\"Param1\",\"Value2\":\"Param2\",\"Value3\":\"Param3\"}"
-
-# headers = { 'content-type': "application/json" }
-
-# conn.request("GET", "/api/v5/otp?template_id=60cc993e650f4d3cf74e7e9e&mobile=919847846110&authkey=362791AzG86a8K60cc822eP1&otp=1234", payload, headers)
-
-# res = conn.getresponse()
-# data = res.read()
-
-# print(data.decode("utf-8"))
-
-# class Verifyotp(generics):
-#     def otp(request):
-#         mobile = request.session['mobile']
-#         context = {'mobile':mobile}
-#         if request.method == 'POST':
-#             otp = request.POST.get('otp')
-#             profile = User.objects.filter(mobile=mobile).first()
-            
-#             if otp == profile.otp:
-#                 return redirect('cart')
-#             else:
-#                 print('Wrong')
-                
-#                 context = {'message' : 'Wrong OTP' , 'class' : 'danger','mobile':mobile }
-#                 return render(request,'otp.html' , context)
-                
-            
-#         return render(request,'otp.html' , context)
-
 class SignInOtpview(generics.GenericAPIView):
     serializer_class = Signinserializer
     def post(self,request):
@@ -447,3 +400,27 @@ class UsernameAddview(generics.CreateAPIView):
     # @csrf_exempt
     def perform_create(self, serializer):
         serializer.save()
+
+
+
+class UserSpecializationApiView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request,pk,*args, **kwargs):
+        try:
+            user =User.objects.filter(spec_user_id__spec_id__id = pk)
+            serializers = UserProfileSerializer(user,many=True)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)

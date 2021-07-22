@@ -53,5 +53,6 @@ urlpatterns = [
     path('api/spec/',include('specialization.urls')),
     path('api/topic/',include('topics.urls')),
     path('api/poll/',include('poll.urls')),
+    path('api/add/',include('add.urls')),
 ]+ static(MEDIA_URL, document_root = MEDIA_ROOT)
 
