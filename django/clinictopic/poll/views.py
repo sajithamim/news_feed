@@ -75,7 +75,7 @@ class userPollview(generics.CreateAPIView):
 class Feedbackview(generics.ListCreateAPIView):
     serializer_class = FeedbackSerializer
     pagination_class = TwentyPagination
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get_serializer(self, *args, **kwargs):
         """ if an array is passed, set serializer to many """
         if isinstance(kwargs.get('data', {}), list):
@@ -92,3 +92,4 @@ class SettingsViewSet(generics.ListCreateAPIView):
     queryset = Settings.objects.all().order_by('id')
     serializer_class = SettingsSerializer
     pagination_class = None
+    # permission_classes = (IsAuthenticated,)

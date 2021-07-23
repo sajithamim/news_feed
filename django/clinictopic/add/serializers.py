@@ -34,3 +34,22 @@ class AddImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ads
         fields = ['addimage']
+
+
+class AddUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=False,allow_null=False,allow_blank=False)
+    class Meta:
+        model = AddUser
+        fields = '__all__'
+    def validate(self, attrs):
+        email = attrs.get('email', '')
+        username = attrs.get('username', '')
+        phone = attrs.get('phone', '')
+        if not phone.isnumeric():
+            raise serializers.ValidationError(
+                self.default_error_messages)
+        return attrs
+
+    def create(self, validated_data):
+        # print(str(**validated_data))
+        return User.objects.create_user(**validated_data)
