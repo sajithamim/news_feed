@@ -13,6 +13,8 @@ from .models import Feedback, Settings, TopicPoll
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
+from django.shortcuts import get_object_or_404
+
 
 class TwentyPagination(pagination.PageNumberPagination):       
        page_size = 20
@@ -86,7 +88,7 @@ class Feedbackview(generics.ListCreateAPIView):
         return Feedback.objects.all().order_by('-id')
 
 
-class SettingsViewSet(viewsets.ModelViewSet):
+class SettingsViewSet(generics.ListCreateAPIView):
     queryset = Settings.objects.all().order_by('id')
     serializer_class = SettingsSerializer
-    # permission_classes = (IsAuthenticated,)
+    pagination_class = None

@@ -69,3 +69,7 @@ class SettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Settings
         fields = '__all__'
+        
+    def create(self, validated_data):
+        settings, created = Settings.objects.update_or_create(**validated_data)
+        return settings
