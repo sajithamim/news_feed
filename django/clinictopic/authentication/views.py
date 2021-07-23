@@ -33,6 +33,8 @@ from rest_framework import mixins
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from specialization.models import UserSpecialization
+from rest_framework import pagination
+
 load_dotenv(BASE_DIR+str("/.env"))
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -401,26 +403,20 @@ class UsernameAddview(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
 
+class TwentyPagination(pagination.PageNumberPagination):       
+       page_size = 20
 
 
-class UserSpecializationApiView(APIView):
-    # permission_classes = (permissions.IsAuthenticated,)
-    def get(self, request,pk,*args, **kwargs):
-        try:
-            user =User.objects.filter(spec_user_id__spec_id__id = pk)
-            serializers = UserProfileSerializer(user,many=True)
-            response={
-                "success":"True",
-                "message":"user Profile",
-                "status":status.HTTP_200_OK,
-                "data":serializers.data
-            }
-            return Response(response,status=status.HTTP_200_OK)
-        except Exception as e:
-            response={
-                "success":"False",
-                "message":"not found",
-                "status": status.HTTP_400_BAD_REQUEST,
-                "error":str(e)
-            }
-            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+class UserSpecializationApiView(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = TwentyPagination 
+    def list(self,request,pk, *args, **kwargs):
+        queryset =  User.objects.filter(spec_user_id__spec_id__id = pk)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = UserProfileSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
