@@ -134,9 +134,3 @@ class Favourite(models.Model):
         db_table = 'Favourite'
 
 
-
-class Settings(models.Model):
-    tos = models.CharField(max_length=3000)
-    privacy_policy = models.CharField(max_length=3000)
-    about_us = models.CharField(max_length=3000)
-    contact_us = models.CharField(max_length=255)

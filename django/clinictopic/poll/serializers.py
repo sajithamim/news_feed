@@ -66,6 +66,15 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
 
 class SettingsSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False,allow_null=True)
     class Meta:
         model = Settings
         fields = '__all__'
+        
+    def create(self, validated_data):
+        if 'id' in validated_data:
+            obj, created = Settings.objects.update_or_create(id=validated_data['id'],defaults=validated_data)
+            return obj
+        settings, created = Settings.objects.update_or_create(**validated_data)
+        return settings
+

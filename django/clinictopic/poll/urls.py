@@ -3,7 +3,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from .views import PollView,userPollview,Feedbackview,SettingsViewSet
 router = routers.DefaultRouter()
-router.register('settings',SettingsViewSet , 'settings')
+# router.register('settings',SettingsViewSet , 'settings')
 
 urlpatterns = [
 
@@ -11,5 +11,5 @@ urlpatterns = [
         path('poll/',PollView.as_view()),
         path('userpoll/',userPollview.as_view()),
         path('feedback/',Feedbackview.as_view()),
-
+        path('settings/',SettingsViewSet.as_view()),
 ]

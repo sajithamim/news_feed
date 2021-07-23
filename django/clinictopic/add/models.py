@@ -24,8 +24,8 @@ class AddSpecialization(models.Model):
 
 class AddUser(models.Model):
     adsid = models.ForeignKey(Ads,on_delete=models.CASCADE,related_name='add_id')
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='add_user')
-    spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='add_user_spec')
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='add_user',blank=True,null=True)
+    # spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='add_user_spec')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
