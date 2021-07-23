@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getSettings , postSettings} from "../../actions/settings";
+import { getSettings , patchSettings} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState , ContentState , convertFromHTML , convertToRaw} from 'draft-js';
+import { EditorState , ContentState , convertFromHTML , convertToRaw, convertFromRaw} from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const Policy = () => {
     const dispatch = useDispatch();
     const [id, setId] = useState(EditorState.createEmpty())
     useEffect(() => {
-        dispatch(getSettings()).
-        then(res => {      
-           setId(res.data.results[0].id);
-           setEditorState(EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(res.data.results && res.data.results[0] && res.data.results[0].privacy_policy))
-            ));
+        dispatch(getSettings())
+        .then(res => {       
+            console.log("respolicy",res.data[0].privacy_policy);
+           setId(res.data[0].id);
+           setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
+        //    setEditorState(EditorState.createWithContent(
+        //     ContentState.createFromBlockArray(
+        //       convertFromHTML(res.data.results && res.data.results[0] && res.data.results[0].privacy_policy))
+        //     ));
         })
     }, [])
 
@@ -24,13 +26,12 @@ const Policy = () => {
     const [ contentState , setContentState] = useState();
 
  const handleSubmit=()=>{
+    const id = 1;
     let newData = {}
     newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
     newData.id = id;
     console.log("newData" , newData);
-    //console.log('snappp', JSON.stringify({convertToRaw(contentState)}))
-   // privacy_policy : JSON.stringify({convertToRaw})
-   dispatch(postSettings(newData));
+    dispatch(patchSettings(id ,newData));
     
  }
 

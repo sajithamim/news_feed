@@ -3,12 +3,12 @@ import { http } from "../http-common"
 const  getSettings = () => {
     return http.get("poll/settings");
 }
-const  postSettings = (state) => {
-    return http.post("poll/settings/" , state);
+const  patchSettings = (id , state) => {
+    return http.patch(`poll/settings/${id}/` , state);
 }
 const Settings = {
     getSettings,
-    postSettings
+    patchSettings
 }
 
 export default Settings;

@@ -15,6 +15,7 @@ import About from './pages/Settings/About';
 import Contact from './pages/Settings/Contact';
 import UserDetails from './pages/Users/UserDetails';
 import Ads from './pages/Ads/Ads';
+import AddAds from './pages/Ads/AddAds';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import {  useSelector } from "react-redux";
@@ -41,6 +42,7 @@ function App() {
           <PrivateRoute path="/data/Contact" exact component={Contact} />
           <PrivateRoute path="/data/Ads" exact component={Ads} />
           <PrivateRoute path="/data/Terms" exact component={Terms} />
+          <PrivateRoute path="/data/AddAds" exact component={AddAds} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />

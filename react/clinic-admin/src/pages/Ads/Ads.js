@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
-import DrawerContent from "./DrawerContent"
 import { getAds , deleteAdd} from "../../actions/ads";
 
 
@@ -34,10 +33,7 @@ const Ads = () => {
     setDrawerType("edit");
   };
 
-  const onAdd = () => {
-    setShowDrawer(true);
-    setDrawerType("add");
-  };
+
 
   const confirmDelete = (id) => {
     dispatch(deleteAdd(id))
@@ -135,8 +131,8 @@ const Ads = () => {
       <Card
         title="Ads"
         extra={
-          <IconButton onClick={onAdd}>
-            <Icon>add</Icon>
+          <IconButton >
+            <a href = "/data/AddAds"><Icon>Add</Icon></a> 
           </IconButton>
         }
         style={{ width: "100%" }}
@@ -154,7 +150,6 @@ const Ads = () => {
               : "" 
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') } />
       </Drawer>
     </div>
   );

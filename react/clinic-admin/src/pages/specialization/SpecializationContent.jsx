@@ -5,9 +5,7 @@ import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
-import { getSpecialization, postSpecialization, deleteSpec } from "../../actions/spec";
-
-
+import { getSpecialization , deleteSpec } from "../../actions/spec";
 
 const SpecializationContent = () => {
   const dispatch = useDispatch();
