@@ -22,3 +22,15 @@ export const deleteAdd = (id) => async (dispatch) => {
     } catch (err) {
     }
 }
+
+export const getSpecUsers = (id) => async (dispatch) => {
+    try {
+        const res = await Ads.getSpecUsers(id);
+        console.log("add res",res);
+        dispatch({
+            type: 'GET_SPEC_USERS',
+            payload: res.data,
+        });
+    } catch (err) {
+    }
+}

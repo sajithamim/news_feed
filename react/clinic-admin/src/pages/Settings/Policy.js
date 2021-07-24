@@ -31,7 +31,7 @@ const Policy = () => {
     newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
     newData.id = id;
     console.log("newData" , newData);
-    dispatch(patchSettings(id ,newData));
+    dispatch(patchSettings(newData));
     
  }
 
