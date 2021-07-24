@@ -7,32 +7,18 @@ import PollContent from "./PollContent";
 import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";
-import { postTopic, updateTopic } from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
 
 
 const { Option } = Select;
 
-const ModalContent = (props) => {
-  const [checkboxValue, setCheckboxValue] = useState("");
-  const [noOfQuestions, setNoOfQuestions] = useState("");
-  const [noOfAnswers, setNoOfAnswers] = useState("");
+const ModalContent = (props) => { 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
-  const [pdfUrl, setPdfUrl] = useState("");
-  const [imageUrl, setimageUrl] = useState([]);
-  const [imageFormData, setImageFormData] = useState([]);
-  const [specSelectedOption ,setSpecSelectedOption ] = useState('');
-  const [categorySelectedOption ,setCategorySelectedOption] = useState('');
-  const [pdfUrlData, setPdfData] = useState("");
-  const [dateTime, setDateTime] = useState("");
-  const [specIds, setSpecId] = useState("");
-
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
-
-  const [formSubmit, setFormSubmit] = useState(true);
 
   const [errors, setErrors] = useState({ name: '' });
 
@@ -50,52 +36,66 @@ const ModalContent = (props) => {
     );
   })
 
-
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
-    console.log("e.target" , e.target.name);
   };
 
-
   const handleSpecChange = (value) => {
-    setSpecSelectedOption(value);
     let topic = [];
     value && value.map(item => {
      topic.push({ spec_id: item.value})
     })
-    setState({ ...state, topic_topic: topic })
+    setState({ ...state, spec_data: value, topic_topic: topic })
   };
+
+  const handleCategoryChange = (value) => {
+    setState({ ...state, category_data: value, category_id: value.value });
+  };
+
+  const handleMultipleFile = (e) => {
+    var numFiles = e.target.files.length;
+    const newErrorsState = { ...errors };
+    for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
+      var file = e.target.files[i];
+      if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+        newErrorsState.multi_image = 'Please select valid image.';
+        setErrors(newErrorsState);
+        setFormSubmit(false);
+      } else {
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, e.target.files[i]]});
+        });
+        reader.readAsDataURL(e.target.files[i]);
+      }
+    }
+  }
+
+  const handleFileChange = (e) => {
+    setState({ ...state, pdfUrl: e.target.files[0]});
+    const pdfFile = e.target.files[0];
+    const newErrorsState = { ...errors };
+    if (!pdfFile.name.match(/\.(pdf)$/)) {
+      newErrorsState.pdf = 'Please select valid pdf.';
+      setErrors(newErrorsState);
+      setFormSubmit(false);
+    } else {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        //setPdfData(reader.result);
+      });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  }
 
   useEffect(() => {
     dispatch(getSpecialization());
     dispatch(getCategory());
+    console.log('props.editData', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
-      const spec_id = [];
-      props.editData.spec_id && props.editData.spec_id.map(item => {
-      spec_id.push({value: item.spec_id.id , label: item.spec_id.name});
-      });
-      setSpecSelectedOption(spec_id);
-     // setState({ ...state, topic_topic: spec_id })
-      setCategorySelectedOption({value: props.editData.category_id , label: props.editData.category_title});
-      //setState({ ...state, category_id: {value: props.editData.category_id , label: props.editData.category_title} });
-      if (props.editData.topic_image !== null) {
-        const topic_image = [];
-        props.editData.topic_image && props.editData.topic_image.map(item => {
-          topic_image.push(item.image);
-        })
-        setimageUrl(topic_image);
-      }
     }
-
   }, [props.editData])
-
-  const handleCategoryChange = (value) => {
-    setCategorySelectedOption(value);
-    setState({ ...state, category_id: value.value });
-  };
-
-
 
   const onOk = (value) => {
   }
@@ -129,82 +129,29 @@ const ModalContent = (props) => {
   const handleSubmit = (e) => {
     if (formValidation()) {
       setErrors({});
-      const id = state.id;
       let form_data = null;
-      if (pdfUrl && pdfUrl.name) {
+      if (state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
-        form_data.append('pdf', pdfUrl, pdfUrl.name);
+        form_data.append('pdf', state.pdfUrl, state.pdfUrl.name);
       }
       let image_data = null;
-      if (imageFormData.length > 0) {
+      if (state.imageFormData && state.imageFormData.length > 0) {
         image_data = new FormData();
-        imageFormData.forEach((file, key) => {
+        state.imageFormData.forEach((file, key) => {
           image_data.append('image', file, file.name);
         });
       }
-      if (props.drawerType === 'edit') {
-        let newData = state;
-        delete newData["sl_no"];
-        delete newData["spec_id"];
-        delete newData["pdf"];
-        delete newData["topic_image"];
-        delete newData["category_title"];
-        delete newData["id"];
-        delete newData["topic_audience"];
-        delete newData["deliverytype"];
-        //delete newData["source_url"];
-        ////delete newData["publishtype"];
-        delete newData["topic_videourl"];
-        delete newData["publishtype"];
-        console.log("submit state" , newData);
-          dispatch(updateTopic(id, newData, form_data, image_data))
-            .then(() => {
-              message.success('Topic edited successfully')
-            });
-        } else {
-          dispatch(postTopic(state, form_data, image_data))
-            .then(() => {
-              setState({});
-              message.success('Topic added successfully')
-            });
-        }
-    }
-  }
-
-  const handleFileChange = (e) => {
-    setPdfUrl(e.target.files[0]);
-    const pdfFile = e.target.files[0];
-    const newErrorsState = { ...errors };
-    if (!pdfFile.name.match(/\.(pdf)$/)) {
-      newErrorsState.pdf = 'Please select valid pdf.';
-      setErrors(newErrorsState);
-      setFormSubmit(false);
-    } else {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        setPdfData(reader.result);
-      });
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  }
-
-  const handleMultipleFile = (e) => {
-    var numFiles = e.target.files.length;
-    const newErrorsState = { ...errors };
-    for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
-      var file = e.target.files[i];
-      if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
-        newErrorsState.multi_image = 'Please select valid image.';
-        setErrors(newErrorsState);
-        setFormSubmit(false);
-      } else {
-        setImageFormData(imageFormData => [...imageFormData, e.target.files[i]]);
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-          setimageUrl(imageUrl => [...imageUrl, reader.result]);
-        });
-        reader.readAsDataURL(e.target.files[i]);
-      }
+      let newData = state;
+      delete newData["sl_no"];
+      delete newData["category_title"];
+      delete newData["id"];
+      delete newData["spec_data"];
+      delete newData["topic_image"];
+      delete newData["pdf"];
+      delete newData["category_data"];
+      //delete newData["topic_topic"];
+      console.log('newData', newData)
+      props.onFormSubmit(newData, form_data, image_data);
     }
   }
 
@@ -237,14 +184,7 @@ const ModalContent = (props) => {
     setErrors({});
     return true;
   }
-  const specList1 = [];
-  // state.spec_id && state.spec_id.map(item => {
-  //   specList1.push(item.spec_id.name)
-  // });
-  // setState({ ...state, topic_topic: topic })
-  //var result = JSON.stringify(spec_id).replace('[', '').replace(']', ''); 
-  const data = ['4', '5']
-
+ 
   return (
     <div>
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
@@ -252,17 +192,16 @@ const ModalContent = (props) => {
           <Form.Item label="Specializations">
             <Select
               isMulti={true}
-              value={specSelectedOption}
+              value={state.spec_data}
               onChange={handleSpecChange}
               options={specialization}
             />
-
             <div className="errorMsg">{errors.specialization}</div>
           </Form.Item>
           <Form.Item label="Category">
             <Select
               isMulti={false}
-              value={categorySelectedOption}
+              value={state.category_data}
               onChange={handleCategoryChange}
               options={category}
             />
@@ -278,28 +217,7 @@ const ModalContent = (props) => {
           </Form.Item>
           <Form.Item label="Source Url">
             <Input name="source_url" type="text" onChange={handleChange} key="source" value={state.source_url} />
-            {/* <div className="errorMsg">{errors.name}</div> */}
           </Form.Item>
-          {/* <Grid container direction="row" className="modalStyle">
-            <Grid item md={3} className="labelStyle">
-              <span>Enable Poll :</span>
-            </Grid>
-            <Grid item md={6}>
-              <Checkbox
-                onChange={checkboxOnChange}
-                key="check"
-                value={checkboxValue}
-              />
-            </Grid>
-          </Grid> */}
-
-          {/* {checkboxValue === true &&
-            noOfQuestions !== "" &&
-            noOfAnswers !== "" && (
-              <PollContent questions={noOfQuestions} answers={noOfAnswers} />
-            )} */}
-
-
           <Form.Item label="Delivery Type">
             <Radio.Group onChange={(e) => radioOnChange('delivery', e)} value={state.deliverytype}>
               <Radio value="pdf">
@@ -309,7 +227,6 @@ const ModalContent = (props) => {
                 Article
               </Radio>
             </Radio.Group>
-            {/* <div className="errorMsg">{errors.publishingtime}</div> */}
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
             {(state.deliverytype && state.deliverytype !== 'null' ?
@@ -331,39 +248,8 @@ const ModalContent = (props) => {
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
             {state.media_type && state.media_type !== null ?
               (state.media_type === 'image' ?
-                (<>{imageUrl.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url} />)) : null}
+                (<>{state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url} />)) : null}
           </Form.Item>
-          {/* <Grid container direction="row" className="modalStyle">
-            <Grid item md={3} className="labelStyle">
-              <span>*Image :</span>
-            </Grid>
-            <Grid item md={6}>
-              <Upload
-                name="avatar"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-              >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-            </Grid>
-          </Grid> */}
-          {/* <Grid container direction="row" className="modalStyle">
-            <Grid item md={3} className="labelStyle">
-              <span>*Total likes :</span>
-            </Grid>
-            <Grid item md={6}>
-              <Input type="number" key="likes" />
-            </Grid>
-          </Grid>*/}
-
           <Form.Item label="When to Publish">
             <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
               <Radio value="now">
@@ -382,29 +268,7 @@ const ModalContent = (props) => {
             <Button type="primary" htmlType="submit">Save</Button>
           </Form.Item>
         </div>
-        {/* <Modal
-          title="Poll"
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-
-          <p className="modalStyle">How many question would you like to ask?</p>
-          <Input
-            type="number"
-            value={noOfQuestions}
-            onChange={(e) => setNoOfQuestions(e.target.value)}
-          />
-          <p className="modalStyle">How many answers per question?</p>
-          <Input
-            type="number"
-            value={noOfAnswers}
-            onChange={(e) => setNoOfAnswers(e.target.value)}
-          />
-
-
-        </Modal> */}
-      </Form>
+             </Form>
     </div>
   );
 };
