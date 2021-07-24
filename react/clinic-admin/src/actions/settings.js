@@ -24,3 +24,4 @@ export const patchSettings = (id ,state) => async(dispatch) => {
 
     }
 }
+

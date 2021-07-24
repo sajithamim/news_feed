@@ -6,9 +6,13 @@ const  getAds = () => {
 const  deleteAds = (id) => {
     return http.delete(`add/ads/${id}/`);
 }
+const  getSpecUsers = (id) => {
+    return http.get(`auth/userlistspecialization/${id}/`);
+}
 const Ads = {
     getAds,
-    deleteAds
+    deleteAds,
+    getSpecUsers
 }
 
 export default Ads;
