@@ -55,6 +55,9 @@ const TopicsContent = (props) => {
         message.success('Topic edit successfully')
       });
     } else {
+      console.log("newdata" ,newData )
+      console.log("form_data" ,form_data )
+      console.log("image_data" ,image_data )
       dispatch(postTopic(newData, form_data, image_data))
       .then(() => {
         message.success('Topic add successfully')

@@ -17,7 +17,6 @@ const Ads = () => {
   const [pageSize , setPageSize] = useState(10);
   const { adsList } = useSelector(state => state.ads);
  
-  console.log("adsList" , adsList);
   useEffect(() => {
     dispatch(getAds())
     onClose();
