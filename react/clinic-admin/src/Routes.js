@@ -5,6 +5,12 @@ import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUn
 
 export const routes = [
   {
+    title: 'Data',
+    path: '/data',
+    key: "data",
+    icon: <IoIcons.IoIosPaper />
+  },
+  {
     title: 'Users',
     path: '/data/Users',
     key: "users",

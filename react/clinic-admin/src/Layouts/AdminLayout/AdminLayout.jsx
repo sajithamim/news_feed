@@ -15,7 +15,7 @@ const { SubMenu } = Menu;
 const AdminLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
-
+  const [selectedMenuItem, setSelectedMenuItem]= useState('item1');
   const accessToken = localStorage.getItem("accessToken");
 
   const handleClick = () => {
@@ -26,6 +26,8 @@ const AdminLayout = ({ children }) => {
     setCollapsed(!collapsed)
   };
 
+  const pathname = window.location.pathname;
+  console.log('pathname', pathname)
   return (
     <Layout>
       <Sider
@@ -44,24 +46,21 @@ const AdminLayout = ({ children }) => {
           </a>
         </div>
         {accessToken !== null && accessToken !== undefined ? 
-          (<Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} style={{ height: "100%" }}>
+          (<Menu theme="dark" mode="inline" defaultSelectedKeys={["data"]} style={{ height: "100%" }}>
             {routes && routes.map((subroute) => subroute.key !== 'logout' ? subroute.key !== 'settings' ?
-              (<NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
-                <Menu.Item icon={subroute.icon}> {subroute.title}
-                </Menu.Item>
-              </NavLink>) :
-              (<NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
-                <SubMenu key={subroute.key} icon={subroute.icon} title={subroute.title}>
+              (<Menu.Item key={subroute.key} icon={subroute.icon}>
+                <NavLink to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
+              </Menu.Item>) :
+              (<SubMenu key={subroute.key} icon={subroute.icon} title={subroute.title}>
                 {subroute.subNav.map((subItem) => (
-                  <NavLink key={subItem.key} to={subItem.path} style={{ textDecoration: "none" }}>
-                    <Menu.Item key={subItem.key} icon={subItem.icon}>{subItem.title}</Menu.Item>
-                  </NavLink>
+                    <Menu.Item key={subItem.key} icon={subItem.icon}>
+                      <NavLink key={subItem.key} to={subItem.path} style={{ textDecoration: "none" }}>{subItem.title}</NavLink>
+                    </Menu.Item>
                 ))}
-                </SubMenu>
-              </NavLink>) :
-              (<NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>
-              <Menu.Item icon={subroute.icon} onClick={handleClick}>{subroute.title}</Menu.Item>
-            </NavLink>)
+                </SubMenu>) :
+              (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>
+                <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
+                </Menu.Item>)
           )}
           </Menu>) : null }
       </Sider>

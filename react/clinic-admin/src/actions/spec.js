@@ -63,8 +63,10 @@ export const updateSpecialization = (id, state, imageData) => async (dispatch) =
 }
 
 export const updateSubSpecialization = (id, state, imageData) => async (dispatch) => {
+    console.log("state", state);
     try {
         const res = await Specialization.updateSubSpec(id, state);
+        console.log("sub spec edit", res);
         if (res.data && imageData) {
             //const imageSubRes = await Specialization.uploadSubImage(id, imageData);
             await Specialization.uploadSubImage(id, imageData);
@@ -114,6 +116,7 @@ export const deleteSpec = (id) => async (dispatch) => {
     export const deleteSubSpec = (id) => async (dispatch) => {
         try {
             const res = await Specialization.deleteSubSpecialization(id);
+            console.log("subspec deletee" , res);
             dispatch({
                 type: 'DELETE_SUB_SPECIALIZATION',
                 payload: id,

@@ -31,6 +31,7 @@ const SubSpecializationContent = () => {
   };
 
   const onEdit = (record) => {
+    console.log("record" , specId);
     setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
@@ -55,6 +56,7 @@ const SubSpecializationContent = () => {
   }
 
   const confirmDelete = (id) => {
+    console.log("subspec id", id);
     dispatch(deleteSubSpec(id))
       .then((res) => {
         res.status === 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
@@ -69,8 +71,10 @@ const SubSpecializationContent = () => {
     const items = [];
     subspecialization.map((item, key) => {
       key++;
+      console.log("id",item);
       items.push({
         sl_no: key,
+        id: item.id,
         name: item.name,
         icon: item.icon
       })

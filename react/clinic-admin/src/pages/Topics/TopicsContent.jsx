@@ -4,14 +4,14 @@ import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
-import { getTopic , deleteTopic} from "../../actions/topic";
+import { getTopic , deleteTopic, postTopic, updateTopic} from "../../actions/topic";
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
 
-  const [editData , setEditData] = useState({});
-  const { topicList , postTopic, updateTopic }= useSelector(state => state.topic);
+  const [data , setData] = useState({});
+  const { topicList, addTopic, editTopic } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(5);
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const TopicsContent = (props) => {
   useEffect(() => {
     dispatch(getTopic())
     onClose();
-  }, [ postTopic, updateTopic ])
+  }, [addTopic, editTopic])
 
 
   const onClose = () => {
@@ -27,7 +27,7 @@ const TopicsContent = (props) => {
   };
 
   const onEdit = (record) => {
-    setEditData(record)
+    setData(record)
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -48,40 +48,56 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
 
-  const topicGenerator = (quantity) => {
+  const onFormSubmit = (newData, form_data, image_data) => {
+    if(drawerType == 'edit') {
+      dispatch(updateTopic(data.id, newData, form_data, image_data));
+    } else {
+      dispatch(postTopic(newData, form_data, image_data))
+    }
+  }
+
+  const topicGenerator = () => {
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
       key++;
       const topics = [];
-      item.topic_topic && item.topic_topic.map(item => {
-        topics.push({spec_id: item.spec_id.id})
-      });
-      return items.push({
+      const specData = [];
+      const images = [];
+        item.topic_topic && item.topic_topic.map(item => {
+          topics.push({spec_id: item.spec_id.id});
+          specData.push({value: item.spec_id.id , label: item.spec_id.name})
+        });
+
+        item.topic_image && item.topic_image.map(item => {
+          images.push(item.image);
+        })
+       
+      items.push({
         sl_no: key,
         id: item.id,
         title: item.title,
         category_title: item.category_id.title,
+        category_data: {value: item.category_id.id, label: item.category_id.title},
         category_id: item.category_id.id,
         description: item.description,
         source_url: item.source_url,
-        spec_id: item.topic_topic,
+        spec_data: specData,
         topic_topic: topics,
         publishingtime: item.publishingtime,
         publishtype: "later",
         deliverytype: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
-        topic_image: item.topic_image,
-        topic_videourl:item.video_url,
+        topic_image: images,
+        video_url:item.video_url,
         pdf:item.pdf
-      })
-      
+      }) 
     });
     return items;
-    }
+  }
 
   const topics = topicGenerator();
 
-  const handleChange = (page , size , sorter) => {
+  const handleChange = (page, size, sorter) => {
     setCurrent(page)
     dispatch(getTopic(page));
   }
@@ -140,20 +156,12 @@ const TopicsContent = (props) => {
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
           </IconButton>
-        }
-        style={{ width: "100%" }}
-      >
+        } style={{ width: "100%" }} >
         {topicList && topicList.results ?
         (<Table columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
-        title={
-          drawerType === "edit"
-            ? "Edit Topic"
-            : drawerType === "add"
-            ? "Add Topic"
-            : ""
-        }
+        title={drawerType === "edit" ? "Edit Topic" : drawerType === "add" ? "Add Topic" : "" }
         placement="right"
         width={750}
         closable={true}
@@ -161,7 +169,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? editData : {}}/>
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : {}} onFormSubmit={onFormSubmit}/>
       </Drawer>
     </div>
   );
