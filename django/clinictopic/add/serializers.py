@@ -47,5 +47,5 @@ class AddUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.get(email=validated_data['email'])
         del validated_data['email']
-        # print(str(**validated_data))
+        current = AddUser.objects.filter(adsid = validated_data['adsid']).delete()
         return AddUser.objects.create(user_id =user,**validated_data)
