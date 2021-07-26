@@ -3,6 +3,7 @@ from django.db.models import fields
 from rest_framework import serializers
 from .models import AddSpecialization,Ads,AddUser
 from specialization.serializers import (GetSpecialization)
+from authentication.models import User
 
 class AddSpecializationSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
@@ -40,16 +41,11 @@ class AddUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False,allow_null=False,allow_blank=False)
     class Meta:
         model = AddUser
-        fields = '__all__'
-    def validate(self, attrs):
-        email = attrs.get('email', '')
-        username = attrs.get('username', '')
-        phone = attrs.get('phone', '')
-        if not phone.isnumeric():
-            raise serializers.ValidationError(
-                self.default_error_messages)
-        return attrs
+        fields = ['adsid','email']
+
 
     def create(self, validated_data):
+        user = User.objects.get(email=validated_data['email'])
+        del validated_data['email']
         # print(str(**validated_data))
-        return User.objects.create_user(**validated_data)
+        return AddUser.objects.create(user_id =user,**validated_data)
