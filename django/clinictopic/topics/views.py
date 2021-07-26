@@ -198,7 +198,6 @@ class FavouriteDeleteView(APIView):
     def delete(self, request, *args, **kwargs):
         try:
             delete_id = request.data["deleteid"]
-            # print(delete_id)
             if not delete_id:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             for i in delete_id:
