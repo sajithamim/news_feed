@@ -163,7 +163,7 @@ const ModalContent = (props) => {
 
     if (!entities["title"]) {
       newErrorsState.title = 'Title cannot be empty';
-      setErrors(newErrorsState);
+      setErrors(newErrorsState); 
       return false;
     }
     if (!entities["category_id"]) {
