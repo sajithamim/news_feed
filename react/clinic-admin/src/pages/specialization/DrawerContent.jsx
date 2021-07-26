@@ -46,12 +46,14 @@ const DrawerContent = (props) => {
         delete newData["icon"];
         delete newData["updated_at"];
         delete newData["created_at"];
+        console.log("new data", newData);
         if (props.type === "spec") {
           dispatch(updateSpecialization(id, newData, form_data))
             .then(() => {
               message.success('Specialization edit successfully')
             });
         } else {
+          newData['spec_id'] = specId;
           dispatch(updateSubSpecialization(id, newData, form_data))
             .then(() => {
               message.success('Sub Specialization edit successfully')
