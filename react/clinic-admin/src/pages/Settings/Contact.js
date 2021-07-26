@@ -21,12 +21,10 @@ const Contact = () => {
     const [contentState, setContentState] = useState();
 
     const handleSubmit = () => {
-        const id = 1;
         let newData = {}
         newData.about_us = JSON.stringify(convertToRaw(contentState));
         newData.id = id;
-        dispatch(patchSettings(id, newData));
-
+        dispatch(postSettings(newData));
     }
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty())

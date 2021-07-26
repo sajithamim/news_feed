@@ -25,3 +25,20 @@ export const patchSettings = (id ,state) => async(dispatch) => {
     }
 }
 
+export const postSettings = (state) => async(dispatch) => { 
+    console.log("ghgh" , state);
+    try{
+        const res = await Settings.postSettings(state);
+        console.log("settings come",res);
+        dispatch({
+            type: 'POST_SETTINGS',
+            payload: res.data,
+        })
+    }
+    catch (err) {
+
+    }
+}
+
+
+
