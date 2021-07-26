@@ -12,8 +12,8 @@ const Contact = () => {
     useEffect(() => {
         dispatch(getSettings())
             .then(res => {
-                setId(res.data.results[0].id);
-                setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data.results && res.data.results[0] && res.data.results[0].contact_us))));
+                setId(res.data[0].id);
+                setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].contact_us))));
             })
     }, [])
 
