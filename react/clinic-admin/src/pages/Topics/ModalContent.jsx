@@ -64,7 +64,21 @@ const ModalContent = (props) => {
       } else {
         const reader = new FileReader();
         reader.addEventListener("load", () => {
-          setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, e.target.files[i]]});
+          if(!state.topic_image ) {
+            setState({ ...state, topic_image: [reader.result]});
+            if(!state.imageFormData) {
+              setState({ ...state, topic_image: [reader.result], imageFormData: [ e.target.files[i]]});
+            } else {
+              setState({ ...state, topic_image: [reader.result], imageFormData: [...state.imageFormData, e.target.files[i]]});
+            }
+          } else {
+            setState({ ...state, topic_image: [...state.topic_image, reader.result]});
+            if(!state.imageFormData) {
+              setState({ ...state, topic_image:  [...state.topic_image, reader.result], imageFormData: [ e.target.files[i]]});
+            } else {
+              setState({ ...state, topic_image:  [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, e.target.files[i]]});
+            }
+          }
         });
         reader.readAsDataURL(e.target.files[i]);
       }
@@ -248,7 +262,7 @@ const ModalContent = (props) => {
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
             {state.media_type && state.media_type !== null ?
               (state.media_type === 'image' ?
-                (<>{state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url} />)) : null}
+                (<>{state.topic_image &&state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url} />)) : null}
           </Form.Item>
           <Form.Item label="When to Publish">
             <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
