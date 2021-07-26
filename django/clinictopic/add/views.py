@@ -11,7 +11,7 @@ from rest_framework import parsers
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
-from .serializers import AddSerializer,AddImageSerializer
+from .serializers import AddSerializer,AddImageSerializer,AddUserSerializer
 from .models import Ads
 
 class AdsViewset(viewsets.ModelViewSet):
@@ -28,3 +28,16 @@ class AdsViewset(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
+
+
+class AddUserView(generics.CreateAPIView):
+    serializer_class = AddUserSerializer
+    # pagination_class = None
+    # permission_classes = (IsAuthenticated,)
+    def get_serializer(self, *args, **kwargs):
+        """ if an array is passed, set serializer to many """
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super(AddUserView, self).get_serializer(*args, **kwargs)
+    def perform_create(self, serializer):
+        serializer.save()
