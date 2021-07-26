@@ -81,6 +81,12 @@ class Topics(models.Model):
         ('general', 'general')
     )
     topic_audience = models.CharField(max_length=20,choices=AUDIENCE_CHOICES)
+    FORMAT_CHOICES = (
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3')
+    )
+    format = models.CharField(max_length=2,choices=FORMAT_CHOICES)
     category_id = models.ForeignKey(Categoeries,on_delete=models.CASCADE,related_name="topic_category")
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1000)
