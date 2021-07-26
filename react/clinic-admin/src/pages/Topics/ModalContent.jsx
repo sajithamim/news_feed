@@ -56,6 +56,7 @@ const ModalContent = (props) => {
     var numFiles = e.target.files.length;
     const newErrorsState = { ...errors };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
+      console.log('i', i)
       var file = e.target.files[i];
       if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
         newErrorsState.multi_image = 'Please select valid image.';
@@ -63,20 +64,22 @@ const ModalContent = (props) => {
         setFormSubmit(false);
       } else {
         const reader = new FileReader();
+        //setState({ ...state, pdfUrl: e.target.files[0]});
+       //console.log('FileChange', e.target.files[i])
         reader.addEventListener("load", () => {
           if(!state.topic_image ) {
             setState({ ...state, topic_image: [reader.result]});
             if(!state.imageFormData) {
-              setState({ ...state, topic_image: [reader.result], imageFormData: [ e.target.files[i]]});
+              setState({ ...state, topic_image: [reader.result], imageFormData: [file]});
             } else {
-              setState({ ...state, topic_image: [reader.result], imageFormData: [...state.imageFormData, e.target.files[i]]});
+              setState({ ...state, topic_image: [reader.result], imageFormData: [...state.imageFormData, file]});
             }
           } else {
             setState({ ...state, topic_image: [...state.topic_image, reader.result]});
             if(!state.imageFormData) {
-              setState({ ...state, topic_image:  [...state.topic_image, reader.result], imageFormData: [ e.target.files[i]]});
+              setState({ ...state, topic_image:  [...state.topic_image, reader.result], imageFormData: [file]});
             } else {
-              setState({ ...state, topic_image:  [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, e.target.files[i]]});
+              setState({ ...state, topic_image:  [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, file]});
             }
           }
         });

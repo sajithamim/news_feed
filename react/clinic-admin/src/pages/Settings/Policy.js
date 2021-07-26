@@ -12,7 +12,7 @@ const Policy = () => {
     useEffect(() => {
         dispatch(getSettings())
         .then(res => {       
-            console.log("respolicy",res.data[0].privacy_policy);
+            console.log("respolicy",res.data[0]);
            setId(res.data[0].id);
            setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
         //    setEditorState(EditorState.createWithContent(
@@ -25,8 +25,7 @@ const Policy = () => {
     const { settingsList } = useSelector(state => state.settings);
     const [ contentState , setContentState] = useState();
 
- const handleSubmit=()=>{
-    const id = 1;
+ const handleSubmit = () => {
     let newData = {}
     newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
     newData.id = id;
