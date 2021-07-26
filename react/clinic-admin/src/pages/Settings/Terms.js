@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getSettings , patchSettings} from "../../actions/settings";
+import { getSettings , postSettings} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState , ContentState , convertFromHTML , convertToRaw, convertFromRaw} from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
