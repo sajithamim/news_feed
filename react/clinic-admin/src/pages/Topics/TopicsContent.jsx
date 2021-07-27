@@ -99,7 +99,9 @@ const TopicsContent = (props) => {
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         topic_image: images,
         video_url:item.video_url,
-        pdf:item.pdf
+        pdf:item.pdf,
+        format: item.format,
+        external_url:item.external_url
       }) 
     });
     return items;

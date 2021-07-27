@@ -147,7 +147,7 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    
+
     if (formValidation()) {
       console.log("clicking");
       setErrors({});
@@ -174,7 +174,7 @@ const ModalContent = (props) => {
       //delete newData["topic_topic"];
       props.onFormSubmit(newData, form_data, image_data);
     }
-    
+
   }
 
   const dispatch = useDispatch();
@@ -242,7 +242,7 @@ const ModalContent = (props) => {
               </Radio>
             </Radio.Group>
           </Form.Item>
-          {(state.format === '1' || state.format === '2' || state.format === '3') ?
+          {state.format === '1' || state.format === '2' || state.format === '3' ?
             (<><Form.Item label="Title">
               <Input name="title" type="text" onChange={handleChange} value={state.title} />
               <div className="errorMsg">{errors.title}</div>
@@ -251,50 +251,43 @@ const ModalContent = (props) => {
                 <Input name="description" type="text" onChange={handleChange} key="desc" value={state.description} />
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item> </>) : null}
+          {state.format === '3' || state.format === '2' ?
+            (<><Form.Item label="Pdf/External URL">
+              <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} />
+            </Form.Item></>) : null}
+
           {state.format === '1' ?
             (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
           {state.format === '2' ?
-                (<>{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
-                <Form.Item label="Images"><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item></>) : null}
-                {state.format === '3' ?
-                (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
-            {state.format === '3' || state.format === '2' ? 
-          (<><Form.Item label="Delivery Type">
-            <Radio.Group onChange={(e) => radioOnChange('delivery', e)} value={state.deliverytype}>
-              <Radio value="pdf">
-                Pdf
+            (<Form.Item label="Images">{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
+              <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
+          {state.format === '3' ?
+            (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
+          {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== 'null' ?
+            (state.deliverytype === 'pdf' ?
+              (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} /></Form.Item>))
+            : null)}
+          <Form.Item label="When to Publish">
+            <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
+              <Radio value="now">
+                Publish Now
               </Radio>
-              <Radio value="external_url">
-                External URL
+              <Radio value="later">
+                Later
               </Radio>
             </Radio.Group>
-            </Form.Item></>) : null}
-            
-            {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== 'null' ?
-              (state.deliverytype === 'pdf' ?
-                (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} /></Form.Item>))
-              : null)}
-            <Form.Item label="When to Publish">
-              <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
-                <Radio value="now">
-                  Publish Now
-                </Radio>
-                <Radio value="later">
-                  Later
-                </Radio>
-              </Radio.Group>
-              <div className="errorMsg">{errors.publishingtime}</div>
-            </Form.Item>
-            {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
-              <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
-            </Form.Item>) : null}
-            <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-              <Button type="primary" htmlType="submit">Save</Button>
-            </Form.Item>
-          </div>
+            <div className="errorMsg">{errors.publishingtime}</div>
+          </Form.Item>
+          {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
+            <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
+          </Form.Item>) : null}
+          <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
+            <Button type="primary" htmlType="submit">Save</Button>
+          </Form.Item>
+        </div>
       </Form>
     </div>
-      );
+  );
 };
 
-      export default ModalContent;
+export default ModalContent;
