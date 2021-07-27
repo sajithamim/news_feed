@@ -288,4 +288,18 @@ class Deleteimage(APIView):
                 }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
-
+from .serializers import authorserializer
+class Authortest(APIView):
+    serializer_class = authorserializer
+    pagination_class = None
+    # permission_classes = (IsAuthenticated,)
+    def put(self,request):
+            # topic = TopicSpecialization.objects.filter(topic_id=pk).delete()
+            obj = Topics.objects.get(id='65283ab8-c51a-49ef-afe3-4c15e8aa2c30')
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                    status.HTTP_400_BAD_REQUEST)
