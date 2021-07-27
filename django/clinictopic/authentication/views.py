@@ -35,6 +35,7 @@ from rest_framework.decorators import action
 from specialization.models import UserSpecialization
 from rest_framework import pagination
 from django.db.models import Q
+import requests
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -86,6 +87,8 @@ class RegisterView(generics.GenericAPIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Verify your email'}
             Util.send_email(data)
+            url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+str(user['phone'])+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
+            r = requests.get(url)
             status_code = status.HTTP_201_CREATED
             response = {
             'success' : 'True',
