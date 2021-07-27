@@ -37,8 +37,9 @@ const AddAds = () => {
    const { specUsers } =  useSelector(state => state.ads);
    const users = [];
    specUsers && specUsers.results && specUsers.results.map(item=> {
+       console.log("userlist item", item);
        return users.push(
-           { value: item.key , label: item.username}
+           { value: item.username , label: item.username}
        );
        
    })
