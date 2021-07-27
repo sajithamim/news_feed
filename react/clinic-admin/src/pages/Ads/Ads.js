@@ -20,7 +20,7 @@ const Ads = () => {
   useEffect(() => {
     dispatch(getAds())
     onClose();
-  }, [])
+  }, [adsList])
 
   const onClose = () => {
     setShowDrawer(false);

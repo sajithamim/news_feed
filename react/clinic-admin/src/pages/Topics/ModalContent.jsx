@@ -172,7 +172,6 @@ const ModalContent = (props) => {
       delete newData["pdf"];
       delete newData["category_data"];
       //delete newData["topic_topic"];
-      console.log('newDatavalidate', newData)
       props.onFormSubmit(newData, form_data, image_data);
     }
     
@@ -243,9 +242,7 @@ const ModalContent = (props) => {
               </Radio>
             </Radio.Group>
           </Form.Item>
-          {state.format === '1' ?
-            (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
-          {(state.format === '2') || (state.format === '3') ?
+          {(state.format === '1' || state.format === '2' || state.format === '3') ?
             (<><Form.Item label="Title">
               <Input name="title" type="text" onChange={handleChange} value={state.title} />
               <div className="errorMsg">{errors.title}</div>
@@ -254,7 +251,9 @@ const ModalContent = (props) => {
                 <Input name="description" type="text" onChange={handleChange} key="desc" value={state.description} />
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item> </>) : null}
-            {state.format === '2' ?
+          {state.format === '1' ?
+            (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
+          {state.format === '2' ?
                 (<>{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
                 <Form.Item label="Images"><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item></>) : null}
                 {state.format === '3' ?

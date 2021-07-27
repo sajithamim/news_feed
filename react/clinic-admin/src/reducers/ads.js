@@ -6,7 +6,7 @@ const initialState = {
 
 
 export default (state = initialState, action) => {
-    console.log("action payload" , action.payload);
+    // console.log("action payload" , action.payload);
     switch (action.type) {
         case 'GET_ADS':
         return {...state , adsList: action.payload}

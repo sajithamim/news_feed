@@ -38,10 +38,11 @@ const TopicsContent = (props) => {
   };
 
   const confirmDelete = (id) => {
-    dispatch(deleteTopic(id))
-    .then((res) => {
-      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    })
+    console.log("delete" , id);
+    // dispatch(deleteTopic(id))
+    // .then((res) => {
+    //   res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
+    // })
   }
   
   const cancel = (e) => {
