@@ -3,7 +3,7 @@ from django.conf.urls import url, include
 from .views import (RegisterView, LogoutAPIView, SetNewPasswordAPIView, 
 VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
 SignInOtpview,AdminLoginAPIView,UserProfile,UserProfilepicView,Userlist,
-UserDetailApiview,UsernameAddview,UserSpecializationApiView)
+UserDetailApiview,UsernameAddview,UserSpecializationApiView,UserProfileSearchView)
 # from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework import routers
@@ -35,6 +35,7 @@ urlpatterns = [
     path('userdetail/<str:email>/',UserDetailApiview.as_view(),name="singleuserdetail"),
     path('addname/',UsernameAddview.as_view(),name="nameupdate"),
     path('userlistspecialization/<int:pk>/',UserSpecializationApiView.as_view(),name="userlist"),
+    path('usersearck/<str:pk>/',UserProfileSearchView.as_view(),name="usersearch"),
     url(r'^', include(router.urls)),
 
 #     path('profilepic/',UserProfilepicView.as_view(),name="profilepic"),

@@ -86,6 +86,7 @@ class Topics(models.Model):
         ('2', '2'),
         ('3', '3')
     )
+    author = models.ForeignKey(User,on_delete=models.DO_NOTHING,blank=True,null=True,related_name="author_profile")
     format = models.CharField(max_length=2,choices=FORMAT_CHOICES)
     category_id = models.ForeignKey(Categoeries,on_delete=models.CASCADE,related_name="topic_category")
     title = models.CharField(max_length=255)

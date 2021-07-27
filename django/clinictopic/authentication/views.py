@@ -34,6 +34,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from specialization.models import UserSpecialization
 from rest_framework import pagination
+from django.db.models import Q
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -420,3 +421,26 @@ class UserSpecializationApiView(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
+
+class UserProfileSearchView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request,pk, *args, **kwargs):
+        try:
+            user =User.objects.filter(Q(email__icontains=pk) | Q(name__icontains=pk))[:10]
+            serializers = UserProfileSerializer(user,many=True)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
