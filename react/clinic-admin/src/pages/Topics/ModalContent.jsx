@@ -124,7 +124,7 @@ const ModalContent = (props) => {
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
-      setState({ ...state, media_type: e.target.value })
+      setState({ ...state, video_type: e.target.value })
     }
     else if (val === 'format') {
       setState({ ...state, format: e.target.value })
@@ -244,13 +244,7 @@ const ModalContent = (props) => {
             </Radio.Group>
           </Form.Item>
           {state.format === '1' ?
-            (<><Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-              <Radio.Group onChange={(e) => radioOnChange('delivery', e)} value={state.deliverytype}>
-                <Radio value="pdf">
-                  PDF
-                </Radio>
-              </Radio.Group>
-            </Form.Item></>) : null}
+            (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
           {(state.format === '2') || (state.format === '3') ?
             (<><Form.Item label="Title">
               <Input name="title" type="text" onChange={handleChange} value={state.title} />
@@ -259,44 +253,28 @@ const ModalContent = (props) => {
               <Form.Item label="Description">
                 <Input name="description" type="text" onChange={handleChange} key="desc" value={state.description} />
                 <div className="errorMsg">{errors.description}</div>
-              </Form.Item>
-              <Form.Item label="Source Url">
-                <Input name="source_url" type="text" onChange={handleChange} key="source" value={state.source_url} />
-              </Form.Item></>) : null}
-          {state.format === '2' ? 
-          (<><Form.Item label="Media Type">
-            <Radio.Group onChange={(e) => radioOnChange('media', e)} value={state.media_type}>
-              <Radio value="image">
-                Image
+              </Form.Item> </>) : null}
+            {state.format === '2' ?
+                (<>{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
+                <Form.Item label="Images"><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item></>) : null}
+                {state.format === '3' ?
+                (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
+            {state.format === '3' || state.format === '2' ? 
+          (<><Form.Item label="Delivery Type">
+            <Radio.Group onChange={(e) => radioOnChange('delivery', e)} value={state.deliverytype}>
+              <Radio value="pdf">
+                Pdf
               </Radio>
-              <Radio value="exUrl">
-                PDF/External URL
-              </Radio>
-            </Radio.Group>
-            </Form.Item></>) : null}
-            {state.format === '3' ? 
-          (<><Form.Item label="Media Type">
-            <Radio.Group onChange={(e) => radioOnChange('media', e)} value={state.video_type}>
-              <Radio value="video">
-                Video
-              </Radio>
-              <Radio value="exUrl">
-                PDF/External URL
+              <Radio value="external_url">
+                External URL
               </Radio>
             </Radio.Group>
             </Form.Item></>) : null}
-            <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-              {(state.deliverytype && state.deliverytype !== 'null' ?
-                (state.deliverytype === 'pdf' ?
-                  (<><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></>) : (<Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} />))
-                : null)}
-              <div className="errorMsg">{errors.pdf}</div>
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-              {state.media_type && state.media_type !== null ?
-                (state.media_type === 'image' ?
-                  (<>{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}<Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /><div className="errorMsg">{errors.multi_image}</div></>) : (<Input type="text" id="video" name="video_url" onChange={handleChange} value={state.video_url} />)) : null}
-            </Form.Item>
+            
+            {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== 'null' ?
+              (state.deliverytype === 'pdf' ?
+                (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} /></Form.Item>))
+              : null)}
             <Form.Item label="When to Publish">
               <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
                 <Radio value="now">
@@ -308,9 +286,9 @@ const ModalContent = (props) => {
               </Radio.Group>
               <div className="errorMsg">{errors.publishingtime}</div>
             </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
-              {(state.publishtype && state.publishtype !== "now") ? (<Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime, 'YYYY-MM-DD HH:mm:ss')} /></Space>) : null}
-            </Form.Item>
+            {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
+              <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
+            </Form.Item>) : null}
             <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
               <Button type="primary" htmlType="submit">Save</Button>
             </Form.Item>
