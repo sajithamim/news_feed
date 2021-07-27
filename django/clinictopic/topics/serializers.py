@@ -138,10 +138,12 @@ class TopicSeriaizer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         topic_spec_data = validated_data.pop('topic_topic')
-        email = validated_data['email']
-        del validated_data['email']
-        author = User.objects.get(email=email)
-        topic = Topics.objects.create(author=author,**validated_data)
+        if 'email' in validated_data:
+            email = validated_data['email']
+            del validated_data['email']
+            author = User.objects.get(email=email)
+            topic = Topics.objects.create(author=author,**validated_data)
+        topic = Topics.objects.create(**validated_data)
         for data in topic_spec_data:
             topic_spec = TopicSpecialization.objects.create(topic_id = topic, **data)
         return topic
