@@ -123,8 +123,6 @@ const ModalContent = (props) => {
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "" })
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
-    } else if (val === 'media') {
-      setState({ ...state, video_type: e.target.value })
     }
     else if (val === 'format') {
       setState({ ...state, format: e.target.value })
@@ -255,8 +253,8 @@ const ModalContent = (props) => {
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item> </>) : null}
             {state.format === '2' ?
-                (<>{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
-                <Form.Item label="Images"><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item></>) : null}
+                (<Form.Item label="Images">{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
+                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
                 {state.format === '3' ?
                 (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
             {state.format === '3' || state.format === '2' ? 
@@ -265,7 +263,7 @@ const ModalContent = (props) => {
               <Radio value="pdf">
                 Pdf
               </Radio>
-              <Radio value="external_url">
+              <Radio value="external">
                 External URL
               </Radio>
             </Radio.Group>
@@ -288,7 +286,7 @@ const ModalContent = (props) => {
             </Form.Item>
             {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
               <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
-            </Form.Item>) : null}
+             </Form.Item>) : null}
             <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
               <Button type="primary" htmlType="submit">Save</Button>
             </Form.Item>
