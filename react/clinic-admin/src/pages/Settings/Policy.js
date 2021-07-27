@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "antd";
+import { Form, Button, message, Card } from "antd";
+import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getSettings , postSettings} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
@@ -15,10 +16,6 @@ const Policy = () => {
             console.log("respolicy",res.data[0]);
            setId(res.data[0].id);
            setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
-        //    setEditorState(EditorState.createWithContent(
-        //     ContentState.createFromBlockArray(
-        //       convertFromHTML(res.data.results && res.data.results[0] && res.data.results[0].privacy_policy))
-        //     ));
         })
     }, [])
 
@@ -29,8 +26,10 @@ const Policy = () => {
     let newData = {}
     newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
     newData.id = id;
-    console.log("newData" , newData);
-    dispatch(postSettings(newData));
+    dispatch(postSettings(newData))
+    .then(() => {
+        message.success('Policy edit successfully')
+    });
     
  }
 
@@ -43,33 +42,24 @@ const Policy = () => {
  }
 
     return (
-        <Form
-            name="basic"
-            labelCol={{
-                span: 8,
-            }}
-            wrapperCol={{
-                span: 10,
-            }} onFinish={handleSubmit}>
-
-<Editor
-  editorState={editorState}
-  toolbarClassName="toolbarClassName"
-  wrapperClassName="wrapperClassName"
-  editorClassName="editorClassName"
-  onEditorStateChange={onEditorStateChange}
-/>
-            
-            <Form.Item
-                wrapperCol={{
-                    offset: 8,
-                    span: 16,
-                }}>
-                <Button type="primary" htmlType="submit" >
-                    Save
-                </Button>
-            </Form.Item>
-        </Form>
+        <div style={{ margin: "10px" }}>
+        <Card
+            title="Policy"
+            style={{ width: "100%" }}>
+            <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
+                <Editor
+                editorState={editorState}
+                toolbarClassName="toolbarClassName"
+                wrapperClassName="wrapperClassName"
+                editorClassName="editorClassName"
+                onEditorStateChange={onEditorStateChange}
+                />
+                <Form.Item wrapperCol={{offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit"> Save </Button>
+                </Form.Item>
+            </Form>
+        </Card>
+        </div>
     )
 }
 export default Policy;
