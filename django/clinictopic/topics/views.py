@@ -198,17 +198,11 @@ class FavouriteDeleteView(APIView):
     def delete(self, request, *args, **kwargs):
         try:
             delete_id = request.data["deleteid"]
-            # print(delete_id)
             if not delete_id:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             for i in delete_id:
                 get_object_or_404(Favourite, pk=int(i)).delete()
-            response={
-                "success":"True",
-                "message":"Deleted",
-                "status":status.HTTP_204_NO_CONTENT
-            }
-            return Response(response,status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             response={
                 "success":"False",
