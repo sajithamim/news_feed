@@ -21,7 +21,6 @@ const ModalContent = (props) => {
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
-  console.log("userlistttttttt" , userList);
   const [errors, setErrors] = useState({ name: '' });
 
   const specialization = [];
@@ -235,12 +234,7 @@ const ModalContent = (props) => {
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Author">
-            <Select
-              isMulti={false}
-              value={state.category_data}
-              onChange={handleCategoryChange}
-              options={category}
-            />
+            <Input type="text"/>
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
