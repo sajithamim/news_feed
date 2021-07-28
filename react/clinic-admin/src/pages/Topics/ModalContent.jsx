@@ -103,13 +103,15 @@ const ModalContent = (props) => {
   }
 
   useEffect(() => {
-    dispatch(getSpecialization());
-    dispatch(getCategory());
-    console.log('props.editData', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
     }
-  }, [props.editData])
+  }, [props.editData]);
+
+  useEffect(() => {
+    dispatch(getSpecialization());
+    dispatch(getCategory());
+  }, [])
 
   const onOk = (value) => {
   }
@@ -168,7 +170,7 @@ const ModalContent = (props) => {
       delete newData["topic_image"];
       delete newData["pdf"];
       delete newData["category_data"];
-      delete newData["topic_topic"];
+      //delete newData["topic_topic"];
       props.onFormSubmit(newData, form_data, image_data);
     }
 

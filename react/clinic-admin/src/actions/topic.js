@@ -19,7 +19,7 @@ export const deleteTopic = (id) => async (dispatch) => {
             await Topic.deleteImage(id);
         }
         dispatch({
-            type: 'DELETE_IMAGE',
+            type: 'DELETE_TOPIC',
             payload: id,
         })
         return res;

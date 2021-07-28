@@ -11,11 +11,11 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
 
   const [data , setData] = useState({});
-  const { topicList, addTopic, editTopic } = useSelector(state => state.topic);
+  const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(5);
   const dispatch = useDispatch();
-  console.log('editTopic', editTopic)
+ 
   useEffect(() => {
     dispatch(getTopic())
     onClose();
@@ -38,11 +38,8 @@ const TopicsContent = (props) => {
   };
 
   const confirmDelete = (id) => {
-    console.log("delete" , id);
-    // dispatch(deleteTopic(id))
-    // .then((res) => {
-    //   res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    // })
+    dispatch(deleteTopic(id))
+    .then(res => res && message.success('Topic deleted successfully.'))
   }
   
   const cancel = (e) => {
@@ -181,7 +178,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : {}} onFormSubmit={onFormSubmit}/>
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data :(drawerType === 'add') ? {} : null } onFormSubmit={onFormSubmit}/>
       </Drawer>
     </div>
   );
