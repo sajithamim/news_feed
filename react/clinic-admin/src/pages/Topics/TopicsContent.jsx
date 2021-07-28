@@ -38,10 +38,11 @@ const TopicsContent = (props) => {
   };
 
   const confirmDelete = (id) => {
-    dispatch(deleteTopic(id))
-    .then((res) => {
-      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    })
+    console.log("delete" , id);
+    // dispatch(deleteTopic(id))
+    // .then((res) => {
+    //   res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
+    // })
   }
   
   const cancel = (e) => {
@@ -55,6 +56,9 @@ const TopicsContent = (props) => {
         message.success('Topic edit successfully')
       });
     } else {
+      console.log("newdata" ,newData )
+      console.log("form_data" ,form_data )
+      console.log("image_data" ,image_data )
       dispatch(postTopic(newData, form_data, image_data))
       .then(() => {
         message.success('Topic add successfully')
@@ -95,7 +99,9 @@ const TopicsContent = (props) => {
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         topic_image: images,
         video_url:item.video_url,
-        pdf:item.pdf
+        pdf:item.pdf,
+        format: item.format,
+        external_url:item.external_url
       }) 
     });
     return items;

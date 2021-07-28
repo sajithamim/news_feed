@@ -7,19 +7,19 @@ import { Icon, IconButton } from "@material-ui/core";
 import { AppleOutlined, AndroidOutlined } from '@ant-design/icons';
 import Select from 'react-select';
 import { getSpecialization } from "../../actions/spec";
-import { getSpecUsers } from "../../actions/ads";
+import { getSpecUsers , postAdds } from "../../actions/ads";
 
 const AddAds = () => {
     const { TabPane } = Tabs;
     const { Title } = Typography;
     const dispatch = useDispatch();
-    const [specSelectedOption, setSpecSelectedOption] = useState();
+   // const [specSelectedOption, setSpecSelectedOption] = useState();
     const [userSelectedOption, setUserSelectedOption] = useState();
     const [state, setState] = useState({});
     const [size, setSize] = useState(8);
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
-    const [fields, setFields] = useState({});
+    const [fields, setFields] = useState({"title": ""});
     useEffect(() => {
         dispatch(getSpecialization());
     }, [])
@@ -37,19 +37,25 @@ const AddAds = () => {
    const { specUsers } =  useSelector(state => state.ads);
    const users = [];
    specUsers && specUsers.results && specUsers.results.map(item=> {
+       console.log("userlist item", item);
+       setState({...state , email: item.email});
        return users.push(
-           { value: item.key , label: item.username}
+           { value: item.email , label: item.username}
        );
        
    })
 
     const handleSpecChange = (value , field) => {
-        setSpecSelectedOption(value);
+        
+       // setSpecSelectedOption(value);
         let topic = [];
         value && value.map(item => {
+            console.log("spec item" , item);
+            fields[field] = item.label;
             topic.push({ spec_id: item.value, spec_value: item.label })
         })
-        setState({ ...state, add_specialization: topic })
+
+        setState({ ...state, specialization: value, add_specialization: topic })
     }
 
     const customStyles = {
@@ -73,6 +79,8 @@ const AddAds = () => {
     }
 
     const handleValidation = () => {
+       // console.log("fields",fields.fields["title"]);
+       let fields = state
         let errors = {};
         let formIsValid = true;
         if(!fields["title"]){
@@ -80,27 +88,33 @@ const AddAds = () => {
             errors["title"] = "Cannot be empty";
          }
 
-        // if(!fields["selectSpec"]){
-        //     formIsValid = false;
-        //     errors["selectSpec"] = "Required";
-        //  }
+        if(!fields["specialization"]){
+            console.log("coming");
+            formIsValid = false;
+            errors["specialization"] = "Required";
+            console.log("errors",errors.selectSpec);
+         }
         setErrors({errors});
         return formIsValid;
     }
     
     const handleSubmit = (e) => {
-        if(handleValidation()){
-            alert("Form submitted");
-         }else{
-            console.log("getting", errors);
-         }
-    }
+        // if(handleValidation()){
+        //  }else{
+        let newData = state;
+        delete newData["specialization"]
+        console.log("state", newData);
+        dispatch(postAdds(newData));
+        delete newData["specialization"];
+        delete newData["title"];
+        console.log("newData" , newData);
+       }
 
     const handleChange = (e , field) => {
-        // let fields = fields;
+        let fields = state;
         fields[field] = e.target.value;
-        setFields({fields});
-        setState({ ...state, [e.target.title]: e.target.value })
+        console.log("fields[field]",fields[field]);
+        setState({...state ,  [e.target.name]: e.target.value })
     }
 
    const handleScreen = () => {
@@ -126,16 +140,15 @@ const AddAds = () => {
             </Form.Item>
             <Form.Item label="Specialization">
                 <Select
-                    name="selectSpec"
+                    name="specialization"
                     isMulti={true}
-                    value={specSelectedOption}
-                    onChange={(e) => handleSpecChange(e, "selectSpec")}
+                    value={state.specialization}
+                    onChange={(e) => handleSpecChange(e, "specialization")}
                     options={specialization}
                     styles={customStyles}
                     required
                 />
-
-                {/* <div className="errorMsg">{errors["selectSpec"]}</div> */}
+             <div className="errorMsg">{errors && errors.errors && errors.errors.specialization}</div>
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 5, span: 16 }}>
                 <Button type="primary" htmlType="submit" onClick={handleScreen}>
@@ -168,8 +181,11 @@ const AddAds = () => {
                     placeholder="Select Users"
                 />
             </Form.Item>
+            <Form.Item wrapperCol={{ offset: 10, span: 7 }}>
+                <Button onClick={handleSubmit}>Add User</Button>
+            </Form.Item>
         </Card>
-        </div>
+        </div>  
    
 
     )

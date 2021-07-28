@@ -34,3 +34,15 @@ export const getSpecUsers = (id) => async (dispatch) => {
     } catch (err) {
     }
 }
+
+export const postAdds = (id) => async (dispatch) => {
+    try {
+        const res = await Ads.postAdds(id);
+        console.log("add res",res);
+        dispatch({
+            type: 'GET_SPEC_USERS',
+            payload: res.data,
+        });
+    } catch (err) {
+    }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin  } from "antd";
+import { PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
@@ -17,7 +18,6 @@ const Ads = () => {
   const [pageSize , setPageSize] = useState(10);
   const { adsList } = useSelector(state => state.ads);
  
-  console.log("adsList" , adsList);
   useEffect(() => {
     dispatch(getAds())
     onClose();
@@ -37,9 +37,9 @@ const Ads = () => {
 
   const confirmDelete = (id) => {
     dispatch(deleteAdd(id))
-      .then((res) => {
-        res.status === 204 ? message.success("Add is deleted successfully") : message.error("Add is not exist")
-      })
+      // .then((res) => {
+      //   res.status === 204 ? message.success("Add is deleted successfully") : message.error("Add is not exist")
+      // })
   };
 
   const cancel = (e) => {
@@ -57,7 +57,6 @@ const Ads = () => {
       key++;
       const addSpecItems =[];
       item.add_specialization.map((addSpecItem) => {
-          console.log("addSpecItem",addSpecItem);
            addSpecItems.push(addSpecItem.spec_id.name)
       })
       return items.push({
@@ -132,7 +131,7 @@ const Ads = () => {
         title="Ads"
         extra={
           <IconButton >
-            <a href = "/data/AddAds"><Icon>Add</Icon></a> 
+            <a href = "/data/AddAds"><PlusOutlined>Add</PlusOutlined></a> 
           </IconButton>
         }
         style={{ width: "100%" }}
