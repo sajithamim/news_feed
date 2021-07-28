@@ -36,9 +36,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         email = attrs.get('email', '')
         username = attrs.get('username', '')
         phone = attrs.get('phone', '')
-        if not phone.isnumeric():
-            raise serializers.ValidationError(
-                self.default_error_messages)
+        # if not phone.isnumeric():
+        #     raise serializers.ValidationError(
+        #         self.default_error_messages)
         return attrs
 
     def create(self, validated_data):
@@ -68,9 +68,9 @@ class Signinserializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs.get('phone', ''):
             phone = attrs.get('phone', '')
-            if not phone.isnumeric():
-                raise serializers.ValidationError(
-                    self.default_error_messages)
+            # if not phone.isnumeric():
+            #     raise serializers.ValidationError(
+            #         self.default_error_messages)
             phone_verify = User.objects.filter(phone=phone).first()
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
@@ -156,8 +156,8 @@ class LoginSerializer(serializers.ModelSerializer):
         # print(otp)
         user = auth.authenticate(email=email, password=password)
         # otp = random.randrange(1000,9999)
-        if not phone.isnumeric():
-            raise AuthenticationFailed('Invalid phone number!')
+        # if not phone.isnumeric():
+        #     raise AuthenticationFailed('Invalid phone number!')
 
         # if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
         #     raise AuthenticationFailed(
