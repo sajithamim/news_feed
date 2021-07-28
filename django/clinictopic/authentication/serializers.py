@@ -75,7 +75,9 @@ class Signinserializer(serializers.ModelSerializer):
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
             phone_verify.save()
-            url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+str(phone)+'&text='+str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
+            smsphone  = str(phone)
+            smsnumber = smsphone.replace("-","")
+            url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
             r = requests.get(url)
         if attrs.get('email',''):
             email = attrs.get('email', '')
