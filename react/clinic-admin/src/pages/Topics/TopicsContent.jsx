@@ -15,7 +15,7 @@ const TopicsContent = (props) => {
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(5);
   const dispatch = useDispatch();
-  
+  console.log('editTopic', editTopic)
   useEffect(() => {
     dispatch(getTopic())
     onClose();

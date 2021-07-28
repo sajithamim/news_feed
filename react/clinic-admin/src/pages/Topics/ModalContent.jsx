@@ -168,7 +168,7 @@ const ModalContent = (props) => {
       delete newData["topic_image"];
       delete newData["pdf"];
       delete newData["category_data"];
-      //delete newData["topic_topic"];
+      delete newData["topic_topic"];
       props.onFormSubmit(newData, form_data, image_data);
     }
 
