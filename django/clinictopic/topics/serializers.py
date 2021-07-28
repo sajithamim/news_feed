@@ -5,11 +5,11 @@ from rest_framework import serializers
 from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
 from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
 from authentication.models import User
+from authentication.serializers import UserProfileSerializer
 from poll.models import UserPoll
 # from poll.serializers import TopicPollSerializer
 # from poll.serializers import TopicPollSerializer
 from poll.models import TopicPoll,PollOption
-
 
 class GetPollOptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -114,6 +114,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
     poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
     favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
+    author = UserProfileSerializer(read_only=True)
+    email = serializers.EmailField(required=False,allow_null=True,allow_blank=True,write_only=True)
     # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
@@ -136,6 +138,11 @@ class TopicSeriaizer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         topic_spec_data = validated_data.pop('topic_topic')
+        if 'email' in validated_data:
+            email = validated_data['email']
+            del validated_data['email']
+            author = User.objects.get(email=email)
+            topic = Topics.objects.create(author=author,**validated_data)
         topic = Topics.objects.create(**validated_data)
         for data in topic_spec_data:
             topic_spec = TopicSpecialization.objects.create(topic_id = topic, **data)
@@ -354,3 +361,17 @@ class UpdateTopicSpecializationSerializer(serializers.ModelSerializer):
     #     response = super().to_representation(instance)
     #     response['topic_id'] = GetTopicSeriaizer(instance.topic_id).data
     #     return response
+
+
+class authorserializer(serializers.ModelSerializer):
+        # user = UserSerializer(read_only=True)
+        author = serializers.EmailField(write_only=True)   
+        model = Topics
+        fields = ['author']
+
+        def update(self, validated_data):
+            # print(validated_data['author'])
+            user = User.objects.get(email=validated_data['author'])
+            print(user)
+            topic = Topics.objects.update(author=user)
+            return topic

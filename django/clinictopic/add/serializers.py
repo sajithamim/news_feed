@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import AddSpecialization,Ads,AddUser
 from specialization.serializers import (GetSpecialization)
 from authentication.models import User
+from authentication.serializers import UserProfileSerializer
 
 class AddSpecializationSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
@@ -41,11 +42,17 @@ class AddUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False,allow_null=False,allow_blank=False)
     class Meta:
         model = AddUser
-        fields = ['adsid','email']
+        fields = ['adsid','email','spec_id']
 
 
     def create(self, validated_data):
         user = User.objects.get(email=validated_data['email'])
         del validated_data['email']
-        current = AddUser.objects.filter(adsid = validated_data['adsid']).delete()
+        current = AddUser.objects.filter(adsid = validated_data['adsid'],spec_id=validated_data['spec_id']).delete()
         return AddUser.objects.create(user_id =user,**validated_data)
+
+class AddUserSelectedSerializer(serializers.ModelSerializer):
+    user_id = UserProfileSerializer()
+    class Meta:
+        model = AddUser
+        fields = ['user_id']

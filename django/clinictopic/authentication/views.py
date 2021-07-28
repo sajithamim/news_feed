@@ -34,6 +34,8 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from specialization.models import UserSpecialization
 from rest_framework import pagination
+from django.db.models import Q
+import requests
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -85,6 +87,8 @@ class RegisterView(generics.GenericAPIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Verify your email'}
             Util.send_email(data)
+            url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+str(user['phone'])+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
+            r = requests.get(url)
             status_code = status.HTTP_201_CREATED
             response = {
             'success' : 'True',
@@ -420,3 +424,26 @@ class UserSpecializationApiView(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
+
+class UserProfileSearchView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request,pk, *args, **kwargs):
+        try:
+            user =User.objects.filter(Q(email__icontains=pk) | Q(name__icontains=pk))[:10]
+            serializers = UserProfileSerializer(user,many=True)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
