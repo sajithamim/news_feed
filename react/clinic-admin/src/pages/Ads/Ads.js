@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin  } from "antd";
-import { PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
@@ -131,7 +130,7 @@ const Ads = () => {
         title="Ads"
         extra={
           <IconButton >
-            <a href = "/data/AddAds"><PlusOutlined>Add</PlusOutlined></a> 
+            <Icon><a href = "/data/AddAds">add</a></Icon>
           </IconButton>
         }
         style={{ width: "100%" }}

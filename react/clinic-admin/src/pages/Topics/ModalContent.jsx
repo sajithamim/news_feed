@@ -7,6 +7,7 @@ import PollContent from "./PollContent";
 import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";
+import { getUsersList  } from "../../actions/users";
 import moment from 'moment';
 import Select from 'react-select';
 
@@ -19,7 +20,7 @@ const ModalContent = (props) => {
   const [state, setState] = useState({});
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
-
+  const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({ name: '' });
 
   const specialization = [];
@@ -35,6 +36,9 @@ const ModalContent = (props) => {
       { value: item.id, label: item.title }
     );
   })
+
+  const author=[];
+  
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -108,6 +112,7 @@ const ModalContent = (props) => {
   useEffect(() => {
     dispatch(getSpecialization());
     dispatch(getCategory());
+    dispatch(getUsersList())
     console.log('props.editData', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
@@ -149,7 +154,6 @@ const ModalContent = (props) => {
   const handleSubmit = (e) => {
 
     if (formValidation()) {
-      console.log("clicking");
       setErrors({});
       let form_data = null;
       if (state.pdfUrl && state.pdfUrl.name) {
@@ -227,6 +231,10 @@ const ModalContent = (props) => {
               onChange={handleCategoryChange}
               options={category}
             />
+            <div className="errorMsg">{errors.category_id}</div>
+          </Form.Item>
+          <Form.Item label="Author">
+            <Input type="text"/>
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>

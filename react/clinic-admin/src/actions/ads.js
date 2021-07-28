@@ -26,21 +26,32 @@ export const deleteAdd = (id) => async (dispatch) => {
 export const getSpecUsers = (id) => async (dispatch) => {
     try {
         const res = await Ads.getSpecUsers(id);
-        console.log("add res",res);
         dispatch({
             type: 'GET_SPEC_USERS',
+            payload: res.data,
+        });
+        return res;
+    } catch (err) {
+    }
+}
+
+export const postAdds = (state) => async (dispatch) => {
+    try {
+        const res = await Ads.postAdds(state);
+        console.log("add res",res);
+        dispatch({
+            type: 'POST_ADD',
             payload: res.data,
         });
     } catch (err) {
     }
 }
 
-export const postAdds = (id) => async (dispatch) => {
+export const postAddsVisibilty = (state) => async (dispatch) => {
     try {
-        const res = await Ads.postAdds(id);
-        console.log("add res",res);
+        const res = await Ads.postAddsVisibility(state);
         dispatch({
-            type: 'GET_SPEC_USERS',
+            type: 'POST_ADD_USER',
             payload: res.data,
         });
     } catch (err) {

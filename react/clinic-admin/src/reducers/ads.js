@@ -2,6 +2,7 @@ const initialState = {
     adsList:[],
     deleteList:[],
     specUsers:[],
+    adsUsersList:[],
 };
 
 
@@ -16,6 +17,8 @@ export default (state = initialState, action) => {
         return {...state , specUsers: action.payload}
         case 'POST_ADD':
         return {...state , adsList: action.payload}
+        case 'POST_ADD_USER':
+        return {...state , adsUsersList: action.payload}
         default:
         return state
     }

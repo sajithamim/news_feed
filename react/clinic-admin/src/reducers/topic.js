@@ -2,7 +2,8 @@ const initialState= {
     topicList:[],
     addTopic: false,
     editTopic: false,
-    pdf:{}
+    pdf:{},
+    successMsg: ''
 };
 
 export default (state = initialState , action) => {
@@ -10,7 +11,7 @@ export default (state = initialState , action) => {
         case 'GET_TOPIC':
         return {...state , topicList: action.payload, addTopic: false, editTopic: false }
         case 'DELETE_TOPIC':
-        return {...state , topicList: Object.assign({},state.topicList,{results: state.topicList && state.topicList.results.filter(item => item.id !== action.payload)}) }
+        return {...state , topicList: Object.assign({},state.topicList,{results: state.topicList && state.topicList.results.filter(item => item.id !== action.payload)}), successMsg: "Topic deleted successfully." }
         case 'POST_TOPIC':
         return {...state , addTopic: true }
         case 'DELETE_IMAGE':

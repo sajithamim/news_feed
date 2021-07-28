@@ -11,7 +11,7 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
 
   const [data , setData] = useState({});
-  const { topicList, addTopic, editTopic } = useSelector(state => state.topic);
+  const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(5);
   const dispatch = useDispatch();
@@ -38,11 +38,10 @@ const TopicsContent = (props) => {
   };
 
   const confirmDelete = (id) => {
-    console.log("delete" , id);
-    // dispatch(deleteTopic(id))
-    // .then((res) => {
-    //   res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    // })
+    dispatch(deleteTopic(id))
+    .then((res) => {
+      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
+    })
   }
   
   const cancel = (e) => {
@@ -56,9 +55,6 @@ const TopicsContent = (props) => {
         message.success('Topic edit successfully')
       });
     } else {
-      console.log("newdata" ,newData )
-      console.log("form_data" ,form_data )
-      console.log("image_data" ,image_data )
       dispatch(postTopic(newData, form_data, image_data))
       .then(() => {
         message.success('Topic add successfully')

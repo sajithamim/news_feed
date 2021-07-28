@@ -12,11 +12,15 @@ const  deleteAds = (id) => {
 const  getSpecUsers = (id) => {
     return http.get(`auth/userlistspecialization/${id}/`);
 }
+const  postAddsVisibility = (state) => {
+    return http.get(`add/adduser/` ,state);
+}
 const Ads = {
     getAds,
     postAdds,
     deleteAds,
-    getSpecUsers
+    getSpecUsers,
+    postAddsVisibility
 }
 
 export default Ads;

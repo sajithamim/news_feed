@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Tabs, Button, Typography, Checkbox, Space, Slider, Card } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Link } from 'react-router-dom';
-import { Icon, IconButton } from "@material-ui/core";
-import { AppleOutlined, AndroidOutlined } from '@ant-design/icons';
 import Select from 'react-select';
 import { getSpecialization } from "../../actions/spec";
 import { getSpecUsers , postAdds } from "../../actions/ads";
@@ -36,9 +33,9 @@ const AddAds = () => {
     
    const { specUsers } =  useSelector(state => state.ads);
    const users = [];
+   
    specUsers && specUsers.results && specUsers.results.map(item=> {
-       console.log("userlist item", item);
-       setState({...state , email: item.email});
+       console.log("userlist item", users);
        return users.push(
            { value: item.email , label: item.username}
        );
@@ -46,8 +43,6 @@ const AddAds = () => {
    })
 
     const handleSpecChange = (value , field) => {
-        
-       // setSpecSelectedOption(value);
         let topic = [];
         value && value.map(item => {
             console.log("spec item" , item);
@@ -71,11 +66,16 @@ const AddAds = () => {
     }
 
     const buttonClick = (id) => {
-        dispatch(getSpecUsers(id));
+        dispatch(getSpecUsers(id))
     }
     
     const handleUserChange = (value) => {
         setUserSelectedOption(value);
+        const userEmail=[];
+        value && value.map(item => {
+            userEmail.push({ email: item.value })
+        })
+        setState({ ...state, email: userEmail })
     }
 
     const handleValidation = () => {
@@ -107,7 +107,7 @@ const AddAds = () => {
         dispatch(postAdds(newData));
         delete newData["specialization"];
         delete newData["title"];
-        console.log("newData" , newData);
+        console.log("newDatatestttt" , newData);
        }
 
     const handleChange = (e , field) => {
