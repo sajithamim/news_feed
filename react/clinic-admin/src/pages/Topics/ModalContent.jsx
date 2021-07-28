@@ -56,7 +56,6 @@ const ModalContent = (props) => {
     var numFiles = e.target.files.length;
     const newErrorsState = { ...errors };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
-      console.log('i', i)
       var file = e.target.files[i];
       if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
         newErrorsState.multi_image = 'Please select valid image.';
@@ -64,8 +63,6 @@ const ModalContent = (props) => {
         setFormSubmit(false);
       } else {
         const reader = new FileReader();
-        //setState({ ...state, pdfUrl: e.target.files[0]});
-        //console.log('FileChange', e.target.files[i])
         reader.addEventListener("load", () => {
           if (!state.topic_image) {
             setState({ ...state, topic_image: [reader.result] });
@@ -212,21 +209,11 @@ const ModalContent = (props) => {
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
           <Form.Item label="Specializations">
-            <Select
-              isMulti={true}
-              value={state.spec_data}
-              onChange={handleSpecChange}
-              options={specialization}
-            />
+            <Select isMulti={true} value={state.spec_data || ''} onChange={handleSpecChange} options={specialization} />
             <div className="errorMsg">{errors.specialization}</div>
           </Form.Item>
           <Form.Item label="Category">
-            <Select
-              isMulti={false}
-              value={state.category_data}
-              onChange={handleCategoryChange}
-              options={category}
-            />
+            <Select isMulti={false} value={state.category_data || ''} onChange={handleCategoryChange} options={category}/>
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
