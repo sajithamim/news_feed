@@ -194,8 +194,6 @@ console.log('userList', userList)
         console.log('newData', newData);
       } else if(newData.format === '2')
         newData['video_url'] && delete newData['video_url'];
-        else if(newData.format === '3')
-        newData['external_url'] && delete newData['external_url'];
         console.log('newData112', newData)
       props.onFormSubmit(newData, form_data, image_data);
     }

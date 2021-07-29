@@ -50,6 +50,7 @@ const TopicsContent = (props) => {
 
   const onFormSubmit = (newData, form_data, image_data) => {
     if(drawerType == 'edit') {
+      
       dispatch(updateTopic(data.id, newData, form_data, image_data))
       .then(() => {
         message.success('Topic edit successfully')
