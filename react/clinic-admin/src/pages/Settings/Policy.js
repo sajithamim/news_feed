@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, message, Card } from "antd";
-import { Icon, IconButton } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getSettings , postSettings} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState , ContentState , convertFromHTML , convertToRaw, convertFromRaw} from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw} from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const Policy = () => {
@@ -19,33 +18,29 @@ const Policy = () => {
         })
     }, [])
 
-    const { settingsList } = useSelector(state => state.settings);
     const [ contentState , setContentState] = useState();
 
- const handleSubmit = () => {
-    let newData = {}
-    newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
-    newData.id = id;
-    dispatch(postSettings(newData))
-    .then(() => {
-        message.success('Policy edit successfully')
-    });
-    
- }
+    const handleSubmit = () => {
+        let newData = {}
+        newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
+        newData.id = id;
+        dispatch(postSettings(newData))
+        .then(() => {
+            message.success('Policy edit successfully')
+        });  
+    }
 
- const [editorState, setEditorState] = useState(EditorState.createEmpty())
+    const [editorState, setEditorState] = useState(EditorState.createEmpty())
  
- const onEditorStateChange = (editorState) => {
-    const contentState = editorState.getCurrentContent();
-    setContentState(contentState);
-    setEditorState(editorState)
- }
+    const onEditorStateChange = (editorState) => {
+        const contentState = editorState.getCurrentContent();
+        setContentState(contentState);
+        setEditorState(editorState)
+    }
 
     return (
         <div style={{ margin: "10px" }}>
-        <Card
-            title="Policy"
-            style={{ width: "100%" }}>
+        <Card title="Policy" style={{ width: "100%", height: '500px' }}>
             <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
                 <Editor
                 editorState={editorState}

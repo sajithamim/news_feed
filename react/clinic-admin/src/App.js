@@ -8,7 +8,6 @@ import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
 import Users from './pages/Users/Users';
-import Settings from './pages/Settings/Settings';
 import Policy from './pages/Settings/Policy';
 import Terms from './pages/Settings/Terms';
 import About from './pages/Settings/About';

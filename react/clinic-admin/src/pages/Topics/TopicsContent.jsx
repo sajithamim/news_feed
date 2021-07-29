@@ -76,7 +76,7 @@ const TopicsContent = (props) => {
         });
 
         item.topic_image && item.topic_image.map(item => {
-          images.push(item.image);
+          images.push({id: item.id, image: item.image});
         })
        
       items.push({
@@ -94,7 +94,7 @@ const TopicsContent = (props) => {
         publishtype: "later",
         deliverytype: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
-        topic_image: images,
+        old_image: images,
         video_url:item.video_url,
         pdf:item.pdf,
         format: item.format,
