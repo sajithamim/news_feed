@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Tabs, Button, Typography, Checkbox, Space, Slider, Card } from "antd";
+import { Form, Input, Tabs, Button, Typography, Checkbox, Space, message, Card } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import Select from 'react-select';
 import { getSpecialization } from "../../actions/spec";
 import { getSpecUsers, postAdds , getEditAdsDetails} from "../../actions/ads";
+import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import  { Redirect } from 'react-router-dom'
 
 const AddAds = () => {
     const { TabPane } = Tabs;
@@ -18,20 +20,25 @@ const AddAds = () => {
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [fields, setFields] = useState({ "title": "" });
+    let history = useHistory();
+
     const { adsId } = useParams();
     const { adsDetails } = useSelector(state => state.ads);
-    const editAdsSpecialization= [];
+    console.log("adsDetails" , adsDetails);
+    const editAdsSpecialization = [];
     adsDetails && adsDetails.add_specialization && adsDetails.add_specialization.map(item => {
         return editAdsSpecialization.push(
             { value: item.spec_id.id, label: item.spec_id.name }
         );
     })
 
+
     useEffect(() => {
         dispatch(getSpecialization());
-        dispatch(getEditAdsDetails(adsId))
+        if(adsId)
+            dispatch(getEditAdsDetails(adsId))
         if(adsDetails){
-            setState({...state , title: adsDetails.title , specialization: editAdsSpecialization})
+            setState({...state , title: adsDetails.title , specialization: editAdsSpecialization })
         }
     }, [])
 
@@ -44,33 +51,25 @@ const AddAds = () => {
             { value: item.id, label: item.name }
         );
     })
-    const handleSpecChange = (value, field) => {
+    const handleSpecChange = (item) => {
         let topic = [];
-        value && value.map(item => {
-            fields[field] = item.label;
-            topic.push({ spec_id: item.value, spec_value: item.label })
+        item && item.map(item => {
+            
+          //  fields[field] = item.label;
+            topic.push({ spec_id: item.value, spec_value: item.label  })
         })
-
-        setState({ ...state, specialization: value, add_specialization: topic })
+        setState({ ...state, specialization: item, add_specialization: topic })
     }
 
-    const customStyles = {
-        control: base => ({
-            ...base,
-            width: 300,
-            minHeight: 40
-        })
-    };
-
-    const onChange = () => {
-
+    const onChange = (e) => {
+        setState({...state, allUsers: e.target.checked})
     }
 
     const buttonClick = (id) => {
         dispatch(getSpecUsers(id))
     }
 
-    const { specUsers , specId } = useSelector(state => state.ads);
+    const { specUsers, specId } = useSelector(state => state.ads);
     const users = []; 
     console.log("users",users);
     specUsers && specUsers.results && specUsers.results.map((item) => {
@@ -78,52 +77,63 @@ const AddAds = () => {
             { value: item.email, label: item.username }
         )
     })
+
     const handleUserChange = (value) => {
-        
-        const userEmail = [];
+        const userData = [];
         value && value.map((item) => {
-            userEmail.push({ key: specId , email: item.value })
+            userData.push({ spec_id: specId , email: item.value })
         })
-        setState({ ...state, userVisibility: userEmail })
+        setState({ ...state, userVisibility: userData })
     }
 
     const handleValidation = () => {
-        let fields = state
+        let fields = state;
+        console.log('fieldsss', fields)
         let errors = {};
         let formIsValid = true;
         if (!fields["title"]) {
             formIsValid = false;
-            errors["title"] = "Cannot be empty";
+            errors["title"] = "Title is required";
         }
 
-        if (!fields["specialization"]) {
-            console.log("coming");
+        if (fields["specialization"].length == 0) {
             formIsValid = false;
-            errors["specialization"] = "Required";
-            console.log("errors", errors.selectSpec);
+            errors["specialization"] = "Specialization is required";
         }
         setErrors({ errors });
         return formIsValid;
     }
 
     const handleSubmit = (e) => {
-        // if(handleValidation()){
-        //  }else{
-         let newData = state;
-         delete newData["specialization"]
-         console.log("state", newData);
-         dispatch(postAdds(newData));
+        let newData = state;
+        if((newData.userVisibility && newData.userVisibility.length !== 0) || newData.allUsers) {
+            delete newData["specialization"];
+            dispatch(postAdds(newData)).then(() =>{
+                message.success('Ads added successfully')
+                history.push("/data/Ads")
+            })
+            return true;
+        } else {
+            errors["users"] = "Choose all users or users from list";
+            
+        }
+        setErrors({ errors });
+        return false
+       
     }
 
     const handleChange = (e, field) => {
         let fields = state;
         fields[field] = e.target.value;
-        console.log("fields[field]", fields[field]);
-        setState({ ...state, [e.target.name]: e.target.value })
+        setState({ ...state, fields })
     }
 
     const handleScreen = () => {
-        setToggle(!toggle);
+        console.log("state",state);
+        if(handleValidation()) {
+            setToggle(!toggle);
+        }
+        
     }
 
     return (
@@ -140,7 +150,7 @@ const AddAds = () => {
                     style={{ marginTop: '25px' }}
                 >
                     <Form.Item label="Name">
-                        <Input name="title"value={state.title}  onChange={(e) => { handleChange(e, "title") }} />
+                        <Input name="title" value={state.title}  onChange={(e) => { handleChange(e, "title") }} />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
                     </Form.Item>
                     <Form.Item label="Specialization">
@@ -148,9 +158,8 @@ const AddAds = () => {
                             name="specialization"
                             isMulti={true}
                             value={state.specialization}
-                            onChange={(e) => handleSpecChange(e, "specialization")}
+                            onChange={handleSpecChange}
                             options={specialization}
-                            styles={customStyles}
                             required
                         />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.specialization}</div>
@@ -165,10 +174,10 @@ const AddAds = () => {
             <Card
                 title="Add Visibility"
                 style={{ width: "100%", display: toggle ? "block" : "none" }} >
-                <Form.Item wrapperCol={{ offset: 10, span: 10 }}>
+                <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
                     <Checkbox onChange={onChange}>To All Users</Checkbox>
                 </Form.Item>
-                <strong style={{ marginLeft: '455px' }}>OR</strong>
+                <div style={{ textAlign: "center" }}><strong>OR</strong></div>
                 <Form.Item style={{ textAlign: "center", marginTop: '25px' }}>
                     <Space size={[8, 16]} wrap>
                         {state.add_specialization && state.add_specialization.map(specItem =>
@@ -177,16 +186,18 @@ const AddAds = () => {
                         ))}
                     </Space>
                 </Form.Item>
-                <Form.Item wrapperCol={{ offset: 8, span: 7 }} style={{ marginTop: '35px' }}>
+                <Form.Item wrapperCol={{ offset: 9, span: 7 }} style={{ marginTop: '35px' }}>
                     <Select
+                        name="users"
                         isMulti={true}
                         value={userSelectedOption}
                         onChange={handleUserChange}
                         options={users}
                         placeholder="Select Users"
                     />
+                     <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
                 </Form.Item>
-                <Form.Item wrapperCol={{ offset: 10, span: 7 }}>
+                <Form.Item wrapperCol={{ offset: 11, span: 7 }}>
                     <Button onClick={handleSubmit}>Add User</Button>
                 </Form.Item>
             </Card>
