@@ -32,6 +32,20 @@ class AddSerializer(serializers.ModelSerializer):
             addspecialization = AddSpecialization.objects.create(adsid=ads, **data)
         return ads
 
+    def update(self, instance, validated_data):
+        if 'title' in validated_data:
+            instance.title = validated_data.get('title', instance.title)
+        if 'url' in validated_data:
+            instance.url = validated_data.get('url', instance.url)
+        instance.save()
+        adddelete = AddSpecialization.objects.filter(adsid=instance).delete()
+        add_spec = validated_data.pop('add_specialization')
+        for data in add_spec:
+            addspecialization = AddSpecialization.objects.create(adsid=instance, **data)
+        return instance
+
+
+
 class AddImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ads
