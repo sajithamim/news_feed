@@ -28,6 +28,15 @@ export const deleteTopic = (id) => async (dispatch) => {
     }
 }
 
+export const deleteImages = (id) => async (dispatch) => {
+    try {
+        const res = await Topic.deleteImage(id);        
+        return res;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const postTopic = (state, form_data, image_data) => async (dispatch) => {
     state.topic_audience = "doctor";
     try {
