@@ -63,7 +63,7 @@ export const updateTopic = (id, state, form_data, image_data) => async (dispatch
         }
         if(res && image_data !== null) {
             image_data.append('topic_id', id);
-            await Topic.putImagedata(id, image_data);
+            await Topic.putImagedata(image_data);
             // dispatch({
             //     type: 'UPDATE_TOPIC',
             //     payload: res.data,
