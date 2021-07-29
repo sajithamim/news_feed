@@ -13,7 +13,7 @@ const  getSpecUsers = (id) => {
     return http.get(`auth/userlistspecialization/${id}/`);
 }
 const  postAddsVisibility = (state) => {
-    return http.get(`add/adduser/` ,state);
+    return http.post(`add/adduser/` ,state);
 }
 const Ads = {
     getAds,

@@ -28,8 +28,6 @@ const Ads = () => {
 
   const onEdit = (record) => {
     setEditData(record);
-    setShowDrawer(true);
-    setDrawerType("edit");
   };
 
 
@@ -89,17 +87,11 @@ const Ads = () => {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      render: (text, record) => (
-        <Link to={"/data/SubSpecialization/" + record.id}>{text}</Link>
-      ),
     },
     {
         title: "Specialization",
         dataIndex: "add_specialization",
         key: "specialization",
-        render: (text, record) => (
-          <Link to={"/data/SubSpecialization/" + record.id}>{text}</Link>
-        ),
       },
     {
       title: "Action",
@@ -108,7 +100,7 @@ const Ads = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button type="link" onClick={() => onEdit(record)}>
-            Edit
+            <a href = {"/data/AddAds/" + record.id}>Edit</a>
           </Button>
           <Popconfirm
             title="Are you sure to delete this specialization?"
@@ -139,16 +131,6 @@ const Ads = () => {
           <Table columns={columns} pagination={pagination} dataSource={ads} /> 
           {/* <div className="spinner"><Spin tip="Loading..." style={{align:"center"}}/></div>)} */}
       </Card>
-      <Drawer
-        title={
-          drawerType === "edit"
-            ? "Edit Ads"
-            : drawerType === "add"
-              ? "Add Ads"
-              : "" 
-        }
-        placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-      </Drawer>
     </div>
   );
 };
