@@ -10,7 +10,6 @@ from poll.models import UserPoll
 # from poll.serializers import TopicPollSerializer
 # from poll.serializers import TopicPollSerializer
 from poll.models import TopicPoll,PollOption
-
 class GetPollOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PollOption
@@ -149,21 +148,67 @@ class TopicSeriaizer(serializers.ModelSerializer):
         return topic
 
     def update(self, instance, validated_data):
-        # print(instance.id)
-        if 'title' in validated_data:
-            instance.title = validated_data.get('title', instance.title)
-        if 'category_id' in validated_data:
-            instance.category_id = validated_data.get('category_id', instance.category_id)
-        if 'description' in validated_data:
-            instance.description = validated_data.get('description', instance.description)
-        if 'external_url' in validated_data:
-            instance.external_url = validated_data.get('external_url', instance.external_url)
-        if 'video_url' in validated_data:
-            instance.video_url = validated_data.get('video_url', instance.video_url)
-        if 'publishingtime' in validated_data:
-            instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
-        if 'format' in validated_data:
-            instance.format = validated_data.get('format', instance.format)
+        if validated_data['format'] =='1':
+            image =Image.objects.filter(topic_id=instance).delete()
+            if 'title' in validated_data:
+                instance.title = validated_data.get('title', instance.title)
+            if 'category_id' in validated_data:
+                instance.category_id = validated_data.get('category_id', instance.category_id)
+            if 'description' in validated_data:
+                instance.description = validated_data.get('description', instance.description)
+            if 'publishingtime' in validated_data:
+                instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
+            if 'format' in validated_data:
+                instance.format = validated_data.get('format', instance.format)
+            instance.deliverytype='pdf'
+            instance.source_url=''
+            instance.external_url=''
+            instance.media_type =''
+            instance.video_url=''
+        if validated_data['format'] =='2':
+            # image =Image.objects.filter(topic_id=instance).delete()
+            instance.source_url=''
+            if 'title' in validated_data:
+                instance.title = validated_data.get('title', instance.title)
+            if 'category_id' in validated_data:
+                instance.category_id = validated_data.get('category_id', instance.category_id)
+            if 'description' in validated_data:
+                instance.description = validated_data.get('description', instance.description)
+            if 'external_url' in validated_data:
+                instance.external_url = validated_data.get('external_url', instance.external_url)
+            if 'publishingtime' in validated_data:
+                instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
+            if 'format' in validated_data:
+                instance.format = validated_data.get('format', instance.format)
+            if 'source_url' in validated_data:
+                instance.source_url = validated_data.get('source_url', instance.source_url)
+            instance.deliverytype='external'
+            instance.media_type ='image'
+            instance.video_url=''
+            instance.pdf=''
+        if validated_data['format'] =='3':
+            image =Image.objects.filter(topic_id=instance).delete()
+            instance.source_url=''
+            if 'title' in validated_data:
+                instance.title = validated_data.get('title', instance.title)
+            if 'category_id' in validated_data:
+                instance.category_id = validated_data.get('category_id', instance.category_id)
+            if 'description' in validated_data:
+                instance.description = validated_data.get('description', instance.description)
+            if 'external_url' in validated_data:
+                instance.external_url = validated_data.get('external_url', instance.external_url)
+            if 'publishingtime' in validated_data:
+                instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
+            if 'format' in validated_data:
+                instance.format = validated_data.get('format', instance.format)
+            if 'source_url' in validated_data:
+                instance.source_url = validated_data.get('source_url', instance.source_url)
+            if 'video_url' in validated_data:
+                instance.video_url = validated_data.get('video_url', instance.video_url)
+            instance.deliverytype='external'
+            instance.media_type ='video'
+            # instance.video_url=''
+            instance.pdf=''
         instance.save()
 
         # # up till here everything is updating, however the problem appears here.
@@ -171,8 +216,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
         # # data I get the items queryset, but without an id.
 
         items = validated_data.get('topic_topic')
+        inv_item = TopicSpecialization.objects.filter(topic_id = instance).delete()
         for item in items:
-            inv_item = TopicSpecialization.objects.filter(topic_id = instance).delete()
             topic_spec = TopicSpecialization.objects.create(topic_id = instance, **item)
         return instance
 
