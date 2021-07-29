@@ -97,7 +97,8 @@ const TopicsContent = (props) => {
         video_url:item.video_url,
         pdf:item.pdf,
         format: item.format,
-        external_url:item.external_url
+        external_url:item.external_url,
+        username: {value: item.author && item.author.name, label: item.author && item.author.name}
       }) 
     });
     return items;

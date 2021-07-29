@@ -22,7 +22,7 @@ const ModalContent = (props) => {
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({ name: '' });
-
+console.log('userList', userList)
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
     return specialization.push(
@@ -37,7 +37,12 @@ const ModalContent = (props) => {
     );
   })
 
-  const author=[];
+  const author = [];
+  userList && userList.data && userList.data.map(item => {
+    return author.push(
+      { value: item.email, label: item.username }
+    );
+  })
   
 
   const handleChange = (e) => {
@@ -54,6 +59,10 @@ const ModalContent = (props) => {
 
   const handleCategoryChange = (value) => {
     setState({ ...state, category_data: value, category_id: value.value });
+  };
+
+  const handleUserChange = (item) => {
+    setState({ ...state, username: item, email: item.value, author: {name: item.label} });
   };
 
   const handleMultipleFile = (e) => {
@@ -156,12 +165,12 @@ const ModalContent = (props) => {
     if (formValidation()) {
       setErrors({});
       let form_data = null;
-      if (state.pdfUrl && state.pdfUrl.name) {
+      if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
         form_data.append('pdf', state.pdfUrl, state.pdfUrl.name);
       }
       let image_data = null;
-      if (state.imageFormData && state.imageFormData.length > 0) {
+      if (state.format !== '1' && state.format !== '3' && state.imageFormData && state.imageFormData.length > 0) {
         image_data = new FormData();
         state.imageFormData.forEach((file, key) => {
           image_data.append('image', file, file.name);
@@ -175,7 +184,18 @@ const ModalContent = (props) => {
       delete newData["topic_image"];
       delete newData["pdf"];
       delete newData["category_data"];
-      //delete newData["topic_topic"];
+      delete newData["username"];
+      console.log('newData', newData);
+      console.log('image_data', image_data);
+      if(newData.format === '1') {
+        newData['external_url'] && delete newData['external_url'];
+        newData['video_url'] && delete newData['video_url'];
+        console.log('newData', newData);
+      } else if(newData.format === '2')
+        newData['video_url'] && delete newData['video_url'];
+        else if(newData.format === '3')
+        newData['external_url'] && delete newData['external_url'];
+        console.log('newData112', newData)
       props.onFormSubmit(newData, form_data, image_data);
     }
 
@@ -234,8 +254,13 @@ const ModalContent = (props) => {
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Author">
-            <Input type="text"/>
-            <div className="errorMsg">{errors.category_id}</div>
+            <Select
+                isMulti={false}
+                isSearchable={true}
+                value={state.username}
+                onChange={handleUserChange}
+                options={author}
+            />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
@@ -271,9 +296,9 @@ const ModalContent = (props) => {
               <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
-          {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== 'null' ?
+          {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
-              (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="text" id="article" name="external_url" onChange={handleChange} value={state.external_url} /></Form.Item>))
+              (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
           <Form.Item label="When to Publish">
             <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
