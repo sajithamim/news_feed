@@ -42,7 +42,8 @@ function App() {
           <PrivateRoute path="/data/Contact" exact component={Contact} />
           <PrivateRoute path="/data/Ads" exact component={Ads} />
           <PrivateRoute path="/data/Terms" exact component={Terms} />
-          <PrivateRoute path="/data/AddAds" exact component={AddAds} />
+          <PrivateRoute path="/data/AddAds/" exact component={AddAds} />
+          <PrivateRoute path="/data/AddAds/:adsId" exact component={AddAds} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />

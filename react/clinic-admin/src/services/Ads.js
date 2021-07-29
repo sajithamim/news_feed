@@ -15,12 +15,16 @@ const  getSpecUsers = (id) => {
 const  postAddsVisibility = (state) => {
     return http.post(`add/adduser/` ,state);
 }
+const  getEditAdsDetails = (id) => {
+    return http.get(`add/ads/${id}`);
+}
 const Ads = {
     getAds,
     postAdds,
     deleteAds,
     getSpecUsers,
-    postAddsVisibility
+    postAddsVisibility,
+    getEditAdsDetails
 }
 
 export default Ads;

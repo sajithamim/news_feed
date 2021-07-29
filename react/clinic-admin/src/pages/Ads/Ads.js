@@ -99,8 +99,8 @@ const Ads = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => onEdit(record)}>
-            <a href = {"/data/AddAds/" + record.id}>Edit</a>
+          <Button type="link" onClick={() => onEdit(record.id)}>
+            <Link to={"/data/AddAds/" + record.id}>Edit</Link>
           </Button>
           <Popconfirm
             title="Are you sure to delete this specialization?"

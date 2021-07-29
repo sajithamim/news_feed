@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import Select from 'react-select';
 import { getSpecialization } from "../../actions/spec";
-import { getSpecUsers, postAdds } from "../../actions/ads";
+import { getSpecUsers, postAdds , getEditAdsDetails} from "../../actions/ads";
+import { useParams } from "react-router-dom";
 
 const AddAds = () => {
     const { TabPane } = Tabs;
@@ -17,9 +18,24 @@ const AddAds = () => {
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [fields, setFields] = useState({ "title": "" });
+    const { adsId } = useParams();
+    const { adsDetails } = useSelector(state => state.ads);
+    const editAdsSpecialization= [];
+    adsDetails && adsDetails.add_specialization && adsDetails.add_specialization.map(item => {
+        return editAdsSpecialization.push(
+            { value: item.spec_id.id, label: item.spec_id.name }
+        );
+    })
+
     useEffect(() => {
         dispatch(getSpecialization());
+        dispatch(getEditAdsDetails(adsId))
+        if(adsDetails){
+            setState({...state , title: adsDetails.title , specialization: editAdsSpecialization})
+        }
     }, [])
+
+    
 
     const { specList } = useSelector(state => state.spec);
     const specialization = [];
@@ -124,7 +140,7 @@ const AddAds = () => {
                     style={{ marginTop: '25px' }}
                 >
                     <Form.Item label="Name">
-                        <Input name="title" onChange={(e) => { handleChange(e, "title") }} />
+                        <Input name="title"value={state.title}  onChange={(e) => { handleChange(e, "title") }} />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
                     </Form.Item>
                     <Form.Item label="Specialization">
