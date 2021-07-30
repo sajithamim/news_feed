@@ -128,7 +128,7 @@ class TopicViewSet(viewsets.ModelViewSet):
         return Response(response)
     def get_queryset(self):
         user_type = self.request.user.is_superuser
-        print(user_type)
+        # print(user_type)
         queryset = self.queryset
         # print(queryset.query)
         query_set = queryset.filter()
