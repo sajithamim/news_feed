@@ -138,7 +138,7 @@ class TopicViewSet(viewsets.ModelViewSet):
             idscat = list(userCategory.category_id.id for userCategory in userCategory)
             userspec = UserSpecialization.objects.filter(user_id=self.request.user)
             idsspec = list(userspec.spec_id.id for userspec in userspec)
-            query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-created_at')
+            query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-created_at').distinct()
             # print(query_set.query)
         return query_set
 
