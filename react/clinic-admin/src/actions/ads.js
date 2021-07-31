@@ -70,3 +70,14 @@ export const postAddsVisibilty = (state) => async (dispatch) => {
     } catch (err) {
     }
 }
+
+export const getEditAdsDetails = (id) => async (dispatch) => {
+    try {
+        const res = await Ads.getEditAdsDetails(id);
+        dispatch({
+            type: 'GET_ADS_DETALS',
+            payload: res.data,
+        });
+    } catch (err) {
+    }
+}

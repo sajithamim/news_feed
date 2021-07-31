@@ -3,6 +3,7 @@ const initialState = {
     deleteList:[],
     specUsers:[],
     adsUsersList:[],
+    adsDetails:[],
 };
 
 
@@ -17,8 +18,9 @@ export default (state = initialState, action) => {
         return {...state , specUsers: action.payload , specId:action.id }
         case 'POST_ADD':
         return {...state , adsList: action.payload}
+        case 'GET_ADS_DETALS':
+        return {...state , adsDetails: action.payload}
         default:
         return state
     }
   }
-

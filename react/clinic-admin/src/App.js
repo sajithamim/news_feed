@@ -8,7 +8,6 @@ import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
 import Users from './pages/Users/Users';
-import Settings from './pages/Settings/Settings';
 import Policy from './pages/Settings/Policy';
 import Terms from './pages/Settings/Terms';
 import About from './pages/Settings/About';
@@ -42,7 +41,8 @@ function App() {
           <PrivateRoute path="/data/Contact" exact component={Contact} />
           <PrivateRoute path="/data/Ads" exact component={Ads} />
           <PrivateRoute path="/data/Terms" exact component={Terms} />
-          <PrivateRoute path="/data/AddAds" exact component={AddAds} />
+          <PrivateRoute path="/data/AddAds/" exact component={AddAds} />
+          <PrivateRoute path="/data/AddAds/:adsId" exact component={AddAds} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />

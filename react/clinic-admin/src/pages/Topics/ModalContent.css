@@ -11,3 +11,22 @@
     text-align: right;
     margin-right: 15px;
   }
+
+  .img-wrap {
+    position: relative;
+    display: inline;
+    float: auto;
+  }
+
+  .img-wrap .close {
+      position: absolute;
+      top: -67px;
+      left: 108px;
+      z-index: 100;
+  }
+
+  .img-wrap img {
+    width: 41%;
+    height: 148px;
+    margin-left: 10px
+  }

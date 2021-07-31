@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Grid } from "@material-ui/core";
-import { Input, Radio, Modal, Button, DatePicker, Space, message, Form } from "antd";
+import { Input, Radio, Modal, Button, DatePicker, Space, message, Form, Popconfirm } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import PollContent from "./PollContent";
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";
 import { getUsersList  } from "../../actions/users";
+import { deleteImages  } from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
 
@@ -193,8 +194,6 @@ console.log('userList', userList)
         console.log('newData', newData);
       } else if(newData.format === '2')
         newData['video_url'] && delete newData['video_url'];
-        else if(newData.format === '3')
-        newData['external_url'] && delete newData['external_url'];
         console.log('newData112', newData)
       props.onFormSubmit(newData, form_data, image_data);
     }
@@ -231,10 +230,29 @@ console.log('userList', userList)
     return true;
   }
 
+  const cancel = (e) => {
+    message.error('Cancelled');
+  }
+
+  const deleteImage = (id, image) => {
+    if(id !== null) {
+      const oldImages = state.old_image;
+      const oldImageList = oldImages.filter(item => {return item.id !== id});
+      dispatch(deleteImages(id));
+      setState({ ...state, old_image: oldImageList});
+    } else {
+      const newImages = state.topic_image;
+      const newImageList = newImages.filter(item => {return item !== image});
+      setState({ ...state, topic_image: newImageList});
+    }
+    
+  }
+
   return (
     <div>
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
+          {state.oldImages}
           <Form.Item label="Specializations">
             <Select
               isMulti={true}
@@ -292,8 +310,11 @@ console.log('userList', userList)
           {state.format === '1' ?
             (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
           {state.format === '2' ?
-            (<Form.Item label="Images">{state.topic_image && state.topic_image.map((url) => (<img width="128px" height="128px" key={url} src={url} alt="" />))}
-              <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
+            (<Form.Item label="Images"><section className="clearfix" style={{display:"inline"}}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
+            <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+            {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
+            <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+              </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?

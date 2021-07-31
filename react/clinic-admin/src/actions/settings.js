@@ -3,7 +3,6 @@ import  Settings from "../services/Settings";
 export const getSettings = () => async(dispatch) => {
     try{
         const res = await Settings.getSettings();
-        console.log("restest" ,res);
         return res;
     }
     catch (err) {
@@ -12,7 +11,6 @@ export const getSettings = () => async(dispatch) => {
 }
 
 export const patchSettings = (id ,state) => async(dispatch) => {
-    console.log("settings come")
     try{
         const res = await Settings.patchSettings(id ,state);
         dispatch({
@@ -26,7 +24,6 @@ export const patchSettings = (id ,state) => async(dispatch) => {
 }
 
 export const postSettings = (state) => async(dispatch) => { 
-    console.log("ghgh" , state);
     try{
         const res = await Settings.postSettings(state);
         console.log("settings come",res);
