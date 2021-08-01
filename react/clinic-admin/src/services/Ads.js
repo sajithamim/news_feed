@@ -18,13 +18,17 @@ const  postAddsVisibility = (state) => {
 const  getEditAdsDetails = (id) => {
     return http.get(`add/ads/${id}`);
 }
+const  getAdsSelectedUser = (adsId , specid) => {
+    return http.get(`add/selecteduser/${adsId}/${specid}/`);
+}
 const Ads = {
     getAds,
     postAdds,
     deleteAds,
     getSpecUsers,
     postAddsVisibility,
-    getEditAdsDetails
+    getEditAdsDetails,
+    getAdsSelectedUser
 }
 
 export default Ads;

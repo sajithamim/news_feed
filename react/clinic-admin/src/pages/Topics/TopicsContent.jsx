@@ -13,7 +13,7 @@ const TopicsContent = (props) => {
   const [data , setData] = useState({});
   const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(5);
+  const [pageSize , setPageSize] = useState();
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -50,12 +50,12 @@ const TopicsContent = (props) => {
 
   const onFormSubmit = (newData, form_data, image_data) => {
     if(drawerType == 'edit') {
-      
       dispatch(updateTopic(data.id, newData, form_data, image_data))
       .then(() => {
         message.success('Topic edit successfully')
       });
     } else {
+      console.log("newdata", newData);
       dispatch(postTopic(newData, form_data, image_data))
       .then(() => {
         message.success('Topic add successfully')
@@ -83,6 +83,12 @@ const TopicsContent = (props) => {
         sl_no: key,
         id: item.id,
         title: item.title,
+        title1: item.format === '1' ? item.title : null,
+        description1: item.format == '1' ? item.description : null,
+        title2: item.format === '2' ? item.title : null,
+        description2: item.format == '2' ? item.description : null,
+        title3: item.format === '3' ? item.title : null,
+        description3: item.format == '3' ? item.description : null,
         category_title: item.category_id.title,
         category_data: {value: item.category_id.id, label: item.category_id.title},
         category_id: item.category_id.id,
