@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export const http = axios.create({
-  baseURL: "http://178.18.246.233:8000/api/",
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
-    "Content-type": "application/json", 
+    "Content-type": "application/json",
   }
 });
 
 export const instance = axios.create({
-  baseURL: "http://178.18.246.233:8000/api/",
+  baseURL: process.env.REACT_APP_API_URL,
   headers: { 'content-type': 'multipart/form-data' },
 });
 

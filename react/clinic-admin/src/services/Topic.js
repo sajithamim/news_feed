@@ -15,14 +15,14 @@ const deleteImage = (id) => {
 const postTopic = (state) => {
   return http.post(`topic/topic/`, state);
 };
-  
+
 const updateTopic = (id , state) => {
   return http.put(`topic/topic/${id}/`, state);
 }
 
 const putPdfdata =(id, pdfData) => {
   let accessToken = localStorage.getItem("accessToken");
-  let url = `http://178.18.246.233:8000/api/topic/topic/${id}/pdf/`;
+  let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/pdf/`;
   axios.put(url, pdfData, {
     headers: {
       'content-type': 'multipart/form-data',
@@ -37,7 +37,7 @@ const putPdfdata =(id, pdfData) => {
 
 const putImagedata =(imageData) => {
   let accessToken = localStorage.getItem("accessToken");
-  let url = `http://178.18.246.233:8000/api/topic/topicimages/`;
+  let url = `${process.env.REACT_APP_API_URL}topic/topicimages/`;
   axios.post(url, imageData, {
     headers: {
       'content-type': 'multipart/form-data',
@@ -59,5 +59,5 @@ const Topic = {
   deleteImage,
   updateTopic
 };
-  
+
 export default Topic;

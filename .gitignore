@@ -9,6 +9,8 @@ dist/
 migrations/
 __pycache__/
 
+#env files
+.env
 
 # Compiled Java class files
 *.class
