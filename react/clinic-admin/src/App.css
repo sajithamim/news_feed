@@ -27,6 +27,10 @@
 .others {
   flex: 4;
 }
+.selectedItem {
+  color: #40a9ff !important;
+  border-color: #40a9ff !important;
+}
 
 body {
   box-sizing: border-box;

@@ -7,8 +7,8 @@ import PollContent from "./PollContent";
 import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";
-import { getUsersList  } from "../../actions/users";
-import { deleteImages  } from "../../actions/topic";
+import { getUsersList } from "../../actions/users";
+import { deleteImages } from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
 
@@ -23,7 +23,7 @@ const ModalContent = (props) => {
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({ name: '' });
-console.log('userList', userList)
+  console.log('userList', userList)
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
     return specialization.push(
@@ -44,13 +44,15 @@ console.log('userList', userList)
       { value: item.email, label: item.username }
     );
   })
-  
+
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
+    console.log("e",e.target.name);
   };
 
   const handleSpecChange = (value) => {
+    console.log("topic value ", value);
     let topic = [];
     value && value.map(item => {
       topic.push({ spec_id: item.value })
@@ -63,7 +65,7 @@ console.log('userList', userList)
   };
 
   const handleUserChange = (item) => {
-    setState({ ...state, username: item, email: item.value, author: {name: item.label} });
+    setState({ ...state, username: item, email: item.value, author: { name: item.label } });
   };
 
   const handleMultipleFile = (e) => {
@@ -162,7 +164,6 @@ console.log('userList', userList)
   }
 
   const handleSubmit = (e) => {
-
     if (formValidation()) {
       setErrors({});
       let form_data = null;
@@ -177,6 +178,7 @@ console.log('userList', userList)
           image_data.append('image', file, file.name);
         });
       }
+
       let newData = state;
       delete newData["sl_no"];
       delete newData["category_title"];
@@ -188,17 +190,31 @@ console.log('userList', userList)
       delete newData["username"];
       console.log('newData', newData);
       console.log('image_data', image_data);
-      if(newData.format === '1') {
+      if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
-        console.log('newData', newData);
-      } else if(newData.format === '2')
+        newData['title']= newData['title1'];
+        newData['description']= newData['description1'];
+        newData['title1'] && delete newData['title1']
+        newData['description1'] && delete newData['description1']
+      } else if (newData.format === '2') {
         newData['video_url'] && delete newData['video_url'];
+        newData['title']= newData['title2'];
+        newData['description']= newData['description2'];
+        newData['title2'] && delete newData['title2']
+        newData['description2'] && delete newData['description2']
         console.log('newData112', newData)
+      }else if(newData.format === '3'){
+        newData['title']= newData['title3'];
+        newData['description']= newData['description3'];
+        newData['title3'] && delete newData['title3']
+        newData['description3'] && delete newData['description3']
+      }
+      console.log('newDatastatatt', newData);
       props.onFormSubmit(newData, form_data, image_data);
-    }
 
   }
+}
 
   const dispatch = useDispatch();
 
@@ -235,17 +251,17 @@ console.log('userList', userList)
   }
 
   const deleteImage = (id, image) => {
-    if(id !== null) {
+    if (id !== null) {
       const oldImages = state.old_image;
-      const oldImageList = oldImages.filter(item => {return item.id !== id});
+      const oldImageList = oldImages.filter(item => { return item.id !== id });
       dispatch(deleteImages(id));
-      setState({ ...state, old_image: oldImageList});
+      setState({ ...state, old_image: oldImageList });
     } else {
       const newImages = state.topic_image;
-      const newImageList = newImages.filter(item => {return item !== image});
-      setState({ ...state, topic_image: newImageList});
+      const newImageList = newImages.filter(item => { return item !== image });
+      setState({ ...state, topic_image: newImageList });
     }
-    
+
   }
 
   return (
@@ -273,11 +289,11 @@ console.log('userList', userList)
           </Form.Item>
           <Form.Item label="Author">
             <Select
-                isMulti={false}
-                isSearchable={true}
-                value={state.username}
-                onChange={handleUserChange}
-                options={author}
+              isMulti={false}
+              isSearchable={true}
+              value={state.username}
+              onChange={handleUserChange}
+              options={author}
             />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
@@ -293,15 +309,37 @@ console.log('userList', userList)
               </Radio>
             </Radio.Group>
           </Form.Item>
-          {state.format === '1' || state.format === '2' || state.format === '3' ?
+          {(state.format === '1') ?
             (<><Form.Item label="Title">
-              <Input name="title" type="text" onChange={handleChange} value={state.title} />
+              <Input name="title1" type="text" onChange={handleChange} value={state.title1} />
               <div className="errorMsg">{errors.title}</div>
             </Form.Item>
-              <Form.Item label="Description">
-                <Input name="description" type="text" onChange={handleChange} key="desc" value={state.description} />
+            <Form.Item label="Description">
+                <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1} />
                 <div className="errorMsg">{errors.description}</div>
-              </Form.Item> </>) : null}
+              </Form.Item></>) : null
+          }
+          {(state.format === '2') ?
+            (<><Form.Item label="Title">
+              <Input name="title2" type="text" onChange={handleChange} value={state.title2} />
+              <div className="errorMsg">{errors.title}</div>
+            </Form.Item>
+            <Form.Item label="Description">
+                <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} />
+                <div className="errorMsg">{errors.description}</div>
+              </Form.Item>
+            </>) : null
+          }
+          {(state.format === '3') ?
+            (<><Form.Item label="Title">
+              <Input name="title3" type="text" onChange={handleChange} value={state.title3} />
+              <div className="errorMsg">{errors.title}</div>
+            </Form.Item>
+            <Form.Item label="Description">
+                <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} />
+                <div className="errorMsg">{errors.description}</div>
+              </Form.Item></>) : null
+          }
           {state.format === '3' || state.format === '2' ?
             (<><Form.Item label="Pdf/External URL">
               <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} />
@@ -310,11 +348,11 @@ console.log('userList', userList)
           {state.format === '1' ?
             (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
           {state.format === '2' ?
-            (<Form.Item label="Images"><section className="clearfix" style={{display:"inline"}}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
-            <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-            {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
-            <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-              </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
+            (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
+              <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
+                <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+            </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?

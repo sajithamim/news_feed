@@ -15,8 +15,9 @@ const Ads = () => {
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(10);
-  const { adsList } = useSelector(state => state.ads);
+  const { adsList  } = useSelector(state => state.ads);
  
+
   useEffect(() => {
     dispatch(getAds())
     onClose();
@@ -30,13 +31,11 @@ const Ads = () => {
     setEditData(record);
   };
 
-
-
   const confirmDelete = (id) => {
     dispatch(deleteAdd(id))
-      // .then((res) => {
-      //   res.status === 204 ? message.success("Add is deleted successfully") : message.error("Add is not exist")
-      // })
+      .then((res) => {
+        message.success("Add is deleted successfully")
+      })
   };
 
   const cancel = (e) => {
