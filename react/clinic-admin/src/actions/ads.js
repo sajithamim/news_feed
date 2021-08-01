@@ -14,7 +14,6 @@ export const getAds = () => async (dispatch) => {
 export const deleteAdd = (id) => async (dispatch) => {
     try {
         const res = await Ads.deleteAds(id);
-        console.log("add res", res);
         dispatch({
             type: 'DELETE_ADS',
             payload: res.data,
@@ -26,6 +25,7 @@ export const deleteAdd = (id) => async (dispatch) => {
 export const getSpecUsers = (id) => async (dispatch) => {
     try {
         const res = await Ads.getSpecUsers(id);
+        console.log("bitton res",res);
         dispatch({
             type: 'GET_SPEC_USERS',
             payload: res.data,
@@ -38,27 +38,27 @@ export const getSpecUsers = (id) => async (dispatch) => {
 
 export const postAdds = (state) => async (dispatch) => {
     const vData = state.userVisibility;
-    delete state.visiData
+    delete state.userVisibility
+    //if (id == null)
     try {
         const res = await Ads.postAdds(state);
-        console.log("add res", res.data.id);
-
-        if (res && res.data && res.data.id) {
+        if (res && res.data && res.data.id) { 
             const userData = []
-            await Ads.postAddsVisibility(userData)
             vData.map(item => {
-                userData.push({ adsid: res.data.id, email: item.email, spec_id: item.key })
+                userData.push({ adsid: res.data.id, email: item.email, spec_id: item.spec_id })
             })
-
+            await Ads.postAddsVisibility(userData)
         }
         dispatch({
             type: 'POST_ADD',
             payload: res.data,
         });
+        return res;
     }
     catch (err) {
     }
 }
+
 
 export const postAddsVisibilty = (state) => async (dispatch) => {
     try {
@@ -74,8 +74,29 @@ export const postAddsVisibilty = (state) => async (dispatch) => {
 export const getEditAdsDetails = (id) => async (dispatch) => {
     try {
         const res = await Ads.getEditAdsDetails(id);
-        dispatch({
+        console.log("getEditAdsDetailsresponse" ,res);
+        const specid = res.data.add_specialization[0].spec_id.id ; 
+        const res1 = await Ads.getAdsSelectedUser(id , specid);
+        const res2 = await Ads.getSpecUsers(specid);
+        console.log("getAdsSelectedUser" , res1.data);
+        dispatch
+        ({
             type: 'GET_ADS_DETALS',
+            payload: res.data,
+            userDetails: res1.data,
+            selectedSpecid: specid,
+            specUsers: res2.data
+        });
+    } catch (err) {
+    }
+}
+
+
+export const getAdsSelectedUser = (adsId , specid) => async (dispatch) => {
+    try {
+        const res = await Ads.getAdsSelectedUser(adsId , specid);
+        dispatch({
+            type: 'GET_ADS_USER_DETAILS',
             payload: res.data,
         });
     } catch (err) {
