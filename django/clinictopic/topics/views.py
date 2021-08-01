@@ -22,6 +22,8 @@ from django.db.models import Q
 from specialization.models import UserSpecialization
 # from rest_framework.decorators import list_route
 from rest_framework import mixins
+from datetime import datetime, tzinfo
+import pytz
 
 
 
@@ -107,17 +109,36 @@ class TopicViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     # ordering = ('title')
+    def retrieve(self, request, pk=None):
+        queryset = Topics.objects.all()
+        topic = get_object_or_404(queryset, pk=pk)
+        serializer = TopicSeriaizer(topic,context = {'request':self.request})
+        now = datetime.utcnow()
+        # print("now",now)
+        publishtime = topic.publishingtime
+        # print("p",publishtime)
+        # if publishtime>now:
+        #     print("sdf")
+        if publishtime.replace(tzinfo=None)<=now.replace(tzinfo=None):
+            published = 1
+        else:
+            published = 0
+        response = {"published":published}
+        response.update(serializer.data)
+        return Response(response)
     def get_queryset(self):
         user_type = self.request.user.is_superuser
+        # print(user_type)
         queryset = self.queryset
         # print(queryset.query)
         query_set = queryset.filter()
         if not user_type:
+            # now = datetime.utcnow()
             userCategory = UserCategory.objects.filter(user_id=self.request.user)
             idscat = list(userCategory.category_id.id for userCategory in userCategory)
             userspec = UserSpecialization.objects.filter(user_id=self.request.user)
             idsspec = list(userspec.spec_id.id for userspec in userspec)
-            query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat)
+            query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-created_at').distinct()
             # print(query_set.query)
         return query_set
 
@@ -134,6 +155,10 @@ class TopicViewSet(viewsets.ModelViewSet):
 
     @action(detail=False,url_path='search/(?P<search_pk>[^/.]+)',serializer_class=TopicSeriaizer)
     def search(self, request, search_pk, pk=None):
+        userCategory = UserCategory.objects.filter(user_id=self.request.user)
+        idscat = list(userCategory.category_id.id for userCategory in userCategory)
+        userspec = UserSpecialization.objects.filter(user_id=self.request.user)
+        idsspec = list(userspec.spec_id.id for userspec in userspec)
         queryset = Topics.objects.filter(Q(title__icontains=search_pk)|Q(description__icontains=search_pk)).order_by('title')
         # a =  self.kwargs['search_pk']
         page = self.paginate_queryset(queryset)
@@ -142,6 +167,7 @@ class TopicViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+
     # @action(detail=True,methods=['PUT'],serializer_class=TopicImageSerializer,parser_classes=[MultiPartParser],)
     # def images(self, request, pk):
     #     obj = self.get_object()
