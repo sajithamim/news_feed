@@ -97,6 +97,7 @@ class Topics(models.Model):
     )
     deliverytype = models.CharField(max_length=20,choices=TYPE_CHOICES,default='external',blank=True,null=True)
     pdf = models.FileField(blank=True,null=True,upload_to=get_pdf_path)
+    pdfsecond = models.FileField(blank=True,null=True,upload_to="pdfsecond")
     source_url=models.CharField(max_length=255,blank=True,null=True)
     external_url = models.CharField(max_length=255,blank=True,null=True)
     MEDIA_CHOICES =(
