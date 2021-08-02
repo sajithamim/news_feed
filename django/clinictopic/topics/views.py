@@ -3,7 +3,8 @@ from django.http import response
 from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
-userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer,UpdateTopicSpecializationSerializer)
+userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer,UpdateTopicSpecializationSerializer,
+TopicSecondpdfserializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -144,6 +145,16 @@ class TopicViewSet(viewsets.ModelViewSet):
 
     @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser],)
     def pdf(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+    @action(detail=True,methods=['PUT'],serializer_class=TopicSecondpdfserializer,parser_classes=[MultiPartParser],)
+    def secondpdf(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(obj, data=request.data,
                                            partial=True)
