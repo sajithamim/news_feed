@@ -27,6 +27,7 @@
     "react-router-dom": "^5.2.0",
     "react-rte": "^0.16.3",
     "react-scripts": "4.0.1",
+    "react-search-autocomplete": "^5.4.2",
     "react-select": "^4.3.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-router": "^1.0.0-beta3",

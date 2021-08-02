@@ -147,11 +147,11 @@ const AddAds = () => {
                 delete newData["userVisibility"];
                 delete newData["users"];
                 delete newData["selectedSpecid"];
-                // dispatch(postAdds(newData)).then((res) => {
+                dispatch(postAdds(newData)).then((res) => {
                     console.log("hjhjhj", newData);
                     // message.success('Ads created successfully')
                     // history.push("/data/Ads")
-                // })
+                })
                 return true;
             } 
         }

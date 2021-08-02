@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Grid } from "@material-ui/core";
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import { Input, Radio, Modal, Button, DatePicker, Space, message, Form, Popconfirm } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
@@ -23,7 +23,44 @@ const ModalContent = (props) => {
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({ name: '' });
-  console.log('userList', userList)
+
+  const items = [
+    {
+      id: 0,
+      name: 'Cobol'
+    },
+    {
+      id: 1,
+      name: 'JavaScript'
+    }
+  ]
+  const handleOnSearch = (string, results) => {
+    const author = [];
+    userList && userList.data && userList.data.map(item => {
+      return author.push(
+        { value: item.email, label: item.username }
+      );
+    })
+    console.log(string,results);
+    console.log("stringauthor" ,  author)
+  }
+  const handleOnHover = (result) => {
+    // the item hovered
+    console.log(result)
+  }
+  const handleOnSelect = (item) => {
+    // the item selected
+    console.log(item)
+  }
+  const handleOnFocus = () => {
+    console.log('Focused')
+  }
+  const formatResult = (item) => {
+    return item;
+    // return (<p dangerouslySetInnerHTML={{__html: '<strong>'+item+'</strong>'}}></p>); //To format result as html
+  }
+
+
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
     return specialization.push(
@@ -48,8 +85,9 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
-    console.log("e",e.target.name);
+    console.log("e", e.target.name);
   };
+
 
   const handleSpecChange = (value) => {
     console.log("topic value ", value);
@@ -193,28 +231,28 @@ const ModalContent = (props) => {
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
-        newData['title']= newData['title1'];
-        newData['description']= newData['description1'];
+        newData['title'] = newData['title1'];
+        newData['description'] = newData['description1'];
         newData['title1'] && delete newData['title1']
         newData['description1'] && delete newData['description1']
       } else if (newData.format === '2') {
         newData['video_url'] && delete newData['video_url'];
-        newData['title']= newData['title2'];
-        newData['description']= newData['description2'];
+        newData['title'] = newData['title2'];
+        newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
         console.log('newData112', newData)
-      }else if(newData.format === '3'){
-        newData['title']= newData['title3'];
-        newData['description']= newData['description3'];
+      } else if (newData.format === '3') {
+        newData['title'] = newData['title3'];
+        newData['description'] = newData['description3'];
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
       console.log('newDatastatatt', newData);
       props.onFormSubmit(newData, form_data, image_data);
 
+    }
   }
-}
 
   const dispatch = useDispatch();
 
@@ -287,13 +325,24 @@ const ModalContent = (props) => {
             />
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
-          <Form.Item label="Author">
+          {/* <Form.Item label="Author">
             <Select
               isMulti={false}
               isSearchable={true}
               value={state.username}
               onChange={handleUserChange}
               options={author}
+            />
+          </Form.Item> */}
+          <Form.Item label="Author" wrapperCol={{ offset: 0, span: 10 }}>
+            <ReactSearchAutocomplete
+              items={items}
+              onSearch={handleOnSearch}
+              onHover={handleOnHover}
+              onSelect={handleOnSelect}
+              onFocus={handleOnFocus}
+              autoFocus
+              formatResult={formatResult}
             />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
@@ -314,7 +363,7 @@ const ModalContent = (props) => {
               <Input name="title1" type="text" onChange={handleChange} value={state.title1} />
               <div className="errorMsg">{errors.title}</div>
             </Form.Item>
-            <Form.Item label="Description">
+              <Form.Item label="Description">
                 <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1} />
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item></>) : null
@@ -324,7 +373,7 @@ const ModalContent = (props) => {
               <Input name="title2" type="text" onChange={handleChange} value={state.title2} />
               <div className="errorMsg">{errors.title}</div>
             </Form.Item>
-            <Form.Item label="Description">
+              <Form.Item label="Description">
                 <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} />
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item>
@@ -335,7 +384,7 @@ const ModalContent = (props) => {
               <Input name="title3" type="text" onChange={handleChange} value={state.title3} />
               <div className="errorMsg">{errors.title}</div>
             </Form.Item>
-            <Form.Item label="Description">
+              <Form.Item label="Description">
                 <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} />
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item></>) : null
