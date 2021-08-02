@@ -8,7 +8,7 @@ const getAll = () => {
 
 const  getAllSubSpec = (id) => {
   return http.get(`spec/specialization/${id}/spubspec_list`);
-} 
+}
 
 const postSpec =(state) => {
   return http.post("spec/specialization/" , state);
@@ -35,7 +35,7 @@ const updateSubSpec =(id, imageData) => {
 }
 
 const uploadImage =(id, imageData) => {
-  let url = `http://178.18.246.233:8000/api/spec/specialization/${id}/icon/`;
+  let url = `${process.env.REACT_APP_API_URL}spec/specialization/${id}/icon/`;
   axios.put(url, imageData, {
     headers: {
       'content-type': 'multipart/form-data'
@@ -48,7 +48,7 @@ const uploadImage =(id, imageData) => {
 }
 
 const uploadSubImage = (id, imageData) => {
-  let url = `http://178.18.246.233:8000/api/spec/subspecialization/${id}/icon/`;
+  let url = `${process.env.REACT_APP_API_URL}spec/subspecialization/${id}/icon/`;
   axios.put(url, imageData, {
     headers: {
       'content-type': 'multipart/form-data'
@@ -73,5 +73,5 @@ const Specialization = {
   uploadImage,
   uploadSubImage
 };
-  
+
 export default Specialization;

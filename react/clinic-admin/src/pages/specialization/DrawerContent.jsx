@@ -21,7 +21,7 @@ const DrawerContent = (props) => {
   useEffect(() => {
     setState(props.editData);
     if(props.editData.icon && props.editData.icon.startsWith("/media"))
-      setImgData(`http://178.18.246.233:8000${props.editData.icon}`);
+      setImgData(`${process.env.REACT_APP_API_BASE_URL}${props.editData.icon}`);
     else
       setImgData(props.editData.icon);
   }, [props.editData])
@@ -99,19 +99,19 @@ const DrawerContent = (props) => {
       newErrorsState.image = '';
       setErrors(newErrorsState);
       setFormSubmit(!formSubmit);
-    }   
+    }
   }
 
-  const formValidation = () => {  
-    let entities = state;   
-    const newErrorsState = {...errors}; 
-    if (!entities["name"]) {  
+  const formValidation = () => {
+    let entities = state;
+    const newErrorsState = {...errors};
+    if (!entities["name"]) {
       newErrorsState.name = 'Name cannot be empty';
-      setErrors(newErrorsState); 
+      setErrors(newErrorsState);
       return false;
-    }  
+    }
     return true;
-  } 
+  }
 
   return (
     <Form name="basic"
