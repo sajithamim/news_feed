@@ -201,6 +201,8 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 AUTH_KEY ="362791AzG86a8K60cc822eP1"
 MEDIA_DIR = os.path.join(BASE_DIR,"media")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
 MEDIA_URL = "/media/"
 
 DATABASES = {
@@ -213,3 +215,5 @@ DATABASES = {
         'PORT': os.environ.get("DB_PORT"),
     }
 }
+
+       
