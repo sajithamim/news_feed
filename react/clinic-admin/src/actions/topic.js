@@ -3,6 +3,8 @@ import Topic from "../services/Topic";
 export const getTopic = () => async (dispatch) => {
     try {
         const res = await Topic.getTopic();
+        
+        console.log("resssssssssss" , res);
         dispatch({
             type: 'GET_TOPIC',
             payload: res.data,
@@ -37,12 +39,15 @@ export const deleteImages = (id) => async (dispatch) => {
     }
 }
 
-export const postTopic = (state, form_data, image_data) => async (dispatch) => {
+export const postTopic = (state, form_data, form_data2, image_data) => async (dispatch) => {
     state.topic_audience = "doctor";
     try {
         const res = await Topic.postTopic(state);
         if (res.data.id && form_data) {
             await Topic.putPdfdata(res.data.id, form_data);
+        }
+        if(res.data.id && form_data2) {
+            await Topic.putPdfdata2(res.data.id, form_data2);
         }
         if(res.data.id && image_data) {
             image_data.append('topic_id', res.data.id);

@@ -48,15 +48,15 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
 
-  const onFormSubmit = (newData, form_data, image_data) => {
+  const onFormSubmit = (newData, form_data, form_data2, image_data) => {
+    console.log('Topic Content')
     if(drawerType == 'edit') {
-      dispatch(updateTopic(data.id, newData, form_data, image_data))
+      dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
       .then(() => {
         message.success('Topic edit successfully')
       });
     } else {
-      console.log("newdata", newData);
-      dispatch(postTopic(newData, form_data, image_data))
+      dispatch(postTopic(newData, form_data, form_data2 , image_data))
       .then(() => {
         message.success('Topic add successfully')
       });
@@ -103,9 +103,11 @@ const TopicsContent = (props) => {
         old_image: images,
         video_url:item.video_url,
         pdf:item.pdf,
+        pdfsecond:item.pdfsecond,
         format: item.format,
         external_url:item.external_url,
         username: {value: item.author && item.author.name, label: item.author && item.author.name}
+        
       }) 
     });
     return items;
