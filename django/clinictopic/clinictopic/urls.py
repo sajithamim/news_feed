@@ -58,4 +58,5 @@ urlpatterns = [
     path('api/poll/',include('poll.urls')),
     path('api/add/',include('add.urls')),
     # url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': path.join(path.dirname(__file__), 'static')}),
-]+ static(MEDIA_URL, document_root = MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(MEDIA_URL, document_root = MEDIA_ROOT) 
+#+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
