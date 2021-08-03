@@ -6,7 +6,8 @@ const initialState = {
     adsDetails:[],
     userDetails:[],
     adsUserDetails:[],
-    selectedSpecid: null
+    selectedSpecid: null,
+    newaddId: null
 };
 
 
@@ -19,7 +20,7 @@ export default (state = initialState, action) => {
         case 'GET_SPEC_USERS':
         return {...state , specUsers: action.payload , specId:action.id }
         case 'POST_ADD':
-        return {...state , adsList: action.payload}
+        return {...state , newaddId: action.payload}
         case 'GET_ADS_DETALS':
         return {...state , adsDetails: action.payload, userDetails: action.userDetails, selectedSpecid: action.selectedSpecid, specUsers: action.specUsers , specId:action.selectedSpecid}
         case 'GET_ADS_USER_DETAILS':

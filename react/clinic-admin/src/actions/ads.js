@@ -36,26 +36,31 @@ export const getSpecUsers = (id) => async (dispatch) => {
     }
 }
 
-export const postAdds = (state) => async (dispatch) => {
-    const vData = state.userVisibility;
-    delete state.userVisibility
-    //if (id == null)
-    try {
-        const res = await Ads.postAdds(state);
-        if (res && res.data && res.data.id) { 
-            const userData = []
-            vData.map(item => {
-                userData.push({ adsid: res.data.id, email: item.email, spec_id: item.spec_id })
-            })
-            await Ads.postAddsVisibility(userData)
-        }
-        dispatch({
-            type: 'POST_ADD',
-            payload: res.data,
-        });
-        return res;
+export const postAdds = (state, id) => async (dispatch) => {
+    console.log('id', id)
+    const vData = state.selectedUsers;
+    let addsData = {
+        title: state.title,
+        add_specialization: state.add_specialization
     }
-    catch (err) {
+    if(id === null) {
+        try {
+            const res = await Ads.postAdds(addsData);
+            if (res && res.data && res.data.id) { 
+                const userData = []
+                vData.map(item => {
+                    userData.push({ adsid: res.data.id, email: item.value, spec_id: state.specId })
+                })
+                await Ads.postAddsVisibility(userData)
+            }
+            dispatch({
+                type: 'POST_ADD',
+                payload: res.data.id
+            });
+            return res;
+        }
+        catch (err) {
+        }
     }
 }
 

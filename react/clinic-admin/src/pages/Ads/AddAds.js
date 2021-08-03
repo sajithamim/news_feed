@@ -25,7 +25,7 @@ const AddAds = () => {
     let history = useHistory();
 
     const { adsId } = useParams();
-    const { adsDetails, userDetails, selectedSpecid } = useSelector(state => state.ads);
+    const { adsDetails, userDetails, selectedSpecid, newaddId } = useSelector(state => state.ads);
     const editUsersDetails = [];
 
     userDetails && userDetails.data && userDetails.data.map((item) => {
@@ -126,35 +126,28 @@ const AddAds = () => {
     }
 
     const handleSubmit = (id) => {
-        let newData = state.user;
-        const keys = Object.keys(newData);
-        console.log('keys123', keys);
-        console.log('keys123', id)
-        console.log('id123', keys.indexOf(id))
-        // if(keys.indexOf(id) >= 0) {
-        //     console.log('id', id)
-        // }
-        var index ;
-        for (index = 0 ;index < keys.length; index++) {
-            console.log("keys index",keys[index]);
-        
-         if (keys[index] == id){
-            let newData = state;
-            if ((newData.userVisibility && newData.userVisibility.length !== 0) || newData.allUsers) {
-                delete newData["specialization"];
-                delete newData["fields"];
-                delete newData["user"];
-                delete newData["userVisibility"];
-                delete newData["users"];
-                delete newData["selectedSpecid"];
-                // dispatch(postAdds(newData)).then((res) => {
-                    console.log("hjhjhj", newData);
-                    // message.success('Ads created successfully')
-                    // history.push("/data/Ads")
-                // })
-                return true;
-            } 
-        }
+        let userData = state.user;
+        const keys = Object.keys(userData);
+        let keyLen = keys.length;
+        for (let index = 0 ;index < keyLen; index++) {
+            if (keys[index] == id){
+                let newData = state;
+                if ((newData.userVisibility && newData.userVisibility.length !== 0) || newData.allUsers) {
+                    // delete newData["specialization"];
+                    // delete newData["fields"];
+                    // delete newData["user"];
+                    // delete newData["userVisibility"];
+                    // delete newData["users"];
+                    // delete newData["selectedSpecid"];
+                    newData['selectedUsers'] = userData[keys[index]];
+                    newData['specId'] = keys[index];
+                    dispatch(postAdds(newData, newaddId)).then((res) => {
+                        // message.success('Ads created successfully')
+                        // history.push("/data/Ads")
+                    })
+                    return true;
+                } 
+            }
         }
         // let newData = state;
         // if ((newData.userVisibility && newData.userVisibility.length !== 0) || newData.allUsers) {
