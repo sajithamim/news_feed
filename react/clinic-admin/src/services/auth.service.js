@@ -3,8 +3,9 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const login = (email, password) => {
+  let url = `${process.env.REACT_APP_API_URL}auth/adminlogin/`;
   return axios
-    .post(API_URL + "auth/adminlogin/", { email, password })
+    .post(url, { email, password })
     .then((response) => {
       if (response.data.accessToken) {
         localStorage.setItem("user", JSON.stringify(response.data));

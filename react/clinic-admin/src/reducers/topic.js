@@ -17,7 +17,7 @@ export default (state = initialState , action) => {
         case 'DELETE_IMAGE':
         return {...state , topicList:action.payload}
         case 'UPDATE_TOPIC':
-            return { ...state , editTopic: true}
+        return { ...state , editTopic: true}
         default: 
         return state;
     }

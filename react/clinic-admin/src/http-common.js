@@ -13,7 +13,7 @@ export const instance = axios.create({
 });
 
 http.interceptors.request.use(async (config) => {
-  let accessToken = localStorage.getItem("accessToken");
-  config.headers["authorization"] = `Bearer ${accessToken}`;
+   let accessToken = localStorage.getItem("accessToken");
+   config.headers["authorization"] = `Bearer ${accessToken}`;
   return config;
 });

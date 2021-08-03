@@ -24,43 +24,6 @@ const ModalContent = (props) => {
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({ name: '' });
 
-  const items = [
-    {
-      id: 0,
-      name: 'Cobol'
-    },
-    {
-      id: 1,
-      name: 'JavaScript'
-    }
-  ]
-  const handleOnSearch = (string, results) => {
-    const author = [];
-    userList && userList.data && userList.data.map(item => {
-      return author.push(
-        { value: item.email, label: item.username }
-      );
-    })
-    console.log(string,results);
-    console.log("stringauthor" ,  author)
-  }
-  const handleOnHover = (result) => {
-    // the item hovered
-    console.log(result)
-  }
-  const handleOnSelect = (item) => {
-    // the item selected
-    console.log(item)
-  }
-  const handleOnFocus = () => {
-    console.log('Focused')
-  }
-  const formatResult = (item) => {
-    return item;
-    // return (<p dangerouslySetInnerHTML={{__html: '<strong>'+item+'</strong>'}}></p>); //To format result as html
-  }
-
-
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
     return specialization.push(
@@ -153,10 +116,25 @@ const ModalContent = (props) => {
     } else {
       const reader = new FileReader();
       reader.addEventListener("load", () => {
-        //setPdfData(reader.result);
       });
       reader.readAsDataURL(e.target.files[0]);
     }
+  }
+  const handleFileChangeSecond = (e) => {
+    setState({ ...state, pdfUrlSecond: e.target.files[0] });
+    const pdfSecondFile = e.target.files[0];
+    const newErrorsState = { ...errors };
+    if (!pdfSecondFile.name.match(/\.(pdf)$/)) {
+      newErrorsState.pdf = 'Please select valid pdf.';
+      setErrors(newErrorsState);
+      setFormSubmit(false);
+    } else {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+      });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    console.log("pdfurlsesss" , )
   }
 
   useEffect(() => {
@@ -175,7 +153,7 @@ const ModalContent = (props) => {
   const radioOnChange = (val, e) => {
     if (val === 'publish') {
       const crntDateTime = new Date().toISOString();
-      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "" })
+      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "" , published: (e.target.value === 'now') ? '1' : '0'})
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
@@ -209,6 +187,11 @@ const ModalContent = (props) => {
         form_data = new FormData();
         form_data.append('pdf', state.pdfUrl, state.pdfUrl.name);
       }
+      let form_data2 = null;
+      if (state.format !== '2' && state.format !== '3' && state.pdfUrlSecond && state.pdfUrlSecond.name) {
+        form_data2 = new FormData();
+        form_data2.append('pdfsecond', state.pdfUrlSecond, state.pdfUrlSecond.name);
+      }
       let image_data = null;
       if (state.format !== '1' && state.format !== '3' && state.imageFormData && state.imageFormData.length > 0) {
         image_data = new FormData();
@@ -216,7 +199,8 @@ const ModalContent = (props) => {
           image_data.append('image', file, file.name);
         });
       }
-
+      // console.log("formdata1" ,form_data);
+      // console.log("formdata2" ,form_data2);
       let newData = state;
       delete newData["sl_no"];
       delete newData["category_title"];
@@ -226,8 +210,8 @@ const ModalContent = (props) => {
       delete newData["pdf"];
       delete newData["category_data"];
       delete newData["username"];
-      console.log('newData', newData);
-      console.log('image_data', image_data);
+      // console.log('newData', newData);
+      // console.log('image_data', image_data);
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -241,16 +225,15 @@ const ModalContent = (props) => {
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
-        console.log('newData112', newData)
+       // console.log('newData112', newData)
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log('newDatastatatt', newData);
-      props.onFormSubmit(newData, form_data, image_data);
-
+      console.log('stateradio', state.published);
+      props.onFormSubmit(newData, form_data, form_data2 , image_data);
     }
   }
 
@@ -306,7 +289,6 @@ const ModalContent = (props) => {
     <div>
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
-          {state.oldImages}
           <Form.Item label="Specializations">
             <Select
               isMulti={true}
@@ -325,24 +307,13 @@ const ModalContent = (props) => {
             />
             <div className="errorMsg">{errors.category_id}</div>
           </Form.Item>
-          {/* <Form.Item label="Author">
+          <Form.Item label="Author">
             <Select
               isMulti={false}
               isSearchable={true}
               value={state.username}
               onChange={handleUserChange}
               options={author}
-            />
-          </Form.Item> */}
-          <Form.Item label="Author" wrapperCol={{ offset: 0, span: 10 }}>
-            <ReactSearchAutocomplete
-              items={items}
-              onSearch={handleOnSearch}
-              onHover={handleOnHover}
-              onSelect={handleOnSelect}
-              onFocus={handleOnFocus}
-              autoFocus
-              formatResult={formatResult}
             />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
@@ -395,7 +366,8 @@ const ModalContent = (props) => {
             </Form.Item></>) : null}
 
           {state.format === '1' ?
-            (<Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null}
+            (<><Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>
+            <Form.Item label="Pdf"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></Form.Item></>) : null}
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
