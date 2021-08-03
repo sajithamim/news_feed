@@ -41,6 +41,7 @@ TEST*.xml
 Thumbs.db
 development.py
 media/
+static/
 migrations/
 __pycache__/
 # Applications
