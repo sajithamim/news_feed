@@ -68,6 +68,8 @@ SWAGGER_SETTINGS = {
     }
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # SWAGGER_SETTINGS = {
 #     'SECURITY_DEFINITIONS': {
 #         'api_key': {
