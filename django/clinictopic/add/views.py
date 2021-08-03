@@ -33,7 +33,7 @@ class AdsViewset(viewsets.ModelViewSet):
 class AddUserView(generics.CreateAPIView):
     serializer_class = AddUserSerializer
     # pagination_class = None
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get_serializer(self, *args, **kwargs):
         """ if an array is passed, set serializer to many """
         if isinstance(kwargs.get('data', {}), list):

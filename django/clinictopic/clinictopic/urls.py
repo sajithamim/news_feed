@@ -21,7 +21,7 @@ from rest_framework import permissions
 from drf_yasg2.views import get_schema_view
 from drf_yasg2 import openapi
 from django.conf.urls.static import static
-from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
+from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL,STATIC_ROOT,STATIC_URL
 
 
 schema_view = get_schema_view(
@@ -56,3 +56,4 @@ urlpatterns = [
     path('api/add/',include('add.urls')),
 ]+ static(MEDIA_URL, document_root = MEDIA_ROOT)
 
+urlpatterns += static(STATIC_URL, document_root=STATIC_ROOT)
