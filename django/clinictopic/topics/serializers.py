@@ -117,6 +117,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False,allow_null=True,allow_blank=True,write_only=True)
     # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
+    pdfsecond = serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
     class Meta:
@@ -371,6 +372,11 @@ class Topicpdfserializer(serializers.ModelSerializer):
     class Meta:
         model =Topics
         fields = ['pdf']
+
+class TopicSecondpdfserializer(serializers.ModelSerializer):
+    class Meta:
+        model =Topics
+        fields = ['pdfsecond']
 
 class TopicImageSerializer(serializers.ModelSerializer):
     # image = serializers.ListField(child=serializers.ImageField(max_length=100000,allow_empty_file=False,use_url=False))
