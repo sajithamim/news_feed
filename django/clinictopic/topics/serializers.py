@@ -7,6 +7,8 @@ from specialization.serializers import (GetSpecializationseriallizer,GetSpeciali
 from authentication.models import User
 from authentication.serializers import UserProfileSerializer
 from poll.models import UserPoll
+from datetime import datetime, tzinfo
+
 # from poll.serializers import TopicPollSerializer
 # from poll.serializers import TopicPollSerializer
 from poll.models import TopicPoll,PollOption
@@ -120,11 +122,23 @@ class TopicSeriaizer(serializers.ModelSerializer):
     pdfsecond = serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     topic_topic = TopicSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
+    published = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
 
-
+    def get_published(self, obj):
+        now = datetime.utcnow()
+        # print("now",now)
+        publishtime = obj.publishingtime
+        # print("p",publishtime)
+        # if publishtime>now:
+        #     print("sdf")
+        if publishtime.replace(tzinfo=None)<=now.replace(tzinfo=None):
+            published = 1
+        else:
+            published = 0
+        return published
     # def get_car_types(self, instance):
     #     # Filter using the Car model instance and the CarType's related_name
     #     # (which in this case defaults to car_types_set)
