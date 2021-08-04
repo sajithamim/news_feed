@@ -286,16 +286,6 @@ class AdminLoginSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField()
-    email = serializers.ReadOnlyField()
-    phone = serializers.ReadOnlyField()
-    # profilepic = serializers.ReadOnlyField()
-    profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
-    class Meta:
-        model = User
-        fields = ['username','email','phone','profilepic','name']
-
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
@@ -312,3 +302,15 @@ class UsernameChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model =User
         fields = ['name']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
+    id = serializers.ReadOnlyField()
+    email = serializers.ReadOnlyField()
+    phone = serializers.ReadOnlyField()
+    # profilepic = serializers.ReadOnlyField()
+    profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    class Meta:
+        model = User
+        fields = ['id','username','email','phone','profilepic','name']

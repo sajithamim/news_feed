@@ -87,7 +87,8 @@ class RegisterView(generics.GenericAPIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Verify your email'}
             Util.send_email(data)
-            smsphone = str(user['phone'])
+            # print(1)
+            smsphone = request.data['phone']
             smsnumber = smsphone.replace("-","")
             api_key = os.environ.get('SMS_API_KEY')
             sid = os.environ.get('SMS_SENDER_ID')
@@ -95,10 +96,11 @@ class RegisterView(generics.GenericAPIView):
             eid= os.environ.get('SMS_ENTITY_ID')
             tid= os.environ.get('SMS_TEMPLATE_ID')
             mno= smsnumber
-            msg=str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
+            msg=str(user.otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
             url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
             # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
             r = requests.get(url)
+            # print(r)
             status_code = status.HTTP_201_CREATED
             response = {
             'success' : 'True',
@@ -437,7 +439,7 @@ class UserSpecializationApiView(generics.ListAPIView):
 
 
 class UserProfileSearchView(APIView):
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request,pk, *args, **kwargs):
         try:
             user =User.objects.filter(Q(email__icontains=pk) | Q(name__icontains=pk))[:10]

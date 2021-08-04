@@ -1,3 +1,4 @@
+from os import write
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -53,17 +54,20 @@ class AddImageSerializer(serializers.ModelSerializer):
 
 
 class AddUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=False,allow_null=False,allow_blank=False)
+    # email = serializers.EmailField(required=False,allow_null=False,allow_blank=False)
     class Meta:
         model = AddUser
-        fields = ['adsid','email','spec_id']
+        fields = ['adsid','spec_id','user_id']
+        write_only_fields = ('user_id')
 
-
-    def create(self, validated_data):
-        user = User.objects.get(email=validated_data['email'])
-        del validated_data['email']
-        current = AddUser.objects.filter(adsid = validated_data['adsid'],spec_id=validated_data['spec_id']).delete()
-        return AddUser.objects.create(user_id =user,**validated_data)
+    # def create(self, validated_data):
+    #     print (validated_data)
+    #     # user = User.objects.get(email=validated_data['email'])
+    #     # del validated_data['email']
+    #     for data in validated_data:
+    #         # print(data)
+    #         add = AddUser.objects.create(**data)
+    #     return add
 
 class AddUserSelectedSerializer(serializers.ModelSerializer):
     user_id = UserProfileSerializer()
