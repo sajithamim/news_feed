@@ -437,7 +437,7 @@ class UserSpecializationApiView(generics.ListAPIView):
 
 
 class UserProfileSearchView(APIView):
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request,pk, *args, **kwargs):
         try:
             user =User.objects.filter(Q(email__icontains=pk) | Q(name__icontains=pk))[:10]

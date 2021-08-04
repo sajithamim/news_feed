@@ -33,14 +33,20 @@ class AdsViewset(viewsets.ModelViewSet):
 class AddUserView(generics.CreateAPIView):
     serializer_class = AddUserSerializer
     # pagination_class = None
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def get_serializer(self, *args, **kwargs):
         """ if an array is passed, set serializer to many """
         if isinstance(kwargs.get('data', {}), list):
             kwargs['many'] = True
         return super(AddUserView, self).get_serializer(*args, **kwargs)
-    def perform_create(self, serializer):
-        serializer.save()
+    def create(self, request, *args, **kwargs):
+        # print(request.data)
+        serializer = self.get_serializer(data=request.data,  many=isinstance(request.data,list))
+        current = AddUser.objects.filter(adsid = request.data[0]['adsid'],spec_id=request.data[0]['spec_id']).delete()
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        # headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class SelectedUserlistView(APIView):
