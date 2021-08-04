@@ -133,14 +133,13 @@ const ModalContent = (props) => {
       });
       reader.readAsDataURL(e.target.files[0]);
     }
-    console.log("pdfurlsesss" , )
   }
 
   useEffect(() => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    console.log('props.editData', props.editData)
+    console.log('props.editData', props.editData.published)
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -231,7 +230,6 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log('stateradio', state.published);
       props.onFormSubmit(newData, form_data, form_data2 , image_data);
     }
   }
@@ -379,7 +377,8 @@ const ModalContent = (props) => {
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
-          <Form.Item label="When to Publish">
+           {(state.published && state.published === 1) ? (<><Form.Item wrapperCol={{ offset: 8, span: 10 }}><span style={{color:"red"}}>Always Published</span></Form.Item></>) : 
+            (<><Form.Item label="When to Publish">
             <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
               <Radio value="now">
                 Publish Now
@@ -390,9 +389,10 @@ const ModalContent = (props) => {
             </Radio.Group>
             <div className="errorMsg">{errors.publishingtime}</div>
           </Form.Item>
+          
           {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
-          </Form.Item>) : null}
+          </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
             <Button type="primary" htmlType="submit">Save</Button>
           </Form.Item>

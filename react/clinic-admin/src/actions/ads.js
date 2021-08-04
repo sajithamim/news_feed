@@ -25,7 +25,6 @@ export const deleteAdd = (id) => async (dispatch) => {
 export const getSpecUsers = (id) => async (dispatch) => {
     try {
         const res = await Ads.getSpecUsers(id);
-        console.log("bitton res",res);
         dispatch({
             type: 'GET_SPEC_USERS',
             payload: res.data,
@@ -37,7 +36,6 @@ export const getSpecUsers = (id) => async (dispatch) => {
 }
 
 export const postAdds = (state, id) => async (dispatch) => {
-    console.log('id', id)
     const vData = state.selectedUsers;
     let addsData = {
         title: state.title,
@@ -47,9 +45,11 @@ export const postAdds = (state, id) => async (dispatch) => {
         try {
             const res = await Ads.postAdds(addsData);
             if (res && res.data && res.data.id) { 
+                console.log("res");
                 const userData = []
+                console.log("userData" , userData)
                 vData.map(item => {
-                    userData.push({ adsid: res.data.id, email: item.value, spec_id: state.specId })
+                    userData.push({ adsid: res.data.id, spec_id: state.specId , user_id: item.value })
                 })
                 await Ads.postAddsVisibility(userData)
             }
@@ -79,11 +79,11 @@ export const postAddsVisibilty = (state) => async (dispatch) => {
 export const getEditAdsDetails = (id) => async (dispatch) => {
     try {
         const res = await Ads.getEditAdsDetails(id);
-        console.log("getEditAdsDetailsresponse" ,res);
+        console.log("getEditAdsDetails" , res);
         const specid = res.data.add_specialization[0].spec_id.id ; 
         const res1 = await Ads.getAdsSelectedUser(id , specid);
         const res2 = await Ads.getSpecUsers(specid);
-        console.log("getAdsSelectedUser" , res1.data);
+        console.log("getAdsSelectedUser" , res1.data.data);
         dispatch
         ({
             type: 'GET_ADS_DETALS',
@@ -92,6 +92,7 @@ export const getEditAdsDetails = (id) => async (dispatch) => {
             selectedSpecid: specid,
             specUsers: res2.data
         });
+        return res;
     } catch (err) {
     }
 }

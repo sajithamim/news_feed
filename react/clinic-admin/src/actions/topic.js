@@ -3,8 +3,6 @@ import Topic from "../services/Topic";
 export const getTopic = () => async (dispatch) => {
     try {
         const res = await Topic.getTopic();
-        
-        console.log("resssssssssss" , res);
         dispatch({
             type: 'GET_TOPIC',
             payload: res.data,

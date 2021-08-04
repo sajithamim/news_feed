@@ -106,8 +106,8 @@ const TopicsContent = (props) => {
         pdfsecond:item.pdfsecond,
         format: item.format,
         external_url:item.external_url,
-        username: {value: item.author && item.author.name, label: item.author && item.author.name}
-        
+        username: {value: item.author && item.author.name, label: item.author && item.author.name},
+        published_status: item.published
       }) 
     });
     return items;
