@@ -175,6 +175,9 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
             if 'format' in validated_data:
                 instance.format = validated_data.get('format', instance.format)
+            if 'email' in validated_data:
+                author = User.objects.get(email=validated_data['email'])
+                instance.author = author
             instance.deliverytype='pdf'
             instance.source_url=''
             instance.external_url=''
@@ -197,6 +200,9 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.format = validated_data.get('format', instance.format)
             if 'source_url' in validated_data:
                 instance.source_url = validated_data.get('source_url', instance.source_url)
+            if 'email' in validated_data:
+                author = User.objects.get(email=validated_data['email'])
+                instance.author = author
             instance.deliverytype='external'
             instance.media_type ='image'
             instance.video_url=''
@@ -220,6 +226,9 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.source_url = validated_data.get('source_url', instance.source_url)
             if 'video_url' in validated_data:
                 instance.video_url = validated_data.get('video_url', instance.video_url)
+            if 'email' in validated_data:
+                author = User.objects.get(email=validated_data['email'])
+                instance.author = author
             instance.deliverytype='external'
             instance.media_type ='video'
             # instance.video_url=''
