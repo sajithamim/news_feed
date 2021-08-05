@@ -118,7 +118,7 @@ const Ads = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Ads"
+        title="Advertisement List"
         extra={
           <IconButton >
             <Icon><a href = "/data/AddAds">add</a></Icon>

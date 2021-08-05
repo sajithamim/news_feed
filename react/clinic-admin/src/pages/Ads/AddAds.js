@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Tabs, Button, Checkbox, message, Card } from "antd";
+import { Form, Input, Tabs, Button, Checkbox, message, Card  } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from 'react-router-dom';
 import "antd/dist/antd.css";
 import Select from 'react-select';
 import { getSpecialization } from "../../actions/spec";
@@ -14,17 +15,16 @@ const AddAds = () => {
     const [state, setState] = useState({});
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
+    const [selectedList, setSelectedList] = useState([]);
     const { adsId } = useParams();
-    
-    const { adsDetails, userDetails, selectedSpecid, newaddId , adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
+
+    const { adsDetails, userDetails, selectedSpecid, newaddId, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
     const { specList } = useSelector(state => state.spec);
 
     //all users of particular specialization
     const users = [];
     specUsers && specUsers.results && specUsers.results.map((item) => {
-        users.push(
-            { value: item.id, label: item.username }
-        )
+        users.push(<option value={item.id}>{item.username}</option>)
     })
 
     useEffect(() => {
@@ -33,10 +33,10 @@ const AddAds = () => {
         if (adsId) {
             //ads edit details and selected users list
             dispatch(getEditAdsDetails(adsId))
-            .then((res) => {
-                const specid = res.data.add_specialization[0].spec_id.id; 
-                dispatch(getAdsSelectedUser(adsId , specid))
-            })
+                .then((res) => {
+                    const specid = res.data.add_specialization[0].spec_id.id;
+                    dispatch(getAdsSelectedUser(adsId, specid))
+                })
         }
     }, [])
 
@@ -45,7 +45,7 @@ const AddAds = () => {
         const adsUserList = [];
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
             adsUserList.push(
-                { value: item.user_id.id, label: item.user_id.username}
+                { value: item.user_id.id, label: item.user_id.username }
             )
         })
 
@@ -53,7 +53,7 @@ const AddAds = () => {
         const topic = [];
         adsDetails && adsDetails.add_specialization && adsDetails.add_specialization.map(item => {
             //tab print and add specialization in post api 
-            topic.push({ spec_id: item.spec_id.id, spec_value: item.spec_id.name })
+            topic.push({ spec_id: item.spec_id.id })
             //selected specializatiom
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name });
         })
@@ -82,23 +82,16 @@ const AddAds = () => {
         item && item.map(item => {
             topic.push({ spec_id: item.value, spec_value: item.label })
         })
+        console.log("handlespec item", item);
+        console.log("handle spec item", topic);
         setState({ ...state, specialization: item, add_specialization: topic })
     }
 
-    const onChange = (e) => {
+    const onChecked = (e) => {
         setState({ ...state, allUsers: e.target.checked })
+
     }
 
-    const handleUserChange = (value, id) => {
-        const userData = [];
-        value && value.map((item) => {
-            userData.push({ spec_id: specId, id: item.value })
-        })
-        // let user = state.users;
-        // user[id] = value;
-        //setState({user})
-        setState({ ...state, userVisibility: userData})
-    }
 
     const handleValidation = () => {
         let fields = state;
@@ -117,43 +110,6 @@ const AddAds = () => {
         return formIsValid;
     }
 
-    const handleSubmit = (id) => {
-        let userData = state.user;
-        const keys = Object.keys(userData);
-        let keyLen = keys.length;
-        for (let index = 0 ;index < keyLen; index++) {
-            if (keys[index] == id){
-                let newData = state;
-                if ((newData.userVisibility && newData.userVisibility.length !== 0) || newData.allUsers) {
-                    newData['selectedUsers'] = userData[keys[index]];
-                    newData['specId'] = keys[index];
-                     dispatch(postAdds(newData, newaddId)).then((res) => {
-                        // message.success('Ads created successfully')
-                        // history.push("/data/Ads")
-                      })
-                    return true;
-                } 
-            }
-        }
-        // let newData = state;
-        // if ((newData.userVisibility && newData.userVisibility.length !== 0) || newData.allUsers) {
-        //     delete newData["specialization"];
-        //     console.log("newdTahuy", newData.userVisibility);
-        //     dispatch(postAdds(newData)).then((res) => {
-        //         console.log("hjhjhj", res);
-        //         message.success('Ads created successfully')
-        //         history.push("/data/Ads")
-        //     })
-        //     return true;
-        // } else {
-        //     errors["users"] = "Choose all users or users from list";
-
-        // }
-        // setErrors({ errors });
-        // return false
-
-    }
-
     const handleChange = (e, field) => {
         let fields = state;
         fields[field] = e.target.value;
@@ -162,16 +118,53 @@ const AddAds = () => {
 
     const handleScreen = () => {
         const id = state.specialization[0].value
+        console.log("specializationid", id);
         if (handleValidation()) {
             setToggle(!toggle);
             dispatch(getSpecUsers(id))
         }
     }
 
-
     const buttonClick = activeKey => {
         dispatch(getSpecUsers(activeKey))
+        setState({ ...state, specActiveId: activeKey })
     };
+
+    const handleMultiSelectChange = (e, id) => {
+        let { options } = e.target;
+        options = Array.apply(null, options)
+        const selectedValues = options.filter(x => x.selected).map(x => x.value);
+        setSelectedList(selectedValues);
+        const userData = [];
+        selectedValues && selectedValues.map((item) => {
+            userData.push({ spec_id: specId, id: item })
+        })
+        setState({ ...state, userVisibility: userData })
+    }
+
+
+    const handleSubmit = (id) => {
+        const userList = [];
+        if (state.allUsers === true) {
+            userList.push({ spec_id: state.specActiveId, user_id: "" })
+        }
+        else {
+            let userData = state.userVisibility;
+            userData.map(item => {
+                if (item.spec_id === state.specActiveId) {
+                    userList.push(item)
+                }
+            })
+        }
+        let newData = {};
+        newData['add_specialization'] = state.add_specialization;
+        newData['title'] = state.title;
+        dispatch(postAdds(newData, userList, adsId)).then((res) => {
+            message.success('Ads created successfully')
+            // history.push("/data/Ads")
+        })
+        return true;
+    }
 
     return (
         <div style={{ margin: "10px" }}>
@@ -208,10 +201,12 @@ const AddAds = () => {
                     </Form.Item>
                 </Form>
             </Card>
-            <Card
-
-                title="Add Visibility"
+            <Card type="inner"
+                title={adsId ? "Edit Visibility" : "Add Visibility"} extra={<Button type="link">
+                <Link to={"/data/Ads/" }>Back to Advertisement List</Link>
+              </Button>}
                 style={{ width: "100%", marginBottom: '200px', display: toggle ? "block" : "none" }} >
+                    
                 <Form
                     name="basic"
                     labelCol={{ span: 5 }}
@@ -220,26 +215,21 @@ const AddAds = () => {
                     onFinish={handleSubmit}
                     style={{ marginTop: '25px' }}
                 >
-                    <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
-                        <Checkbox onChange={onChange}>To All Users</Checkbox>
-                    </Form.Item>
-                    <div style={{ textAlign: "center" }}><strong>OR</strong></div>
-                    <Tabs defaultActiveKey="1" centered onChange={buttonClick} tabPosition="left">
-                        {state.add_specialization && state.add_specialization.map(specItem =>
+
+                    <Tabs defaultActiveKey="1" centered onChange={buttonClick} >
+                        {state.specialization && state.specialization.map(specItem =>
                         (
-                            <TabPane tab={specItem.spec_value} key={specItem.spec_id} style={{ marginBottom: '200px' }} centered>
-                                <Form.Item wrapperCol={{ offset: 9, span: 7 }}>
-                                    <Select
-                                        name="users"
-                                        isMulti={true}
-                                        value={state.selectedUsers}
-                                        onChange={(e) => handleUserChange(e, specItem.spec_id)}
-                                        options={users}
-                                        placeholder="Select Users"
-                                    />
+                            <TabPane tab={specItem.label} key={specItem.value} style={{ marginBottom: '200px' }} centered>
+                                <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
+                                    <Checkbox onChange={onChecked}>To All Users</Checkbox>
                                 </Form.Item>
-                                <Form.Item wrapperCol={{ offset: 9, span: 7 }}>
-                                    <Button type="primary" onClick={() => handleSubmit(specItem.spec_id)} style={{ textAlign: "center" }} > Add User</Button>
+                                { state.allUsers == true ? null : 
+                                (<><div style={{ textAlign: "center" }}><strong>OR</strong></div><hr></hr>
+                                <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
+                                    <select name="list-box" multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
+                                </Form.Item></>)}
+                                <Form.Item wrapperCol={{ offset:11, span: 10 }}>
+                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add User</Button>
                                 </Form.Item>
                             </TabPane>
                         ))}

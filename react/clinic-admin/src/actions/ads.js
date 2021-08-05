@@ -35,21 +35,33 @@ export const getSpecUsers = (id) => async (dispatch) => {
     }
 }
 
-export const postAdds = (state, id) => async (dispatch) => {
-    const vData = state.selectedUsers;
-    let addsData = {
-        title: state.title,
-        add_specialization: state.add_specialization
-    }
-    if(id === null) {
-        try {
-            const res = await Ads.postAdds(addsData);
-            if (res && res.data && res.data.id) { 
-                console.log("res");
+export const postAdds = (newData, userList, adsId) => async (dispatch) => {
+    console.log("ADS" ,adsId);
+    try {
+        if (adsId === undefined) {
+            console.log("ghghghg");
+            const res = await Ads.postAdds(newData);
+            if (res && res.data && res.data.id) {
                 const userData = []
-                console.log("userData" , userData)
-                vData.map(item => {
-                    userData.push({ adsid: res.data.id, spec_id: state.specId , user_id: item.value })
+                userList.map(item => {
+                    userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.id })
+                })
+                await Ads.postAddsVisibility(userData)
+            dispatch({
+                type: 'POST_ADD',
+                payload: res.data.id
+            });
+        }
+            return res;
+        }
+        else {
+            console.log("else coming edit")
+            const res = await Ads.putAdds(newData, adsId);
+            console.log("edit res" , res);
+            if (userList && res && res.data && adsId) {
+                const userData = []
+                userList.map(item => {
+                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: item.id })
                 })
                 await Ads.postAddsVisibility(userData)
             }
@@ -59,9 +71,10 @@ export const postAdds = (state, id) => async (dispatch) => {
             });
             return res;
         }
-        catch (err) {
-        }
     }
+    catch (err) {
+    }
+
 }
 
 
@@ -79,28 +92,27 @@ export const postAddsVisibilty = (state) => async (dispatch) => {
 export const getEditAdsDetails = (id) => async (dispatch) => {
     try {
         const res = await Ads.getEditAdsDetails(id);
-        console.log("getEditAdsDetails" , res);
-        const specid = res.data.add_specialization[0].spec_id.id ; 
-        const res1 = await Ads.getAdsSelectedUser(id , specid);
+        console.log("getEditAdsDetails", res);
+        const specid = res.data.add_specialization[0].spec_id.id;
+        const res1 = await Ads.getAdsSelectedUser(id, specid);
         const res2 = await Ads.getSpecUsers(specid);
-        console.log("getAdsSelectedUser" , res1.data.data);
         dispatch
-        ({
-            type: 'GET_ADS_DETALS',
-            payload: res.data,
-            userDetails: res1.data,
-            selectedSpecid: specid,
-            specUsers: res2.data
-        });
+            ({
+                type: 'GET_ADS_DETALS',
+                payload: res.data,
+                userDetails: res1.data,
+                selectedSpecid: specid,
+                specUsers: res2.data
+            });
         return res;
     } catch (err) {
     }
 }
 
 
-export const getAdsSelectedUser = (adsId , specid) => async (dispatch) => {
+export const getAdsSelectedUser = (adsId, specid) => async (dispatch) => {
     try {
-        const res = await Ads.getAdsSelectedUser(adsId , specid);
+        const res = await Ads.getAdsSelectedUser(adsId, specid);
         dispatch({
             type: 'GET_ADS_USER_DETAILS',
             payload: res.data,
