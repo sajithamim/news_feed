@@ -157,7 +157,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
             del validated_data['email']
             author = User.objects.get(email=email)
             topic = Topics.objects.create(author=author,**validated_data)
-        topic = Topics.objects.create(**validated_data)
+        else:
+            topic = Topics.objects.create(**validated_data)
         for data in topic_spec_data:
             topic_spec = TopicSpecialization.objects.create(topic_id = topic, **data)
         return topic
