@@ -178,6 +178,7 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
+    console.log("author state" , state);
     if (formValidation()) {
       setErrors({});
       let form_data = null;
@@ -197,8 +198,6 @@ const ModalContent = (props) => {
           image_data.append('image', file, file.name);
         });
       }
-      // console.log("formdata1" ,form_data);
-      // console.log("formdata2" ,form_data2);
       let newData = state;
       delete newData["sl_no"];
       delete newData["category_title"];
@@ -208,8 +207,6 @@ const ModalContent = (props) => {
       delete newData["pdf"];
       delete newData["category_data"];
       delete newData["username"];
-      // console.log('newData', newData);
-      // console.log('image_data', image_data);
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -223,7 +220,6 @@ const ModalContent = (props) => {
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
-       // console.log('newData112', newData)
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];

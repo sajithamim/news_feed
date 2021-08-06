@@ -129,11 +129,6 @@ const TopicsContent = (props) => {
 
   const columns = [
     {
-      title:"Sl No:",
-      dataIndex: "sl_no",
-      key:"sl_no"
-    },
-    {
       title: "Title",
       dataIndex: "title",
       key: "title",

@@ -2,6 +2,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  POST_EMAIL,
 } from "./type";
 
 import AuthService from "../services/auth.service";
@@ -36,3 +37,15 @@ export const logout = () => (dispatch) => {
     type: LOGOUT,
   });
 };
+
+export const postRequestEmail = (state ) => async (dispatch) => {
+  try {
+      const res = await AuthService.postEmail(state);
+      dispatch({
+          type: POST_EMAIL,
+          payload: res.data,
+      })
+  } catch (err) {
+      console.log(err);
+  }
+}

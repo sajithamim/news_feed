@@ -23,7 +23,7 @@ const DrawerContent = (props) => {
 
   useEffect(() => {
     setState(props.editData)
-    if(props.editData.icon && props.editData.image){
+    if(props.editData.image && props.editData.image){
       setImgData(props.editData.image);
     }
   }, [props.editData , props.editData.image])
