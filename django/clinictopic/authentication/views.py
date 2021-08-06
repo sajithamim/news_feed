@@ -36,6 +36,7 @@ from specialization.models import UserSpecialization
 from rest_framework import pagination
 from django.db.models import Q
 import requests
+from django.http import Http404
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -173,12 +174,12 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
+            redirect_url = request.data.get('redirect_url', '')
             current_site = get_current_site(
                 request=request).domain
             relativeLink = reverse(
-                'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+                'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token,'url':redirect_url})
 
-            redirect_url = request.data.get('redirect_url', '')
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
                 absurl+"?redirect_url="+redirect_url
@@ -191,9 +192,10 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 class PasswordTokenCheckAPI(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
-    def get(self, request, uidb64, token):
-
-        redirect_url = request.GET.get('redirect_url')
+    def get(self, request, uidb64, token,url):
+        # print(url)
+        # redirect_url = request.GET.get('redirect_url')
+        redirect_url =url
 
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
@@ -213,6 +215,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
         except DjangoUnicodeDecodeError as identifier:
             try:
                 if not PasswordResetTokenGenerator().check_token(user):
+                    print("hi3")
                     return CustomRedirect(redirect_url+'?token_valid=False')
                     
             except UnboundLocalError as e:
@@ -474,3 +477,17 @@ class TestSMSView(APIView):
         r = requests.get(url)
         print(r.text)
         return Response({},status=status.HTTP_200_OK)
+
+class UserDeleteView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, pk, format=None):
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

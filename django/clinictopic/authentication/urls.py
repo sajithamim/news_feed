@@ -4,7 +4,7 @@ from .views import (RegisterView, LogoutAPIView, SetNewPasswordAPIView,
 VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
 SignInOtpview,AdminLoginAPIView,UserProfile,UserProfilepicView,Userlist,
 UserDetailApiview,UsernameAddview,UserSpecializationApiView,UserProfileSearchView,
-TestSMSView)
+TestSMSView,UserDeleteView)
 # from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework import routers
@@ -25,7 +25,7 @@ urlpatterns = [
     path('token/refresh/',  jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('request-reset-email/', RequestPasswordResetEmail.as_view(),
          name="request-reset-email"),
-    path('password-reset/<uidb64>/<token>/',
+    path('password-reset/<uidb64>/<token>/<str:url>',
          PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(),name='password-reset-complete'),
     # path('otp/',OtpAPIView.as_view(),name="sendmessage"),
@@ -38,6 +38,7 @@ urlpatterns = [
     path('userlistspecialization/<int:pk>/',UserSpecializationApiView.as_view(),name="userlist"),
     path('usersearck/<str:pk>/',UserProfileSearchView.as_view(),name="usersearch"),
     path('testmsg/',TestSMSView.as_view()),
+    path('deleteuser/<int:pk>/',UserDeleteView.as_view(),name="userdelete"),
     url(r'^', include(router.urls)),
 
 #     path('profilepic/',UserProfilepicView.as_view(),name="profilepic"),
