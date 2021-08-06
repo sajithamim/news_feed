@@ -36,6 +36,7 @@ from specialization.models import UserSpecialization
 from rest_framework import pagination
 from django.db.models import Q
 import requests
+from django.http import Http404
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -173,12 +174,12 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
+            redirect_url = request.data.get('redirect_url', '')
             current_site = get_current_site(
                 request=request).domain
             relativeLink = reverse(
                 'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
-            redirect_url = request.data.get('redirect_url', '')
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
                 absurl+"?redirect_url="+redirect_url
@@ -191,8 +192,8 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 class PasswordTokenCheckAPI(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
-    def get(self, request, uidb64, token):
-
+    def get(self, request, uidb64, token,url):
+        print(url)
         redirect_url = request.GET.get('redirect_url')
 
         try:
@@ -206,6 +207,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
                     return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?token_valid=False')
 
             if redirect_url and len(redirect_url) > 3:
+                print("fy")
                 return CustomRedirect(redirect_url+'?token_valid=True&message=Credentials Valid&uidb64='+uidb64+'&token='+token)
             else:
                 return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?token_valid=False')
@@ -474,3 +476,17 @@ class TestSMSView(APIView):
         r = requests.get(url)
         print(r.text)
         return Response({},status=status.HTTP_200_OK)
+
+class UserDeleteView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, pk, format=None):
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
