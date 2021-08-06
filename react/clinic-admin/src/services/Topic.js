@@ -35,6 +35,21 @@ const putPdfdata =(id, pdfData) => {
   .catch(err => err)
 }
 
+const putPdfdata2 =(id, pdfData2) => {
+  let accessToken = localStorage.getItem("accessToken");
+  let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/secondpdf/`;
+  axios.put(url, pdfData2, {
+    headers: {
+      'content-type': 'multipart/form-data',
+      'authorization': `Bearer ${accessToken}`
+    }
+  })
+  .then(res => {
+  return res
+  })
+  .catch(err => err)
+}
+
 const putImagedata =(imageData) => {
   let accessToken = localStorage.getItem("accessToken");
   let url = `${process.env.REACT_APP_API_URL}topic/topicimages/`;
@@ -57,7 +72,8 @@ const Topic = {
   putPdfdata,
   putImagedata,
   deleteImage,
-  updateTopic
+  updateTopic,
+  putPdfdata2
 };
 
 export default Topic;

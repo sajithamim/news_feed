@@ -19,12 +19,10 @@ const Login = () => {
   const signin = (e) => {
     setLoading(true);
     dispatch(login(email,password))
-    //error ? message.error(error) : null;
   };
 
   if (accessToken && accessToken !== undefined) {
     history.push("/data");
-    //window.location.reload();
   }
 
   

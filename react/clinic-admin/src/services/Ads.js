@@ -6,6 +6,9 @@ const  getAds = () => {
 const  postAdds = (state) => {
     return http.post(`add/ads/`,state);
 }
+const  putAdds = (state , id) => {
+    return http.put(`add/ads/${id}/`, state);
+}
 const  deleteAds = (id) => {
     return http.delete(`add/ads/${id}/`);
 }
@@ -28,7 +31,8 @@ const Ads = {
     getSpecUsers,
     postAddsVisibility,
     getEditAdsDetails,
-    getAdsSelectedUser
+    getAdsSelectedUser,
+    putAdds
 }
 
 export default Ads;
