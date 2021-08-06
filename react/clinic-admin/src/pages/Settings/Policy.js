@@ -12,9 +12,10 @@ const Policy = () => {
     useEffect(() => {
         dispatch(getSettings())
         .then(res => {       
-            console.log("respolicy",res.data[0]);
-           setId(res.data[0].id);
-           setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
+            if(res.data[0]) {
+                setId(res.data[0].id);
+                setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
+            } 
         })
     }, [])
 
