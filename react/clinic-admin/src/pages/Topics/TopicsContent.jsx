@@ -9,6 +9,7 @@ import { getTopic , deleteTopic, postTopic, updateTopic} from "../../actions/top
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
+  const [expended, setExpended] = useState()
 
   const [data , setData] = useState({});
   const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
@@ -171,7 +172,7 @@ const TopicsContent = (props) => {
           </IconButton>
         } style={{ width: "100%" }} >
         {topicList && topicList.results ?
-        (<Table columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
+        (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={drawerType === "edit" ? "Edit Topic" : drawerType === "add" ? "Add Topic" : "" }

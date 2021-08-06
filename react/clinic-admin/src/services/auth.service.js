@@ -16,9 +16,15 @@ const login = (email, password) => {
     });
 }
 
-const postEmail = () => {
-  return http.post(`auth/request-reset-email/`);
+const postEmail = (state) => {
+  let url = `${process.env.REACT_APP_API_URL}auth/request-reset-email/`;
+  return axios
+    .post(url, { state })
+    .then((response) => {
+      return response
+    });
 }
+
 
 const logout = () => {
   localStorage.removeItem("refreshToken");

@@ -126,8 +126,8 @@ const Ads = () => {
         }
         style={{ width: "100%" }}
       >
-       
-          <Table columns={columns} pagination={pagination} dataSource={ads} /> 
+       {adsList && adsList.results ?
+          (<Table columns={columns} pagination={pagination} dataSource={ads} /> ): (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}}/></div>)}
           {/* <div className="spinner"><Spin tip="Loading..." style={{align:"center"}}/></div>)} */}
       </Card>
     </div>

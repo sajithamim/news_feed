@@ -32,15 +32,15 @@ export const login = (email, password) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
   AuthService.logout();
-
   dispatch({
     type: LOGOUT,
   });
 };
 
-export const postRequestEmail = (state ) => async (dispatch) => {
+export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
+      console.log("response" , res);
       dispatch({
           type: POST_EMAIL,
           payload: res.data,

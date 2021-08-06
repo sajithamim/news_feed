@@ -9,7 +9,7 @@ import { SelectionState } from "draft-js";
 const Forgot = () => {
   const [email , setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [state, setState] = useState({redirect_url: 'http://localhost:3000/data/Reset'});
+  const [state, setState] = useState({});
   const [loading , setLoading] =useState("");
   let history = useHistory();
 
@@ -17,14 +17,12 @@ const Forgot = () => {
   const { error } = useSelector(state => state.auth);
 
   const onChange = (e) =>{
-      console.log("email" , e.target.value);
-      setState({...state , email:e.target.value })
+      setState({...state , email: e.target.value , redirect_url: 'http://localhost:3000/reset_password' })
   };
   
  const sendEmail = () => {
-     console.log("state" , state);
-    // setLoading(true);
-    // dispatch(postRequestEmail(state))
+      setLoading(true);
+      dispatch(postRequestEmail(state))
   };
 
 

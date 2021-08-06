@@ -84,7 +84,7 @@ const Login = () => {
           Login
         </Button>
       </div>
-      <Form.Item wrapperCol={{ offset:8, span: 10 }}><Link to={"/data/Forgot"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
+      <Form.Item wrapperCol={{ offset:8, span: 10 }}><Link to={"/forgot_password"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
     </div>
     </Form>
     </>
