@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 const AddAds = () => {
     const { TabPane } = Tabs;
     const dispatch = useDispatch();
-    const [state, setState] = useState({});
+    const [state, setState] = useState({allUsers: false});
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [selectedList, setSelectedList] = useState([]);
@@ -24,7 +24,13 @@ const AddAds = () => {
     //all users of particular specialization
     const users = [];
     specUsers && specUsers.results && specUsers.results.map((item) => {
-        users.push(<option value={item.id}>{item.username}</option>)
+        console.log('state.selectedUsers', state.selectedUsers)
+        if(state.selectedUsers && state.selectedUsers.includes(item.id)) {
+            users.push(<option value={item.id} selected>{item.username}</option>)
+        } else {
+            users.push(<option value={item.id}>{item.username}</option>)
+        }
+       
     })
 
     useEffect(() => {
@@ -44,9 +50,15 @@ const AddAds = () => {
         //selected users list
         const adsUserList = [];
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
-            adsUserList.push(
-                { value: item.user_id.id, label: item.user_id.username }
-            )
+            console.log('itemtest', item)
+            if(item.user_id)
+                adsUserList.push(item.user_id.id)
+            else {
+                console.log('all users true')
+                setState({ ...state, allUsers: true})
+
+            }
+                
         })
 
         const editAdsSpecialization = [];
@@ -117,9 +129,9 @@ const AddAds = () => {
     }
 
     const handleScreen = () => {
-        const id = state.specialization[0].value
-        console.log("specializationid", id);
         if (handleValidation()) {
+            const id = state.specialization[0].value;
+            setState({ ...state, specActiveId: id })
             setToggle(!toggle);
             dispatch(getSpecUsers(id))
         }
@@ -145,25 +157,33 @@ const AddAds = () => {
 
     const handleSubmit = (id) => {
         const userList = [];
-        if (state.allUsers === true) {
-            userList.push({ spec_id: state.specActiveId, user_id: "" })
-        }
-        else {
-            let userData = state.userVisibility;
-            userData.map(item => {
-                if (item.spec_id === state.specActiveId) {
-                    userList.push(item)
-                }
+        let errors = {};
+        if(state.userData || state.allUsers) {
+            if (state.allUsers === true) {
+                userList.push({ spec_id: state.specActiveId, user_id: null })
+            }
+            else {
+                let userData = state.userVisibility;
+                userData.map(item => {
+                    if (item.spec_id === state.specActiveId) {
+                        userList.push(item)
+                    }
+                })
+            }
+            setErrors({errors});
+            let newData = {};
+            newData['add_specialization'] = state.add_specialization;
+            newData['title'] = state.title;
+            dispatch(postAdds(newData, userList, adsId)).then((res) => {
+                message.success('Ads created successfully')
             })
+            return true;
+        } else {
+            errors["users"] = "Users is required";
+            setErrors({errors});
+            return false;
         }
-        let newData = {};
-        newData['add_specialization'] = state.add_specialization;
-        newData['title'] = state.title;
-        dispatch(postAdds(newData, userList, adsId)).then((res) => {
-            message.success('Ads created successfully')
-            // history.push("/data/Ads")
-        })
-        return true;
+  
     }
 
     return (
@@ -221,13 +241,13 @@ const AddAds = () => {
                         (
                             <TabPane tab={specItem.label} key={specItem.value} style={{ marginBottom: '200px' }} centered>
                                 <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
-                                    <Checkbox onChange={onChecked}>To All Users</Checkbox>
+                                    <Checkbox onChange={onChecked} checked={state.allUsers}>To All Users</Checkbox>
+                                </Form.Item> 
+                                <div style={{ textAlign: "center" }}><strong>OR</strong></div>
+                                <Form.Item wrapperCol={{ offset: 11, span: 10 }} style={{paddingTop: '35px'}}>
+                                    <select name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
+                                    <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
                                 </Form.Item>
-                                { state.allUsers == true ? null : 
-                                (<><div style={{ textAlign: "center" }}><strong>OR</strong></div><hr></hr>
-                                <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
-                                    <select name="list-box" multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
-                                </Form.Item></>)}
                                 <Form.Item wrapperCol={{ offset:11, span: 10 }}>
                                     <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add User</Button>
                                 </Form.Item>

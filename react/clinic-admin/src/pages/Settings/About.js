@@ -11,9 +11,11 @@ const About = () => {
     const [id, setId] = useState(EditorState.createEmpty())
     useEffect(() => {
         dispatch(getSettings())
-        .then(res => {      
-            setId(res.data[0].id);
-            setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].about_us))));
+        .then(res => { 
+            if(res.data[0]) {      
+                setId(res.data[0].id);
+                setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].about_us))));
+            }
         })
     }, [])
 

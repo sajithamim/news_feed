@@ -36,10 +36,8 @@ export const getSpecUsers = (id) => async (dispatch) => {
 }
 
 export const postAdds = (newData, userList, adsId) => async (dispatch) => {
-    console.log("ADS" ,adsId);
     try {
         if (adsId === undefined) {
-            console.log("ghghghg");
             const res = await Ads.postAdds(newData);
             if (res && res.data && res.data.id) {
                 const userData = []
@@ -55,15 +53,13 @@ export const postAdds = (newData, userList, adsId) => async (dispatch) => {
             return res;
         }
         else {
-            console.log("else coming edit")
             const res = await Ads.putAdds(newData, adsId);
-            console.log("edit res" , res);
             if (userList && res && res.data && adsId) {
                 const userData = []
                 userList.map(item => {
-                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: item.id })
+                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: null })
                 })
-                await Ads.postAddsVisibility(userData)
+               await Ads.postAddsVisibility(userData)
             }
             dispatch({
                 type: 'POST_ADD',
