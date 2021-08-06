@@ -178,7 +178,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             current_site = get_current_site(
                 request=request).domain
             relativeLink = reverse(
-                'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+                'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token,'url':redirect_url})
 
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
@@ -193,8 +193,9 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
     def get(self, request, uidb64, token,url):
-        print(url)
-        redirect_url = request.GET.get('redirect_url')
+        # print(url)
+        # redirect_url = request.GET.get('redirect_url')
+        redirect_url =url
 
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
@@ -207,7 +208,6 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
                     return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?token_valid=False')
 
             if redirect_url and len(redirect_url) > 3:
-                print("fy")
                 return CustomRedirect(redirect_url+'?token_valid=True&message=Credentials Valid&uidb64='+uidb64+'&token='+token)
             else:
                 return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?token_valid=False')
@@ -215,6 +215,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
         except DjangoUnicodeDecodeError as identifier:
             try:
                 if not PasswordResetTokenGenerator().check_token(user):
+                    print("hi3")
                     return CustomRedirect(redirect_url+'?token_valid=False')
                     
             except UnboundLocalError as e:
