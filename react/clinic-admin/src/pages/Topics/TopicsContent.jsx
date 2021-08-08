@@ -16,7 +16,7 @@ const TopicsContent = (props) => {
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState();
   const dispatch = useDispatch();
-  
+  console.log("image_data" , editTopic);
   useEffect(() => {
     dispatch(getTopic())
     onClose();

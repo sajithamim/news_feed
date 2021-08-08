@@ -47,7 +47,6 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
-    console.log("e", e.target.name);
   };
 
 
