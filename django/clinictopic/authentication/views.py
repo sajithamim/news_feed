@@ -178,7 +178,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             current_site = get_current_site(
                 request=request).domain
             relativeLink = reverse(
-                'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token,'url':redirect_url})
+                'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
@@ -192,10 +192,10 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 class PasswordTokenCheckAPI(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
-    def get(self, request, uidb64, token,url):
+    def get(self, request, uidb64, token):
         # print(url)
-        # redirect_url = request.GET.get('redirect_url')
-        redirect_url =url
+        redirect_url = request.GET.get('redirect_url')
+        # redirect_url =url
 
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
@@ -215,7 +215,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
         except DjangoUnicodeDecodeError as identifier:
             try:
                 if not PasswordResetTokenGenerator().check_token(user):
-                    print("hi3")
+                    # print("hi3")
                     return CustomRedirect(redirect_url+'?token_valid=False')
                     
             except UnboundLocalError as e:
@@ -408,19 +408,43 @@ class UserDetailApiview(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+class UsernameAddview(viewsets.ModelViewSet):
+        queryset = User.objects.filter()
+        serializer_class = UsernameChangeSerializer
+        permission_classes = (permissions.IsAuthenticated,)
+        http_method_names = ['put','get']
 
-class UsernameAddview(generics.CreateAPIView):
-    serializer_class = UsernameChangeSerializer
-    pagination_class = None
-    permission_classes = (permissions.IsAuthenticated,)
-    def get_serializer(self, *args, **kwargs):
-        """ if an array is passed, set serializer to many """
-        if isinstance(kwargs.get('data', {}), list):
-            kwargs['many'] = True
-        return super(UsernameAddview, self).get_serializer(*args, **kwargs)
-    # @csrf_exempt
-    def perform_create(self, serializer):
-        serializer.save()
+        def list(self, request):
+            pic  =User.objects.get(email=request.user)
+            # print(pic.profilepic)
+            serializer = self.serializer_class(pic)
+            return Response(serializer.data)
+        def update(self, request, pk=None):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        def destroy(self, request, pk=None):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        @action(detail=False,methods=['PUT'],serializer_class=UsernameChangeSerializer)
+        def nameadd(self, request):
+            obj = User.objects.get(email=request.user)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+# class UsernameAddview(generics.CreateAPIView):
+#     serializer_class = UsernameChangeSerializer
+#     pagination_class = None
+#     permission_classes = (permissions.IsAuthenticated,)
+#     def get_serializer(self, *args, **kwargs):
+#         """ if an array is passed, set serializer to many """
+#         if isinstance(kwargs.get('data', {}), list):
+#             kwargs['many'] = True
+#         return super(UsernameAddview, self).get_serializer(*args, **kwargs)
+#     # @csrf_exempt
+#     def perform_create(self, serializer):
+#         serializer.save()
 
 class TwentyPagination(pagination.PageNumberPagination):       
        page_size = 20
