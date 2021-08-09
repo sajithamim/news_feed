@@ -11,7 +11,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register('profilepic', UserProfilepicView, 'images')
-
+router.register('name',UsernameAddview,'namechange')
 # from rest_framework_simplejwt.views import (
 #     TokenRefreshView,
 # )
@@ -34,7 +34,7 @@ urlpatterns = [
     path('profile/',UserProfile.as_view(),name="userprofile"),
     path('userlist/',Userlist.as_view(),name="userlist"),
     path('userdetail/<str:email>/',UserDetailApiview.as_view(),name="singleuserdetail"),
-    path('addname/',UsernameAddview.as_view(),name="nameupdate"),
+#     path('addname/',UsernameAddview.as_view(),name="nameupdate"),
     path('userlistspecialization/<int:pk>/',UserSpecializationApiView.as_view(),name="userlist"),
     path('usersearck/<str:pk>/',UserProfileSearchView.as_view(),name="usersearch"),
     path('testmsg/',TestSMSView.as_view()),

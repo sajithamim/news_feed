@@ -408,19 +408,43 @@ class UserDetailApiview(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+class UsernameAddview(viewsets.ModelViewSet):
+        queryset = User.objects.filter()
+        serializer_class = UsernameChangeSerializer
+        permission_classes = (permissions.IsAuthenticated,)
+        http_method_names = ['put','get']
 
-class UsernameAddview(generics.CreateAPIView):
-    serializer_class = UsernameChangeSerializer
-    pagination_class = None
-    permission_classes = (permissions.IsAuthenticated,)
-    def get_serializer(self, *args, **kwargs):
-        """ if an array is passed, set serializer to many """
-        if isinstance(kwargs.get('data', {}), list):
-            kwargs['many'] = True
-        return super(UsernameAddview, self).get_serializer(*args, **kwargs)
-    # @csrf_exempt
-    def perform_create(self, serializer):
-        serializer.save()
+        def list(self, request):
+            pic  =User.objects.get(email=request.user)
+            # print(pic.profilepic)
+            serializer = self.serializer_class(pic)
+            return Response(serializer.data)
+        def update(self, request, pk=None):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        def destroy(self, request, pk=None):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        @action(detail=False,methods=['PUT'],serializer_class=UsernameChangeSerializer)
+        def nameadd(self, request):
+            obj = User.objects.get(email=request.user)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+# class UsernameAddview(generics.CreateAPIView):
+#     serializer_class = UsernameChangeSerializer
+#     pagination_class = None
+#     permission_classes = (permissions.IsAuthenticated,)
+#     def get_serializer(self, *args, **kwargs):
+#         """ if an array is passed, set serializer to many """
+#         if isinstance(kwargs.get('data', {}), list):
+#             kwargs['many'] = True
+#         return super(UsernameAddview, self).get_serializer(*args, **kwargs)
+#     # @csrf_exempt
+#     def perform_create(self, serializer):
+#         serializer.save()
 
 class TwentyPagination(pagination.PageNumberPagination):       
        page_size = 20
