@@ -48,3 +48,15 @@ export const getUserDetails = (emailId) => async(dispatch) => {
         console.log(err);
     }
 }
+
+export const deleteUser = (id) => async(dispatch) => {
+    try{
+        const res = await  Users.deleteUser(id);
+        dispatch({
+            type: 'DELETE USER',
+            payload:id,
+        })
+    }catch (err) {
+        console.log(err);
+    }
+}

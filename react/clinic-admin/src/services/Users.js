@@ -19,6 +19,9 @@ const getUserSpec = (emailId) => {
 const getUserData = (emailId) => {
     return http.get(`auth/userdetail/${emailId}`)
 }
+const deleteUser = (id) => {
+    return http.delete(`auth/deleteuser/${id}`)
+}
 
 
 const Users = {
@@ -26,7 +29,8 @@ const Users = {
     getUserCategory,
     getTopic,
     getUserSpec,
-    getUserData
+    getUserData,
+    deleteUser
 }
 
 export default Users;

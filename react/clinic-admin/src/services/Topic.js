@@ -12,6 +12,7 @@ const deleteTopic = (id) => {
 const deleteImage = (id) => {
   return http.delete(`topic/deletetopicimage/${id}`);
 };
+
 const postTopic = (state) => {
   return http.post(`topic/topic/`, state);
 };

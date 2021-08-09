@@ -40,12 +40,23 @@ export const logout = () => (dispatch) => {
 export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
-      console.log("response" , res);
       dispatch({
           type: POST_EMAIL,
           payload: res.data,
       })
   } catch (err) {
       console.log(err);
+  }
+}
+
+export const passwordReset = (state) => async (dispatch) => {
+  try{
+    const res = await AuthService.passwordReset(state);
+    dispatch({
+      type: 'PASSWORD_RESET',
+      payload: res.data,
+    })
+  }catch(err) {
+    console.log(err);
   }
 }
