@@ -215,7 +215,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
         except DjangoUnicodeDecodeError as identifier:
             try:
                 if not PasswordResetTokenGenerator().check_token(user):
-                    print("hi3")
+                    # print("hi3")
                     return CustomRedirect(redirect_url+'?token_valid=False')
                     
             except UnboundLocalError as e:
