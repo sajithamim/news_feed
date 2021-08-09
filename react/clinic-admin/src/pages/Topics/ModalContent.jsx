@@ -47,7 +47,6 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
-    console.log("e", e.target.name);
   };
 
 
@@ -178,6 +177,7 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
+    console.log("author state" , state);
     if (formValidation()) {
       setErrors({});
       let form_data = null;
@@ -197,8 +197,6 @@ const ModalContent = (props) => {
           image_data.append('image', file, file.name);
         });
       }
-      // console.log("formdata1" ,form_data);
-      // console.log("formdata2" ,form_data2);
       let newData = state;
       delete newData["sl_no"];
       delete newData["category_title"];
@@ -208,8 +206,6 @@ const ModalContent = (props) => {
       delete newData["pdf"];
       delete newData["category_data"];
       delete newData["username"];
-      // console.log('newData', newData);
-      // console.log('image_data', image_data);
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -223,7 +219,6 @@ const ModalContent = (props) => {
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
-       // console.log('newData112', newData)
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
@@ -363,8 +358,8 @@ const ModalContent = (props) => {
             </Form.Item></>) : null}
 
           {state.format === '1' ?
-            (<><Form.Item label="Pdf"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>
-            <Form.Item label="Pdf"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></Form.Item></>) : null}
+            (<><Form.Item label="Pdf Front"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>
+            <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></Form.Item></>) : null}
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
@@ -377,7 +372,7 @@ const ModalContent = (props) => {
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
-           {(state.published_status && state.published_status === 1) ? (<><Form.Item wrapperCol={{ offset: 8, span: 10 }}><span style={{color:"red"}}>Always Published</span></Form.Item></>) : 
+           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span style={{color:"red"}}>Always Published</span></Form.Item></>) : 
             (<><Form.Item label="When to Publish">
             <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
               <Radio value="now">

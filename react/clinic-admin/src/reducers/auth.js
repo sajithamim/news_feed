@@ -2,6 +2,7 @@ import {
     LOGIN_SUCCESS,
     LOGIN_FAIL,
     LOGOUT,
+    POST_EMAIL,
   } from "../actions/type";
   
   const initialState = {
@@ -10,6 +11,7 @@ import {
     accessToken: "",
     success: "",
     error: null,
+    requestEmail:""
   }
  
   
@@ -30,6 +32,8 @@ import {
           isLoggedIn: false,
           error: action.payload,
         };
+      case POST_EMAIL:
+        return {...state , requestEmail:action.payload};
       case LOGOUT:
         return {
           ...state,

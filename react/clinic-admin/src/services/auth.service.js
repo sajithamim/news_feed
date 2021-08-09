@@ -1,3 +1,4 @@
+import { http} from "../http-common";
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -15,6 +16,17 @@ const login = (email, password) => {
     });
 }
 
+const postEmail = (state) => {
+  let url = `${process.env.REACT_APP_API_URL}auth/request-reset-email/`;
+  return axios
+    .post(url, { state })
+    .then((response) => {
+      console.log("response" , response);
+      return response
+    });
+}
+
+
 const logout = () => {
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("accessToken");
@@ -23,6 +35,7 @@ const logout = () => {
 
 const AuthService = {
   login,
+  postEmail,
   logout
 };
 

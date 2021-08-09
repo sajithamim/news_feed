@@ -2,6 +2,8 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Overview from './pages/Overview/Overview';
 import Login from './pages/Login/Login';
+import Forgot from './pages/Login/Forgot';
+import Reset from './pages/Login/Reset';
 import Specialization from "./pages/specialization/Specialization";
 import SubSpecialization from "./pages/specialization/SubSpecializationContent";
 import Topics from './pages/Topics/Topics';
@@ -44,6 +46,8 @@ function App() {
           <PrivateRoute path="/data/AddAds/" exact component={AddAds} />
           <PrivateRoute path="/data/AddAds/:adsId" exact component={AddAds} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
+          <Route path="/forgot_password" exact component={Forgot} />
+          <Route path="/reset_password" exact component={Reset} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />
         </Switch>

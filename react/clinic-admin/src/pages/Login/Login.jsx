@@ -3,6 +3,7 @@ import { Form, Input, Button, Alert } from "antd";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../actions/auth.js"
+import { Link } from 'react-router-dom';
 import "./Login.css";
 
 const Login = () => {
@@ -83,6 +84,7 @@ const Login = () => {
           Login
         </Button>
       </div>
+      <Form.Item wrapperCol={{ offset:8, span: 10 }}><Link to={"/forgot_password"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
     </div>
     </Form>
     </>

@@ -114,7 +114,7 @@ const SpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Specializations"
+        title="Specialities and Sub Specialities"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>

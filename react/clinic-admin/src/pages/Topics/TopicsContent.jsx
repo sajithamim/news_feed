@@ -9,13 +9,14 @@ import { getTopic , deleteTopic, postTopic, updateTopic} from "../../actions/top
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
+  const [expended, setExpended] = useState()
 
   const [data , setData] = useState({});
   const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState();
   const dispatch = useDispatch();
-  
+  console.log("image_data" , editTopic);
   useEffect(() => {
     dispatch(getTopic())
     onClose();
@@ -129,11 +130,6 @@ const TopicsContent = (props) => {
 
   const columns = [
     {
-      title:"Sl No:",
-      dataIndex: "sl_no",
-      key:"sl_no"
-    },
-    {
       title: "Title",
       dataIndex: "title",
       key: "title",
@@ -176,7 +172,7 @@ const TopicsContent = (props) => {
           </IconButton>
         } style={{ width: "100%" }} >
         {topicList && topicList.results ?
-        (<Table columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
+        (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={drawerType === "edit" ? "Edit Topic" : drawerType === "add" ? "Add Topic" : "" }
