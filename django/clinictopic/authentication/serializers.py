@@ -92,6 +92,9 @@ class Signinserializer(serializers.ModelSerializer):
         if attrs.get('email',''):
             email = attrs.get('email', '')
             phone_verify = User.objects.filter(email=email).first()
+            if phone_verify.auth_provider !="email":
+                raise AuthenticationFailed(
+                    detail='Please continue your login using ' +phone_verify.auth_provider)
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
             phone_verify.save()
