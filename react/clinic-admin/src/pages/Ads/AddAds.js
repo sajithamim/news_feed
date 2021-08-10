@@ -15,7 +15,6 @@ const AddAds = () => {
     const [state, setState] = useState({allUsers: false});
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
-    const [selectedList, setSelectedList] = useState([]);
     const { adsId } = useParams();
 
     const { adsDetails, userDetails, selectedSpecid, newaddId, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
@@ -24,13 +23,12 @@ const AddAds = () => {
     //all users of particular specialization
     const users = [];
     specUsers && specUsers.results && specUsers.results.map((item) => {
-        console.log('state.selectedUsers', state.selectedUsers)
+        //selected user condition
         if(state.selectedUsers && state.selectedUsers.includes(item.id)) {
             users.push(<option value={item.id} selected>{item.username}</option>)
         } else {
             users.push(<option value={item.id}>{item.username}</option>)
         }
-       
     })
 
     useEffect(() => {
@@ -49,6 +47,7 @@ const AddAds = () => {
     useEffect(() => {
         //selected users list
         const adsUserList = [];
+        console.log('adsUserDetails', adsUserDetails)
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
             if(item.user_id)
                 adsUserList.push(item.user_id.id)
@@ -69,15 +68,7 @@ const AddAds = () => {
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name });
         })
 
-        //const editUsersDetails = [];
-        // userDetails && userDetails.data && userDetails.data.map((item) => {
-        //     editUsersDetails.push(
-        //         { value: item.user_id.email, label: item.user_id.username }
-        //     )
-        // })
-        //setSTate({ users: editUsersDetails})
-
-        setState({ ...state, title: adsDetails.title, specialization: editAdsSpecialization, add_specialization: topic, selectedSpecid: selectedSpecid, selectedUsers: adsUserList })
+        setState({ ...state, title: adsDetails.title, specialization: editAdsSpecialization, add_specialization: topic, selectedSpecid: selectedSpecid, selectedUsers: adsUserList})
     }, [adsDetails, adsUserDetails])
 
     //specialization list
@@ -139,14 +130,13 @@ const AddAds = () => {
         setState({ ...state, specActiveId: activeKey })
     };
 
-    const handleMultiSelectChange = (e, id) => {
+    const handleMultiSelectChange = (e) => {
         let { options } = e.target;
         options = Array.apply(null, options)
         const selectedValues = options.filter(x => x.selected).map(x => x.value);
-        setSelectedList(selectedValues);
         const userData = [];
         selectedValues && selectedValues.map((item) => {
-            userData.push({ spec_id: specId, id: item })
+            userData.push({ spec_id: specId, user_id: item })
         })
         setState({ ...state, userVisibility: userData })
     }
@@ -155,12 +145,12 @@ const AddAds = () => {
     const handleSubmit = (id) => {
         const userList = [];
         let errors = {};
-        if(state.userData || state.allUsers) {
+        let userData = state.userVisibility;
+        if(userData || state.allUsers) {
             if (state.allUsers === true) {
                 userList.push({ spec_id: state.specActiveId, user_id: null })
             }
             else {
-                let userData = state.userVisibility;
                 userData.map(item => {
                     if (item.spec_id === state.specActiveId) {
                         userList.push(item)
@@ -169,8 +159,8 @@ const AddAds = () => {
             }
             setErrors({errors});
             let newData = {};
-            newData['add_specialization'] = state.add_specialization;
             newData['title'] = state.title;
+            newData['add_specialization'] = state.add_specialization;
             dispatch(postAdds(newData, userList, adsId)).then((res) => {
                 message.success('Ads created successfully')
             })
@@ -242,7 +232,9 @@ const AddAds = () => {
                                 </Form.Item> 
                                 <div style={{ textAlign: "center" }}><strong>OR</strong></div>
                                 <Form.Item wrapperCol={{ offset: 11, span: 10 }} style={{paddingTop: '35px'}}>
-                                    <select style={{paddingRight: '75px'}} name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
+                                    <select style={{paddingRight: '75px'}} name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e)}>
+                                        {users}
+                                    </select>
                                     <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset:11, span: 10 }}>

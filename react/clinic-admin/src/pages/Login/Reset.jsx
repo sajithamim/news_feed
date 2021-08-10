@@ -54,10 +54,18 @@ const Reset = () => {
       delete newData["confirm_password"];
       dispatch(passwordReset(state))
         .then((err) => {
-          if (err)
-            message.error({ content: 'Token Expired, Please try again', className: 'custom-class', style: { marginLeft: '25vh', marginTop: '55vh' } });
+          if(err) {
+            message.error({
+              content: 'Token Expired, Please try again',
+              className: 'custom-class',
+              style: {
+                marginLeft: '47vh',
+              },
+            });
+            setState({ ...state, password: "", confirm_password: "" })
+          }
           else {
-            message.success({ content: 'Password reset successfully', className: 'custom-class', style: { marginLeft: '25vh', marginTop: '55vh' } });
+            message.success("Password reset successfully");
             history.push("/login");
           }
         });
