@@ -16,7 +16,7 @@ const Reset = () => {
   const search = useLocation().search;
   const token = new URLSearchParams(search).get('token');
   const uidb64 = new URLSearchParams(search).get('uidb64');
-  
+
   const history = useHistory();
 
   const handleChange = (e) => {
@@ -53,12 +53,15 @@ const Reset = () => {
       newData["uidb64"] = uidb64;
       delete newData["confirm_password"];
       dispatch(passwordReset(state))
-      .then(() => {
-        message.success('Password reset Successfully')
-        history.push("/login");
-      });
+        .then((err) => {
+          if (err)
+            message.error({ content: 'Token Expired, Please try again', className: 'custom-class', style: { marginLeft: '25vh', marginTop: '55vh' } });
+          else {
+            message.success({ content: 'Password reset successfully', className: 'custom-class', style: { marginLeft: '25vh', marginTop: '55vh' } });
+            history.push("/login");
+          }
+        });
     }
-
   }
 
   return (

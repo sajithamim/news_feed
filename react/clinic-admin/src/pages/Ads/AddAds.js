@@ -50,7 +50,6 @@ const AddAds = () => {
         //selected users list
         const adsUserList = [];
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
-            console.log('itemtest', item)
             if(item.user_id)
                 adsUserList.push(item.user_id.id)
             else {
@@ -94,8 +93,6 @@ const AddAds = () => {
         item && item.map(item => {
             topic.push({ spec_id: item.value, spec_value: item.label })
         })
-        console.log("handlespec item", item);
-        console.log("handle spec item", topic);
         setState({ ...state, specialization: item, add_specialization: topic })
     }
 
@@ -223,7 +220,7 @@ const AddAds = () => {
             </Card>
             <Card type="inner"
                 title={adsId ? "Edit Visibility" : "Add Visibility"} extra={<Button type="link">
-                <Link to={"/data/Ads/" }>Back to Advertisement List</Link>
+                <Link to={"/advertisements" }>Back to Advertisement List</Link>
               </Button>}
                 style={{ width: "100%", marginBottom: '200px', display: toggle ? "block" : "none" }} >
                     
@@ -245,7 +242,7 @@ const AddAds = () => {
                                 </Form.Item> 
                                 <div style={{ textAlign: "center" }}><strong>OR</strong></div>
                                 <Form.Item wrapperCol={{ offset: 11, span: 10 }} style={{paddingTop: '35px'}}>
-                                    <select name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
+                                    <select style={{paddingRight: '75px'}} name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
                                     <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset:11, span: 10 }}>

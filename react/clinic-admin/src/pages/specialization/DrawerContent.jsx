@@ -128,11 +128,11 @@ const DrawerContent = (props) => {
             <div className="errorMsg">{errors.name}</div>
           </Form.Item>
 
-          <Form.Item label="Image">
+          {/* <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" width="128px" height="128px" alt={imgData} src={imgData} />) : null}
             <Input type="file" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} />
             <div className="errorMsg">{errors.image}</div>
-          </Form.Item>
+          </Form.Item> */}
         </div>
       </div>
       <Form.Item

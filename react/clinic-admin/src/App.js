@@ -32,23 +32,23 @@ function App() {
       <AdminLayout>
         <Switch>
           <PrivateRoute path="/data" exact component={Overview} />
-          <PrivateRoute path="/data/Categories" exact component={Categories} />
-          <PrivateRoute path="/data/topics" exact component={Topics} />
-          <PrivateRoute path="/data/Specializations" exact component={Specialization} />
-          <PrivateRoute path="/data/SubSpecialization/:specId" exact component={SubSpecialization} />
-          <PrivateRoute path="/data/Feedback" exact component={Feedback} />
-          <PrivateRoute path="/data/Users" exact component={Users} />
-          <PrivateRoute path="/data/Policy" exact component={Policy} />
-          <PrivateRoute path="/data/About" exact component={About} />
-          <PrivateRoute path="/data/Contact" exact component={Contact} />
-          <PrivateRoute path="/data/Ads" exact component={Ads} />
-          <PrivateRoute path="/data/Terms" exact component={Terms} />
-          <PrivateRoute path="/data/AddAds/" exact component={AddAds} />
-          <PrivateRoute path="/data/AddAds/:adsId" exact component={AddAds} />
-          <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
+          <PrivateRoute path="/categories" exact component={Categories} />
+          <PrivateRoute path="/topics" exact component={Topics} />
+          <PrivateRoute path="/specializations" exact component={Specialization} />
+          <PrivateRoute path="/sub_specialization/:specId" exact component={SubSpecialization} />
+          <PrivateRoute path="/feedback" exact component={Feedback} />
+          <PrivateRoute path="/users" exact component={Users} />
+          <PrivateRoute path="/privacy_policy" exact component={Policy} />
+          <PrivateRoute path="/about" exact component={About} />
+          <PrivateRoute path="/contact" exact component={Contact} />
+          <PrivateRoute path="/advertisements" exact component={Ads} />
+          <PrivateRoute path="/terms" exact component={Terms} />
+          <PrivateRoute path="/add_ads/" exact component={AddAds} />
+          <PrivateRoute path="/add_ads/:adsId" exact component={AddAds} />
+          <PrivateRoute path="/userdetails/:emailId" exact component={UserDetails} />
           <Route path="/forgot_password" exact component={Forgot} />
           <Route path="/reset_password/" exact component={Reset} />
-          <Route path="/login" component={Login} />
+          <Route path="/login"  component={Login} />
           <Redirect from="/" to="/login" />
         </Switch>
       </AdminLayout>

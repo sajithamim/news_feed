@@ -52,11 +52,14 @@ export const postRequestEmail = (state) => async (dispatch) => {
 export const passwordReset = (state) => async (dispatch) => {
   try{
     const res = await AuthService.passwordReset(state);
+    console.log("acttion res" , res);
     dispatch({
       type: 'PASSWORD_RESET',
       payload: res.data,
     })
+    return res;
   }catch(err) {
-    console.log(err);
+    console.log("error" , err);
+    return err;
   }
 }

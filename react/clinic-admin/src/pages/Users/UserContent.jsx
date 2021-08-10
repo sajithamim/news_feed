@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { Card, Table, Spin, Space, Popconfirm, Button  , message} from "antd";
+import { Card, Table, Spin, Space, Popconfirm, Button, message } from "antd";
 import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersList , deleteUser} from "../../actions/users"
+import { getUsersList, deleteUser } from "../../actions/users"
 
 const UserContent = () => {
   const { userList } = useSelector(state => state.users);
@@ -14,13 +14,13 @@ const UserContent = () => {
   useEffect(() => {
     dispatch(getUsersList())
   }, [])
-  
+
 
   const onAdd = () => {
   };
 
   const confirmDelete = (id) => {
-    console.log("id" , id);
+    console.log("id", id);
     dispatch(deleteUser(id));
   };
 
@@ -34,7 +34,7 @@ const UserContent = () => {
       key++;
       return Items.push({
         sl_no: key,
-        id:item.id,
+        id: item.id,
         name: item.name,
         email: item.email,
         phone: item.phone,
@@ -76,6 +76,9 @@ const UserContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
+          <Button type="link">
+            <Link to={"/userdetails/" + record.email}>View Details</Link>
+          </Button>
           <Popconfirm
             title="Are you sure to delete this user?"
             onConfirm={() => confirmDelete(record.id)}
@@ -95,11 +98,7 @@ const UserContent = () => {
       <Card
         title="Users"
       > {userList && userList.data ?
-        (<Table onRow={(record , recordIndex) => ({
-          onClick: (e) => 
-              history.push('/data/Ads/')
-      })}
-           columns={columns} dataSource={User} />) :
+        (<Table  columns={columns} dataSource={User} />) :
         (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
     </div>

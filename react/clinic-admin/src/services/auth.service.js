@@ -21,7 +21,6 @@ const postEmail = (state) => {
   return axios
     .post(url, state)
     .then((response) => {
-      console.log("response" , response);
       if (response.data)
       return response
     });
