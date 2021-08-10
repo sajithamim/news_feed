@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin  } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
-import { getSpecialization , deleteSpec } from "../../actions/spec";
+import { getSpecialization, deleteSpec } from "../../actions/spec";
 
 const SpecializationContent = () => {
   const dispatch = useDispatch();
@@ -13,9 +13,9 @@ const SpecializationContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
   const { specList, updateData, addData } = useSelector(state => state.spec);
- 
+
   useEffect(() => {
     dispatch(getSpecialization())
     onClose();
@@ -47,14 +47,14 @@ const SpecializationContent = () => {
     message.error("Cancelled");
   };
 
-  const handleChange = (page , size , sorter) => {
+  const handleChange = (page, size, sorter) => {
     setCurrent(page)
     dispatch(getSpecialization(page));
   }
 
   const specGenerator = () => {
     const items = [];
-    specList && specList.results && specList.results.map((item , key) => {
+    specList && specList.results && specList.results.map((item, key) => {
       key++;
       return items.push({
         sl_no: key,
@@ -67,10 +67,10 @@ const SpecializationContent = () => {
   }
   const spec = specGenerator();
 
-  const pagination =  {
-    current ,
+  const pagination = {
+    current,
     pageSize,
-    onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
+    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
     total: specList.count
   }
 
@@ -84,9 +84,6 @@ const SpecializationContent = () => {
       title: "Specialization",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <Link to={"/data/SubSpecialization/" + record.id}>{text}</Link>
-      ),
     },
     {
       title: "Action",
@@ -94,6 +91,9 @@ const SpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
+          <Button type="link">
+            <Link to={"/sub_specialization/" + record.id}>Add/Edit Sub Speciality</Link>
+          </Button>
           <Button type="link" onClick={() => onEdit(record)}>
             Edit
           </Button>
@@ -123,7 +123,7 @@ const SpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {specList && specList.results ?
-          (<Table columns={columns} pagination={pagination} dataSource={spec} />) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}}/></div>)}
+          (<Table columns={columns} pagination={pagination} dataSource={spec} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer
         title={
@@ -131,7 +131,7 @@ const SpecializationContent = () => {
             ? "Edit Specialization"
             : drawerType === "add"
               ? "Add Specialization"
-              : "" 
+              : ""
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
         <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />

@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Table, Col, Row , Card} from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams , useLocation} from 'react-router-dom';
 import DetailContent from "./DetailContent";
 import { getUserCategory, getUserSpecialization, getUserDetails } from "../../actions/users";
 
@@ -20,12 +20,17 @@ const columns = [
 ];
 
 
+
 const UserDetails = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  // location.state;
   const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
   const { emailId } = useParams();
 
   useEffect(() => {
+    console.log("location.pathname", location.pathname);
+    console.log("location.state", location.state);
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
     dispatch(getUserSpecialization(emailId))

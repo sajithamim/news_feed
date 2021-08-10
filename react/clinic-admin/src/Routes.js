@@ -12,31 +12,31 @@ export const routes = [
   },
   {
     title: 'Users',
-    path: '/data/Users',
+    path: '/users',
     key: "users",
     icon: <IoIcons.IoIosPaper />
   },
   {
     title: 'Specializations',
-    path: '/data/Specializations',
+    path: '/specializations',
     key: "spec",
     icon: <AiFillDatabase />
   },
   {
     title: 'Categories',
-    path: '/data/Categories',
+    path: '/categories',
     key: "cat",
     icon: <AiFillCopy />
   },
   {
     title: 'Topics',
-    path: '/data/topics',
+    path: '/topics',
     key: "topic",
     icon: <AiFillContainer />
   },
   {
-    title: 'Ads',
-    path: '/data/Ads',
+    title: 'Advertisement',
+    path: '/advertisements',
     key: "ads",
     icon: <AiFillContainer />
   },
@@ -48,25 +48,25 @@ export const routes = [
     subNav: [
       {
         title: 'Privacy policy',
-        path: '/data/Policy',
+        path: '/privacy_policy',
         key: "Policy",
         icon: <IoIcons.IoIosPaper />,
       },
       {
         title: 'Terms And Conditions',
-        path: '/data/Terms',
+        path: '/terms',
         key: "Terms",
         icon: <IoIcons.IoIosPaper />,
       },
       {
         title: 'Contact Us',
-        path: '/data/Contact',
+        path: '/contact',
         key: "Contact",
         icon: <IoIcons.IoIosPaper />,
       },
       {
         title: 'About Us',
-        path: '/data/About',
+        path: '/about',
         key: "About",
         icon: <IoIcons.IoIosPaper />,
       },
@@ -74,7 +74,7 @@ export const routes = [
   },
   {
     title: 'Feedback',
-    path: '/data/Feedback',
+    path: '/feedback',
     key: "feed",
     icon: <IoIcons.IoIosPaper />
   },
