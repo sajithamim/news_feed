@@ -47,7 +47,7 @@ function App() {
           <PrivateRoute path="/data/AddAds/:adsId" exact component={AddAds} />
           <PrivateRoute path="/data/UserDetails/:emailId" exact component={UserDetails} />
           <Route path="/forgot_password" exact component={Forgot} />
-          <Route path="/reset_password" exact component={Reset} />
+          <Route path="/reset_password/" exact component={Reset} />
           <Route path="/login" component={Login} />
           <Redirect from="/" to="/login" />
         </Switch>

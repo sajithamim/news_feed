@@ -19,11 +19,16 @@ const login = (email, password) => {
 const postEmail = (state) => {
   let url = `${process.env.REACT_APP_API_URL}auth/request-reset-email/`;
   return axios
-    .post(url, { state })
+    .post(url, state)
     .then((response) => {
       console.log("response" , response);
+      if (response.data)
       return response
     });
+}
+
+const passwordReset =(state) => {
+  return http.patch(`auth/password-reset-complete/` , state);
 }
 
 
@@ -36,7 +41,8 @@ const logout = () => {
 const AuthService = {
   login,
   postEmail,
-  logout
+  logout,
+  passwordReset
 };
 
 export default AuthService;

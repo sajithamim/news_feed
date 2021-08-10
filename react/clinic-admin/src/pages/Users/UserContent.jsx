@@ -1,23 +1,27 @@
 import React, { useEffect } from "react";
 import { Card, Table, Spin, Space, Popconfirm, Button  , message} from "antd";
+import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
-import { Icon, IconButton } from "@material-ui/core";
+import { Redirect } from 'react-router';
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersList } from "../../actions/users"
+import { getUsersList , deleteUser} from "../../actions/users"
 
 const UserContent = () => {
   const { userList } = useSelector(state => state.users);
   const dispatch = useDispatch();
+  let history = useHistory();
   useEffect(() => {
     dispatch(getUsersList())
   }, [])
-
+  
 
   const onAdd = () => {
   };
 
   const confirmDelete = (id) => {
+    console.log("id" , id);
+    dispatch(deleteUser(id));
   };
 
   const cancel = (e) => {
@@ -30,6 +34,7 @@ const UserContent = () => {
       key++;
       return Items.push({
         sl_no: key,
+        id:item.id,
         name: item.name,
         email: item.email,
         phone: item.phone,
@@ -72,7 +77,7 @@ const UserContent = () => {
       render: (text, record) => (
         <Space size="middle">
           <Popconfirm
-            title="Are you sure to delete this specialization?"
+            title="Are you sure to delete this user?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
@@ -90,7 +95,11 @@ const UserContent = () => {
       <Card
         title="Users"
       > {userList && userList.data ?
-        (<Table columns={columns} dataSource={User} />) :
+        (<Table onRow={(record , recordIndex) => ({
+          onClick: (e) => 
+              history.push('/data/Ads/')
+      })}
+           columns={columns} dataSource={User} />) :
         (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
     </div>

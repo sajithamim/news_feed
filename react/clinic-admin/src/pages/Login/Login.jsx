@@ -26,7 +26,6 @@ const Login = () => {
     history.push("/data");
   }
 
-  
   const validateMessages = {
     required: "'${label}' is required!",
     types: {

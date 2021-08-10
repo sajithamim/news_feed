@@ -15,6 +15,8 @@ const users = (state = initialState , action) => {
         return {...state , userSpec: action.payload }
         case 'GET_USER_DETAILS':
         return {...state , userDetails: action.payload }
+        case 'DELETE USER':
+        return {...state , userList: Object.assign({}, state.userList , {data: state.userList && state.userList.data && state.userList.data.filter(item => item.id !== action.payload)})}
         default: 
         return state;
     }

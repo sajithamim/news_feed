@@ -81,7 +81,7 @@ const SpecializationContent = () => {
       key: "sl_no",
     },
     {
-      title: "Title",
+      title: "Specialization",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (

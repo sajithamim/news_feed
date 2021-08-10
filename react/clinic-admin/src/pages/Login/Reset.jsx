@@ -1,51 +1,62 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Alert } from "antd";
+import { Form, Input, Button, message } from "antd";
+import { Redirect, useLocation } from "react-router-dom";
+import { passwordReset } from '../../actions/auth';
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+
 import "./Login.css";
-import { SelectionState } from "draft-js";
 
 const Reset = () => {
+  const dispatch = useDispatch();
   const [state, setState] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmPassword] = useState("");
+
   const [errors, setErrors] = useState({ name: '' });
 
+  const search = useLocation().search;
+  const token = new URLSearchParams(search).get('token');
+  const uidb64 = new URLSearchParams(search).get('uidb64');
+  
+  const history = useHistory();
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
   }
 
-
   const validate = () => {
-    console.log("state" , state);
     let input = state;
-    const newErrorsState = { ...errors };
+    let formIsValid = true;
+    let errors = {};
     if (!input["password"]) {
-      console.log("Password cannot be empty");
-      newErrorsState.name = 'Password cannot be empty';
-      setErrors(newErrorsState);
-      return false;
+      formIsValid = false;
+      errors["password"] = "Password cannot be empty"
     }
     if (!input["confirm_password"]) {
-      console.log("confirmPassword cannot be empty");
-      newErrorsState.name = "Confirm Password cannot be empty";
-      setErrors(newErrorsState);
-      return false;
+      formIsValid = false;
+      errors["confirm_password"] = "Confirm Password cannot be empty";
     }
-    
+
     if (typeof input["password"] !== "undefined" && typeof input["confirm_password"] !== "undefined") {
-      if (input["password"] != input["confirm_password"]) {
-       console.log("Password didnt match")
+      if (input["password"] !== input["confirm_password"]) {
+        formIsValid = false;
+        errors["confirm_password"] = "Password doesn't match"
       }
     }
-    return true;
+    setErrors({ errors });
+    return formIsValid;
   };
 
   const handleSubmit = () => {
-    console.log("handle submit");
     if (validate()) {
-      setErrors({});
+      let newData = state;
+      newData["token"] = token;
+      newData["uidb64"] = uidb64;
+      delete newData["confirm_password"];
+      dispatch(passwordReset(state))
+      .then(() => {
+        message.success('Password reset Successfully')
+        history.push("/login");
+      });
     }
 
   }
@@ -58,24 +69,26 @@ const Reset = () => {
           <Input
             style={{ borderRadius: "8px" }}
             name="password"
+            type="password"
             className="un"
-            value={password}
+            value={state.password}
             placeholder="Password"
             onChange={handleChange}
           />
-          {/* <div className="errorMsg">{errors.name}</div> */}
+          <div className="errorMsg">{errors && errors.errors && errors.errors.password}</div>
         </Form.Item>
 
         <Form.Item label="Confirm Password" name="confirm_password">
           <Input
             style={{ borderRadius: "8px" }}
             name="confirm_password"
+            type="password"
             className="un"
-            value={confirmpassword}
+            value={state.confirm_password}
             placeholder="Confirm Password"
             onChange={handleChange}
           />
-          {/* <div className="errorMsg">{errors.name}</div> */}
+          <div className="errorMsg">{errors && errors.errors && errors.errors.confirm_password}</div>
         </Form.Item>
 
         <div className="submit">
