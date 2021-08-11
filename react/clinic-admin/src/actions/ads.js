@@ -35,7 +35,7 @@ export const getSpecUsers = (id) => async (dispatch) => {
     }
 }
 
-export const postAdds = (newData, userList, adsId) => async (dispatch) => {
+export const postAdds = (newData, userList, adsId , imgData) => async (dispatch) => {
     try {
         if (adsId === undefined) {
             const res = await Ads.postAdds(newData);
@@ -44,6 +44,7 @@ export const postAdds = (newData, userList, adsId) => async (dispatch) => {
                 userList.map(item => {
                     userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.id })
                 })
+                await Ads.postAdsImage(adsId, imgData)
                 await Ads.postAddsVisibility(userData)
             dispatch({
                 type: 'POST_ADD',
