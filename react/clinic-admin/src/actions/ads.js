@@ -37,6 +37,7 @@ export const getSpecUsers = (id) => async (dispatch) => {
 
 export const postAdds = (newData, userList, adsId , imgData) => async (dispatch) => {
     try {
+<<<<<<< HEAD
         if (adsId === undefined) {
             const res = await Ads.postAdds(newData);
             if (res && res.data && res.data.id) {
@@ -68,6 +69,39 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
             });
             return res;
         }
+=======
+        console.log('newData', newData);
+        console.log('userList', userList);
+        console.log('adsId', adsId);
+        // if (adsId === undefined) {
+        //     const res = await Ads.postAdds(newData);
+        //     if (res && res.data && res.data.id) {
+        //         const userData = []
+        //         userList.map(item => {
+        //             userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.user_id })
+        //         })
+        //         await Ads.postAddsVisibility(userData)
+        //         dispatch({
+        //             type: 'POST_ADD',
+        //             payload: res.data.id
+        //         });
+        //     }
+        // }
+        // else {
+        //     const res = await Ads.putAdds(newData, adsId);
+        //     if (userList && res && res.data && adsId) {
+        //         const userData = []
+        //         userList.map(item => {
+        //             userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: item.user_id })
+        //         })
+        //        await Ads.postAddsVisibility(userData)
+        //     }
+        //     dispatch({
+        //         type: 'POST_ADD',
+        //         payload: res.data.id
+        //     });
+        // }
+>>>>>>> dcd18d1a77d2eb058369f832083cc1b2a2df3d65
     }
     catch (err) {
     }
