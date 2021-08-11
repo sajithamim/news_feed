@@ -27,7 +27,7 @@ const About = () => {
         newData.id = id;
         dispatch(postSettings(newData))
         .then(() => {
-            message.success('About Us edit successfully')
+            message.success('About Us added successfully')
         });  
     }
 

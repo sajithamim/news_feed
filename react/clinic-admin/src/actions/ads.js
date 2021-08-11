@@ -37,7 +37,6 @@ export const getSpecUsers = (id) => async (dispatch) => {
 
 export const postAdds = (newData, userList, adsId , imgData) => async (dispatch) => {
     try {
-<<<<<<< HEAD
         if (adsId === undefined) {
             const res = await Ads.postAdds(newData);
             if (res && res.data && res.data.id) {
@@ -69,7 +68,6 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
             });
             return res;
         }
-=======
         console.log('newData', newData);
         console.log('userList', userList);
         console.log('adsId', adsId);
@@ -101,7 +99,6 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
         //         payload: res.data.id
         //     });
         // }
->>>>>>> dcd18d1a77d2eb058369f832083cc1b2a2df3d65
     }
     catch (err) {
     }

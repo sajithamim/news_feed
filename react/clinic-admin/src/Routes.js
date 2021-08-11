@@ -17,7 +17,7 @@ export const routes = [
     icon: <IoIcons.IoIosPaper />
   },
   {
-    title: 'Specializations',
+    title: 'Specialities',
     path: '/specializations',
     key: "spec",
     icon: <AiFillDatabase />

@@ -94,9 +94,11 @@ const SpecializationContent = () => {
           <Button type="link">
             <Link to={"/sub_specialization/" + record.id}>Add/Edit Sub Speciality</Link>
           </Button>
-          <Button type="link" onClick={() => onEdit(record)}>
-            Edit
-          </Button>
+        
+          <IconButton onClick={() => onEdit(record)}>
+            <Icon>edit</Icon>
+          </IconButton>
+
           <Popconfirm
             title="Are you sure to delete this specialization?"
             onConfirm={() => confirmDelete(record.id)}
@@ -104,7 +106,9 @@ const SpecializationContent = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button type="link">Delete</Button>
+            <IconButton >
+              <Icon>delete</Icon>
+            </IconButton>
           </Popconfirm>
         </Space>
       ),

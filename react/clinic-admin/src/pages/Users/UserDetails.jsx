@@ -1,9 +1,12 @@
 
 import React, { useEffect } from "react";
-import { Table, Col, Row , Card} from "antd";
+import { Table, Col, Row, Card } from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams , useLocation} from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
+import { Icon, IconButton } from "@material-ui/core";
+import { ArrowBackIcon, AlarmIcon } from '@material-ui/icons/ArrowBack';
+import RollbackOutlined from '@ant-design/icons';
 import DetailContent from "./DetailContent";
 import { getUserCategory, getUserSpecialization, getUserDetails } from "../../actions/users";
 
@@ -42,7 +45,7 @@ const UserDetails = () => {
       title: item.category_id.title
     })
   });
- 
+
 
 
   const renderTable = () => {
@@ -61,7 +64,16 @@ const UserDetails = () => {
       <Container fluid>
         <Row gutter={16}>
           <Col span={12}>
-            <Card title="User Details" bordered={true}>
+
+            <Card
+              extra={
+                <IconButton >
+                  <i class="fa fa-back fa-2x" aria-hidden="true" color="blue"><a href="/users">Go Back</a></i>
+                </IconButton>
+              }
+              style={{ width: "100%" }}
+              
+              title="User Details"  bordered={true}>
               <p>User Name : {userDetails.data && userDetails.data.username}</p>
               <p>Email : {userDetails.data && userDetails.data.email}</p>
               <p>Phone Number : {userDetails.data && userDetails.data.phone}</p>
@@ -69,25 +81,25 @@ const UserDetails = () => {
           </Col>
           <Col span={12}>
             <Card title="Specializations and Sub Specializations" bordered={true}>
-            <table className="table table-bordered">
-              <thead>
-                <th>Specialization</th>
-                <th>Sub Specialization</th>
-              </thead>
-              <tbody>
+              <table className="table table-bordered">
+                <thead>
+                  <th>Specialization</th>
+                  <th>Sub Specialization</th>
+                </thead>
+                <tbody>
                   {renderTable()}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
             </Card>
           </Col>
         </Row>
-        
-        <Row gutter={12} style={{marginTop: "-121px"}}>
+
+        <Row gutter={12} style={{ marginTop: "-121px" }}>
           <Col span={12}>
-          <Card title="Category List" bordered={true}>
-                <Table columns={columns} dataSource={catList} pagination = {false}/>
-          </Card>
-        </Col>
+            <Card title="Category List" bordered={true}>
+              <Table columns={columns} dataSource={catList} pagination={false} />
+            </Card>
+          </Col>
         </Row>
       </Container>
     </div>
