@@ -42,11 +42,11 @@ class Feedback(models.Model):
         db_table = "Feedback"
 
 
-# class Settings(models.Model):
-#     tos = models.TextField()
-#     privacy_policy = models.TextField()
-#     about_us = models.TextField()
-#     contact_us = models.TextField()
+class Settings(models.Model):
+    tos = models.TextField()
+    privacy_policy = models.TextField()
+    about_us = models.TextField()
+    contact_us = models.TextField()
 
-#     class Meta:
-#         db_table = 'Settings'
+    class Meta:
+        db_table = 'Settings'
