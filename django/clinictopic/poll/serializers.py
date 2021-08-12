@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings
+from .models import UserPoll,PollOption,TopicPoll,Feedback
 from authentication.models import User
 # from topics.serializers import TopicSeriaizer
 
@@ -65,16 +65,16 @@ class FeedbackSerializer(serializers.ModelSerializer):
         return user.email
 
 
-class SettingsSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False,allow_null=True)
-    class Meta:
-        model = Settings
-        fields = '__all__'
+# class SettingsSerializer(serializers.ModelSerializer):
+#     id = serializers.IntegerField(required=False,allow_null=True)
+#     class Meta:
+#         model = Settings
+#         fields = '__all__'
         
-    def create(self, validated_data):
-        if 'id' in validated_data:
-            obj, created = Settings.objects.update_or_create(id=validated_data['id'],defaults=validated_data)
-            return obj
-        settings, created = Settings.objects.update_or_create(**validated_data)
-        return settings
+#     def create(self, validated_data):
+#         if 'id' in validated_data:
+#             obj, created = Settings.objects.update_or_create(id=validated_data['id'],defaults=validated_data)
+#             return obj
+#         settings, created = Settings.objects.update_or_create(**validated_data)
+#         return settings
 
