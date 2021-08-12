@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
+import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
 
@@ -83,7 +84,9 @@ const UserContent = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button type="link">Delete</Button>
+            <IconButton >
+              <Icon>delete</Icon>
+            </IconButton>
           </Popconfirm>
         </Space>
       ),
@@ -95,7 +98,7 @@ const UserContent = () => {
       <Card
         title="Users"
       > {userList && userList.data ?
-        (<Table  columns={columns} dataSource={User} />) :
+        (<Table columns={columns} dataSource={User} />) :
         (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
     </div>

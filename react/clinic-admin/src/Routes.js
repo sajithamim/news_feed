@@ -41,6 +41,12 @@ export const routes = [
     icon: <AiFillContainer />
   },
   {
+    title: 'Banner',
+    path: '/banner',
+    key: "banner",
+    icon: <AiFillContainer />
+  },
+  {
     title: 'Settings',
     path: '/data',
     key: "settings",
