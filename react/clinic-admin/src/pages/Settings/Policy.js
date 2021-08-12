@@ -27,7 +27,7 @@ const Policy = () => {
         newData.id = id;
         dispatch(postSettings(newData))
         .then(() => {
-            message.success('Policy edit successfully')
+            message.success('Policy added successfully')
         });  
     }
 

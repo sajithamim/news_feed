@@ -17,7 +17,7 @@ export const routes = [
     icon: <IoIcons.IoIosPaper />
   },
   {
-    title: 'Specializations',
+    title: 'Specialities',
     path: '/specializations',
     key: "spec",
     icon: <AiFillDatabase />
@@ -38,6 +38,12 @@ export const routes = [
     title: 'Advertisement',
     path: '/advertisements',
     key: "ads",
+    icon: <AiFillContainer />
+  },
+  {
+    title: 'Banner',
+    path: '/banner',
+    key: "banner",
     icon: <AiFillContainer />
   },
   {

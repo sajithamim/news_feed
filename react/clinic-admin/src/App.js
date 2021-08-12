@@ -16,6 +16,7 @@ import About from './pages/Settings/About';
 import Contact from './pages/Settings/Contact';
 import UserDetails from './pages/Users/UserDetails';
 import Ads from './pages/Ads/Ads';
+import Banner from './pages/Banner/Banner';
 import AddAds from './pages/Ads/AddAds';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
@@ -46,6 +47,7 @@ function App() {
           <PrivateRoute path="/add_ads/" exact component={AddAds} />
           <PrivateRoute path="/add_ads/:adsId" exact component={AddAds} />
           <PrivateRoute path="/userdetails/:emailId" exact component={UserDetails} />
+          <PrivateRoute path="/banner/" exact component={Banner} />
           <Route path="/forgot_password" exact component={Forgot} />
           <Route path="/reset_password/" exact component={Reset} />
           <Route path="/login"  component={Login} />

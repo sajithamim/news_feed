@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
-import DrawerContent from "./DrawerContent"
+// import DrawerContent from "./DrawerContent"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const SpecializationContent = () => {
+const BannerContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
@@ -85,7 +85,7 @@ const SpecializationContent = () => {
       key: "sl_no",
     },
     {
-      title: "Specialization",
+      title: "Banner",
       dataIndex: "name",
       key: "name",
     },
@@ -95,24 +95,25 @@ const SpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
+{/*          
+          <Fab size="small" color="primary" aria-label="edit" onClick={() => onEdit(record)}>
+            <EditIcon />
+          </Fab>
 
-          <IconButton onClick={() => onEdit(record)}>
-            <Icon>edit</Icon>
-          </IconButton>
           <Popconfirm
             title="Are you sure to delete this specialization?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
-          >
-            <IconButton >
-              <Icon>delete</Icon>
-            </IconButton>
+          > */}
+            {/* <Fab size="small" color="primary" aria-label="delete" >
+              <DeleteIcon />
+            </Fab>
           </Popconfirm>
           <Button type="link">
             <Link to={"/sub_specialization/" + record.id}>Add/Edit Sub Speciality</Link>
-          </Button>
+          </Button> */}
 
         </Space>
       ),
@@ -122,7 +123,7 @@ const SpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Specialities and Sub Specialities"
+        title="Banners"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -130,22 +131,21 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results ?
-          (<Table columns={columns} pagination={pagination} dataSource={spec} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
+         <Table columns={columns} pagination={pagination} dataSource="" />
       </Card>
       <Drawer
         title={
           drawerType === "edit"
-            ? "Edit Specialization"
+            ? "Edit Banner"
             : drawerType === "add"
-              ? "Add Specialization"
+              ? "Add Banner"
               : ""
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
+        {/* <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} /> */}
       </Drawer>
     </div>
   );
 };
 
-export default SpecializationContent;
+export default BannerContent;

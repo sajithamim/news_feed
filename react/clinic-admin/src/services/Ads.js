@@ -6,6 +6,9 @@ const  getAds = () => {
 const  postAdds = (state) => {
     return http.post(`add/ads/`,state);
 }
+const postAdsImage = (adsId , imgData) => {
+    return http.put(`add/ads/${adsId}` , imgData);
+}
 const  putAdds = (state , id) => {
     return http.put(`add/ads/${id}/`, state);
 }
@@ -32,7 +35,8 @@ const Ads = {
     postAddsVisibility,
     getEditAdsDetails,
     getAdsSelectedUser,
-    putAdds
+    putAdds,
+    postAdsImage
 }
 
 export default Ads;

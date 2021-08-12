@@ -27,7 +27,7 @@ const Terms = () => {
         newData.id = id;
         dispatch(postSettings(newData))
         .then(() => {
-            message.success('Terms and Conditions edit successfully')
+            message.success('Terms and Conditions added successfully')
         });  
     }
 

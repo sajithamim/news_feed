@@ -27,7 +27,7 @@ const Contact = () => {
         newData.id = id;
         dispatch(postSettings(newData))
         .then(() => {
-            message.success('Contact Us edit successfully')
+            message.success('Contact Us added successfully')
         });  
     }
 
