@@ -46,7 +46,7 @@ class Settings(models.Model):
     tos = models.CharField(max_length=1000000,blank=True,null=True)
     privacy_policy = models.CharField(max_length=1000000,blank=True,null=True)
     about_us = models.CharField(max_length=100000,blank=True,null=True)
-    contact_us = models.CharField(max_length=30000,blank=True,null=True)
+    contact_us = models.CharField(max_length=100000,blank=True,null=True)
 
     class Meta:
         db_table = 'Settings'
