@@ -9,7 +9,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework import parsers
 from .serializers import TopicPollSerializer,UserPollSerializer,FeedbackSerializer,SettingsSerializer
-from .models import Feedback, Settings, TopicPoll
+from .models import Feedback,TopicPoll,Settings
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
@@ -92,4 +92,4 @@ class SettingsViewSet(generics.ListCreateAPIView):
     queryset = Settings.objects.all().order_by('id')
     serializer_class = SettingsSerializer
     pagination_class = None
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
