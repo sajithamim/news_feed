@@ -74,6 +74,9 @@ a {
   /* color: #e1bee7; */
   text-decoration: none;
 }
+Input[type="text"]{
+  margin-left: auto;
+}
 
 @media (max-width: 600px) {
   .main {

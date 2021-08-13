@@ -21,10 +21,13 @@ const Login = () => {
     setLoading(true);
     dispatch(login(email,password))
   };
-
-  if (accessToken && accessToken !== undefined) {
-    history.push("/data");
+  if(window.navigator.onLine == true){
+    if (accessToken && accessToken !== undefined) {
+      history.push("/data");
+    }
   }
+  else alert("No Internet Connection is there");
+  
 
   const validateMessages = {
     required: "'${label}' is required!",
@@ -51,7 +54,7 @@ const Login = () => {
         ]}
       >
         <Input
-          style={{ borderRadius: "8px" }}
+          style={{ borderRadius: "8px" , marginLeft: 'auto'}}
           className="un"
           value={email}
           placeholder="Email"

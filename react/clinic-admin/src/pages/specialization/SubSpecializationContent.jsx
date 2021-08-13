@@ -14,16 +14,15 @@ const SubSpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const { specId } = useParams();
 
   const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
 
   useEffect(() => {
-    dispatch(getSubSpecialisation(specId)).then((res) => {
+    dispatch(getSubSpecialisation(specId))
       onClose();
-    });
   }, [updateSubData, addSubData])
 
   const onClose = () => {
@@ -31,7 +30,6 @@ const SubSpecializationContent = () => {
   };
 
   const onEdit = (record) => {
-    console.log("record" , specId);
     setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
@@ -44,22 +42,24 @@ const SubSpecializationContent = () => {
 
   
   const handleChange = (page, size, sorter) => {
-    setCurrent(page)
-    dispatch(getSubSpecialisation(page));
+    console.log("page");
+    // setCurrent(page)
+    // dispatch(getSubSpecialisation(page));
   }
 
   const pagination = {
     current,
     pageSize,
-    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
+    onChange: (page, pageSize) => { handleChange(page, pageSize) },
     total: subspecialization.count
   }
+  
 
   const confirmDelete = (id) => {
     console.log("subspec id", id);
     dispatch(deleteSubSpec(id))
       .then((res) => {
-        res.status === 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
+        res.status === 204 ? message.success("Sub Specialitity deleted successfully") : message.error("Sub Specialitity is not exist")
       })
   };
 
@@ -71,7 +71,6 @@ const SubSpecializationContent = () => {
     const items = [];
     subspecialization.map((item, key) => {
       key++;
-      console.log("id",item);
       items.push({
         sl_no: key,
         id: item.id,
@@ -104,7 +103,7 @@ const SubSpecializationContent = () => {
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this sub specialization?"
+            title="Are you sure to delete this sub Specialitity?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
@@ -120,7 +119,7 @@ const SubSpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Sub Specializations"
+        title="Sub Specialitity"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>

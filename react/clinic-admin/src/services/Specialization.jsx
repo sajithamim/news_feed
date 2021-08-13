@@ -2,8 +2,15 @@ import { http } from "../http-common";
 import axios from 'axios';
 
 
-const getAll = () => {
-  return http.get("spec/specialization");
+const getAll = (page) => {
+  if(page === undefined){
+    console.log("page  null",page)
+    return http.get("spec/specialization");
+  }
+  else{
+    console.log("page nno null" ,page);
+    return http.get("spec/specialization/?page=",page);
+  }
 };
 
 const  getAllSubSpec = (id) => {

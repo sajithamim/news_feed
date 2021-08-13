@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker ,Button, Space} from "antd";
+import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker, Button, Space } from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
@@ -49,10 +49,10 @@ const handleFileChange = (info) => {
 }
 
 const UserDetails = () => {
+  const [state  , setState] = useState("");
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
   const { emailId } = useParams();
-  console.log("userdetails", userDetails);
   useEffect(() => {
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
@@ -66,7 +66,11 @@ const UserDetails = () => {
     })
   });
 
-  const handleChange = () => {
+  const handleChange = (e) => {
+    setState({ ...state , [e.target.name]: e.target.value});
+  }
+
+  const handleSelectChange = (e) => {
 
   }
 
@@ -88,7 +92,7 @@ const UserDetails = () => {
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item >
-                <img className="Avatar" width="128px" height="128px" style={{borderRadius: '50%'}} alt="No Image" src="" />
+                <img className="Avatar" width="128px" height="128px" style={{ borderRadius: '50%' }} alt="No Image" src="" />
                 {/* <Input type="file"
                   id="image"
                   name="image"
@@ -118,43 +122,44 @@ const UserDetails = () => {
               key="1"
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
-              <Form.Item label="Name">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
-              <Form.Item label="About">
-                <TextArea addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} style={{marginLeft: '47px'}} />
-              </Form.Item>
-              <Form.Item label="Qualification">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
-              <Form.Item label="Employment Type">
-                <Select style={customStyles}
-                  isMulti={false}
-                  value="{state.category_data}"
-                  onChange={handleChange}
-                  options=""
-                />
-              </Form.Item>
-              <Form.Item label="Organization">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
-              <Form.Item label="Location">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
-              <Form.Item label="Select">
-              <Space direction="vertical" size={15}>
-                <RangePicker />
-              </Space>
-              </Form.Item>
-              <Form.Item label="Industry">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
-              <Form.Item label="Description">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
-              <Form.Item label="Media URL">
-                <Input name="title1" className="form-control" type="text" value="" />
-              </Form.Item>
+                <Form.Item label="Name">
+                  <Input name="name" className="form-control" type="text" value="" onChange={handleChange}/>
+                </Form.Item>
+                <Form.Item label="About">
+                  <TextArea addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} style={{ marginLeft: '47px' }} />
+                </Form.Item>
+                <Form.Item label="Qualification">
+                  <Input name="qualification" className="form-control" type="text" value="" onChange={handleChange}/>
+                </Form.Item>
+                <Form.Item label="Employment Type">
+                  <Select style={customStyles}
+                    id="employment_type"
+                    isMulti={false}
+                    value="{state.category_data}"
+                    onChange={handleSelectChange}
+                    options=""
+                  />
+                </Form.Item>
+                <Form.Item label="Organization">
+                  <Input name="organization" className="form-control" type="text" value="" onChange={handleChange} />
+                </Form.Item>
+                <Form.Item label="Location">
+                  <Input name="location" className="form-control" type="text" value="" onChange={handleChange}/>
+                </Form.Item>
+                <Form.Item label="Select Date" >
+                  <Space direction="vertical" size={15} >
+                    <RangePicker />
+                  </Space>
+                </Form.Item>
+                <Form.Item label="Industry">
+                  <Input name="industry" className="form-control" type="text" value="" onChange={handleChange} />
+                </Form.Item>
+                <Form.Item label="Description">
+                  <Input name="description" className="form-control" type="text" value="" onChange={handleChange}/>
+                </Form.Item>
+                <Form.Item label="Media URL">
+                  <Input name="media_url" className="form-control" type="text" value="" onChange={handleChange}/>
+                </Form.Item>
               </Form>
             </TabPane>
             <TabPane
@@ -166,17 +171,17 @@ const UserDetails = () => {
               key="2"
             >
               {/* <Col span={12}> */}
-                <Card title="Specializations and Sub Specializations" bordered={true}>
-                  <table className="table table-bordered">
-                    <thead>
-                      <th>Specialization</th>
-                      <th>Sub Specialization</th>
-                    </thead>
-                    <tbody>
-                      {renderTable()}
-                    </tbody>
-                  </table>
-                </Card>
+              <Card title="Specializations and Sub Specializations" bordered={true}>
+                <table className="table table-bordered">
+                  <thead>
+                    <th>Specialization</th>
+                    <th>Sub Specialization</th>
+                  </thead>
+                  <tbody>
+                    {renderTable()}
+                  </tbody>
+                </table>
+              </Card>
               {/* </Col> */}
             </TabPane>
             <TabPane
@@ -199,6 +204,32 @@ const UserDetails = () => {
               }
               key="4"
             >
+              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
+                <Form.Item label="Publication Title">
+                  <Input name="pub_title" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item label="Image">
+                  <Input name="pub_title" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item label="Publisher">
+                  <Input name="publisher" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item label="Publication Date">
+                  <Input name="pub_title" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item label="Author">
+                  <Input name="author" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item label="Publication URL">
+                  <Input name="pub_url" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item label="Description">
+                  <Input name="pub_title" className="form-control" type="text" value="" />
+                </Form.Item>
+                <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
+                  <Button type="primary" htmlType="submit">Save</Button>
+                </Form.Item>
+              </Form>
             </TabPane>
           </Tabs>
         </Card>

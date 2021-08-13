@@ -7,14 +7,15 @@ import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
 
-const SpecializationContent = () => {
+const AdvisoryBoardContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const [current, setCurrent] = useState("");
+  const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const { specList, updateData, addData } = useSelector(state => state.spec);
+
   useEffect(() => {
     dispatch(getSpecialization())
     onClose();
@@ -48,7 +49,6 @@ const SpecializationContent = () => {
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
-    console.log("page" , page);
     dispatch(getSpecialization(page));
   }
 
@@ -81,9 +81,29 @@ const SpecializationContent = () => {
       key: "sl_no",
     },
     {
-      title: "Specialization",
+      title: "Photo",
+      dataIndex: "photo",
+      key: "photo",
+    },
+    {
+      title: "Name",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "ph_no",
+      key: "ph_no",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Qualification",
+      dataIndex: "qualification",
+      key: "qualification",
     },
     {
       title: "Action",
@@ -91,10 +111,6 @@ const SpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-
-          <IconButton onClick={() => onEdit(record)}>
-            <Icon>edit</Icon>
-          </IconButton>
           <Popconfirm
             title="Are you sure to delete this specialization?"
             onConfirm={() => confirmDelete(record.id)}
@@ -106,12 +122,6 @@ const SpecializationContent = () => {
               <Icon>delete</Icon>
             </IconButton>
           </Popconfirm>
-          <Button type="link">
-            <Link to={"/sub_specialization/" + record.id}>Sub Speciality</Link>
-          </Button>
-          <Button type="link">
-            <Link to={"/advisory_board"}>Advisory Board</Link>
-          </Button>
         </Space>
       ),
     },
@@ -120,7 +130,7 @@ const SpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Specialities and Sub Specialities"
+        title="Advisory Board Members"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -128,15 +138,14 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results ?
-          (<Table columns={columns} pagination={pagination} dataSource={spec} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
+          <Table columns={columns} pagination={pagination} dataSource="" />
       </Card>
       <Drawer
         title={
           drawerType === "edit"
             ? "Edit Specialization"
             : drawerType === "add"
-              ? "Add Specialization"
+              ? "Add Advisory Board Members"
               : ""
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
@@ -146,4 +155,4 @@ const SpecializationContent = () => {
   );
 };
 
-export default SpecializationContent;
+export default AdvisoryBoardContent;
