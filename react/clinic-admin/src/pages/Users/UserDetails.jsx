@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker ,Button} from "antd";
+import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker ,Button, Space} from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
@@ -19,7 +19,14 @@ const columns = [
   }
 ];
 const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 const { TabPane } = Tabs;
+const customStyles = {
+  control: () => ({
+    marginLeft: '50px',
+    width: 200,
+  }),
+}
 const handleFileChange = (info) => {
   // setImage(info.target.files[0]);
   // const imageFile = info.target.files[0];
@@ -81,11 +88,11 @@ const UserDetails = () => {
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item >
-                <img className="Avatar" width="128px" height="128px" alt="" src="" />
-                <Input type="file"
+                <img className="Avatar" width="128px" height="128px" style={{borderRadius: '50%'}} alt="No Image" src="" />
+                {/* <Input type="file"
                   id="image"
                   name="image"
-                  accept="image/png, image/jpeg" onChange={handleFileChange} />
+                  accept="image/png, image/jpeg" onChange={handleFileChange} /> */}
               </Form.Item>
             </Col>
             <Col span={16}>
@@ -110,42 +117,45 @@ const UserDetails = () => {
               }
               key="1"
             >
-              <Form.Item label="Name" wrapperCol={{ offset: 5, span: 8 }}>
-                {/* <input type="text" className="form-control" id="" placeholder="Username" value="" /> */}
+              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
+              <Form.Item label="Name">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
-              <Form.Item label="About" wrapperCol={{ offset: 5, span: 8 }}>
-                <textarea className="form-control" id="textAreaExample1" rows="4" />
+              <Form.Item label="About">
+                <TextArea addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} style={{marginLeft: '47px'}} />
               </Form.Item>
-              <Form.Item label="Qualification" wrapperCol={{ offset: 4, span: 8 }}>
+              <Form.Item label="Qualification">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
-              <Form.Item label="Employment Type" wrapperCol={{ offset: 3, span: 8 }}>
-                <Select
+              <Form.Item label="Employment Type">
+                <Select style={customStyles}
                   isMulti={false}
                   value="{state.category_data}"
                   onChange={handleChange}
                   options=""
                 />
               </Form.Item>
-              <Form.Item label="Organization" wrapperCol={{ offset: 4, span: 8 }}>
+              <Form.Item label="Organization">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
-              <Form.Item label="Location" wrapperCol={{ offset: 4, span: 8 }}>
+              <Form.Item label="Location">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
-              <Form.Item label="Select" wrapperCol={{ offset: 4, span: 8 }}>
+              <Form.Item label="Select">
+              <Space direction="vertical" size={15}>
                 <RangePicker />
+              </Space>
               </Form.Item>
-              <Form.Item label="Industry" wrapperCol={{ offset: 5, span: 8 }}>
+              <Form.Item label="Industry">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
-              <Form.Item label="Description" wrapperCol={{ offset: 5, span: 8 }}>
+              <Form.Item label="Description">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
-              <Form.Item label="Media URL" wrapperCol={{ offset: 5, span: 8 }}>
+              <Form.Item label="Media URL">
                 <Input name="title1" className="form-control" type="text" value="" />
               </Form.Item>
+              </Form>
             </TabPane>
             <TabPane
               tab={
@@ -155,7 +165,7 @@ const UserDetails = () => {
               }
               key="2"
             >
-              <Col span={12}>
+              {/* <Col span={12}> */}
                 <Card title="Specializations and Sub Specializations" bordered={true}>
                   <table className="table table-bordered">
                     <thead>
@@ -167,7 +177,7 @@ const UserDetails = () => {
                     </tbody>
                   </table>
                 </Card>
-              </Col>
+              {/* </Col> */}
             </TabPane>
             <TabPane
               tab={
