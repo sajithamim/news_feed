@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import (Audience, Specialization,UserSpecialization,SubSpecialization)
-from .serializers import (GetSpecialization,GetAudienceSerializer,userTypeSerializer,
+from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
-GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer)
+GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
+AdvisorySerializer,GetSpecializationandsub)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -24,7 +25,7 @@ class GetSpecializations(APIView):
     def get(self,request):
         try:
             spec = Specialization.objects.all().order_by('name')
-            serializers = GetSpecialization(spec,many=True,context = {'request':request})
+            serializers = GetSpecializationandsub(spec,many=True,context = {'request':request})
             status_code = status.HTTP_200_OK
             categorycount = UserCategory.objects.filter(user_id=request.user).count()
             response = {
