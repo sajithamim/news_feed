@@ -13,6 +13,8 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework import parsers
 from authentication.models import User
+from topics.models import UserCategory
+
 # Create your views here.
 
 # get specialization with sub specialization
@@ -24,10 +26,12 @@ class GetSpecializations(APIView):
             spec = Specialization.objects.all().order_by('name')
             serializers = GetSpecialization(spec,many=True,context = {'request':request})
             status_code = status.HTTP_200_OK
+            categorycount = UserCategory.objects.filter(user_id=request.user).count()
             response = {
             'success' : 'True',
             'status code' : status_code,
             'message': 'Specialization details',
+            'categorycount':categorycount,
             'data':serializers.data
             }
             return Response(response,status=status.HTTP_200_OK)
