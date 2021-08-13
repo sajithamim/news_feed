@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import User
+from .models import User,Profile
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -327,3 +327,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username','email','phone','profilepic','name']
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    media = serializers.ListField(child=serializers.CharField())
+    class Meta:
+        model = Profile
+        fields = '__all__'
+    def create(self, validated_data):
+        # print(str(**validated_data))
+        return Profile.objects.create(**validated_data)

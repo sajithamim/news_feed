@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import (Audience, Specialization,UserSpecialization,SubSpecialization)
-from .serializers import (GetSpecialization,GetAudienceSerializer,userTypeSerializer,
+from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
-GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer)
+GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
+AdvisorySerializer,GetSpecializationandsub)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -13,6 +14,8 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework import parsers
 from authentication.models import User
+from topics.models import UserCategory
+
 # Create your views here.
 
 # get specialization with sub specialization
@@ -22,12 +25,14 @@ class GetSpecializations(APIView):
     def get(self,request):
         try:
             spec = Specialization.objects.all().order_by('name')
-            serializers = GetSpecialization(spec,many=True)
+            serializers = GetSpecializationandsub(spec,many=True,context = {'request':request})
             status_code = status.HTTP_200_OK
+            categorycount = UserCategory.objects.filter(user_id=request.user).count()
             response = {
             'success' : 'True',
             'status code' : status_code,
             'message': 'Specialization details',
+            'categorycount':categorycount,
             'data':serializers.data
             }
             return Response(response,status=status.HTTP_200_OK)
@@ -182,3 +187,4 @@ class SubSpecializationView(viewsets.ModelViewSet):
 #                 'error': str(e)
 #                 }
 #             return Response(response, status=status_code)
+
