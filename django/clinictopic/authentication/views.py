@@ -4,10 +4,10 @@ from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
- ProfileUpdateSerializer,UsernameChangeSerializer)
+ ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import Profile, User
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
@@ -325,7 +325,7 @@ class UserProfile(APIView):
 
 
 class UserProfilepicView(viewsets.ModelViewSet):
-        queryset = User.objects.filter()
+        queryset = User.objects.all()
         serializer_class = ProfileUpdateSerializer
         permission_classes = (permissions.IsAuthenticated,)
         http_method_names = ['get','put','delete']
@@ -409,7 +409,7 @@ class UserDetailApiview(APIView):
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
 class UsernameAddview(viewsets.ModelViewSet):
-        queryset = User.objects.filter()
+        queryset = User.objects.all()
         serializer_class = UsernameChangeSerializer
         permission_classes = (permissions.IsAuthenticated,)
         http_method_names = ['put','get']
@@ -515,3 +515,9 @@ class UserDeleteView(APIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProfileView(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
