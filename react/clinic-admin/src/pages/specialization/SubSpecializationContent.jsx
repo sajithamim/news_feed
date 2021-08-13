@@ -14,12 +14,12 @@ const SubSpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const [current, setCurrent] = useState("");
-  const [pageSize, setPageSize] = useState(10);
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(1);
   const { specId } = useParams();
 
   const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
-
+  
   useEffect(() => {
     dispatch(getSubSpecialisation(specId))
       onClose();
@@ -39,21 +39,11 @@ const SubSpecializationContent = () => {
     setShowDrawer(true);
     setDrawerType("add");
   };
-
-  
+ 
   const handleChange = (page, size, sorter) => {
-    console.log("page");
-    // setCurrent(page)
-    // dispatch(getSubSpecialisation(page));
+    setCurrent(page)
+    dispatch(getSubSpecialisation(specId, page));
   }
-
-  const pagination = {
-    current,
-    pageSize,
-    onChange: (page, pageSize) => { handleChange(page, pageSize) },
-    total: subspecialization.count
-  }
-  
 
   const confirmDelete = (id) => {
     console.log("subspec id", id);
@@ -116,6 +106,13 @@ const SubSpecializationContent = () => {
     },
   ];
 
+  const pagination = {
+    current,
+    pageSize,
+    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
+    total: subspecialization.count
+  }
+
   return (
     <div style={{ margin: "10px" }}>
       <Card
@@ -128,7 +125,7 @@ const SubSpecializationContent = () => {
         style={{ width: "100%" }}
       >
         {subspecialization ?
-          (<Table columns={columns} dataSource={subSpec && subSpec} pagination={pagination} />) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
+          (<Table columns={columns} pagination={pagination} dataSource={subSpec}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
       </Card>
       <Drawer
         title={

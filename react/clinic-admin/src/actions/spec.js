@@ -1,9 +1,7 @@
 import Specialization from "../services/Specialization";
 export const getSpecialization = (page) => async (dispatch) => {
-    console.log("page action" , page);
     try {
         const res = await Specialization.getAll(page);
-        console.log("res action page",res);
         dispatch({
             type: 'RETRIEVE_SPECIALIZATION',
             payload: res.data,
@@ -13,9 +11,9 @@ export const getSpecialization = (page) => async (dispatch) => {
 }
 
 
-export const getSubSpecialisation = (id) => async (dispatch) => {
+export const getSubSpecialisation = (id, page) => async (dispatch) => {
     try {
-        const res = await Specialization.getAllSubSpec(id);
+        const res = await Specialization.getAllSubSpec(id, page);
         dispatch({
             type: 'RETREIVE_SUB_SPECIALIZATION',
             payload: res.data,

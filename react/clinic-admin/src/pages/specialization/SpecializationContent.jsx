@@ -12,9 +12,11 @@ const SpecializationContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const [current, setCurrent] = useState("");
+  const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [slNo, setSlNo] = useState(0);
   const { specList, updateData, addData } = useSelector(state => state.spec);
+  console.log('specList', specList)
   useEffect(() => {
     dispatch(getSpecialization())
     onClose();
@@ -48,16 +50,19 @@ const SpecializationContent = () => {
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
-    console.log("page" , page);
+    setSlNo(page-1)
+    console.log('hello i', page);
     dispatch(getSpecialization(page));
   }
-
+ 
   const specGenerator = () => {
+    let serialNo = pageSize * slNo;
+    //let slNo = 0;
     const items = [];
     specList && specList.results && specList.results.map((item, key) => {
-      key++;
+      serialNo++;
       return items.push({
-        sl_no: key,
+        sl_no: serialNo,
         id: item.id,
         name: item.name,
         icon: item.icon
@@ -91,7 +96,6 @@ const SpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-
           <IconButton onClick={() => onEdit(record)}>
             <Icon>edit</Icon>
           </IconButton>
