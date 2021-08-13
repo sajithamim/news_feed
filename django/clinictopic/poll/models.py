@@ -43,10 +43,10 @@ class Feedback(models.Model):
 
 
 class Settings(models.Model):
-    tos = models.TextField()
-    privacy_policy = models.TextField()
-    about_us = models.TextField()
-    contact_us = models.TextField()
+    tos = models.TextField(blank=True,null=True)
+    privacy_policy = models.TextField(blank=True,null=True)
+    about_us = models.TextField(blank=True,null=True)
+    contact_us = models.TextField(blank=True,null=True)
 
     class Meta:
         db_table = 'Settings'

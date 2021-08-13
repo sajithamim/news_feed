@@ -1,11 +1,11 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,UserSubSpecialization)
+from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,
+UserSubSpecialization,Advisory)
 from rest_framework import  status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from authentication.models import User
-from topics.models import UserCategory
 # import json
 from rest_framework import generics, status
 
@@ -25,6 +25,24 @@ class GetSpecialization(serializers.ModelSerializer):
     specialization_id = GetSubspecializationSerializer(many=True)
     created_at =  serializers.ReadOnlyField()
     updated_at =  serializers.ReadOnlyField()
+    # speccount = serializers.SerializerMethodField()
+    # categorycount = serializers.SerializerMethodField()
+    class Meta:
+        model = Specialization
+        fields = ['id','name','icon','created_at','updated_at','specialization_id']
+
+    # def get_speccount(self, obj):
+    #     print(self.context)
+    #     user_id =self.context['request'].user
+    #     # print(user_id)
+    #     return UserSpecialization.objects.filter(user_id=user_id,spec_id=obj.id).count()
+
+
+class GetSpecializationandsub(serializers.ModelSerializer):
+    id =  serializers.ReadOnlyField()
+    specialization_id = GetSubspecializationSerializer(many=True)
+    created_at =  serializers.ReadOnlyField()
+    updated_at =  serializers.ReadOnlyField()
     speccount = serializers.SerializerMethodField()
     # categorycount = serializers.SerializerMethodField()
     class Meta:
@@ -32,6 +50,7 @@ class GetSpecialization(serializers.ModelSerializer):
         fields = ['id','name','icon','created_at','updated_at','specialization_id','speccount']
 
     def get_speccount(self, obj):
+        print(self.context)
         user_id =self.context['request'].user
         # print(user_id)
         return UserSpecialization.objects.filter(user_id=user_id,spec_id=obj.id).count()
@@ -135,3 +154,9 @@ class SubSpecializationpicSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubSpecialization
         fields = ['icon']
+
+
+class AdvisorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advisory
+        fields = '__all__'
