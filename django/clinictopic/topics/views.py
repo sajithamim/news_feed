@@ -170,7 +170,7 @@ class TopicViewSet(viewsets.ModelViewSet):
         idscat = list(userCategory.category_id.id for userCategory in userCategory)
         userspec = UserSpecialization.objects.filter(user_id=self.request.user)
         idsspec = list(userspec.spec_id.id for userspec in userspec)
-        queryset = Topics.objects.filter(Q(title__icontains=search_pk)|Q(description__icontains=search_pk)).order_by('title')
+        queryset = Topics.objects.filter(title__icontains=search_pk,publishingtime__lt=datetime.now()).order_by('title')
         # a =  self.kwargs['search_pk']
         page = self.paginate_queryset(queryset)
         if page is not None:

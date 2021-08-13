@@ -26,20 +26,20 @@ class GetSpecialization(serializers.ModelSerializer):
     created_at =  serializers.ReadOnlyField()
     updated_at =  serializers.ReadOnlyField()
     speccount = serializers.SerializerMethodField()
-    categorycount = serializers.SerializerMethodField()
+    # categorycount = serializers.SerializerMethodField()
     class Meta:
         model = Specialization
-        fields = ['id','name','icon','created_at','updated_at','specialization_id','speccount','categorycount']
+        fields = ['id','name','icon','created_at','updated_at','specialization_id','speccount']
 
     def get_speccount(self, obj):
         user_id =self.context['request'].user
         # print(user_id)
         return UserSpecialization.objects.filter(user_id=user_id,spec_id=obj.id).count()
     
-    def get_categorycount(self,obj):
-        user_id =self.context['request'].user
-        # print(user_id)
-        return UserCategory.objects.filter(user_id=user_id).count()
+    # def get_categorycount(self,obj):
+    #     user_id =self.context['request'].user
+    #     # print(user_id)
+    #     return UserCategory.objects.filter(user_id=user_id).count()
 
 
 class GetAudienceSerializer(serializers.ModelSerializer):
