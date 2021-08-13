@@ -22,7 +22,7 @@ class GetSpecializations(APIView):
     def get(self,request):
         try:
             spec = Specialization.objects.all().order_by('name')
-            serializers = GetSpecialization(spec,many=True)
+            serializers = GetSpecialization(spec,many=True,context = {'request':request})
             status_code = status.HTTP_200_OK
             response = {
             'success' : 'True',

@@ -207,7 +207,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
                 else:
                     return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?token_valid=False')
 
-            if redirect_url and len(redirect_url) > 3:
+            if redirect_url and len(redirect_url) > 3: 
                 return CustomRedirect(redirect_url+'?token_valid=True&message=Credentials Valid&uidb64='+uidb64+'&token='+token)
             else:
                 return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?token_valid=False')
