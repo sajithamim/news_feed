@@ -187,3 +187,4 @@ class SubSpecializationView(viewsets.ModelViewSet):
 #                 'error': str(e)
 #                 }
 #             return Response(response, status=status_code)
+
