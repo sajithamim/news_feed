@@ -3,7 +3,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from .views import (UploadedImagesViewSet,TopicViewSet,UserCategoryApiView,
 UserFavouriteApiView,FavouriteDeleteView,CategoryselectedView,GetUserCategoryApiview,
-TopicImageView,Deleteimage,UpdateTopicSpecialization,Authortest)
+TopicImageView,Deleteimage,UpdateTopicSpecialization,Authortest,TopicSuggestionView)
 from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
  
 
@@ -28,5 +28,6 @@ urlpatterns = [
         path('deletetopicimage/<str:pk>/',Deleteimage.as_view()),
         path('topicspecializationupdate/<str:pk>/',UpdateTopicSpecialization.as_view()),
         path('author/',Authortest.as_view()),
+        path('topicSuggestion/<str:pk>/',TopicSuggestionView.as_view()),
 
 ]

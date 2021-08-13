@@ -4,7 +4,7 @@ from django.shortcuts import render
 from .serializers import(CategorySerializer,TopicSpecializationSerializer,TopicSeriaizer,
 userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerializer,
 userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer,UpdateTopicSpecializationSerializer,
-TopicSecondpdfserializer)
+TopicSecondpdfserializer,categoryTopicSerializer)
 from rest_framework.parsers import FileUploadParser
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -17,7 +17,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import generics, status, views, permissions
 from rest_framework.views import APIView
-from authentication.models import User
+from authentication.models import AUTH_PROVIDERS, User
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.db.models import Q
 from specialization.models import UserSpecialization
@@ -25,6 +25,8 @@ from specialization.models import UserSpecialization
 from rest_framework import mixins
 from datetime import datetime, tzinfo
 import pytz
+from rest_framework.pagination import PageNumberPagination
+
 
 
 
@@ -325,6 +327,32 @@ class Deleteimage(APIView):
                 }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+class TopicSuggestionView(APIView,PageNumberPagination):
+    # pagination_class = StandardResultsSetPagination
+    permission_classes = (IsAuthenticated,)
+    def get(self,request,pk):
+        try:
+            userCategory = UserCategory.objects.filter(user_id=request.user)
+            idscat = list(userCategory.category_id.id for userCategory in userCategory)
+            queryset = Categoeries.objects.filter(id__in=idscat).filter(topic_category__title__icontains=pk).distinct().order_by('title')
+            # serializers = categoryTopicSerializer(category,many=True)
+            results = self.paginate_queryset(queryset, request, view=self)
+            serializer = categoryTopicSerializer(results, many=True)
+            return self.get_paginated_response(serializer.data)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
 from .serializers import authorserializer
 class Authortest(APIView):
     serializer_class = authorserializer
@@ -340,3 +368,6 @@ class Authortest(APIView):
                 return Response(serializer.data)
             return Response(serializer.errors,
                                     status.HTTP_400_BAD_REQUEST)
+
+
+
