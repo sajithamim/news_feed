@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
 from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,
-UserSubSpecialization)
+UserSubSpecialization,Advisory)
 from rest_framework import  status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from authentication.models import User
@@ -174,7 +174,7 @@ class SubSpecializationpicSerializer(serializers.ModelSerializer):
         fields = ['icon']
 
 
-# class AdvisorySerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Advisory
-#         fields = '__all__'
+class AdvisorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advisory
+        fields = '__all__'

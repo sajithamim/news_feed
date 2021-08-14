@@ -4,10 +4,10 @@ from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
- ProfileUpdateSerializer,UsernameChangeSerializer)
+ ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import User,Profile
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
@@ -517,7 +517,7 @@ class UserDeleteView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class ProfileView(viewsets.ModelViewSet):
-#     queryset = Profile.objects.all()
-#     serializer_class = ProfileSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
+class ProfileView(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
