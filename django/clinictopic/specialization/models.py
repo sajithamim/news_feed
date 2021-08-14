@@ -65,9 +65,9 @@ class UserType(models.Model):
         db_table = 'UserType' 
 
 
-# class Advisory(models.Model):
-#     spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='advisory_spec_id')
-#     user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='advisory_user_id')
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     class Meta:
-#         db_table ='Advisory'
+class Advisory(models.Model):
+    spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='advisory_spec_id')
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='advisory_user_id')
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table ='Advisory'
