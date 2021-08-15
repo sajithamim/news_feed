@@ -4,7 +4,7 @@ import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker, Button, Space } f
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails } from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails ,postUserProfile} from "../../actions/users";
 import Select from 'react-select';
 import { Icon, IconButton } from "@material-ui/core";
 import "./Users.css";
@@ -49,10 +49,11 @@ const handleFileChange = (info) => {
 }
 
 const UserDetails = () => {
-  const [state  , setState] = useState("");
+  const [state, setState] = useState("");
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
   const { emailId } = useParams();
+  const [errors, setErrors] = useState({});
   useEffect(() => {
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
@@ -66,12 +67,51 @@ const UserDetails = () => {
     })
   });
 
+  const options = [
+    { value: '1', label: 'Full Time' },
+    { value: '2', label: 'Part Time' },
+    { value: '3', label: 'Self Employed' },
+    { value: '4', label: 'Freelance' },
+    { value: '5', label: 'Internship' },
+    { value: '6', label: 'Trainee' },
+  ];
+
   const handleChange = (e) => {
-    setState({ ...state , [e.target.name]: e.target.value});
+    setState({ ...state, [e.target.name]: e.target.value });
   }
 
-  const handleSelectChange = (e) => {
+  const handleMediaChange = (e) => {
+    let newData=[];
+    newData=["test"];
+    setState({...state , media:newData});
+  }
+  const handleSelectChange = (value) => {
+    setState({ ...state, empolyment_value: value , empolyment_type:value.label });
+  }
 
+  const handleValidation = () => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if(!fields["name"])
+    {
+      formIsValid = false;
+      errors["name"] = "Name is required";
+    }
+    if(!fields["name"])
+    {
+      formIsValid = false;
+      errors["name"] = "Name is required";
+    }
+    setErrors({ errors });
+    return formIsValid;
+  }
+
+  const handleUserProfileSubmit = () => {
+    if(handleValidation())
+    setState({ ...state, user_id: userDetails.data && userDetails.data.id }); 
+    console.log("state", state);
+    dispatch(postUserProfile(state));
   }
 
   const renderTable = () => {
@@ -121,30 +161,34 @@ const UserDetails = () => {
               }
               key="1"
             >
-              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
+              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit}>
                 <Form.Item label="Name">
-                  <Input name="name" className="form-control" type="text" value="" onChange={handleChange}/>
+                  <Input name="name" className="form-control" type="text" value={state.name} onChange={handleChange} />
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.name}</div>
                 </Form.Item>
                 <Form.Item label="About">
-                  <TextArea addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} style={{ marginLeft: '47px' }} />
+                  <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
                 <Form.Item label="Qualification">
-                  <Input name="qualification" className="form-control" type="text" value="" onChange={handleChange}/>
+                  <Input name="qualification" className="form-control" type="text" value={state.qualification} onChange={handleChange} />
+                </Form.Item>
+                <Form.Item label="Experience">
+                  <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Employment Type">
                   <Select style={customStyles}
                     id="employment_type"
                     isMulti={false}
-                    value="{state.category_data}"
+                    value={state.empolyment_value}
                     onChange={handleSelectChange}
-                    options=""
+                    options={options}
                   />
                 </Form.Item>
-                <Form.Item label="Organization">
-                  <Input name="organization" className="form-control" type="text" value="" onChange={handleChange} />
+                <Form.Item label="Company Name">
+                  <Input name="company_name" className="form-control" type="text" value={state.company_name} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Location">
-                  <Input name="location" className="form-control" type="text" value="" onChange={handleChange}/>
+                  <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Select Date" >
                   <Space direction="vertical" size={15} >
@@ -152,13 +196,16 @@ const UserDetails = () => {
                   </Space>
                 </Form.Item>
                 <Form.Item label="Industry">
-                  <Input name="industry" className="form-control" type="text" value="" onChange={handleChange} />
+                  <Input name="industry" className="form-control" type="text" value={state.industry} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Description">
-                  <Input name="description" className="form-control" type="text" value="" onChange={handleChange}/>
+                  <Input name="description" className="form-control" type="text" value={state.description} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Media URL">
-                  <Input name="media_url" className="form-control" type="text" value="" onChange={handleChange}/>
+                  <Input name="media" className="form-control" type="text" value={state.media} onChange={handleMediaChange} />
+                </Form.Item>
+                <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
+                  <Button type="primary"  htmlType="submit" >Save</Button>
                 </Form.Item>
               </Form>
             </TabPane>

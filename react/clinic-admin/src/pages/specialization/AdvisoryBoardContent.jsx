@@ -142,11 +142,9 @@ const AdvisoryBoardContent = () => {
       </Card>
       <Drawer
         title={
-          drawerType === "edit"
-            ? "Edit Specialization"
-            : drawerType === "add"
-              ? "Add Advisory Board Members"
-              : ""
+          drawerType === "add"
+            ? "Add Advisory Board Members"
+            : null
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
         <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />

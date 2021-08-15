@@ -22,6 +22,9 @@ const getUserData = (emailId) => {
 const deleteUser = (id) => {
     return http.delete(`auth/deleteuser/${id}`)
 }
+const postUserProfile = (state) => {
+    return http.post("auth/userprofile/" ,state);
+}
 
 
 const Users = {
@@ -30,7 +33,8 @@ const Users = {
     getTopic,
     getUserSpec,
     getUserData,
-    deleteUser
+    deleteUser,
+    postUserProfile
 }
 
 export default Users;

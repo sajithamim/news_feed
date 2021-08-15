@@ -293,6 +293,7 @@ const ModalContent = (props) => {
           <Form.Item label="Category">
             <Select
               isMulti={false}
+              isSearchable={true}
               value={state.category_data}
               onChange={handleCategoryChange}
               options={category}
@@ -389,7 +390,7 @@ const ModalContent = (props) => {
             <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
           </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-            <Button type="primary" htmlType="submit">Save</Button>
+            <Button type="primary">Save</Button>
           </Form.Item>
         </div>
       </Form>
