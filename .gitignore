@@ -6,7 +6,6 @@
 # Node artifact files
 node_modules/
 dist/
-migrations/
 __pycache__/
 
 #env files
@@ -42,7 +41,6 @@ Thumbs.db
 development.py
 media/
 static/
-migrations/
 __pycache__/
 # Applications
 *.app

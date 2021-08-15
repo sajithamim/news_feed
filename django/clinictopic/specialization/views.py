@@ -4,7 +4,7 @@ from .models import (Audience, Specialization,UserSpecialization,SubSpecializati
 from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
 GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
-AdvisorySerializer,GetSpecializationandsub)
+GetSpecializationandsub)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny

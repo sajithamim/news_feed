@@ -7,7 +7,7 @@ from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Profile, User
+from .models import User,Profile
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
