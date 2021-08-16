@@ -1,21 +1,18 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker, Button, Space } from "antd";
+import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Space } from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails ,postUserProfile , getUserProfile} from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications } from "../../actions/users";
 import Select from 'react-select';
-import { Icon, IconButton } from "@material-ui/core";
+import { PlusOutlined } from '@ant-design/icons';
 import "./Users.css";
 const columns = [
   {
     title: "",
     dataIndex: "title",
     key: "title",
-    // render: (text, record) => (
-    //   <Link to="">{text}</Link>
-    // ),
   }
 ];
 const { RangePicker } = DatePicker;
@@ -27,29 +24,10 @@ const customStyles = {
     width: 200,
   }),
 }
-const handleFileChange = (info) => {
-  // setImage(info.target.files[0]);
-  // const imageFile = info.target.files[0];
-  // const newErrorsState = { ...errors };
-  // if (!imageFile.name.match(/\.(jpg|jpeg|png|gif)$/)) {
-  //   newErrorsState.image = 'Please select valid image.';
-  //   setErrors(newErrorsState);
-  //   setFormSubmit(!formSubmit);
-  //   return false;
-  // } else {
-  //   const reader = new FileReader();
-  //   reader.addEventListener("load", () => {
-  //     setImgData(reader.result);
-  //   });
-  //   reader.readAsDataURL(info.target.files[0]);
-  //   newErrorsState.image = '';
-  //   setErrors({});
-  //   setFormSubmit(!formSubmit);
-  // }
-}
 
 const UserDetails = () => {
   const [state, setState] = useState("");
+  const [inputVisible , setinputVisible] =useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
   const { emailId } = useParams();
@@ -59,10 +37,12 @@ const UserDetails = () => {
     dispatch(getUserCategory(emailId))
     dispatch(getUserSpecialization(emailId))
     dispatch(getUserProfile(userDetails.data && userDetails.data.id))
-    .then((res) => {
-      
-      setState({ ...state })
-    })
+      .then((res) => {
+        if (res && res.data && res.data.results.length >= 0) {
+          setState(res.data.results[0]);
+        }
+      })
+    dispatch(getQualifications());
   }, [])
 
   const catList = []
@@ -86,25 +66,30 @@ const UserDetails = () => {
   }
 
   const handleMediaChange = (e) => {
-    let newData=[];
-    newData=["test"];
-    setState({...state , media:newData});
+    let newData = [];
+    newData = ["test"];
+    setState({ ...state, media: newData });
   }
   const handleSelectChange = (value) => {
-    setState({ ...state, empolyment_value: value , empolyment_type:value.label });
+    setState({ ...state, empolyment_value: value, empolyment_type: value.label });
+  }
+  const onDateChange = (value, dateString) => {
+    setState({ ...state, start_date: dateString[0], end_date: dateString[1] })
+  }
+
+  const showInput = () => {
+    setinputVisible(false);
   }
 
   const handleValidation = () => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if(!fields["name"])
-    {
+    if (!fields["name"]) {
       formIsValid = false;
       errors["name"] = "Name is required";
     }
-    if(!fields["name"])
-    {
+    if (!fields["name"]) {
       formIsValid = false;
       errors["name"] = "Name is required";
     }
@@ -113,10 +98,10 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
-    if(handleValidation())
-    setState({ ...state, user_id: userDetails.data && userDetails.data.id }); 
+    if (handleValidation())
+      setState({ ...state, user_id: userDetails.data && userDetails.data.id });
     console.log("state", state);
-    dispatch(postUserProfile(state));
+    // dispatch(postUserProfile(state));
   }
 
   const renderTable = () => {
@@ -145,7 +130,6 @@ const UserDetails = () => {
               </Form.Item>
             </Col>
             <Col span={16}>
-              {/* title="User Details" bordered={true}> */}
               <p>Name : {userDetails.data && userDetails.data.username}</p>
               <p>Email : {userDetails.data && userDetails.data.email}</p>
               <p>Phone Number : {userDetails.data && userDetails.data.phone}</p>
@@ -175,7 +159,10 @@ const UserDetails = () => {
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
                 <Form.Item label="Qualification">
-                  <Input name="qualification" className="form-control" type="text" value={state.qualification} onChange={handleChange} />
+                  <Tag className="site-tag-plus" onClick={showInput}>
+                    <PlusOutlined /> New Tag
+                  </Tag>
+                  {/* <Input name="qualification" className="form-control" type="text" value={state.qualification} onChange={handleChange} /> */}
                 </Form.Item>
                 <Form.Item label="Experience">
                   <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
@@ -196,8 +183,8 @@ const UserDetails = () => {
                   <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Select Date" >
-                  <Space direction="vertical" size={15} >
-                    <RangePicker />
+                  <Space direction="vertical" size={15} style={{ marginLeft: '50px' }} >
+                    <RangePicker onChange={onDateChange} />
                   </Space>
                 </Form.Item>
                 <Form.Item label="Industry">
@@ -210,7 +197,7 @@ const UserDetails = () => {
                   <Input name="media" className="form-control" type="text" value={state.media} onChange={handleMediaChange} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-                  <Button type="primary"  htmlType="submit" >Save</Button>
+                  <Button type="primary" htmlType="submit" >Save</Button>
                 </Form.Item>
               </Form>
             </TabPane>
@@ -222,7 +209,6 @@ const UserDetails = () => {
               }
               key="2"
             >
-              {/* <Col span={12}> */}
               <Card title="Specializations and Sub Specializations" bordered={true}>
                 <table className="table table-bordered">
                   <thead>
@@ -234,7 +220,6 @@ const UserDetails = () => {
                   </tbody>
                 </table>
               </Card>
-              {/* </Col> */}
             </TabPane>
             <TabPane
               tab={

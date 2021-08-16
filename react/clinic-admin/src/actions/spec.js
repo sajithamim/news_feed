@@ -22,7 +22,7 @@ export const getSubSpecialisation = (id, page) => async (dispatch) => {
     }
 }
 
-export const postSpecialization = (state, imageData) => async (dispatch) => {
+export const postSpecialization = (state) => async (dispatch) => {
     try {
         const res = await Specialization.postSpec(state);
         // if (res.data.id && imageData) {
@@ -62,7 +62,7 @@ export const updateSpecialization = (id, state, imageData) => async (dispatch) =
     }
 }
 
-export const updateSubSpecialization = (id, state, imageData) => async (dispatch) => {
+export const updateSubSpecialization = (id, state) => async (dispatch) => {
     try {
         const res = await Specialization.updateSubSpec(id, state);
         // console.log("sub spec edit", res);
@@ -90,7 +90,8 @@ export const postSubSpecialization = (state, imageData) => async (dispatch) => {
                 payload: res.data,
             });
         //}
-        } catch (err) {
+        } 
+        catch (err) {
             console.log(err);
         }
     }
@@ -102,7 +103,6 @@ export const deleteSpec = (id) => async (dispatch) => {
                 type: 'DELETE_SPECIALIZATION',
                 payload: id,
             });
-            return res;
         } catch (err) {
             console.log(err);
         }

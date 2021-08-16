@@ -26,8 +26,10 @@ const postUserProfile = (state) => {
     return http.post("auth/userprofile/" ,state);
 }
 const getUserProfile = (id) => {
-    console.log("ser id",id);
     return http.get("auth/userprofile/" ,id);
+}
+const getQualifications = () => {
+    return http.get("auth/qualifications/");
 }
 const Users = {
     getUsers,
@@ -37,7 +39,8 @@ const Users = {
     getUserData,
     deleteUser,
     postUserProfile,
-    getUserProfile
+    getUserProfile,
+    getQualifications
 }
 
 export default Users;

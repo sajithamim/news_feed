@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, message, Card } from "antd";
+import { Form, Button, message, Card , Spin } from "antd";
 import { useDispatch } from "react-redux";
 import { getSettings , postSettings} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
@@ -24,7 +24,7 @@ const Policy = () => {
     const handleSubmit = () => {
         let newData = {}
         newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
-        newData.id = id;
+        // newData.id = id;
         dispatch(postSettings(newData))
         .then(() => {
             message.success('Policy added successfully')
@@ -43,13 +43,14 @@ const Policy = () => {
         <div style={{ margin: "10px" }}>
         <Card title="Policy" style={{ width: "100%", height: '500px' }}>
             <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
-                <Editor
+                {editorState ? 
+                (<Editor
                 editorState={editorState}
                 toolbarClassName="toolbarClassName"
                 wrapperClassName="wrapperClassName"
                 editorClassName="editorClassName"
                 onEditorStateChange={onEditorStateChange}
-                />
+                /> ): (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>) }
                 <Form.Item wrapperCol={{offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit"> Save </Button>
                 </Form.Item>

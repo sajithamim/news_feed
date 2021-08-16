@@ -35,40 +35,40 @@ const DrawerContent = (props) => {
       setErrors({});
       let newData = state;
       const id = state.id;
-      let form_data = null;
-      if (image && image.name) {
-        form_data = new FormData();
-        form_data.append('icon', image, image.name);
-      }
+      // let form_data = null;
+      // if (image && image.name) {
+      //   form_data = new FormData();
+      //   form_data.append('icon', image, image.name);
+      // }
 
       if (props.drawerType === "edit") {
         delete newData["id"];
-        delete newData["icon"];
+        // delete newData["icon"];
         delete newData["updated_at"];
         delete newData["created_at"];
         console.log("new data", newData);
         if (props.type === "spec") {
-          dispatch(updateSpecialization(id, newData, form_data))
+          dispatch(updateSpecialization(id, newData))
             .then(() => {
               message.success('Specialization edit successfully')
             });
         } else {
           newData['spec_id'] = specId;
-          dispatch(updateSubSpecialization(id, newData, form_data))
+          dispatch(updateSubSpecialization(id, newData))
             .then(() => {
               message.success('Sub Specialization edit successfully')
             });
         }
       } else {
         if (props.type === "spec") {
-          dispatch(postSpecialization(newData, form_data))
-            .then(() => {
+          dispatch(postSpecialization(newData))
+            .then((res) => {
               setState({});
               message.success('Specialization added successfully')
-            });
+            })
         } else {
           newData['spec_id'] = specId;
-          dispatch(postSubSpecialization(newData, form_data))
+          dispatch(postSubSpecialization(newData))
             .then(() => {
               setState({});
               message.success('Sub Specialization added successfully')

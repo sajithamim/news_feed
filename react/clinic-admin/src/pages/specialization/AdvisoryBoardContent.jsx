@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
-import DrawerContent from "./DrawerContent"
+import DrawerAdvisory from "./DrawerAdvisory"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
 
 const AdvisoryBoardContent = () => {
@@ -147,7 +147,7 @@ const AdvisoryBoardContent = () => {
             : null
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerAdvisory drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );

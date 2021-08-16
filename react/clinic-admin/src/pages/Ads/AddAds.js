@@ -216,7 +216,7 @@ const AddAds = () => {
                         // onFinish={handleSubmit}
                         style={{ marginTop: '25px' }}
                     >
-                        <Form.Item label="Title">
+                        <Form.Item label="Title"  >
                             <Input name="title" value={state.title} onChange={(e) => { handleChange(e, "title") }} />
                             <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
                         </Form.Item>
