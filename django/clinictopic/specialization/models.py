@@ -2,6 +2,10 @@ from django.db import models
 from django.db.models.base import ModelState
 from django.db.models.manager import ManagerDescriptor
 from authentication.models import User
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
+from django.core.files.base import ContentFile
 
 # Create your models here.
 class Specialization(models.Model):
@@ -9,6 +13,26 @@ class Specialization(models.Model):
     icon = models.ImageField(blank=True,null=True,upload_to="specializaion")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    def save(self, *args, **kwargs):
+      if self.icon:
+        filename = "%s.jpg" % self.icon.name.split('.')[0]
+
+        im = Image.open(self.icon)
+        new_width  = 250
+        new_height = 210
+        image = im.resize((new_width, new_height), Image.ANTIALIAS)
+         # for PNG images discarding the alpha channel and fill it with some color
+        if image.mode in ('RGBA', 'LA'):
+            background = Image.new(image.mode[:-1], image.size, '#fff')
+            background.paste(image, image.split()[-1])
+            image = background
+        image_io = BytesIO()
+        image.save(image_io, format='JPEG', quality=100)
+
+         # change the image field value to be the newly modified image value
+        self.icon.save(filename, ContentFile(image_io.getvalue()), save=False)
+
+      super(Specialization, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -22,6 +46,26 @@ class SubSpecialization(models.Model):
     icon = models.ImageField(blank=True,null=True,upload_to="subspecialization")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    def save(self, *args, **kwargs):
+      if self.icon:
+        filename = "%s.jpg" % self.icon.name.split('.')[0]
+
+        im = Image.open(self.icon)
+        new_width  = 250
+        new_height = 210
+        image = im.resize((new_width, new_height), Image.ANTIALIAS)
+         # for PNG images discarding the alpha channel and fill it with some color
+        if image.mode in ('RGBA', 'LA'):
+            background = Image.new(image.mode[:-1], image.size, '#fff')
+            background.paste(image, image.split()[-1])
+            image = background
+        image_io = BytesIO()
+        image.save(image_io, format='JPEG', quality=100)
+
+         # change the image field value to be the newly modified image value
+        self.icon.save(filename, ContentFile(image_io.getvalue()), save=False)
+
+      super(Specialization, self).save(*args, **kwargs)
     def __str__(self):
         return self.name
     class Meta:

@@ -6,6 +6,7 @@ UserSubSpecialization,Advisory)
 from rest_framework import  status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from authentication.models import User
+from authentication.serializers import UserProfileSerializer
 # import json
 from rest_framework import generics, status
 
@@ -178,3 +179,7 @@ class AdvisorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Advisory
         fields = '__all__'
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user_id'] = UserProfileSerializer(instance.spec_id).data
+        return response

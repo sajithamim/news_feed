@@ -6,6 +6,11 @@ from authentication.models import User
 from django.dispatch import receiver
 from clinictopic.settings.base import MEDIA_ROOT
 from specialization.models import (Specialization)
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
+from django.core.files.base import ContentFile
+
 # from django.core.files.storage import FileSystemStorage
 # fs = FileSystemStorage(location='/media/categories')
 
@@ -23,12 +28,33 @@ class Categoeries(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     image = models.ImageField(blank=True,null=True,upload_to=get_image_path)
+    def save(self, *args, **kwargs):
+      if self.image:
+        filename = "%s.jpg" % self.image.name.split('.')[0]
+
+        im = Image.open(self.icon)
+        new_width  = 250
+        new_height = 210
+        image = im.resize((new_width, new_height), Image.ANTIALIAS)
+         # for PNG images discarding the alpha channel and fill it with some color
+        if image.mode in ('RGBA', 'LA'):
+            background = Image.new(image.mode[:-1], image.size, '#fff')
+            background.paste(image, image.split()[-1])
+            image = background
+        image_io = BytesIO()
+        image.save(image_io, format='JPEG', quality=100)
+
+         # change the image field value to be the newly modified image value
+        self.image.save(filename, ContentFile(image_io.getvalue()), save=False)
+
+      super(Specialization, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
     
     class Meta:
         db_table = 'Categories' 
+
 #delete update image on delete
 @receiver(models.signals.post_delete,sender=Categoeries)
 def auto_delete_file_on_delete(sender,instance,**kwargs):
@@ -130,8 +156,6 @@ class TopicSpecialization(models.Model):
     
     class Meta:
         db_table = 'TopicSpecialization'
-
-
 
 
 class Favourite(models.Model):

@@ -4,10 +4,10 @@ from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
- ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer)
+ ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User,Profile
+from .models import User,Profile,Qualifications
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
@@ -37,6 +37,8 @@ from rest_framework import pagination
 from django.db.models import Q
 import requests
 from django.http import Http404
+from rest_framework.pagination import PageNumberPagination
+
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -363,19 +365,14 @@ class UserProfilepicView(viewsets.ModelViewSet):
                                  status=status.HTTP_200_OK)
 
 
-class Userlist(APIView):
+class Userlist(APIView,PageNumberPagination):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            user =User.objects.filter(is_superuser=False).order_by('email')
-            serializers = UserProfileSerializer(user,many=True)
-            response={
-                "success":"True",
-                "message":"user Profile",
-                "status":status.HTTP_200_OK,
-                "data":serializers.data
-            }
-            return Response(response,status=status.HTTP_200_OK)
+            queryset =User.objects.filter(is_superuser=False).order_by('email')
+            results = self.paginate_queryset(queryset, request, view=self)
+            serializer = UserProfileSerializer(results,many=True)
+            return self.get_paginated_response(serializer.data)
         except Exception as e:
             response={
                 "success":"False",
@@ -384,7 +381,6 @@ class Userlist(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserDetailApiview(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -521,3 +517,9 @@ class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+
+class QualificationView(viewsets.ModelViewSet):
+        queryset = Qualifications.objects.all()
+        serializer_class = QualificationSerializer
+        permission_classes = (permissions.IsAuthenticated,)
