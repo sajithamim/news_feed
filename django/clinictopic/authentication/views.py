@@ -37,6 +37,8 @@ from rest_framework import pagination
 from django.db.models import Q
 import requests
 from django.http import Http404
+from rest_framework.pagination import PageNumberPagination
+
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -363,7 +365,7 @@ class UserProfilepicView(viewsets.ModelViewSet):
                                  status=status.HTTP_200_OK)
 
 
-class Userlist(APIView):
+class Userlist(APIView,PageNumberPagination):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
