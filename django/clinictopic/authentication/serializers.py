@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import User,Profile
+from .models import User,Profile,Qualifications
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -315,25 +315,43 @@ class UsernameChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model =User
         fields = ['name']
-
+class Userqualifaicationserializer(serializers.ModelSerializer):
+    qualifications =serializers.ListField(child=serializers.CharField())
+    class Meta:
+        model =Profile
+        fields =['qualifications']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
     phone = serializers.ReadOnlyField()
+    qualifications = serializers.SerializerMethodField()
+    # qualifications = Userqualifaicationserializer()
     # profilepic = serializers.ReadOnlyField()
     profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = User
-        fields = ['id','username','email','phone','profilepic','name']
-
+        fields = ['id','username','email','phone','profilepic','name','qualifications']
+    def get_qualifications(self,obj):
+        try:
+            qual = Profile.objects.get(user_id__id= obj.id)
+            return qual.qualifications
+        except Profile.DoesNotExist:
+            return ""
 
 class ProfileSerializer(serializers.ModelSerializer):
     media = serializers.ListField(child=serializers.CharField())
+    qualifications =serializers.ListField(child=serializers.CharField())
     class Meta:
         model = Profile
         fields = '__all__'
     def create(self, validated_data):
         # print(str(**validated_data))
         return Profile.objects.create(**validated_data)
+
+
+class QualificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Qualifications
+        fields= '__all__'

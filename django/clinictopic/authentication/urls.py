@@ -4,7 +4,7 @@ from .views import (RegisterView, LogoutAPIView, SetNewPasswordAPIView,
 VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
 SignInOtpview,AdminLoginAPIView,UserProfile,UserProfilepicView,Userlist,
 UserDetailApiview,UsernameAddview,UserSpecializationApiView,UserProfileSearchView,
-TestSMSView,UserDeleteView,ProfileView)
+TestSMSView,UserDeleteView,ProfileView,QualificationView)
 # from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework import routers
@@ -13,6 +13,8 @@ router = routers.DefaultRouter()
 router.register('profilepic', UserProfilepicView, 'images')
 router.register('name',UsernameAddview,'namechange')
 router.register('userprofile',ProfileView,'userprofile')
+router.register('qualifications',QualificationView,'qualifications')
+
 # from rest_framework_simplejwt.views import (
 #     TokenRefreshView,
 # )
