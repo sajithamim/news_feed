@@ -367,15 +367,10 @@ class Userlist(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            user =User.objects.filter(is_superuser=False).order_by('email')
-            serializers = UserProfileSerializer(user,many=True)
-            response={
-                "success":"True",
-                "message":"user Profile",
-                "status":status.HTTP_200_OK,
-                "data":serializers.data
-            }
-            return Response(response,status=status.HTTP_200_OK)
+            queryset =User.objects.filter(is_superuser=False).order_by('email')
+            results = self.paginate_queryset(queryset, request, view=self)
+            serializer = UserProfileSerializer(results,many=True)
+            return self.get_paginated_response(serializer.data)
         except Exception as e:
             response={
                 "success":"False",

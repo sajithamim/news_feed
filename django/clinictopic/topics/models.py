@@ -6,6 +6,9 @@ from authentication.models import User
 from django.dispatch import receiver
 from clinictopic.settings.base import MEDIA_ROOT
 from specialization.models import (Specialization)
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
 # from django.core.files.storage import FileSystemStorage
 # fs = FileSystemStorage(location='/media/categories')
 
@@ -23,12 +26,28 @@ class Categoeries(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     image = models.ImageField(blank=True,null=True,upload_to=get_image_path)
+    def save(self, *args, **kwargs):
+        new_image = self.reduce_image_size(self.image)
+        self.image = new_image
+        super().save(*args, **kwargs)
+    def reduce_image_size(self, image):
+        # print(profile_pic)
+        img = Image.open(image)
+        rgb_im = img.convert('RGB')
+        new_width  = 250
+        new_height = 210
+        img = rgb_im.resize((new_width, new_height), Image.ANTIALIAS)
+        thumb_io = BytesIO()
+        img.save(thumb_io, 'jpeg', quality=90)
+        new_image = File(thumb_io, name=image.name)
+        return new_image
 
     def __str__(self):
         return self.title
     
     class Meta:
         db_table = 'Categories' 
+
 #delete update image on delete
 @receiver(models.signals.post_delete,sender=Categoeries)
 def auto_delete_file_on_delete(sender,instance,**kwargs):

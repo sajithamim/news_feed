@@ -2,6 +2,9 @@ from django.db import models
 from django.db.models.base import ModelState
 from django.db.models.manager import ManagerDescriptor
 from authentication.models import User
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
 
 # Create your models here.
 class Specialization(models.Model):
@@ -9,6 +12,21 @@ class Specialization(models.Model):
     icon = models.ImageField(blank=True,null=True,upload_to="specializaion")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    def save(self, *args, **kwargs):
+        new_image = self.reduce_image_size(self.icon)
+        self.icon = new_image
+        super().save(*args, **kwargs)
+    def reduce_image_size(self, icon):
+        # print(profile_pic)
+        img = Image.open(icon)
+        rgb_im = img.convert('RGB')
+        new_width  = 250
+        new_height = 210
+        img = rgb_im.resize((new_width, new_height), Image.ANTIALIAS)
+        thumb_io = BytesIO()
+        img.save(thumb_io, 'jpeg', quality=90)
+        new_image = File(thumb_io, name=icon.name)
+        return new_image
 
     def __str__(self):
         return self.name
@@ -22,6 +40,21 @@ class SubSpecialization(models.Model):
     icon = models.ImageField(blank=True,null=True,upload_to="subspecialization")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    def save(self, *args, **kwargs):
+        new_image = self.reduce_image_size(self.icon)
+        self.icon = new_image
+        super().save(*args, **kwargs)
+    def reduce_image_size(self, icon):
+        # print(profile_pic)
+        img = Image.open(icon)
+        rgb_im = img.convert('RGB')
+        new_width  = 250
+        new_height = 210
+        img = rgb_im.resize((new_width, new_height), Image.ANTIALIAS)
+        thumb_io = BytesIO()
+        img.save(thumb_io, 'jpeg', quality=90)
+        new_image = File(thumb_io, name=icon.name)
+        return new_image
     def __str__(self):
         return self.name
     class Meta:
