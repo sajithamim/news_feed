@@ -118,5 +118,12 @@ class Profile(models.Model):
     description = models.CharField(max_length=10000,blank=True,null=True)
     media = ArrayField(models.CharField(max_length=200), blank=True,null=True)
     website = models.CharField(max_length=2000,blank=True,null=True)
+    qualifications = ArrayField(models.CharField(max_length=200), blank=True,null=True)
     class Meta:
         db_table = 'Profile'
+
+
+class Qualifications(models.Model):
+    name = models.CharField(max_length=255)
+    class Meta:
+        db_table ="Qualifications"

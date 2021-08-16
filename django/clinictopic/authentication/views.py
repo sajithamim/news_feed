@@ -4,10 +4,10 @@ from rest_framework import generics, status, views, permissions
 from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
- ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer)
+ ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User,Profile
+from .models import User,Profile,Qualifications
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
@@ -517,3 +517,9 @@ class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+
+class QualificationView(viewsets.ModelViewSet):
+        queryset = Qualifications.objects.all()
+        serializer_class = QualificationSerializer
+        permission_classes = (permissions.IsAuthenticated,)
