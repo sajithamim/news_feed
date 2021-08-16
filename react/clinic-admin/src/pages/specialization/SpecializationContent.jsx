@@ -19,6 +19,7 @@ const SpecializationContent = () => {
   useEffect(() => {
     dispatch(getSpecialization())
     onClose();
+    specGenerator();
   }, [updateData, addData])
 
   const onClose = () => {
@@ -50,13 +51,12 @@ const SpecializationContent = () => {
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
     setSlNo(page-1)
-    console.log('hello i', page);
     dispatch(getSpecialization(page));
+    // spec = specGenerator();
   }
  
   const specGenerator = () => {
     let serialNo = pageSize * slNo;
-    //let slNo = 0;
     const items = [];
     specList && specList.results && specList.results.map((item, key) => {
       serialNo++;
@@ -69,7 +69,7 @@ const SpecializationContent = () => {
     })
     return items;
   }
-  const spec = specGenerator();
+  
 
   const pagination = {
     current,
@@ -131,8 +131,8 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results ?
-          (<Table columns={columns} pagination={pagination} dataSource={spec} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
+        {specList && specList.results && specList.results ?
+          (<Table columns={columns} pagination={pagination} dataSource={specGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer
         title={

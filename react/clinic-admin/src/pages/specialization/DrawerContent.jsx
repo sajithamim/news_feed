@@ -116,7 +116,7 @@ const DrawerContent = (props) => {
   return (
     <Form name="basic"
       labelCol={{
-        span: 8,
+        span: 6,
       }}
       wrapperCol={{
         span: 10,
@@ -137,11 +137,10 @@ const DrawerContent = (props) => {
       </div>
       <Form.Item
         wrapperCol={{
-          offset: 8,
-          span: 16,
+          offset: 7
         }}
       >
-        <Button type="primary" htmlType="submit" >
+        <Button type="primary" htmlType="submit" style={{marginLeft: '21px'}}>
           Save
         </Button>
       </Form.Item>
