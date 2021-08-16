@@ -15,10 +15,11 @@ const SubSpecializationContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const { specId } = useParams();
 
   const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
+  
   
   useEffect(() => {
     dispatch(getSubSpecialisation(specId))
@@ -124,7 +125,7 @@ const SubSpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {subspecialization ?
+        {subSpec ?
           (<Table columns={columns} pagination={pagination} dataSource={subSpec}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
       </Card>
       <Drawer

@@ -25,19 +25,19 @@ export const getSubSpecialisation = (id, page) => async (dispatch) => {
 export const postSpecialization = (state, imageData) => async (dispatch) => {
     try {
         const res = await Specialization.postSpec(state);
-        if (res.data.id && imageData) {
-            //const res1 = await Specialization.uploadImage(res.data.id, imageData);
-            await Specialization.uploadImage(res.data.id, imageData);
+        // if (res.data.id && imageData) {
+        //     //const res1 = await Specialization.uploadImage(res.data.id, imageData);
+        //     await Specialization.uploadImage(res.data.id, imageData);
+        //     dispatch({
+        //         type: 'ADD_SPECIALIZATION',
+        //         payload: res.data,
+        //     });
+        // } else {
             dispatch({
                 type: 'ADD_SPECIALIZATION',
                 payload: res.data,
             });
-        } else {
-            dispatch({
-                type: 'ADD_SPECIALIZATION',
-                payload: res.data,
-            });
-        }
+        //}
     } catch (err) {
     }
 }
@@ -45,14 +45,14 @@ export const postSpecialization = (state, imageData) => async (dispatch) => {
 export const updateSpecialization = (id, state, imageData) => async (dispatch) => {
     try {
         const res = await Specialization.updateSpec(id, state);
-        if (res.data && imageData) {
-            //const imageRes = await Specialization.uploadImage(id, imageData);
-            await Specialization.uploadImage(id, imageData);
-            dispatch({
-                type: 'ADD_IMAGE',
-                payload: res.data,
-            })
-        }
+        // if (res.data && imageData) {
+        //     //const imageRes = await Specialization.uploadImage(id, imageData);
+        //     await Specialization.uploadImage(id, imageData);
+        //     dispatch({
+        //         type: 'ADD_IMAGE',
+        //         payload: res.data,
+        //     })
+        // }
         dispatch({
             type: 'EDIT_SPECIALIZATION',
             payload: res.data,
@@ -63,18 +63,13 @@ export const updateSpecialization = (id, state, imageData) => async (dispatch) =
 }
 
 export const updateSubSpecialization = (id, state, imageData) => async (dispatch) => {
-    console.log("state", state);
     try {
         const res = await Specialization.updateSubSpec(id, state);
-        console.log("sub spec edit", res);
-        if (res.data && imageData) {
-            //const imageSubRes = await Specialization.uploadSubImage(id, imageData);
-            await Specialization.uploadSubImage(id, imageData);
-            dispatch({
-                type: 'ADD_SUB_IMAGE',
-                payload: res.data,
-            })
-        }
+        // console.log("sub spec edit", res);
+        // if (res.data && imageData) {
+        //     //const imageSubRes = await Specialization.uploadSubImage(id, imageData);
+        //     await Specialization.uploadSubImage(id, imageData);
+        //}
         dispatch({
             type: 'EDIT_SUB_SPECIALIZATION',
             payload: res.data,
@@ -87,14 +82,14 @@ export const updateSubSpecialization = (id, state, imageData) => async (dispatch
 export const postSubSpecialization = (state, imageData) => async (dispatch) => {
     try {
         const res = await Specialization.postSubSpec(state);
-        if (res.data.id && imageData) {
-            //const imageSubRes = await Specialization.uploadSubImage(res.data.id, imageData);
-            await Specialization.uploadSubImage(res.data.id, imageData);
+        // if (res.data.id && imageData) {
+        //     //const imageSubRes = await Specialization.uploadSubImage(res.data.id, imageData);
+        //     await Specialization.uploadSubImage(res.data.id, imageData);
             dispatch({
                 type: 'ADD_SUB_SPECIALIZATION',
                 payload: res.data,
             });
-        }
+        //}
         } catch (err) {
             console.log(err);
         }
