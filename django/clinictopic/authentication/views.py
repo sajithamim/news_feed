@@ -382,7 +382,6 @@ class Userlist(APIView,PageNumberPagination):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserDetailApiview(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request,email, *args, **kwargs):
