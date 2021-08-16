@@ -20,11 +20,11 @@ class Specialization(models.Model):
         # print(profile_pic)
         img = Image.open(icon)
         rgb_im = img.convert('RGB')
-        new_width  = 500
-        new_height = 500
+        new_width  = 250
+        new_height = 210
         img = rgb_im.resize((new_width, new_height), Image.ANTIALIAS)
         thumb_io = BytesIO()
-        img.save(thumb_io, 'jpeg', quality=70)
+        img.save(thumb_io, 'jpeg', quality=90)
         new_image = File(thumb_io, name=icon.name)
         return new_image
 
@@ -48,11 +48,11 @@ class SubSpecialization(models.Model):
         # print(profile_pic)
         img = Image.open(icon)
         rgb_im = img.convert('RGB')
-        new_width  = 500
-        new_height = 500
+        new_width  = 250
+        new_height = 210
         img = rgb_im.resize((new_width, new_height), Image.ANTIALIAS)
         thumb_io = BytesIO()
-        img.save(thumb_io, 'jpeg', quality=70)
+        img.save(thumb_io, 'jpeg', quality=90)
         new_image = File(thumb_io, name=icon.name)
         return new_image
     def __str__(self):
