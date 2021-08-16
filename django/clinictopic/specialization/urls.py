@@ -1,12 +1,14 @@
 from django.urls import path
 from .views import (GetSpecializations,GetAudienceView,UserTypeView,
-UserSpecializationApiView,SpecializationView,SubSpecializationView,GetUserSpecializationsApiview)
+UserSpecializationApiView,SpecializationView,SubSpecializationView,GetUserSpecializationsApiview,AdvisoryView)
 from django.conf.urls import url, include
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register('specialization',SpecializationView , 'speciaization')
 router.register('subspecialization',SubSpecializationView , 'subspeciaization')
+router.register('advisory',AdvisoryView , 'advisory')
+
 
 
 

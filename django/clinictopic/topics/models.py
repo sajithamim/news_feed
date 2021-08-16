@@ -158,8 +158,6 @@ class TopicSpecialization(models.Model):
         db_table = 'TopicSpecialization'
 
 
-
-
 class Favourite(models.Model):
     user_id  = models.ForeignKey(User,on_delete=models.CASCADE,related_name="favourite_user")
     topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="favourite_topic")

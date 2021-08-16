@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from .models import (Audience, Specialization,UserSpecialization,SubSpecialization)
+from .models import (Advisory, Audience, Specialization,UserSpecialization,SubSpecialization)
 from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
 GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
-GetSpecializationandsub)
+GetSpecializationandsub,AdvisorySerializer)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -131,6 +131,7 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
 class SpecializationView(viewsets.ModelViewSet):
     queryset = Specialization.objects.all().order_by('name')
     serializer_class = GetSpecializationseriallizer
+    permission_classes = (IsAuthenticated,)
     @action(detail=True, methods=['get'])
     def spubspec_list(self, request, pk=None):
         spec = self.get_object() # retrieve an object by pk provided
@@ -151,6 +152,7 @@ class SpecializationView(viewsets.ModelViewSet):
 class SubSpecializationView(viewsets.ModelViewSet):
     queryset = SubSpecialization.objects.all().order_by('name')
     serializer_class = GetSubspecializationSerializer
+    permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=SubSpecializationpicSerializer,parser_classes=[parsers.MultiPartParser],)
     def icon(self, request, pk):
         obj = self.get_object()
@@ -188,3 +190,23 @@ class SubSpecializationView(viewsets.ModelViewSet):
 #                 }
 #             return Response(response, status=status_code)
 
+class AdvisoryView(viewsets.ModelViewSet):
+    queryset = Advisory.objects.all().order_by('-created_at')
+    serializer_class = AdvisorySerializer
+    permission_classes = (IsAuthenticated,)
+    def create(self, request):
+        specid = request.data['spec_id']
+        userid = request.data['user_id']
+        if Advisory.objects.filter(spec_id=specid,user_id=userid).exists():
+            status_code = status.HTTP_400_BAD_REQUEST
+            response= {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'User already exists'
+            }
+            return Response(response, status=status_code)
+        serializer = AdvisorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
