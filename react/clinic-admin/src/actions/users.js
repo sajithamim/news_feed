@@ -67,8 +67,22 @@ export const postUserProfile = (state) => async (dispatch) => {
         const res = await Users.postUserProfile(state);
         dispatch({
             type: 'POST_USER_PROFILE',
-            payload: ActionButton.payload,
+            payload: res.data,
         })
+    } catch (err) {
+        console.log(err)
+    }
+}
+export const getUserProfile = (id) => async (dispatch) => {
+    console.log("act id",id);
+    try {
+        const res = await Users.getUserProfile(id);
+        console.log("GET USER PROFILE" , res);
+        dispatch({
+            type: 'GET_USER_PROFILE',
+            payload: res.data,
+        })
+        return res;
     } catch (err) {
         console.log(err)
     }

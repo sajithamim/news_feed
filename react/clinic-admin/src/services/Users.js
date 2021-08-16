@@ -25,8 +25,10 @@ const deleteUser = (id) => {
 const postUserProfile = (state) => {
     return http.post("auth/userprofile/" ,state);
 }
-
-
+const getUserProfile = (id) => {
+    console.log("ser id",id);
+    return http.get("auth/userprofile/" ,id);
+}
 const Users = {
     getUsers,
     getUserCategory,
@@ -34,7 +36,8 @@ const Users = {
     getUserSpec,
     getUserData,
     deleteUser,
-    postUserProfile
+    postUserProfile,
+    getUserProfile
 }
 
 export default Users;

@@ -4,18 +4,18 @@ import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker, Button, Space } f
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails ,postUserProfile} from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails ,postUserProfile , getUserProfile} from "../../actions/users";
 import Select from 'react-select';
 import { Icon, IconButton } from "@material-ui/core";
 import "./Users.css";
 const columns = [
   {
-    title: "Title",
+    title: "",
     dataIndex: "title",
     key: "title",
-    render: (text, record) => (
-      <Link to="">{text}</Link>
-    ),
+    // render: (text, record) => (
+    //   <Link to="">{text}</Link>
+    // ),
   }
 ];
 const { RangePicker } = DatePicker;
@@ -58,6 +58,11 @@ const UserDetails = () => {
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
     dispatch(getUserSpecialization(emailId))
+    dispatch(getUserProfile(userDetails.data && userDetails.data.id))
+    .then((res) => {
+      
+      setState({ ...state })
+    })
   }, [])
 
   const catList = []
