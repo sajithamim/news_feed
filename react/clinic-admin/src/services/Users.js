@@ -22,15 +22,25 @@ const getUserData = (emailId) => {
 const deleteUser = (id) => {
     return http.delete(`auth/deleteuser/${id}`)
 }
-
-
+const postUserProfile = (state) => {
+    return http.post("auth/userprofile/" ,state);
+}
+const getUserProfile = (id) => {
+    return http.get("auth/userprofile/" ,id);
+}
+const getQualifications = () => {
+    return http.get("auth/qualifications/");
+}
 const Users = {
     getUsers,
     getUserCategory,
     getTopic,
     getUserSpec,
     getUserData,
-    deleteUser
+    deleteUser,
+    postUserProfile,
+    getUserProfile,
+    getQualifications
 }
 
 export default Users;

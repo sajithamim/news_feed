@@ -20,7 +20,7 @@
 
   .img-wrap .close {
       position: absolute;
-      top: -67px;
+      top: -5px;
       left: 108px;
       z-index: 100;
   }

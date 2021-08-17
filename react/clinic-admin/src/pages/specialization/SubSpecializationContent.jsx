@@ -18,12 +18,12 @@ const SubSpecializationContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const { specId } = useParams();
 
-  const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
-
+  const { subspecialization, updateSubData, addSubData, page } = useSelector(state => state.spec);
+  
+  
   useEffect(() => {
-    dispatch(getSubSpecialisation(specId)).then((res) => {
+    dispatch(getSubSpecialisation(specId))
       onClose();
-    });
   }, [updateSubData, addSubData])
 
   const onClose = () => {
@@ -31,7 +31,6 @@ const SubSpecializationContent = () => {
   };
 
   const onEdit = (record) => {
-    console.log("record" , specId);
     setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
@@ -41,25 +40,16 @@ const SubSpecializationContent = () => {
     setShowDrawer(true);
     setDrawerType("add");
   };
-
-  
+ 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
-    dispatch(getSubSpecialisation(page));
-  }
-
-  const pagination = {
-    current,
-    pageSize,
-    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
-    total: subspecialization.count
+    dispatch(getSubSpecialisation(specId, page));
   }
 
   const confirmDelete = (id) => {
-    console.log("subspec id", id);
     dispatch(deleteSubSpec(id))
       .then((res) => {
-        res.status === 204 ? message.success("Sub Specialization is deleted successfully") : message.error("Sub Specialization is not exist")
+        res.status === 204 ? message.success("Sub Specialitity deleted successfully") : message.error("Sub Specialitity is not exist")
       })
   };
 
@@ -71,7 +61,6 @@ const SubSpecializationContent = () => {
     const items = [];
     subspecialization.map((item, key) => {
       key++;
-      console.log("id",item);
       items.push({
         sl_no: key,
         id: item.id,
@@ -81,7 +70,6 @@ const SubSpecializationContent = () => {
     })
     return items;
   }
-  const subSpec = subSpecGenerator();
 
   const columns = [
     {
@@ -104,7 +92,7 @@ const SubSpecializationContent = () => {
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this sub specialization?"
+            title="Are you sure to delete this sub Specialitity?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
@@ -117,10 +105,17 @@ const SubSpecializationContent = () => {
     },
   ];
 
+  const pagination = {
+    current,
+    pageSize,
+    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
+    total: subspecialization.count
+  }
+
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Sub Specializations"
+        title="Sub Specialitity"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -128,8 +123,8 @@ const SubSpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {subspecialization ?
-          (<Table columns={columns} dataSource={subSpec && subSpec} pagination={pagination} />) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
+        {subspecialization && page == current ?
+          (<Table columns={columns} pagination={pagination} dataSource={subSpecGenerator()}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
       </Card>
       <Drawer
         title={

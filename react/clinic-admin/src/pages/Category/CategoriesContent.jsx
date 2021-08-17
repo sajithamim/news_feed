@@ -13,9 +13,10 @@ const CategoriesContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(10);
+  const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist , updateData, addData  } = useSelector(state => state.category);
+  const { catlist , updateData, addData, page  } = useSelector(state => state.category);
   
   useEffect(() => {
     dispatch(getCategory());
@@ -47,6 +48,7 @@ const CategoriesContent = () => {
 
   const handleChange = (page , size , sorter) => {
     setCurrent(page)
+    setSlNo(page-1)
     dispatch(getCategory(page));
   }
 
@@ -61,11 +63,12 @@ const CategoriesContent = () => {
   };
   
   const catGenerator = () => {
+    let serialNo = pageSize * slNo;
     const items = [];
     catlist && catlist.results && catlist.results.map((item , key) => {
-      key++;
+      serialNo++;
       return items.push({
-      sl_no: key,
+      sl_no: serialNo,
       id: item.id,
       title: item.title, 
       image: item.image
@@ -74,7 +77,6 @@ const CategoriesContent = () => {
     return items;
     }
 
-  const category = catGenerator();
 
   const columns = [
     {
@@ -120,8 +122,8 @@ const CategoriesContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {catlist.results ?
-          (<Table columns={columns} dataSource={category} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+        {catlist.results && page == current ?
+          (<Table columns={columns} dataSource={catGenerator()} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
       </Card>
       <Drawer
         title={

@@ -1,8 +1,8 @@
 import {http} from "../http-common";
 import axios from 'axios';
 
-const getAllCategory = () => {
-    return http.get("topic/category");
+const getAllCategory = (page) => {
+    return http.get(`topic/category?page=${page}`);
 };
 
 const postCategory = (state) => {

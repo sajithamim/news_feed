@@ -1,11 +1,13 @@
 import Category from "../services/Category";
 
-export const getCategory = () => async (dispatch) => {
+export const getCategory = (page) => async (dispatch) => {
+    page = page != undefined ? page : 1;
     try {
-        const res = await Category.getAllCategory();
+        const res = await Category.getAllCategory(page);
         dispatch({
             type: 'RETRIEVE_CATEGORY',
-            payload: res.data
+            payload: res.data,
+            page: page
         });
     }
     catch (err) {

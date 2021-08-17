@@ -2,7 +2,8 @@ const initialState= {
     userList:[],
     userCategory:[],
     userSpec:[],
-    userDetails:[]
+    userDetails:[],
+    userProfile:[]
 };
 
 const users = (state = initialState , action) => {
@@ -17,6 +18,10 @@ const users = (state = initialState , action) => {
         return {...state , userDetails: action.payload }
         case 'DELETE USER':
         return {...state , userList: Object.assign({}, state.userList , {data: state.userList && state.userList.data && state.userList.data.filter(item => item.id !== action.payload)})}
+        case 'POST_USER_PROFILE':
+        return {...state , userProfile:action.payload }
+        case 'GET_USER_PROFILE':
+        return {...state , userProfile:action.payload }
         default: 
         return state;
     }

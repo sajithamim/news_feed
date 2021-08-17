@@ -6,6 +6,7 @@ import Forgot from './pages/Login/Forgot';
 import Reset from './pages/Login/Reset';
 import Specialization from "./pages/specialization/Specialization";
 import SubSpecialization from "./pages/specialization/SubSpecializationContent";
+import AdvisoryBoardContent from "./pages/specialization/AdvisoryBoardContent"
 import Topics from './pages/Topics/Topics';
 import Categories from './pages/Category/Categories';
 import Feedback from './pages/Feedback/Feedback';
@@ -45,6 +46,7 @@ function App() {
           <PrivateRoute path="/advertisements" exact component={Ads} />
           <PrivateRoute path="/terms" exact component={Terms} />
           <PrivateRoute path="/add_ads/" exact component={AddAds} />
+          <PrivateRoute path="/advisory_board/" exact component={AdvisoryBoardContent} />
           <PrivateRoute path="/add_ads/:adsId" exact component={AddAds} />
           <PrivateRoute path="/userdetails/:emailId" exact component={UserDetails} />
           <PrivateRoute path="/banner/" exact component={Banner} />

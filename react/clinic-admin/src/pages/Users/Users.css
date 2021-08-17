@@ -13,3 +13,7 @@ Input[type="text"] {
     height: 50px;
     border-radius: 50%;
   }
+ #employment_type {
+  margin-left: 50px;
+  width: 340px;
+ }

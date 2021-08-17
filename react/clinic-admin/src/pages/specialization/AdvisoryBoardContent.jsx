@@ -4,23 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
-import DrawerContent from "./DrawerContent"
+import DrawerAdvisory from "./DrawerAdvisory"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
-import { getUsersList } from "../../actions/users";
+import { getUsersList } from "../../actions/users"
 
-const SpecializationContent = () => {
+const AdvisoryBoardContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [slNo, setSlNo] = useState(0);
-  const { specList, updateData, addData, page } = useSelector(state => state.spec);
+  const { specList, updateData, addData } = useSelector(state => state.spec);
+
   useEffect(() => {
-    dispatch(getSpecialization())
+    dispatch(getUsersList())
     onClose();
-    //specGenerator();
   }, [updateData, addData])
 
   const onClose = () => {
@@ -51,17 +50,15 @@ const SpecializationContent = () => {
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
-    setSlNo(page-1)
     dispatch(getSpecialization(page));
   }
- 
+
   const specGenerator = () => {
-    let serialNo = pageSize * slNo;
     const items = [];
     specList && specList.results && specList.results.map((item, key) => {
-      serialNo++;
+      key++;
       return items.push({
-        sl_no: serialNo,
+        sl_no: key,
         id: item.id,
         name: item.name,
         icon: item.icon
@@ -69,7 +66,8 @@ const SpecializationContent = () => {
     })
     return items;
   }
-  
+  const spec = specGenerator();
+
   const pagination = {
     current,
     pageSize,
@@ -84,9 +82,29 @@ const SpecializationContent = () => {
       key: "sl_no",
     },
     {
-      title: "Specialization",
+      title: "Photo",
+      dataIndex: "photo",
+      key: "photo",
+    },
+    {
+      title: "Name",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "ph_no",
+      key: "ph_no",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Qualification",
+      dataIndex: "qualification",
+      key: "qualification",
     },
     {
       title: "Action",
@@ -94,9 +112,6 @@ const SpecializationContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <IconButton onClick={() => onEdit(record)}>
-            <Icon>edit</Icon>
-          </IconButton>
           <Popconfirm
             title="Are you sure to delete this specialization?"
             onConfirm={() => confirmDelete(record.id)}
@@ -108,12 +123,6 @@ const SpecializationContent = () => {
               <Icon>delete</Icon>
             </IconButton>
           </Popconfirm>
-          <Button type="link">
-            <Link to={"/sub_specialization/" + record.id}>Sub Speciality</Link>
-          </Button>
-          <Button type="link">
-            <Link to={"/advisory_board"}>Advisory Board</Link>
-          </Button>
         </Space>
       ),
     },
@@ -122,7 +131,7 @@ const SpecializationContent = () => {
   return (
     <div style={{ margin: "10px" }}>
       <Card
-        title="Specialities and Sub Specialities"
+        title="Advisory Board Members"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -130,22 +139,19 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results && specList.results && page == current ?
-          (<Table columns={columns} pagination={pagination} dataSource={specGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
+          <Table columns={columns} pagination={pagination} dataSource="" />
       </Card>
       <Drawer
         title={
-          drawerType === "edit"
-            ? "Edit Specialization"
-            : drawerType === "add"
-              ? "Add Specialization"
-              : ""
+          drawerType === "add"
+            ? "Add Advisory Board Members"
+            : null
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerAdvisory drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );
 };
 
-export default SpecializationContent;
+export default AdvisoryBoardContent;

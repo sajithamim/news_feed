@@ -31,7 +31,7 @@ const UserContent = () => {
 
   const userGenerator = () => {
     const Items = [];
-    userList && userList.data && userList.data.map((item, key) => {
+    userList && userList.results && userList.results.map((item, key) => {
       key++;
       return Items.push({
         sl_no: key,
@@ -97,7 +97,7 @@ const UserContent = () => {
     <div style={{ margin: "10px" }}>
       <Card
         title="Users"
-      > {userList && userList.data ?
+      > {userList && userList.results ?
         (<Table columns={columns} dataSource={User} />) :
         (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>

@@ -129,22 +129,22 @@ const DrawerContent = (props) => {
           </Form.Item>
 
           <Form.Item label="Image">
-            {imgData ? (<img className="playerProfilePic_home_tile" width="128px" height="128px" alt={imgData} src={imgData} />) : null}
+            {imgData ? (<img className="playerProfilePic_home_tile" style={{marginLeft: '50px'}} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
             <Input type="file"
               id="image"
               name="image"
-              accept="image/png, image/jpeg" onChange={handleFileChange} />
+              accept="image/png, image/jpeg" onChange={handleFileChange} style={{marginLeft: '50px'}} />
             <div className="errorMsg">{errors.image}</div>
           </Form.Item>
         </div>
       </div>
       <Form.Item
         wrapperCol={{
-          offset: 8,
-          span: 16,
+          offset: 10,
+          span: 2,
         }}
       >
-        <Button type="primary" htmlType="submit" >
+        <Button type="primary" htmlType="submit" style={{marginLeft: '-6px'}} >
           Save
         </Button>
       </Form.Item>
