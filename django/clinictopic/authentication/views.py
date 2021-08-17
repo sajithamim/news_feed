@@ -38,7 +38,8 @@ from django.db.models import Q
 import requests
 from django.http import Http404
 from rest_framework.pagination import PageNumberPagination
-
+import datetime
+import pytz
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -151,6 +152,17 @@ class LoginAPIView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
+        now = datetime.datetime.utcnow()
+        user = User.objects.get(phone=request.data['phone'])
+        otpvallid = user.optvalid   
+        if now.strftime("%Y-%m-%d %H:%M:%S") > otpvallid.strftime("%Y-%m-%d %H:%M:%S"):
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success' : 'True',
+                'status code' : status_code,
+                'message': 'otp expired!',
+                }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         status_code = status.HTTP_200_OK
@@ -258,6 +270,7 @@ class SignInOtpview(generics.GenericAPIView):
                 phone_verify = User.objects.filter(phone=request.data['phone']).first()
             if 'email' in request.data:
                 phone_verify = User.objects.filter(email=request.data['email']).first()
+            # print(phone_verify)
             if not phone_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {

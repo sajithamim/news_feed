@@ -16,7 +16,7 @@ import os
 from topics.models import (UserCategory)
 from .utils import Util
 import requests
-
+import datetime
 
 load_dotenv(BASE_DIR+str("/.env"))
 import random
@@ -75,6 +75,9 @@ class Signinserializer(serializers.ModelSerializer):
             phone_verify = User.objects.filter(phone=phone).first()
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
+            now = datetime.datetime.now()
+            now_plus= now + datetime.timedelta(minutes = 3)
+            phone_verify.optvalid=now_plus
             phone_verify.save()
             smsphone  = str(phone)
             smsnumber = smsphone.replace("-","")
