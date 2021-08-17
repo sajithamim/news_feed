@@ -15,11 +15,11 @@ const SpecializationContent = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
-  const { specList, updateData, addData } = useSelector(state => state.spec);
+  const { specList, updateData, addData, page } = useSelector(state => state.spec);
   useEffect(() => {
     dispatch(getSpecialization())
     onClose();
-    specGenerator();
+    //specGenerator();
   }, [updateData, addData])
 
   const onClose = () => {
@@ -40,7 +40,7 @@ const SpecializationContent = () => {
   const confirmDelete = (id) => {
     dispatch(deleteSpec(id))
       .then((res) => {
-        res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+        //res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
       })
   };
 
@@ -52,7 +52,6 @@ const SpecializationContent = () => {
     setCurrent(page)
     setSlNo(page-1)
     dispatch(getSpecialization(page));
-    // spec = specGenerator();
   }
  
   const specGenerator = () => {
@@ -70,7 +69,6 @@ const SpecializationContent = () => {
     return items;
   }
   
-
   const pagination = {
     current,
     pageSize,
@@ -131,7 +129,7 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results && specList.results ?
+        {specList && specList.results && specList.results && page == current ?
           (<Table columns={columns} pagination={pagination} dataSource={specGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer

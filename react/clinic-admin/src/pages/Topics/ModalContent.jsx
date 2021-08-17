@@ -21,7 +21,7 @@ const ModalContent = (props) => {
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
-  const [errors, setErrors] = useState({ name: '' });
+  const [errors, setErrors] = useState({});
 
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
@@ -177,9 +177,8 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    console.log("author state" , state);
-    if (formValidation()) {
-      setErrors({});
+    console.log("author state" , errors);
+    if (handleValidation()) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -231,33 +230,55 @@ const ModalContent = (props) => {
 
   const dispatch = useDispatch();
 
-  const formValidation = () => {
-    let entities = state;
-    const newErrorsState = { ...errors };
+  // const formValidation = () => {
+  //   let entities = state;
+  //   const newErrorsState = { ...errors };
 
-    // if (!entities["title"]) {
-    //   newErrorsState.title = 'Title cannot be empty';
-    //   setErrors(newErrorsState);
-    //   return false;
-    // }
-    if (!entities["category_id"]) {
-      newErrorsState.category_id = 'Category cannot be empty';
-      setErrors(newErrorsState);
-      return false;
+  //   // if (!entities["title"]) {
+  //   //   newErrorsState.title = 'Title cannot be empty';
+  //   //   setErrors(newErrorsState);
+  //   //   return false;
+  //   // }
+  //   if (!entities["category_id"]) {
+  //     newErrorsState.category_id = 'Category cannot be empty';
+  //     setErrors(newErrorsState);
+  //     return false;
+  //   }
+  //   if (!entities["publishingtime"]) {
+  //     newErrorsState.publishingtime = 'Publish time cannot be empty';
+  //     setErrors(newErrorsState);
+  //     return false;
+  //   }
+  //   if (!entities["topic_topic"] && entities["topic_topic"]) {
+  //     newErrorsState.publishingtime = 'Specialization cannot be empty';
+  //     setErrors(newErrorsState);
+  //     return false;
+  //   }
+  //   setErrors({});
+  //   return true;
+  // }
+
+  const handleValidation = () => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (!fields["category_id"]) {
+        formIsValid = false;
+        errors["category_id"] = "Category cannot be empty";
     }
-    if (!entities["publishingtime"]) {
-      newErrorsState.publishingtime = 'Publish time cannot be empty';
-      setErrors(newErrorsState);
-      return false;
+
+    if (!fields["publishingtime"]) {
+        formIsValid = false;
+        errors["publishingtime"] = "Publish time cannot be empty";
     }
-    if (!entities["topic_topic"] && entities["topic_topic"]) {
-      newErrorsState.publishingtime = 'Specialization cannot be empty';
-      setErrors(newErrorsState);
-      return false;
-    }
-    setErrors({});
-    return true;
+
+    if (!fields["topic_topic"]) {
+      formIsValid = false;
+      errors["topic_topic"] = "Publish time cannot be empty";
   }
+    setErrors({ errors });
+    return formIsValid;
+ }
 
   const cancel = (e) => {
     message.error('Cancelled');
@@ -288,7 +309,7 @@ const ModalContent = (props) => {
               onChange={handleSpecChange}
               options={specialization}
             />
-            <div className="errorMsg">{errors.specialization}</div>
+            <div className="errorMsg">{errors && errors.errors && errors.errors.topic_topic}</div>
           </Form.Item>
           <Form.Item label="Category">
             <Select
@@ -298,7 +319,7 @@ const ModalContent = (props) => {
               onChange={handleCategoryChange}
               options={category}
             />
-            <div className="errorMsg">{errors.category_id}</div>
+            <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Author">
             <Select
@@ -324,38 +345,45 @@ const ModalContent = (props) => {
           </Form.Item>
           {(state.format === '1') ?
             (<><Form.Item label="Title">
-              <Input name="title1" type="text" onChange={handleChange} value={state.title1} />
+              <div style={{marginLeft: '-47px', width: '287px'}}>
+              <Input name="title1" type="text" onChange={handleChange} value={state.title1}/></div>
               <div className="errorMsg">{errors.title}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1} />
+                <div style={{marginLeft: '-47px', width: '287px'}}>
+                <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1}/></div>
                 <div className="errorMsg">{errors.description}</div>
               </Form.Item></>) : null
           }
           {(state.format === '2') ?
             (<><Form.Item label="Title">
-              <Input name="title2" type="text" onChange={handleChange} value={state.title2} />
-              <div className="errorMsg">{errors.title}</div>
+              <div style={{marginLeft: '-47px', width: '287px'}}>
+              <Input name="title2" type="text" onChange={handleChange} value={state.title2} /></div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} />
-                <div className="errorMsg">{errors.description}</div>
+                <div style={{marginLeft: '-47px', width: '287px'}}>
+                <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.description}</div>
               </Form.Item>
             </>) : null
           }
           {(state.format === '3') ?
             (<><Form.Item label="Title">
-              <Input name="title3" type="text" onChange={handleChange} value={state.title3} />
-              <div className="errorMsg">{errors.title}</div>
+              <div style={{marginLeft: '-47px', width: '287px'}}>
+              <Input name="title3" type="text" onChange={handleChange} value={state.title3} /></div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} />
-                <div className="errorMsg">{errors.description}</div>
+                <div style={{marginLeft: '-47px', width: '287px'}}>
+                <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.description}</div>
               </Form.Item></>) : null
           }
           {state.format === '3' || state.format === '2' ?
             (<><Form.Item label="Pdf/External URL">
-              <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} />
+              <div style={{marginLeft: '-47px', width: '287px'}}>
+              <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
             </Form.Item></>) : null}
 
           {state.format === '1' ?
@@ -368,7 +396,7 @@ const ModalContent = (props) => {
                 <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
           {state.format === '3' ?
-            (<Form.Item label="Video Url"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></Form.Item>) : null}
+            (<Form.Item label="Video Url"><div style={{marginLeft: '-47px', width: '287px'}}><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
@@ -383,14 +411,14 @@ const ModalContent = (props) => {
                 Later
               </Radio>
             </Radio.Group>
-            <div className="errorMsg">{errors.publishingtime}</div>
+            <div className="errorMsg">{errors && errors.errors && errors.errors.publishingtime}</div>
           </Form.Item>
           
           {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
           </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-            <Button type="primary">Save</Button>
+            <Button type="primary"  htmlType="submit">Save</Button>
           </Form.Item>
         </div>
       </Form>

@@ -13,9 +13,9 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case 'RETRIEVE_SPECIALIZATION':
-      return {...state , specList:action.payload, addData: false, updateData: false};
+      return {...state , specList:action.payload, addData: false, updateData: false, page: action.page};
     case 'RETREIVE_SUB_SPECIALIZATION':
-      return {...state , subspecialization: action.payload , addSubData:false , updateSubData: false};
+      return {...state , subspecialization: action.payload , addSubData:false , updateSubData: false, page: action.page};
     case 'DELETE_SPECIALIZATION':
       return {...state , specList:Object.assign({}, state.specList, {results: state.specList && state.specList.results && state.specList.results.filter(item => item.id !== action.payload)})}
     case 'ADD_SPECIALIZATION':

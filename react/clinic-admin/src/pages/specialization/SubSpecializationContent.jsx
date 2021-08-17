@@ -18,7 +18,7 @@ const SubSpecializationContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const { specId } = useParams();
 
-  const { subspecialization, updateSubData, addSubData } = useSelector(state => state.spec);
+  const { subspecialization, updateSubData, addSubData, page } = useSelector(state => state.spec);
   
   
   useEffect(() => {
@@ -47,7 +47,6 @@ const SubSpecializationContent = () => {
   }
 
   const confirmDelete = (id) => {
-    console.log("subspec id", id);
     dispatch(deleteSubSpec(id))
       .then((res) => {
         res.status === 204 ? message.success("Sub Specialitity deleted successfully") : message.error("Sub Specialitity is not exist")
@@ -71,7 +70,6 @@ const SubSpecializationContent = () => {
     })
     return items;
   }
-  const subSpec = subSpecGenerator();
 
   const columns = [
     {
@@ -125,8 +123,8 @@ const SubSpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {subSpec ?
-          (<Table columns={columns} pagination={pagination} dataSource={subSpec}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
+        {subspecialization && page == current ?
+          (<Table columns={columns} pagination={pagination} dataSource={subSpecGenerator()}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
       </Card>
       <Drawer
         title={

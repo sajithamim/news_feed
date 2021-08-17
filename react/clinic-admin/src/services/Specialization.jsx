@@ -3,12 +3,10 @@ import axios from 'axios';
 
 
 const getAll = (page) => {
-  page = page != undefined ? page : 1;
   return http.get(`spec/specialization?page=${page}`);
 };
 
 const  getAllSubSpec = (id, page) => {
-  page = page != undefined ? page : 1;
   return http.get(`spec/specialization/${id}/spubspec_list?page=${page}`);
 }
 
