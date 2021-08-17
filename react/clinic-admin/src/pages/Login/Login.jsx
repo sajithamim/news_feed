@@ -54,7 +54,7 @@ const Login = () => {
         ]}
       >
         <Input
-          style={{ borderRadius: "8px" , marginLeft: 'auto'}}
+          style={{ borderRadius: "8px" , marginLeft: '2px'}}
           className="un"
           value={email}
           placeholder="Email"
