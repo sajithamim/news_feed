@@ -123,7 +123,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
     def get_published(self, obj):
         now = datetime.utcnow()
         publishtime = obj.publishingtime
-        if publishtime.replace(tzinfo=None)<=now.replace(tzinfo=None):
+        if publishtime.strftime("%Y-%m-%d %H:%M:%S")<=now.strftime("%Y-%m-%d %H:%M:%S"):
             published = 1
         else:
             published = 0

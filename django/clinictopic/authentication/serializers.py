@@ -37,14 +37,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         username = attrs.get('username', '')
         phone = attrs.get('phone', '')
         name = attrs.get('name', '')
+        # print(name)
+
         # if not phone.isnumeric():
         #     raise serializers.ValidationError(
         #         self.default_error_messages)
         return attrs
 
     def create(self, validated_data):
-        # print(str(**validated_data))
-        return User.objects.create_user(**validated_data)
+        now = datetime.datetime.now()
+        now_plus= now + datetime.timedelta(minutes = 3)
+        return User.objects.create_user(**validated_data,optvalid=now_plus)
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):
@@ -101,6 +104,9 @@ class Signinserializer(serializers.ModelSerializer):
                     detail='Please continue your login using ' +phone_verify.auth_provider)
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
+            now = datetime.datetime.now()
+            now_plus= now + datetime.timedelta(minutes = 3)
+            phone_verify.optvalid=now_plus
             phone_verify.save()
             email_body = "Dear "+email+" , Your OTP is " +str(otp) + ". Use this Passcode to complete your Login into ClinicTopics. Thank you."
             data = {'email_body': email_body, 'to_email': email,
