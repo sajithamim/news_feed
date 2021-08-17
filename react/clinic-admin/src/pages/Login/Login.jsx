@@ -16,7 +16,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const { error } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
-
+  console.log("accessToken", accessToken);
   const signin = (e) => {
     setLoading(true);
     dispatch(login(email,password))

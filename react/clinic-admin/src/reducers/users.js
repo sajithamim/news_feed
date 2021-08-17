@@ -3,10 +3,12 @@ const initialState= {
     userCategory:[],
     userSpec:[],
     userDetails:[],
-    userProfile:[]
+    userProfile:[],
+    qualifications:[],
 };
 
 const users = (state = initialState , action) => {
+    console.log("action" , action.payload)
     switch(action.type) {
         case 'GET_USER':
         return {...state , userList: action.payload }
@@ -22,6 +24,8 @@ const users = (state = initialState , action) => {
         return {...state , userProfile:action.payload }
         case 'GET_USER_PROFILE':
         return {...state , userProfile:action.payload }
+        case 'GET_QUALIFICATIONS':
+        return {...state , qualifications:action.payload }
         default: 
         return state;
     }

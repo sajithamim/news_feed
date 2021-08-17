@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Modal, Button, DatePicker, Space, message, Form, Popconfirm } from "antd";
+import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
-import PollContent from "./PollContent";
 import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization } from "../../actions/spec";
 import { getCategory } from "../../actions/category";

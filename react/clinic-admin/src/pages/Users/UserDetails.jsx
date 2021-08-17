@@ -27,11 +27,12 @@ const customStyles = {
 
 const UserDetails = () => {
   const [state, setState] = useState("");
-  const [inputVisible , setinputVisible] =useState(true);
+  const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails , qualifications} = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
+  const [isActiveInput , setIsActiveInput] = useState(true);
   useEffect(() => {
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
@@ -51,6 +52,13 @@ const UserDetails = () => {
       title: item.category_id.title
     })
   });
+  
+  const qualificationList = []
+  qualifications && qualifications.results && qualifications.results.map(item => {
+    return qualificationList.push(
+      { value: item.id ,label: item.name }
+    )
+  })
 
   const options = [
     { value: '1', label: 'Full Time' },
@@ -69,6 +77,12 @@ const UserDetails = () => {
     let newData = [];
     newData = ["test"];
     setState({ ...state, media: newData });
+  }
+  const handleQualificationChange = (value) => {
+    if(state.qualifications === 'other'){
+      setIsActiveInput(false);
+    }
+    setState({ ...state, qualification: value, qualifications: value.label });
   }
   const handleSelectChange = (value) => {
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
@@ -98,9 +112,9 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
+    console.log("state" , state);
     if (handleValidation())
       setState({ ...state, user_id: userDetails.data && userDetails.data.id });
-    console.log("state", state);
     // dispatch(postUserProfile(state));
   }
 
@@ -152,18 +166,25 @@ const UserDetails = () => {
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit}>
                 <Form.Item label="Name">
-                  <Input name="name" className="form-control" type="text" value={state.name} onChange={handleChange} />
+                  <Input name="username" className="form-control" type="text" value={state.username} onChange={handleChange} />
                   <div className="errorMsg">{errors && errors.errors && errors.errors.name}</div>
                 </Form.Item>
                 <Form.Item label="About">
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
-                <Form.Item label="Qualification">
-                  <Tag className="site-tag-plus" onClick={showInput}>
-                    <PlusOutlined /> New Tag
-                  </Tag>
-                  {/* <Input name="qualification" className="form-control" type="text" value={state.qualification} onChange={handleChange} /> */}
+                <Form.Item label="Qualification" >
+                  <Select style={customStyles}
+                    id="qualification"
+                    isMulti={false}
+                    value={state.qualification}
+                    onChange={handleQualificationChange}
+                    options={qualificationList}
+                  />
                 </Form.Item>
+                {isActiveInput === true ? 
+                (<Form.Item label="Other Qualification">
+                  <Input name="other_qualification" className="form-control" type="text" value="" onChange={handleChange} />
+                </Form.Item>) : null }
                 <Form.Item label="Experience">
                   <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
                 </Form.Item>
