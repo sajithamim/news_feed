@@ -32,7 +32,7 @@ const UserDetails = () => {
   const { userCategory, userSpec, userDetails , qualifications} = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
-  const [isActiveInput , setIsActiveInput] = useState(true);
+  const [activeInput , setActiveInput] = useState(false);
   useEffect(() => {
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
@@ -70,19 +70,24 @@ const UserDetails = () => {
   ];
 
   const handleChange = (e) => {
+    const data = [];
+    if(e.target.name == "media_url") {
+       data.push(e.target.value.split(','))
+    }
+   
     setState({ ...state, [e.target.name]: e.target.value });
   }
 
-  const handleMediaChange = (e) => {
-    let newData = [];
-    newData = ["test"];
-    setState({ ...state, media: newData });
-  }
-  const handleQualificationChange = (value) => {
-    if(state.qualifications === 'other'){
-      setIsActiveInput(false);
-    }
-    setState({ ...state, qualification: value, qualifications: value.label });
+  const handleQualificationChange = (item) => {
+    const data = [];
+    item.map(item => {
+      if(item.label === 'other') {
+        setActiveInput(true);
+      }
+      data.push(item.label)
+    })
+ 
+    setState({ ...state, qualifications: data });
   }
   const handleSelectChange = (value) => {
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
@@ -113,9 +118,11 @@ const UserDetails = () => {
 
   const handleUserProfileSubmit = () => {
     console.log("state" , state);
-    if (handleValidation())
+    if (handleValidation()) {
       setState({ ...state, user_id: userDetails.data && userDetails.data.id });
-    // dispatch(postUserProfile(state));
+     // dispatch(postUserProfile(state));
+    }
+      
   }
 
   const renderTable = () => {
@@ -175,13 +182,13 @@ const UserDetails = () => {
                 <Form.Item label="Qualification" >
                   <Select style={customStyles}
                     id="qualification"
-                    isMulti={false}
+                    isMulti={true}
                     value={state.qualification}
                     onChange={handleQualificationChange}
                     options={qualificationList}
                   />
                 </Form.Item>
-                {isActiveInput === true ? 
+                {activeInput ? 
                 (<Form.Item label="Other Qualification">
                   <Input name="other_qualification" className="form-control" type="text" value="" onChange={handleChange} />
                 </Form.Item>) : null }
@@ -215,7 +222,7 @@ const UserDetails = () => {
                   <Input name="description" className="form-control" type="text" value={state.description} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Media URL">
-                  <Input name="media" className="form-control" type="text" value={state.media} onChange={handleMediaChange} />
+                  <Input name="media_url" className="form-control" type="text" value={state.media_url} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
                   <Button type="primary" htmlType="submit" >Save</Button>

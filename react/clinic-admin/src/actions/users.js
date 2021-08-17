@@ -64,15 +64,16 @@ export const deleteUser = (id) => async (dispatch) => {
 }
 
 export const postUserProfile = (state) => async (dispatch) => {
-    try {
-        const res = await Users.postUserProfile(state);
-        dispatch({
-            type: 'POST_USER_PROFILE',
-            payload: res.data,
-        })
-    } catch (err) {
-        console.log(err)
-    }
+    console.log('state', state)
+    // try {
+    //     const res = await Users.postUserProfile(state);
+    //     dispatch({
+    //         type: 'POST_USER_PROFILE',
+    //         payload: res.data,
+    //     })
+    // } catch (err) {
+    //     console.log(err)
+    // }
 }
 export const getUserProfile = (id) => async (dispatch) => {
     try {
