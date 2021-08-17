@@ -150,7 +150,7 @@ const ModalContent = (props) => {
   const radioOnChange = (val, e) => {
     if (val === 'publish') {
       const crntDateTime = new Date().toISOString();
-      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "" , published: (e.target.value === 'now') ? '1' : '0'})
+      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
@@ -177,7 +177,7 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    console.log("author state" , errors);
+    console.log("author state", errors);
     if (handleValidation()) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -224,7 +224,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      props.onFormSubmit(newData, form_data, form_data2 , image_data);
+      // props.onFormSubmit(newData, form_data, form_data2, image_data);
     }
   }
 
@@ -262,23 +262,65 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
+    if (!fields["topic_topic"]) {
+      formIsValid = false;
+      errors["topic_topic"] = "Specialization cannot be empty";
+    }
     if (!fields["category_id"]) {
-        formIsValid = false;
-        errors["category_id"] = "Category cannot be empty";
+      formIsValid = false;
+      errors["category_id"] = "Category cannot be empty";
     }
 
     if (!fields["publishingtime"]) {
-        formIsValid = false;
-        errors["publishingtime"] = "Publish time cannot be empty";
-    }
-
-    if (!fields["topic_topic"]) {
       formIsValid = false;
-      errors["topic_topic"] = "Publish time cannot be empty";
-  }
+      errors["publishingtime"] = "Publish time cannot be empty";
+    }
+    if (!fields["title1"]) {
+      formIsValid = false;
+      errors["title"] = " Title cannot be empty";
+    }
+    if (!fields["description1"]) {
+      formIsValid = false;
+      errors["description1"] = "Description cannot be empty";
+    }
+    if(state.format === '1')
+    {
+      if (!fields["title1"]) {
+        formIsValid = false;
+        errors["title1"] = " Title cannot be empty";
+      }
+      if(state.pdfUrl === undefined){
+        errors["pdf"] = "Please upload Front Pdf"
+       }
+      if(state.pdfUrlSecond === undefined) {
+        errors["pdfsecond"] = "Please upload Back Pdf"
+      }
+    }
+    if(state.format === '2')
+    {
+      if (!fields["title2"]) {
+        formIsValid = false;
+        errors["title2"] = " Title cannot be empty";
+      }
+      if (!fields["description2"]) {
+        formIsValid = false;
+        errors["description2"] = " Description cannot be empty";
+      }
+    }
+    if(state.format === '3')
+    {
+      if (!fields["title3"]) {
+        formIsValid = false;
+        errors["title3"] = " Title cannot be empty";
+      }
+      if (!fields["description3"]) {
+        formIsValid = false;
+        errors["description3"] = " Description cannot be empty";
+      }
+    }
     setErrors({ errors });
     return formIsValid;
- }
+  }
 
   const cancel = (e) => {
     message.error('Cancelled');
@@ -345,50 +387,50 @@ const ModalContent = (props) => {
           </Form.Item>
           {(state.format === '1') ?
             (<><Form.Item label="Title">
-              <div style={{marginLeft: '-47px', width: '287px'}}>
-              <Input name="title1" type="text" onChange={handleChange} value={state.title1}/></div>
-              <div className="errorMsg">{errors.title}</div>
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input name="title1" type="text" onChange={handleChange} value={state.title1} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.title1}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <div style={{marginLeft: '-47px', width: '287px'}}>
-                <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1}/></div>
-                <div className="errorMsg">{errors.description}</div>
+                <div style={{ marginLeft: '-47px', width: '287px' }}>
+                  <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
               </Form.Item></>) : null
           }
           {(state.format === '2') ?
             (<><Form.Item label="Title">
-              <div style={{marginLeft: '-47px', width: '287px'}}>
-              <Input name="title2" type="text" onChange={handleChange} value={state.title2} /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input name="title2" type="text" onChange={handleChange} value={state.title2} /></div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.title2}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <div style={{marginLeft: '-47px', width: '287px'}}>
-                <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.description}</div>
+                <div style={{ marginLeft: '-47px', width: '287px' }}>
+                  <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.description2}</div>
               </Form.Item>
             </>) : null
           }
           {(state.format === '3') ?
             (<><Form.Item label="Title">
-              <div style={{marginLeft: '-47px', width: '287px'}}>
-              <Input name="title3" type="text" onChange={handleChange} value={state.title3} /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input name="title3" type="text" onChange={handleChange} value={state.title3} /></div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.title3}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <div style={{marginLeft: '-47px', width: '287px'}}>
-                <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.description}</div>
+                <div style={{ marginLeft: '-47px', width: '287px' }}>
+                  <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.description3}</div>
               </Form.Item></>) : null
           }
           {state.format === '3' || state.format === '2' ?
             (<><Form.Item label="Pdf/External URL">
-              <div style={{marginLeft: '-47px', width: '287px'}}>
-              <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
             </Form.Item></>) : null}
 
           {state.format === '1' ?
-            (<><Form.Item label="Pdf Front"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>
-            <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></Form.Item></>) : null}
+            (<><Form.Item label="Pdf Front"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
@@ -396,29 +438,29 @@ const ModalContent = (props) => {
                 <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
           {state.format === '3' ?
-            (<Form.Item label="Video Url"><div style={{marginLeft: '-47px', width: '287px'}}><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
+            (<Form.Item label="Video Url"><div style={{ marginLeft: '-47px', width: '287px' }}><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
-           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span style={{color:"red"}}>Published</span></Form.Item></>) : 
+          {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span style={{ color: "red" }}>Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
-            <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
-              <Radio value="now">
-                Publish Now
-              </Radio>
-              <Radio value="later">
-                Later
-              </Radio>
-            </Radio.Group>
-            <div className="errorMsg">{errors && errors.errors && errors.errors.publishingtime}</div>
-          </Form.Item>
-          
-          {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
-            <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
-          </Form.Item>) : null} </>)}
+              <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
+                <Radio value="now">
+                  Publish Now
+                </Radio>
+                <Radio value="later">
+                  Later
+                </Radio>
+              </Radio.Group>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.publishingtime}</div>
+            </Form.Item>
+
+              {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
+                <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
+              </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-            <Button type="primary"  htmlType="submit">Save</Button>
+            <Button type="primary" htmlType="submit">Save</Button>
           </Form.Item>
         </div>
       </Form>

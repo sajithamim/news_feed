@@ -10,7 +10,6 @@ import { getUsersList, deleteUser } from "../../actions/users"
 
 const UserContent = () => {
   const { userList } = useSelector(state => state.users);
-  console.log("userList" , userList);
   const dispatch = useDispatch();
   let history = useHistory();
   useEffect(() => {

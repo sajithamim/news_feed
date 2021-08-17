@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
+import { getUsersList } from "../../actions/users";
 
 const SpecializationContent = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const SpecializationContent = () => {
   const confirmDelete = (id) => {
     dispatch(deleteSpec(id))
       .then((res) => {
-        //res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+        res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
       })
   };
 

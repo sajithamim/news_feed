@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerAdvisory from "./DrawerAdvisory"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
+import { getUsersList } from "../../actions/users"
 
 const AdvisoryBoardContent = () => {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const AdvisoryBoardContent = () => {
   const { specList, updateData, addData } = useSelector(state => state.spec);
 
   useEffect(() => {
-    dispatch(getSpecialization())
+    dispatch(getUsersList())
     onClose();
   }, [updateData, addData])
 
