@@ -45,9 +45,9 @@ function App() {
           <PrivateRoute path="/contact" exact component={Contact} />
           <PrivateRoute path="/advertisements" exact component={Ads} />
           <PrivateRoute path="/terms" exact component={Terms} />
-          <PrivateRoute path="/add_ads/" exact component={AddAds} />
+          <PrivateRoute path="/new_add/" exact component={AddAds} />
           <PrivateRoute path="/advisory_board/" exact component={AdvisoryBoardContent} />
-          <PrivateRoute path="/add_ads/:adsId" exact component={AddAds} />
+          <PrivateRoute path="/edit_add/:adsId" exact component={AddAds} />
           <PrivateRoute path="/userdetails/:emailId" exact component={UserDetails} />
           <PrivateRoute path="/banner/" exact component={Banner} />
           <Route path="/forgot_password" exact component={Forgot} />
