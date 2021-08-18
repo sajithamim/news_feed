@@ -38,7 +38,8 @@ from django.db.models import Q
 import requests
 from django.http import Http404
 from rest_framework.pagination import PageNumberPagination
-
+import datetime
+import pytz
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -151,6 +152,17 @@ class LoginAPIView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
+        now = datetime.datetime.utcnow()
+        user = User.objects.get(phone=request.data['phone'])
+        otpvallid = user.optvalid   
+        if now.strftime("%Y-%m-%d %H:%M:%S") > otpvallid.strftime("%Y-%m-%d %H:%M:%S"):
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success' : 'True',
+                'status code' : status_code,
+                'message': 'otp expired!',
+                }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         status_code = status.HTTP_200_OK
@@ -188,7 +200,15 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your passsword'}
             Util.send_email(data)
-        return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+            return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+        else:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'False',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'user does not exists'
+                }
+            return Response(response, status=status_code)
 
 
 class PasswordTokenCheckAPI(generics.GenericAPIView):
@@ -258,6 +278,7 @@ class SignInOtpview(generics.GenericAPIView):
                 phone_verify = User.objects.filter(phone=request.data['phone']).first()
             if 'email' in request.data:
                 phone_verify = User.objects.filter(email=request.data['email']).first()
+            # print(phone_verify)
             if not phone_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
@@ -344,6 +365,16 @@ class UserProfilepicView(viewsets.ModelViewSet):
         @action(detail=False,methods=['PUT'],serializer_class=ProfileUpdateSerializer,parser_classes=[parsers.MultiPartParser],)
         def profilepicadd(self, request):
             obj = User.objects.get(email=request.user)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+        @action(detail=True,methods=['PUT'],serializer_class=ProfileUpdateSerializer,parser_classes=[parsers.MultiPartParser],)
+        def profilepicaddadmin(self, request,pk=None):
+            obj = User.objects.get(id=pk)
             serializer = self.serializer_class(obj, data=request.data,
                                             partial=True)
             if serializer.is_valid():
@@ -517,9 +548,40 @@ class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    def create(self, request):
+        user_id = request.data['user_id']
+        pro= Profile.objects.filter(user_id=user_id).delete()
+        serializer = ProfileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class QualificationView(viewsets.ModelViewSet):
         queryset = Qualifications.objects.all()
         serializer_class = QualificationSerializer
         permission_classes = (permissions.IsAuthenticated,)
+
+
+class getUserProfileView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request,pk, *args, **kwargs):
+        try:
+            # print(pk)
+            user = Profile.objects.get(user_id=pk)
+            serializers = ProfileSerializer(user)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)

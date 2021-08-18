@@ -132,6 +132,20 @@ class SpecializationView(viewsets.ModelViewSet):
     queryset = Specialization.objects.all().order_by('name')
     serializer_class = GetSpecializationseriallizer
     permission_classes = (IsAuthenticated,)
+    def create(self, request):
+        name = request.data['name']
+        if Specialization.objects.filter(name__icontains=name):
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'specialization already exists with this name'
+                }
+            return Response(response, status=status_code)
+        serializer = GetSpecializationseriallizer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
     @action(detail=True, methods=['get'])
     def spubspec_list(self, request, pk=None):
         spec = self.get_object() # retrieve an object by pk provided
@@ -153,6 +167,21 @@ class SubSpecializationView(viewsets.ModelViewSet):
     queryset = SubSpecialization.objects.all().order_by('name')
     serializer_class = GetSubspecializationSerializer
     permission_classes = (IsAuthenticated,)
+    def create(self, request):
+        name = request.data['name']
+        spec_id = request.data['spec_id']
+        if SubSpecialization.objects.filter(name__icontains=name,spec_id=spec_id):
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'subspecialization already exists with this name'
+                }
+            return Response(response, status=status_code)
+        serializer = GetSubspecializationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
     @action(detail=True,methods=['PUT'],serializer_class=SubSpecializationpicSerializer,parser_classes=[parsers.MultiPartParser],)
     def icon(self, request, pk):
         obj = self.get_object()

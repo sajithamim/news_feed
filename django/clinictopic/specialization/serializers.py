@@ -10,17 +10,7 @@ from authentication.serializers import UserProfileSerializer
 # import json
 from rest_framework import generics, status
 
-class GetSubspecializationSerializer(serializers.ModelSerializer):
-    # subspeccount = serializers.SerializerMethodField()
-    class Meta: 
-        model = SubSpecialization
-        fields = '__all__'
 
-    # def get_subspeccount(self, obj):
-    #     # print(self.context)
-    #     user_id =self.context['request'].user
-    #     # print(user_id)
-    #     return UserSubSpecialization.objects.filter(user_spec_id__user_id=user_id,sub_spec_id=obj.id).count()
 
 class GetSubspecializationArraySerializer(serializers.ModelSerializer):
     subspeccount = serializers.SerializerMethodField()
@@ -35,9 +25,16 @@ class GetSubspecializationArraySerializer(serializers.ModelSerializer):
         return UserSubSpecialization.objects.filter(user_spec_id__user_id=user_id,sub_spec_id=obj.id).count()
 
 class GetSpecializationseriallizer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = Specialization
         fields = '__all__'
+
+class GetSubspecializationSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = SubSpecialization
+        fields = '__all__'
+
 
 class GetSpecialization(serializers.ModelSerializer):
     id =  serializers.ReadOnlyField()
