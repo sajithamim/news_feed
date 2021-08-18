@@ -530,9 +530,40 @@ class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    def create(self, request):
+        user_id = request.data['user_id']
+        pro= Profile.objects.filter(user_id=user_id).delete()
+        serializer = ProfileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class QualificationView(viewsets.ModelViewSet):
         queryset = Qualifications.objects.all()
         serializer_class = QualificationSerializer
         permission_classes = (permissions.IsAuthenticated,)
+
+
+class getUserProfileView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request,pk, *args, **kwargs):
+        try:
+            # print(pk)
+            user = Profile.objects.get(user_id=pk)
+            serializers = ProfileSerializer(user)
+            response={
+                "success":"True",
+                "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
