@@ -65,7 +65,7 @@ class SubSpecialization(models.Model):
          # change the image field value to be the newly modified image value
         self.icon.save(filename, ContentFile(image_io.getvalue()), save=False)
 
-      super(Specialization, self).save(*args, **kwargs)
+      super(SubSpecialization, self).save(*args, **kwargs)
     def __str__(self):
         return self.name
     class Meta:
