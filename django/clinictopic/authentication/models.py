@@ -127,3 +127,10 @@ class Qualifications(models.Model):
     name = models.CharField(max_length=255)
     class Meta:
         db_table ="Qualifications"
+
+
+class Accomplishments(models.Model):
+    user = models.ForeignKey(User,on_delete=models.DO_NOTHING,blank=True,null=True,related_name="acc_user") 
+    title = models.CharField(max_length=255)
+    image = models.ImageField(blank=True,null=True,upload_to="accomplishment")
+    publisher = models.CharField(max_length=255,blank=True,null=True)

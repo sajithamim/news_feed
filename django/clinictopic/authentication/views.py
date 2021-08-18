@@ -372,6 +372,16 @@ class UserProfilepicView(viewsets.ModelViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
+        @action(detail=True,methods=['PUT'],serializer_class=ProfileUpdateSerializer,parser_classes=[parsers.MultiPartParser],)
+        def profilepicaddadmin(self, request,pk=None):
+            obj = User.objects.get(id=pk)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
         @action(detail=False,methods=['PUT'])
         def profilepicremove(self, request):
             obj = User.objects.get(email=request.user)
