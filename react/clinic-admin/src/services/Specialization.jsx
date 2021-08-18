@@ -6,8 +6,8 @@ const getAll = (page) => {
   return http.get(`spec/specialization?page=${page}`);
 };
 
-const  getAllSubSpec = (id, page) => {
-  return http.get(`spec/specialization/${id}/spubspec_list?page=${page}`);
+const  getAllSubSpec = (id) => {
+  return http.get(`spec/specialization/${id}/spubspec_list`);
 }
 
 const postSpec =(state) => {

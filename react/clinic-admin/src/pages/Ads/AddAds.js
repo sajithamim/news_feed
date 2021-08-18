@@ -184,9 +184,9 @@ const AddAds = () => {
             let newData = {};
             newData['add_specialization'] = state.add_specialization;
             newData['title'] = state.title;
-            // dispatch(postAdds(newData, userList, adsId, imgData)).then((res) => {
-            //     message.success('Ads created successfully')
-            // })
+            dispatch(postAdds(newData, userList, adsId, imgData)).then((res) => {
+                message.success('Ads created successfully')
+            })
             return true;
         } else {
             errors["users"] = "Users is required";

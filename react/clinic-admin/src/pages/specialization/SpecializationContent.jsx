@@ -40,8 +40,8 @@ const SpecializationContent = () => {
 
   const confirmDelete = (id) => {
     dispatch(deleteSpec(id))
-      .then((res) => {
-        res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
+      .then(() => {
+        message.success("Specialization is deleted successfully")
       })
   };
 

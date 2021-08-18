@@ -64,9 +64,10 @@ export const deleteUser = (id) => async (dispatch) => {
 
 export const postUserProfile = (state) => async (dispatch) => {
     try {
-        const res = await Users.patchUserProfile(state);
+        const res = await Users.postUserProfile(state);
+        console.log("res" , res);
         dispatch({
-            type: 'PATCH_USER_PROFILE',
+            type: 'POST_USER_PROFILE',
             payload: res.data,
         })
     } catch (err) {

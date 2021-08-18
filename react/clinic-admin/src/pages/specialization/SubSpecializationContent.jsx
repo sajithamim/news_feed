@@ -19,7 +19,7 @@ const SubSpecializationContent = () => {
   const { specId } = useParams();
 
   const { subspecialization, updateSubData, addSubData, page } = useSelector(state => state.spec);
-  
+  console.log("subspecialization",subspecialization);
   
   useEffect(() => {
     dispatch(getSubSpecialisation(specId))
@@ -123,8 +123,8 @@ const SubSpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {subspecialization && page == current ?
-          (<Table columns={columns} pagination={pagination} dataSource={subSpecGenerator()}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
+        {subspecialization &&  subspecialization ?
+          (<Table columns={columns}  dataSource={subSpecGenerator()}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
       </Card>
       <Drawer
         title={

@@ -69,11 +69,11 @@ const UserDetails = () => {
 
   const handleChange = (e) => {
     const data = [];
-    if(e.target.name == "media") {
+    if(e.target.name === "media") {
        data.push(e.target.value.split(','))
     }
    
-    setState({ ...state, [e.target.name]: e.target.value });
+    setState({ ...state, [e.target.name]: e.target.value  , media: data});
   }
 
   const handleQualificationChange = (item) => {
