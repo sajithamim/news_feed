@@ -15,18 +15,17 @@ const AddAds = () => {
     const [state, setState] = useState({ allUsers: false });
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
-    const [image , setImage] = useState({});
-    const [imgData , setImgData] = useState({});
+    const [image, setImage] = useState({});
+    const [imgData, setImgData] = useState({});
     const [selectedList, setSelectedList] = useState([]);
     const { adsId } = useParams();
 
     const { adsDetails, userDetails, selectedSpecid, newaddId, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
     const { specList } = useSelector(state => state.spec);
-
+    console.log()
     //all users of particular specialization
     const users = [];
     specUsers && specUsers.results && specUsers.results.map((item) => {
-        console.log('state.selectedUsers', state.selectedUsers)
         if (state.selectedUsers && state.selectedUsers.includes(item.id)) {
             users.push(<option value={item.id} selected>{item.username}</option>)
         } else {
@@ -55,7 +54,6 @@ const AddAds = () => {
             if (item.user_id)
                 adsUserList.push(item.user_id.id)
             else {
-                console.log('all users true')
                 setState({ ...state, allUsers: true })
 
             }
@@ -70,14 +68,6 @@ const AddAds = () => {
             //selected specializatiom
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name });
         })
-
-        //const editUsersDetails = [];
-        // userDetails && userDetails.data && userDetails.data.map((item) => {
-        //     editUsersDetails.push(
-        //         { value: item.user_id.email, label: item.user_id.username }
-        //     )
-        // })
-        //setSTate({ users: editUsersDetails})
 
         setState({ ...state, title: adsDetails.title, specialization: editAdsSpecialization, add_specialization: topic, selectedSpecid: selectedSpecid, selectedUsers: adsUserList })
     }, [adsDetails, adsUserDetails])
@@ -129,6 +119,7 @@ const AddAds = () => {
 
     const handleScreen = () => {
         if (handleValidation()) {
+            console.log("state" , state);
             const id = state.specialization[0].value;
             setState({ ...state, specActiveId: id })
             setToggle(!toggle);
@@ -148,7 +139,7 @@ const AddAds = () => {
         setSelectedList(selectedValues);
         const userData = [];
         selectedValues && selectedValues.map((item) => {
-            userData.push({ spec_id: specId, id: item })
+            userData.push({ spec_id: specId, user_id: item })
         })
         setState({ ...state, userVisibility: userData })
     }
@@ -172,120 +163,122 @@ const AddAds = () => {
         }
     }
 
-        const handleSubmit = (id) => {
-            const userList = [];
-            let errors = {};
-            if (state.userData || state.allUsers) {
-                if (state.allUsers === true) {
-                    userList.push({ spec_id: state.specActiveId, user_id: null })
-                }
-                else {
-                    let userData = state.userVisibility;
-                    userData.map(item => {
-                        if (item.spec_id === state.specActiveId) {
-                            userList.push(item)
-                        }
-                    })
-                }
-                setErrors({ errors });
-                let newData = {};
-                newData['add_specialization'] = state.add_specialization;
-                newData['title'] = state.title;
-                dispatch(postAdds(newData, userList, adsId)).then((res) => {
-                    message.success('Ads created successfully')
-                })
-                return true;
-            } else {
-                errors["users"] = "Users is required";
-                setErrors({ errors });
-                return false;
+    const handleSubmit = (id) => {
+        const userList = [];
+        let errors = {};
+        console.log("userVisibilty", imgData);
+        if (state.userVisibility || state.allUsers) {
+            if (state.allUsers === true) {
+                userList.push({ spec_id: state.specActiveId, user_id: null })
             }
-
+            else {
+                let userData = state.userVisibility;
+                userData.map(item => {
+                    console.log("else userList", userList);
+                    if (item.spec_id === state.specActiveId) {
+                        userList.push(item)
+                    }
+                })
+            }
+            setErrors({ errors });
+            let newData = {};
+            newData['add_specialization'] = state.add_specialization;
+            newData['title'] = state.title;
+            // dispatch(postAdds(newData, userList, adsId, imgData)).then((res) => {
+            //     message.success('Ads created successfully')
+            // })
+            return true;
+        } else {
+            errors["users"] = "Users is required";
+            setErrors({ errors });
+            return false;
         }
 
-        return (
-            <div style={{ margin: "10px" }}>
-                <Card
-                    title={adsId ? "Edit Ads" : "Add Ads"}
-                    style={{ width: "100%", display: toggle ? "none" : "block" }} >
-                    <Form
-                        name="basic"
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 7 }}
-                        initialValues={{ remember: true }}
-                        // onFinish={handleSubmit}
-                        style={{ marginTop: '25px' }}
-                    >
-                        <Form.Item label="Title"  >
-                            <Input name="title" value={state.title} onChange={(e) => { handleChange(e, "title") }} />
-                            <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
-                        </Form.Item>
-                        <Form.Item label="Specialization">
-                            <Select
-                                name="specialization"
-                                isMulti={true}
-                                value={state.specialization}
-                                onChange={handleSpecChange}
-                                options={specialization}
-                                required
-                            />
-                            <div className="errorMsg">{errors && errors.errors && errors.errors.specialization}</div>
-                        </Form.Item>
-                        <Form.Item label="Ads">
-                            <img className="playerProfilePic_home_tile" width="128px" height="128px" alt="" src="" />
-                            <Input type="file"
-                                id="image"
-                                name="image"
-                                accept="image/png, image/jpeg" onChange={handleFileChange} />
-                            {/* <div className="errorMsg">{errors.image}</div> */}
-                        </Form.Item>
-                        <Form.Item wrapperCol={{ offset: 5, span: 16 }}>
-                            <Button type="primary" onClick={handleScreen}>
-                                Next
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Card>
-                <Card type="inner"
-                    title={adsId ? "Edit Visibility" : "Add Visibility"} extra={<Button type="link">
-                        <Link to={"/advertisements"}>Back to Advertisement List</Link>
-                    </Button>}
-                    style={{ width: "100%", marginBottom: '200px', display: toggle ? "block" : "none" }} >
-
-                    <Form
-                        name="basic"
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 7 }}
-                        initialValues={{ remember: true }}
-                        onFinish={handleSubmit}
-                        style={{ marginTop: '25px' }}
-                    >
-
-                        <Tabs defaultActiveKey="1" centered onChange={buttonClick} >
-                            {state.specialization && state.specialization.map(specItem =>
-                            (
-                                <TabPane tab={specItem.label} key={specItem.value} style={{ marginBottom: '200px' }} centered>
-                                    <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
-                                        <Checkbox onChange={onChecked} checked={state.allUsers}>To All Users</Checkbox>
-                                    </Form.Item>
-                                    <div style={{ textAlign: "center" }}><strong>OR</strong></div>
-                                    <Form.Item wrapperCol={{ offset: 11, span: 10 }} style={{ paddingTop: '35px' }}>
-                                        <select style={{ paddingRight: '75px' }} name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
-                                        <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
-                                    </Form.Item>
-                                    <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
-                                        <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add User</Button>
-                                    </Form.Item>
-                                </TabPane>
-                            ))}
-
-                        </Tabs>
-                    </Form>
-                </Card >
-            </div >
-
-
-        )
     }
 
-    export default AddAds;
+    return (
+        <div style={{ margin: "10px" }}>
+            <Card
+                title={adsId ? "Edit Ads" : "Add Ads"}
+                style={{ width: "100%", display: toggle ? "none" : "block" }} >
+                <Form
+                    name="basic"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 7 }}
+                    initialValues={{ remember: true }}
+                    // onFinish={handleSubmit}
+                    style={{ marginTop: '25px' }}
+                >
+                    <Form.Item label="Title"  >
+                        <Input name="title" value={state.title} onChange={(e) => { handleChange(e, "title") }} />
+                        <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
+                    </Form.Item>
+                    <Form.Item label="Specialization">
+                        <Select
+                            name="specialization"
+                            isMulti={true}
+                            value={state.specialization}
+                            onChange={handleSpecChange}
+                            options={specialization}
+                            required
+                        />
+                        <div className="errorMsg">{errors && errors.errors && errors.errors.specialization}</div>
+                    </Form.Item>
+                    <Form.Item label="Ads">
+                        <img className="playerProfilePic_home_tile" width="128px" height="128px" alt="" src="" />
+                        <Input type="file"
+                            id="image"
+                            name="image"
+                            accept="image/png, image/jpeg" onChange={handleFileChange} />
+                        {/* <div className="errorMsg">{errors.image}</div> */}
+                    </Form.Item>
+                    <Form.Item wrapperCol={{ offset: 5, span: 16 }}>
+                        <Button type="primary" onClick={handleScreen}>
+                            Next
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Card>
+            <Card type="inner"
+                title={adsId ? "Edit Visibility" : "Add Visibility"} extra={<Button type="link">
+                    <Link to={"/advertisements"}>Back to Advertisement List</Link>
+                </Button>}
+                style={{ width: "100%", marginBottom: '200px', display: toggle ? "block" : "none" }} >
+
+                <Form
+                    name="basic"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 7 }}
+                    initialValues={{ remember: true }}
+                    onFinish={handleSubmit}
+                    style={{ marginTop: '25px' }}
+                >
+
+                    <Tabs defaultActiveKey="1" centered onChange={buttonClick} >
+                        {state.specialization && state.specialization.map(specItem =>
+                        (
+                            <TabPane tab={specItem.label} key={specItem.value} style={{ marginBottom: '200px' }} centered>
+                                <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
+                                    <Checkbox onChange={onChecked} checked={state.allUsers}>To All Users</Checkbox>
+                                </Form.Item>
+                                <div style={{ textAlign: "center" }}><strong>OR</strong></div>
+                                <Form.Item wrapperCol={{ offset: 11, span: 10 }} style={{ paddingTop: '35px' }}>
+                                    <select style={{ paddingRight: '75px' }} name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectChange(e, specItem.value)}>{users}</select>
+                                    <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
+                                </Form.Item>
+                                <Form.Item wrapperCol={{ offset: 11, span: 10 }}>
+                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add User</Button>
+                                </Form.Item>
+                            </TabPane>
+                        ))}
+
+                    </Tabs>
+                </Form>
+            </Card >
+        </div >
+
+
+    )
+}
+
+export default AddAds;

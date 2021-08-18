@@ -7,7 +7,7 @@ import { postSpecialization, updateSpecialization, updateSubSpecialization } fro
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-
+console.log("propssdds",props);
   const [state, setState] = useState(props.editData);
 
   const [errors, setErrors] = useState({name: ''});
@@ -17,7 +17,6 @@ const DrawerContent = (props) => {
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
-
   useEffect(() => {
     setState(props.editData);
     if(props.editData.icon && props.editData.icon.startsWith("/media"))
@@ -124,7 +123,7 @@ const DrawerContent = (props) => {
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
-            <Input name="name" onChange={handleChange} value={state.name}/>
+            <Input id="spec_name" name="name" onChange={handleChange} value={state.name}/>
             <div className="errorMsg">{errors.name}</div>
           </Form.Item>
 

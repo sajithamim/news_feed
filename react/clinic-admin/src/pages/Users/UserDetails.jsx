@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications } from "../../actions/users";
 import Select from 'react-select';
-import { PlusOutlined } from '@ant-design/icons';
 import "./Users.css";
 const columns = [
   {
@@ -30,6 +29,7 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails , qualifications} = useSelector(state => state.users);
+  console.log("userDetails" , userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [activeInput , setActiveInput] = useState(false);
@@ -38,14 +38,13 @@ const UserDetails = () => {
     dispatch(getUserCategory(emailId))
     dispatch(getUserSpecialization(emailId))
     dispatch(getUserProfile(userDetails.data && userDetails.data.id))
-      .then((res) => {
-        if (res && res.data && res.data.results.length >= 0) {
-          setState(res.data.results[0]);
-        }
-      })
+      // .then((res) => {
+      //   console.log("res.data.data" , res.data.data);
+      //     setState(res.data.data);
+      // })
     dispatch(getQualifications());
   }, [])
-
+  
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -59,11 +58,10 @@ const UserDetails = () => {
       { value: item.id ,label: item.name }
     )
   })
-
   const options = [
-    { value: '1', label: 'Full Time' },
-    { value: '2', label: 'Part Time' },
-    { value: '3', label: 'Self Employed' },
+    { value: '1', label: 'Full-time' },
+    { value: '2', label: 'Part-time' },
+    { value: '3', label: 'Self-employed' },
     { value: '4', label: 'Freelance' },
     { value: '5', label: 'Internship' },
     { value: '6', label: 'Trainee' },
@@ -71,7 +69,7 @@ const UserDetails = () => {
 
   const handleChange = (e) => {
     const data = [];
-    if(e.target.name == "media_url") {
+    if(e.target.name == "media") {
        data.push(e.target.value.split(','))
     }
    
@@ -89,6 +87,7 @@ const UserDetails = () => {
  
     setState({ ...state, qualifications: data });
   }
+
   const handleSelectChange = (value) => {
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
   }
@@ -117,14 +116,22 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
-    console.log("state" , state);
-    if (handleValidation()) {
+    
+    // if (handleValidation()) {
+      let newData = state;
+      delete newData["empolyment_value"];
+      delete newData["id"];
+      delete newData["username"];
+      console.log("state" , newData);
       setState({ ...state, user_id: userDetails.data && userDetails.data.id });
-     // dispatch(postUserProfile(state));
-    }
+      dispatch(postUserProfile(newData));
+    // }
       
   }
 
+  const handleFileChange = () => {
+
+  } 
   const renderTable = () => {
     const specList = [];
     userSpec && userSpec.data && userSpec.data.map(item => {
@@ -144,10 +151,10 @@ const UserDetails = () => {
             <Col span={6}>
               <Form.Item >
                 <img className="Avatar" width="128px" height="128px" style={{ borderRadius: '50%' }} alt="No Image" src="" />
-                {/* <Input type="file"
+                <Input type="file" 
                   id="image"
                   name="image"
-                  accept="image/png, image/jpeg" onChange={handleFileChange} /> */}
+                  accept="image/png, image/jpeg" onChange={handleFileChange} />
               </Form.Item>
             </Col>
             <Col span={16}>
@@ -222,7 +229,7 @@ const UserDetails = () => {
                   <Input name="description" className="form-control" type="text" value={state.description} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Media URL">
-                  <Input name="media_url" className="form-control" type="text" value={state.media_url} onChange={handleChange} />
+                  <Input name="media" className="form-control" type="text" value={state.media} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
                   <Button type="primary" htmlType="submit" >Save</Button>

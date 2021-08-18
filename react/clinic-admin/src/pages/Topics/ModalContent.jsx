@@ -223,7 +223,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      // props.onFormSubmit(newData, form_data, form_data2, image_data);
+      props.onFormSubmit(newData, form_data, form_data2, image_data);
     }
   }
 

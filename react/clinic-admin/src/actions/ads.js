@@ -55,12 +55,16 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
         }
         else {
             const res = await Ads.putAdds(newData, adsId);
+            console.log("all users" , userList);
             if (userList && res && res.data && adsId) {
                 const userData = []
                 userList.map(item => {
-                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: null })
+                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: item.user_id })
                 })
-               await Ads.postAddsVisibility(userData)
+                console.log("coming to else con")
+                console.log("userData" , userData);
+                await Ads.postAdsImage(adsId, imgData)
+                await Ads.postAddsVisibility(userData)
             }
             dispatch({
                 type: 'POST_ADD',
@@ -68,9 +72,6 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
             });
             return res;
         }
-        console.log('newData', newData);
-        console.log('userList', userList);
-        console.log('adsId', adsId);
         // if (adsId === undefined) {
         //     const res = await Ads.postAdds(newData);
         //     if (res && res.data && res.data.id) {
@@ -120,9 +121,9 @@ export const postAddsVisibilty = (state) => async (dispatch) => {
 export const getEditAdsDetails = (id) => async (dispatch) => {
     try {
         const res = await Ads.getEditAdsDetails(id);
-        console.log("getEditAdsDetails", res);
         const specid = res.data.add_specialization[0].spec_id.id;
         const res1 = await Ads.getAdsSelectedUser(id, specid);
+        console.log("res1",res1)
         const res2 = await Ads.getSpecUsers(specid);
         dispatch
             ({
