@@ -47,7 +47,7 @@ class Categoeries(models.Model):
          # change the image field value to be the newly modified image value
         self.image.save(filename, ContentFile(image_io.getvalue()), save=False)
 
-      super(Specialization, self).save(*args, **kwargs)
+      super(Categoeries, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
