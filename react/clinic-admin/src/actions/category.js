@@ -24,7 +24,7 @@ export const postCategory = (state, imageData) => async (dispatch) => {
             dispatch({
                 type: 'ADD_CATEGORY',
                 payload: res.data,
-            });
+            });return res;
         } else {
             dispatch({
                 type: 'ADD_CATEGORY',

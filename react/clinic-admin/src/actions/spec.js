@@ -14,10 +14,11 @@ export const getSpecialization = (page) => async (dispatch) => {
 }
 
 
-export const getSubSpecialisation = (id, page) => async (dispatch) => {
-    page = page != undefined ? page : 1;
+export const getSubSpecialisation = (id) => async (dispatch) => {
+    // page = page != undefined ? page : 1;
     try {
-        const res = await Specialization.getAllSubSpec(id, page);
+        const res = await Specialization.getAllSubSpec(id);
+        console.log("res",res);
         dispatch({
             type: 'RETREIVE_SUB_SPECIALIZATION',
             payload: res.data,
@@ -41,8 +42,10 @@ export const postSpecialization = (state) => async (dispatch) => {
                 type: 'ADD_SPECIALIZATION',
                 payload: res.data,
             });
+            return res;
         //}
-    } catch (err) {
+    } 
+    catch (err) {
     }
 }
 
@@ -93,6 +96,7 @@ export const postSubSpecialization = (state, imageData) => async (dispatch) => {
                 type: 'ADD_SUB_SPECIALIZATION',
                 payload: res.data,
             });
+            return res;
         //}
         } 
         catch (err) {
