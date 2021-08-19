@@ -1,13 +1,13 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import (RegisterSerializer, SetNewPasswordSerializer,
+from .serializers import (AccomplishmentSerializer, RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
  ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User,Profile,Qualifications
+from .models import Accomplishments, User,Profile,Qualifications
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 import jwt
@@ -34,7 +34,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from specialization.models import UserSpecialization
 from rest_framework import pagination
-from django.db.models import Q
+from django.db.models import Q, query
 import requests
 from django.http import Http404
 from rest_framework.pagination import PageNumberPagination
@@ -562,6 +562,11 @@ class QualificationView(viewsets.ModelViewSet):
         serializer_class = QualificationSerializer
         permission_classes = (permissions.IsAuthenticated,)
 
+
+class AccomplilshmentsView(viewsets.ModelViewSet):
+    queryset = Accomplishments.objects.all()
+    serializer= AccomplishmentSerializer
+    
 
 class getUserProfileView(APIView):
     permission_classes = (permissions.IsAuthenticated,)

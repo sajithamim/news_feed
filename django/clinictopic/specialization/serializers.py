@@ -136,7 +136,7 @@ class UserSubSpecializationSerializer(serializers.ModelSerializer):
 
 
 class UserSpecializationSerializer(serializers.ModelSerializer):
-    sub_userspec_id = UserSubSpecializationSerializer(many=True)
+    sub_userspec_id = UserSubSpecializationSerializer(many=True,allow_null=True, required=False)
 
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -151,13 +151,17 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
         response['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
         return response
     def create(self, validated_data):
-            subspec = validated_data.pop('sub_userspec_id')
+            sub = False
+            if 'sub_userspec_id' in  validated_data: 
+                sub =True    
+                subspec = validated_data.pop('sub_userspec_id')
             userspec = UserSpecialization.objects.create(**validated_data)
             usersubarray=[]
-            for subspec in subspec:
-                usersub=UserSubSpecialization.objects.create(user_spec_id=userspec, **subspec)
-            # print(usersubarray)
-            # spec_id = {}
+            if sub:
+                for subspec in subspec:
+                    usersub=UserSubSpecialization.objects.create(user_spec_id=userspec, **subspec)
+                # print(usersubarray)
+                # spec_id = {}
             return userspec
 
 

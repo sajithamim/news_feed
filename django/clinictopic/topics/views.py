@@ -91,7 +91,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
     def create(self, request):
-        name = request.data['name']
+        name = request.data['title']
         if Categoeries.objects.filter(title__icontains=name):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
