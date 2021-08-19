@@ -120,6 +120,7 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
         return super(UserSpecializationApiView, self).get_serializer(*args, **kwargs)
     @csrf_exempt
     def perform_create(self, serializer): 
+        us = UserSpecialization.objects.filter(user_id =self.request.user).delete()
         serializer.save(user_id=self.request.user)
     @csrf_exempt
     def get_queryset(self):
