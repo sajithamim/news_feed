@@ -85,17 +85,16 @@ const DrawerContent = (props) => {
         delete newData["image"];
 
         dispatch(updateCategory(id, newData, form_data))
-          .then(() => {
+          .then((res) => {
             setState({});
-            message.success('Category edited successfully')
+            res != undefined ? (message.success('Category edited successfully')) : (message.error("Category already exists with this name"));
           });
       }
       else {
         dispatch(postCategory(state, form_data))
         .then((res) => {
-          console.log("res" , res);
           setState({});
-          message.success('Category added successfully')
+          res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
         });
       }
     }

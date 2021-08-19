@@ -112,7 +112,7 @@ const SpecializationContent = () => {
             <Link to={"/sub_specialization/" + record.id}>Sub Speciality</Link>
           </Button>
           <Button type="link">
-            <Link to={"/advisory_board"}>Advisory Board</Link>
+            <Link to={"/advisory_board/" + record.id}>Advisory Board</Link>
           </Button>
         </Space>
       ),

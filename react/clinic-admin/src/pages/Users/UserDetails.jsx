@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Space } from "antd";
+import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message } from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications } from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
 import Select from 'react-select';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import "./Users.css";
 const columns = [
   {
@@ -28,34 +29,39 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails , qualifications} = useSelector(state => state.users);
-  console.log("userDetails" , userDetails);
+  const { userCategory, userSpec, userDetails, qualifications } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
-  const [activeInput , setActiveInput] = useState(false);
+  const [image, setImage] = useState({});
+  const [activeInput, setActiveInput] = useState(false);
+  const { loading, setLoading } = useState(false);
+  const [ imageUrl , setImageUrl ] = useState();
+
   useEffect(() => {
     dispatch(getUserDetails(emailId))
-    dispatch(getUserCategory(emailId))
-    dispatch(getUserSpecialization(emailId))
-    dispatch(getUserProfile(userDetails.data && userDetails.data.id))
-      // .then((res) => {
-      //   console.log("res.data.data" , res.data.data);
-      //     setState(res.data.data);
-      // })
+      .then((res) => {
+        dispatch(getUserCategory(emailId))
+        dispatch(getUserSpecialization(emailId))
+        dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
+          .then((res) => {
+            res ? (setState(res.data.data)) : (setState({}));
+          })
+      })
+
     dispatch(getQualifications());
   }, [])
-  
+
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
       title: item.category_id.title
     })
   });
-  
+
   const qualificationList = []
   qualifications && qualifications.results && qualifications.results.map(item => {
     return qualificationList.push(
-      { value: item.id ,label: item.name }
+      { value: item.id, label: item.name }
     )
   })
   const options = [
@@ -67,24 +73,55 @@ const UserDetails = () => {
     { value: '6', label: 'Trainee' },
   ];
 
+  const beforeUpload = (file)=> {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+  }
+
+  function getBase64(img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
+  
+  const handleFileChange = (info) => {
+    if (info.file.status === 'uploading') {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, imageUrl =>
+          setImageUrl(imageUrl),
+          setLoading(false),
+      );
+    }
+  };
+
   const handleChange = (e) => {
     const data = [];
-    if(e.target.name === "media") {
-       data.push(e.target.value.split(','))
+    if (e.target.name === "media") {
+      data.push(e.target.value.split(',').toString())
     }
-   
-    setState({ ...state, [e.target.name]: e.target.value  , media: data});
+    setState({ ...state, [e.target.name]: e.target.value, user_id: userDetails.data && userDetails.data.id, media: data });
   }
 
   const handleQualificationChange = (item) => {
     const data = [];
     item.map(item => {
-      if(item.label === 'other') {
+      if (item.label === 'other') {
         setActiveInput(true);
       }
       data.push(item.label)
     })
- 
+
     setState({ ...state, qualifications: data });
   }
 
@@ -116,22 +153,22 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
-    
+
     // if (handleValidation()) {
-      let newData = state;
-      delete newData["empolyment_value"];
-      delete newData["id"];
-      delete newData["username"];
-      console.log("state" , newData);
-      setState({ ...state, user_id: userDetails.data && userDetails.data.id });
-      dispatch(postUserProfile(newData));
+    let newData = state;
+    delete newData["empolyment_value"];
+    delete newData["id"];
+    delete newData["username"];
+    console.log("sttate media", state.profilepic);
+    // dispatch(putProfilePic(state.profilepic));
+    // dispatch(postUserProfile(newData))
+    //   .then(() => {
+    //     message.success("User details Added Successfully");
+    //   })
     // }
-      
+
   }
 
-  const handleFileChange = () => {
-
-  } 
   const renderTable = () => {
     const specList = [];
     userSpec && userSpec.data && userSpec.data.map(item => {
@@ -143,6 +180,13 @@ const UserDetails = () => {
     return specList;
   }
 
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
   return (
     <div className="main-content">
       <Container fluid>
@@ -150,11 +194,22 @@ const UserDetails = () => {
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item >
-                <img className="Avatar" width="128px" height="128px" style={{ borderRadius: '50%' }} alt="No Image" src="" />
-                <Input type="file" 
+                {/* <img className="Avatar" width="128px" height="128px" style={{ borderRadius: '50%' }} alt="No Image" src="" />
+                <Input type="file"
                   id="image"
                   name="image"
-                  accept="image/png, image/jpeg" onChange={handleFileChange} />
+                  accept="image/png, image/jpeg" onChange={handleFileChange} /> */}
+                <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  beforeUpload={beforeUpload}
+                  onChange={handleFileChange}
+                >
+                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                </Upload>
               </Form.Item>
             </Col>
             <Col span={16}>
@@ -195,10 +250,10 @@ const UserDetails = () => {
                     options={qualificationList}
                   />
                 </Form.Item>
-                {activeInput ? 
-                (<Form.Item label="Other Qualification">
-                  <Input name="other_qualification" className="form-control" type="text" value="" onChange={handleChange} />
-                </Form.Item>) : null }
+                {activeInput ?
+                  (<Form.Item label="Other Qualification">
+                    <Input name="other_qualification" className="form-control" type="text" value="" onChange={handleChange} />
+                  </Form.Item>) : null}
                 <Form.Item label="Experience">
                   <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
                 </Form.Item>

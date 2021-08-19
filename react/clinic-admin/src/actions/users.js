@@ -45,6 +45,7 @@ export const getUserDetails = (emailId) => async (dispatch) => {
             type: 'GET_USER_DETAILS',
             payload: res.data,
         })
+        return res;
     } catch (err) {
         console.log(err);
     }
@@ -75,8 +76,10 @@ export const postUserProfile = (state) => async (dispatch) => {
     }
 }
 export const getUserProfile = (id) => async (dispatch) => {
+    console.log("id", id);
     try {
         const res = await Users.getUserProfile(id);
+        console.log("user response",res);
         dispatch({
             type: 'GET_USER_PROFILE',
             payload: res.data,
