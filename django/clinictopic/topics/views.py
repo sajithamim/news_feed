@@ -104,6 +104,23 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+    def update(self, request, *args, **kwargs):
+        name = request.data['title']
+        if Categoeries.objects.filter(title__icontains=name):
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'Category already exists with this name'
+                }
+            return Response(response, status=status_code)
+        partial = True # Here I change partial to True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
     def icon(self, request, pk,*args,**kwargs):
         # try:

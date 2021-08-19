@@ -613,7 +613,6 @@ class getUserAccomplishementView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request,pk, *args, **kwargs):
         try:
-            # print(pk)
             user = Accomplishments.objects.get(user_id=pk)
             serializers = AccomplishmentSerializer(user)
             response={
