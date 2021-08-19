@@ -92,7 +92,8 @@ const DrawerContent = (props) => {
       }
       else {
         dispatch(postCategory(state, form_data))
-        .then(() => {
+        .then((res) => {
+          console.log("res" , res);
           setState({});
           message.success('Category added successfully')
         });

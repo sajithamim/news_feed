@@ -23,10 +23,10 @@ const deleteUser = (id) => {
     return http.delete(`auth/deleteuser/${id}`)
 }
 const postUserProfile = (state) => {
-    return http.post("auth/userprofile/" ,state);
+    return http.post(`auth/userprofile/` ,state);
 }
 const getUserProfile = (id) => {
-    return http.get("auth/userprofile/" ,id);
+    return http.get(`auth/getuserprofile/${id}`);
 }
 const getQualifications = () => {
     return http.get("auth/qualifications/");

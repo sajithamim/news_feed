@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications } from "../../actions/users";
 import Select from 'react-select';
-import { PlusOutlined } from '@ant-design/icons';
 import "./Users.css";
 const columns = [
   {
@@ -27,49 +26,68 @@ const customStyles = {
 
 const UserDetails = () => {
   const [state, setState] = useState("");
-  const [inputVisible , setinputVisible] =useState(true);
+  const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails , qualifications} = useSelector(state => state.users);
+  console.log("userDetails" , userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
+  const [activeInput , setActiveInput] = useState(false);
   useEffect(() => {
     dispatch(getUserDetails(emailId))
     dispatch(getUserCategory(emailId))
     dispatch(getUserSpecialization(emailId))
     dispatch(getUserProfile(userDetails.data && userDetails.data.id))
-      .then((res) => {
-        if (res && res.data && res.data.results.length >= 0) {
-          setState(res.data.results[0]);
-        }
-      })
+      // .then((res) => {
+      //   console.log("res.data.data" , res.data.data);
+      //     setState(res.data.data);
+      // })
     dispatch(getQualifications());
   }, [])
-
+  
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
       title: item.category_id.title
     })
   });
-
+  
+  const qualificationList = []
+  qualifications && qualifications.results && qualifications.results.map(item => {
+    return qualificationList.push(
+      { value: item.id ,label: item.name }
+    )
+  })
   const options = [
-    { value: '1', label: 'Full Time' },
-    { value: '2', label: 'Part Time' },
-    { value: '3', label: 'Self Employed' },
+    { value: '1', label: 'Full-time' },
+    { value: '2', label: 'Part-time' },
+    { value: '3', label: 'Self-employed' },
     { value: '4', label: 'Freelance' },
     { value: '5', label: 'Internship' },
     { value: '6', label: 'Trainee' },
   ];
 
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    const data = [];
+    if(e.target.name === "media") {
+       data.push(e.target.value.split(','))
+    }
+   
+    setState({ ...state, [e.target.name]: e.target.value  , media: data});
   }
 
-  const handleMediaChange = (e) => {
-    let newData = [];
-    newData = ["test"];
-    setState({ ...state, media: newData });
+  const handleQualificationChange = (item) => {
+    const data = [];
+    item.map(item => {
+      if(item.label === 'other') {
+        setActiveInput(true);
+      }
+      data.push(item.label)
+    })
+ 
+    setState({ ...state, qualifications: data });
   }
+
   const handleSelectChange = (value) => {
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
   }
@@ -98,12 +116,22 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
-    if (handleValidation())
+    
+    // if (handleValidation()) {
+      let newData = state;
+      delete newData["empolyment_value"];
+      delete newData["id"];
+      delete newData["username"];
+      console.log("state" , newData);
       setState({ ...state, user_id: userDetails.data && userDetails.data.id });
-    console.log("state", state);
-    // dispatch(postUserProfile(state));
+      dispatch(postUserProfile(newData));
+    // }
+      
   }
 
+  const handleFileChange = () => {
+
+  } 
   const renderTable = () => {
     const specList = [];
     userSpec && userSpec.data && userSpec.data.map(item => {
@@ -123,10 +151,10 @@ const UserDetails = () => {
             <Col span={6}>
               <Form.Item >
                 <img className="Avatar" width="128px" height="128px" style={{ borderRadius: '50%' }} alt="No Image" src="" />
-                {/* <Input type="file"
+                <Input type="file" 
                   id="image"
                   name="image"
-                  accept="image/png, image/jpeg" onChange={handleFileChange} /> */}
+                  accept="image/png, image/jpeg" onChange={handleFileChange} />
               </Form.Item>
             </Col>
             <Col span={16}>
@@ -152,18 +180,25 @@ const UserDetails = () => {
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit}>
                 <Form.Item label="Name">
-                  <Input name="name" className="form-control" type="text" value={state.name} onChange={handleChange} />
+                  <Input name="username" className="form-control" type="text" value={state.username} onChange={handleChange} />
                   <div className="errorMsg">{errors && errors.errors && errors.errors.name}</div>
                 </Form.Item>
                 <Form.Item label="About">
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
-                <Form.Item label="Qualification">
-                  <Tag className="site-tag-plus" onClick={showInput}>
-                    <PlusOutlined /> New Tag
-                  </Tag>
-                  {/* <Input name="qualification" className="form-control" type="text" value={state.qualification} onChange={handleChange} /> */}
+                <Form.Item label="Qualification" >
+                  <Select style={customStyles}
+                    id="qualification"
+                    isMulti={true}
+                    value={state.qualification}
+                    onChange={handleQualificationChange}
+                    options={qualificationList}
+                  />
                 </Form.Item>
+                {activeInput ? 
+                (<Form.Item label="Other Qualification">
+                  <Input name="other_qualification" className="form-control" type="text" value="" onChange={handleChange} />
+                </Form.Item>) : null }
                 <Form.Item label="Experience">
                   <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
                 </Form.Item>
@@ -194,7 +229,7 @@ const UserDetails = () => {
                   <Input name="description" className="form-control" type="text" value={state.description} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Media URL">
-                  <Input name="media" className="form-control" type="text" value={state.media} onChange={handleMediaChange} />
+                  <Input name="media" className="form-control" type="text" value={state.media} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
                   <Button type="primary" htmlType="submit" >Save</Button>

@@ -21,7 +21,6 @@ const UserContent = () => {
   };
 
   const confirmDelete = (id) => {
-    console.log("id", id);
     dispatch(deleteUser(id));
   };
 

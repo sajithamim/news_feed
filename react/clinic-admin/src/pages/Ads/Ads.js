@@ -99,7 +99,7 @@ const Ads = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button type="link" onClick={() => onEdit(record.id)}>
-            <Link to={"/add_ads/" + record.id}>Edit</Link>
+            <Link to={"/edit_add/" + record.id}>Edit</Link>
           </Button>
           <Popconfirm
             title="Are you sure to delete this specialization?"
@@ -121,7 +121,7 @@ const Ads = () => {
         title="Advertisement List"
         extra={
           <IconButton >
-            <Icon><a href = "/add_ads">add</a></Icon>
+            <Icon><a href ="/new_add">add</a></Icon>
           </IconButton>
         }
         style={{ width: "100%" }}

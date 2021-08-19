@@ -1,4 +1,5 @@
 import { http } from "../http-common"
+import axios from 'axios';
 
 const  getAds = () => {
     return http.get("add/ads");
@@ -6,8 +7,17 @@ const  getAds = () => {
 const  postAdds = (state) => {
     return http.post(`add/ads/`,state);
 }
-const postAdsImage = (adsId , imgData) => {
-    return http.put(`add/ads/${adsId}` , imgData);
+const postAdsImage =(id, imageData) => {
+    let url = `${process.env.REACT_APP_API_URL}add/ads/${id}/image/`;
+    axios.put(url, imageData, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    })
+    .then(res => {
+    return res
+    })
+    .catch(err => err)
 }
 const  putAdds = (state , id) => {
     return http.put(`add/ads/${id}/`, state);

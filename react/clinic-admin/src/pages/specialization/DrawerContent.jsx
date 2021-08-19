@@ -7,20 +7,19 @@ import { postSpecialization, updateSpecialization, updateSubSpecialization } fro
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-
+  console.log("propssdds", props);
   const [state, setState] = useState(props.editData);
 
-  const [errors, setErrors] = useState({name: ''});
+  const [errors, setErrors] = useState({ name: '' });
 
   const [imgData, setImgData] = useState("");
 
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
-
   useEffect(() => {
     setState(props.editData);
-    if(props.editData.icon && props.editData.icon.startsWith("/media"))
+    if (props.editData.icon && props.editData.icon.startsWith("/media"))
       setImgData(`${process.env.REACT_APP_API_BASE_URL}${props.editData.icon}`);
     else
       setImgData(props.editData.icon);
@@ -31,7 +30,7 @@ const DrawerContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    if(formValidation()) {
+    if (formValidation()) {
       setErrors({});
       let newData = state;
       const id = state.id;
@@ -64,14 +63,16 @@ const DrawerContent = (props) => {
           dispatch(postSpecialization(newData))
             .then((res) => {
               setState({});
-              message.success('Specialization added successfully')
+              res != undefined ? (message.success('Specialization added successfully')) : (message.error("Specialization already exists with this name"));
             })
         } else {
           newData['spec_id'] = specId;
           dispatch(postSubSpecialization(newData))
-            .then(() => {
+            .then((res) => {
+              console.log("res" , res);
               setState({});
-              message.success('Sub Specialization added successfully')
+              res != undefined ? (message.success('Sub Specialization added successfully')) : (message.error("Sub Specialization already exists with this name"));
+              // message.success('Sub Specialization added successfully')
             });
         }
       }
@@ -85,7 +86,7 @@ const DrawerContent = (props) => {
   const handleFileChange = (info) => {
     setImage(info.target.files[0]);
     const imageFile = info.target.files[0];
-    const newErrorsState = {...errors};
+    const newErrorsState = { ...errors };
     if (!imageFile.name.match(/\.(jpg|jpeg|png|gif)$/)) {
       newErrorsState.image = 'Please select valid image.';
       setErrors(newErrorsState);
@@ -104,7 +105,7 @@ const DrawerContent = (props) => {
 
   const formValidation = () => {
     let entities = state;
-    const newErrorsState = {...errors};
+    const newErrorsState = { ...errors };
     if (!entities["name"]) {
       newErrorsState.name = 'Name cannot be empty';
       setErrors(newErrorsState);
@@ -124,7 +125,7 @@ const DrawerContent = (props) => {
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
-            <Input name="name" onChange={handleChange} value={state.name}/>
+            <Input id="spec_name" name="name" onChange={handleChange} value={state.name} />
             <div className="errorMsg">{errors.name}</div>
           </Form.Item>
 
@@ -140,7 +141,7 @@ const DrawerContent = (props) => {
           offset: 7
         }}
       >
-        <Button type="primary" htmlType="submit" style={{marginLeft: '21px'}}>
+        <Button type="primary" htmlType="submit" style={{ marginLeft: '21px' }}>
           Save
         </Button>
       </Form.Item>

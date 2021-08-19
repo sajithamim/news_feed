@@ -44,7 +44,9 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
                 userList.map(item => {
                     userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.id })
                 })
-                await Ads.postAdsImage(adsId, imgData)
+                if (imgData)
+                    await Ads.postAdsImage(adsId, imgData)
+
                 await Ads.postAddsVisibility(userData)
             dispatch({
                 type: 'POST_ADD',
@@ -58,9 +60,12 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
             if (userList && res && res.data && adsId) {
                 const userData = []
                 userList.map(item => {
-                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: null })
+                    userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: item.user_id })
                 })
-               await Ads.postAddsVisibility(userData)
+                if (imgData)
+                    await Ads.postAdsImage(adsId, imgData)
+
+                await Ads.postAddsVisibility(userData)
             }
             dispatch({
                 type: 'POST_ADD',
@@ -68,43 +73,11 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
             });
             return res;
         }
-        console.log('newData', newData);
-        console.log('userList', userList);
-        console.log('adsId', adsId);
-        // if (adsId === undefined) {
-        //     const res = await Ads.postAdds(newData);
-        //     if (res && res.data && res.data.id) {
-        //         const userData = []
-        //         userList.map(item => {
-        //             userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.user_id })
-        //         })
-        //         await Ads.postAddsVisibility(userData)
-        //         dispatch({
-        //             type: 'POST_ADD',
-        //             payload: res.data.id
-        //         });
-        //     }
-        // }
-        // else {
-        //     const res = await Ads.putAdds(newData, adsId);
-        //     if (userList && res && res.data && adsId) {
-        //         const userData = []
-        //         userList.map(item => {
-        //             userData.push({ adsid: adsId, spec_id: item.spec_id, user_id: item.user_id })
-        //         })
-        //        await Ads.postAddsVisibility(userData)
-        //     }
-        //     dispatch({
-        //         type: 'POST_ADD',
-        //         payload: res.data.id
-        //     });
-        // }
     }
     catch (err) {
     }
 
 }
-
 
 export const postAddsVisibilty = (state) => async (dispatch) => {
     try {
@@ -120,20 +93,13 @@ export const postAddsVisibilty = (state) => async (dispatch) => {
 export const getEditAdsDetails = (id) => async (dispatch) => {
     try {
         const res = await Ads.getEditAdsDetails(id);
-        console.log("getEditAdsDetails", res);
-        const specid = res.data.add_specialization[0].spec_id.id;
-        const res1 = await Ads.getAdsSelectedUser(id, specid);
-        const res2 = await Ads.getSpecUsers(specid);
         dispatch
             ({
                 type: 'GET_ADS_DETALS',
                 payload: res.data,
-                userDetails: res1.data,
-                selectedSpecid: specid,
-                specUsers: res2.data
             });
-        return res;
     } catch (err) {
+        return err;
     }
 }
 
