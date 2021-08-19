@@ -258,19 +258,20 @@ class SubSpecializationView(viewsets.ModelViewSet):
 class AdvisoryView(viewsets.ModelViewSet):
     queryset = Advisory.objects.all().order_by('-created_at')
     serializer_class = AdvisorySerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def create(self, request):
-        specid = request.data['spec_id']
-        userid = request.data['user_id']
-        if Advisory.objects.filter(spec_id=specid,user_id=userid).exists():
-            status_code = status.HTTP_400_BAD_REQUEST
-            response= {
-                'success': 'false',
-                'status code': status.HTTP_400_BAD_REQUEST,
-                'message': 'User already exists'
-            }
-            return Response(response, status=status_code)
-        serializer = AdvisorySerializer(data=request.data)
+        specid = request.data[0]['spec_id']
+        # userid = request.data['user_id']
+        add = Advisory.objects.filter(spec_id=specid).delete()
+        # if Advisory.objects.filter(spec_id=specid,user_id=userid).exists():
+        #     status_code = status.HTTP_400_BAD_REQUEST
+        #     response= {
+        #         'success': 'false',
+        #         'status code': status.HTTP_400_BAD_REQUEST,
+        #         'message': 'User already exists'
+        #     }
+        #     return Response(response, status=status_code)
+        serializer = AdvisorySerializer(data=request.data,many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
