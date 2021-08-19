@@ -366,7 +366,10 @@ class AccomplishmentSerializer(serializers.ModelSerializer):
     class Meta:
         model =Accomplishments
         fields='__all__'
-
+class AccomplishmentImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accomplishments
+        fields =['image']
 
 class QualificationSerializer(serializers.ModelSerializer):
     class Meta:

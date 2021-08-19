@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import (AccomplishmentSerializer, RegisterSerializer, SetNewPasswordSerializer,
+from .serializers import (AccomplishmentImageSerializer, AccomplishmentSerializer, RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
  ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer)
@@ -565,8 +565,26 @@ class QualificationView(viewsets.ModelViewSet):
 
 class AccomplilshmentsView(viewsets.ModelViewSet):
     queryset = Accomplishments.objects.all()
-    serializer= AccomplishmentSerializer
-    
+    serializer_class= AccomplishmentSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    def create(self, request):
+        user_id = request.data['user_id']
+        pro= Accomplishments.objects.filter(user_id=user_id).delete()
+        serializer = AccomplishmentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    @action(detail=True,methods=['PUT'],serializer_class=AccomplishmentImageSerializer,parser_classes=[parsers.MultiPartParser],)
+    def image(self, request,pk=None):
+            obj = Accomplishments.objects.get(id=pk)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+
 
 class getUserProfileView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -578,6 +596,29 @@ class getUserProfileView(APIView):
             response={
                 "success":"True",
                 "message":"user Profile",
+                "status":status.HTTP_200_OK,
+                "data":serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+class getUserAccomplishementView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request,pk, *args, **kwargs):
+        try:
+            # print(pk)
+            user = Accomplishments.objects.get(user_id=pk)
+            serializers = AccomplishmentSerializer(user)
+            response={
+                "success":"True",
+                "message":"user accomplishments",
                 "status":status.HTTP_200_OK,
                 "data":serializers.data
             }
