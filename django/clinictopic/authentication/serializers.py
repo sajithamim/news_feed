@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import User,Profile,Qualifications
+from .models import Accomplishments, User,Profile,Qualifications
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -360,8 +360,19 @@ class ProfileSerializer(serializers.ModelSerializer):
         # print(str(**validated_data))
         return Profile.objects.create(**validated_data)
 
+class AccomplishmentSerializer(serializers.ModelSerializer):
+    authors = serializers.ListField(child=serializers.CharField())
+    image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    class Meta:
+        model =Accomplishments
+        fields='__all__'
+class AccomplishmentImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accomplishments
+        fields =['image']
 
 class QualificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Qualifications
         fields= '__all__'
+
