@@ -134,3 +134,9 @@ class Accomplishments(models.Model):
     title = models.CharField(max_length=255)
     image = models.ImageField(blank=True,null=True,upload_to="accomplishment")
     publisher = models.CharField(max_length=255,blank=True,null=True)
+    publicationdate = models.DateField(blank=True,null=True)
+    authors = ArrayField(models.CharField(max_length=200), blank=True,null=True)
+    publication_url = models.CharField(max_length=3000,blank=True,null=True)
+    description = models.TextField(blank=True,null=True)
+    class Meta:
+        db_table = "Accomplishments"
