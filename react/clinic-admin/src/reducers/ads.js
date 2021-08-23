@@ -5,6 +5,8 @@ const initialState = {
     adsUsersList:[],
     adsDetails:[],
     userDetails:[],
+    addsData: false,
+    updateAdds: false,
     adsUserDetails:[],
     selectedSpecid: null,
     newaddId: null

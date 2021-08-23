@@ -63,7 +63,8 @@ export const updateSpecialization = (id, state, imageData) => async (dispatch) =
         dispatch({
             type: 'EDIT_SPECIALIZATION',
             payload: res.data,
-        });
+        })
+        return res;
     } catch (err) {
         console.log(err);
     }
@@ -80,7 +81,8 @@ export const updateSubSpecialization = (id, state) => async (dispatch) => {
         dispatch({
             type: 'EDIT_SUB_SPECIALIZATION',
             payload: res.data,
-        });
+        })
+        return res;
     } catch (err) {
         console.log(err);
     }

@@ -59,7 +59,6 @@ const AddAds = () => {
             add_specialization.push({ spec_id: item.spec_id.id }) //using for save api call 
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name }); //selected specialization 
         })
-
         setState({ ...state, title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization})
     }, [adsDetails])
 
@@ -96,9 +95,17 @@ const AddAds = () => {
             errors["specialization"] = "Specialization is required";
         }
 
-        if (image.name && !image.name.match(/\.(jpg|jpeg|png|gif)$/)) { //image validation
+        if (image.name && !image.name.match(/\.(jpg|jpeg|png|gif|jfif|PNG|BAT|Exif|BMP|TIFF)$/)) { //image validation
             formIsValid = false;
             errors["image"] = "Please select valid image.";
+        }
+        if (image.name === undefined){
+            formIsValid = false;    
+            errors["image"] ="Image is mandatory";
+        }
+        console.log("state" , state.users);
+        if(!fields["users"] === undefined){
+            console.log("select users");
         }
         setErrors({ errors });
         return formIsValid;
@@ -150,7 +157,9 @@ const AddAds = () => {
         const userList = [];
         let errors = {};
         let form_data = null;
-        if (state.userVisibility || state.allUsers) {
+        console.log("userVisibility" , state.userVisibility);
+        console.log("allusers" , state.allUsers);
+        if (state.userVisibility.length > 0  || state.allUsers === true) {
             if (state.allUsers) {
                 userList.push({ spec_id: state.specActiveId, user_id: null }) // to all users
             }
@@ -166,6 +175,9 @@ const AddAds = () => {
                 form_data = new FormData();
                 form_data.append('addimage', image, image.name);
             }
+            if (state.users == []){
+                console.log("user is mandate");
+            }
             setErrors({ errors });
             let newData = {};
             newData['add_specialization'] = state.add_specialization;
@@ -175,8 +187,6 @@ const AddAds = () => {
                     message.success('Edit Add created successfully')
                 else
                     message.success('Add created successfully')
-
-                history.push("/advertisements");
             })
             return true;
         } else {

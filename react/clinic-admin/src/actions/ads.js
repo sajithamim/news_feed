@@ -16,7 +16,7 @@ export const deleteAdd = (id) => async (dispatch) => {
         const res = await Ads.deleteAds(id);
         dispatch({
             type: 'DELETE_ADS',
-            payload: res.data,
+            payload: id,
         });
     } catch (err) {
     }
@@ -45,7 +45,7 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
                     userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.id })
                 })
                 if (imgData)
-                    await Ads.postAdsImage(adsId, imgData)
+                    await Ads.postAdsImage(res.data.id, imgData)
 
                 await Ads.postAddsVisibility(userData)
             dispatch({
@@ -76,7 +76,6 @@ export const postAdds = (newData, userList, adsId , imgData) => async (dispatch)
     }
     catch (err) {
     }
-
 }
 
 export const postAddsVisibilty = (state) => async (dispatch) => {

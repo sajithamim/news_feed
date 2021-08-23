@@ -61,7 +61,8 @@ export const updateCategory = (id, state, imageData) => async (dispatch) => {
         dispatch({
             type: 'EDIT_CATEGORY',
             payload: res.data,
-        });
+        })
+        return res;
     } catch (err) {
         console.log(err);
     }
