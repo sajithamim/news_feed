@@ -20,6 +20,7 @@ const ModalContent = (props) => {
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
+  console.log("uuuuserslisr" , userList);
   const [errors, setErrors] = useState({});
 
   const specialization = [];
@@ -37,7 +38,7 @@ const ModalContent = (props) => {
   })
 
   const author = [];
-  userList && userList.data && userList.data.map(item => {
+  userList && userList.results && userList.results.map(item => {
     return author.push(
       { value: item.email, label: item.username }
     );
@@ -50,7 +51,6 @@ const ModalContent = (props) => {
 
 
   const handleSpecChange = (value) => {
-    console.log("STATE,PULISHED ", state.published_status);
     let topic = [];
     value && value.map(item => {
       topic.push({ spec_id: item.value })
@@ -137,7 +137,6 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    console.log('props.editData', props.editData.published)
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -176,7 +175,6 @@ const ModalContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    console.log("author state", errors);
     if (handleValidation()) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {

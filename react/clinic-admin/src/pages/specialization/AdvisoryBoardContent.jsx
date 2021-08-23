@@ -6,6 +6,7 @@ import { Link  ,useParams } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerAdvisory from "./DrawerAdvisory"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
+import { getAdvisoryMembersList } from "../../actions/advisory";
 import { getUsersList } from "../../actions/users"
 
 const AdvisoryBoardContent = () => {
@@ -15,12 +16,14 @@ const AdvisoryBoardContent = () => {
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { specList, updateData, addData } = useSelector(state => state.spec);
+  const { specList, updateData } = useSelector(state => state.spec);
   const { specId } = useParams(); 
+  
   useEffect(() => {
+    dispatch(getAdvisoryMembersList(specId))
     dispatch(getUsersList())
     onClose();
-  }, [updateData, addData])
+  }, [updateData])
 
   const onClose = () => {
     setShowDrawer(false);

@@ -98,10 +98,11 @@ const UserDetails = () => {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-          setImageUrl(imageUrl),
-          setLoading(false),
-      );
+      getBase64(info.file.originFileObj, imageUrl => {
+        setImageUrl(imageUrl);
+        setLoading(false);
+        
+      });
     }
   };
 
@@ -140,7 +141,7 @@ const UserDetails = () => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (!fields["name"]) {
+    if (!fields["name"]) {  
       formIsValid = false;
       errors["name"] = "Name is required";
     }

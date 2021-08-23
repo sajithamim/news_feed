@@ -45,7 +45,7 @@ const DrawerContent = (props) => {
     setImage(info.target.files[0]);
     const imageFile = info.target.files[0];
     const newErrorsState = { ...errors };
-    if (!imageFile.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!imageFile.name.match(/\.(jpg|jpeg|png|gif|jfif|BMP|BAT|Exif)$/)) {
       newErrorsState.image = 'Please select valid image.';
       setErrors(newErrorsState);
       setFormSubmit(!formSubmit);
@@ -68,7 +68,6 @@ const DrawerContent = (props) => {
       let newData = state;
       const id = state.id;
       let form_data = null;
-      console.log('image.name', image.name)
       const newErrorsState = { ...errors };
       if (image && image.name) {
         form_data = new FormData();

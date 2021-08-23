@@ -15,13 +15,13 @@ const Ads = () => {
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(10);
-  const { adsList  } = useSelector(state => state.ads);
+  const { adsList ,addsData , updateAdds  } = useSelector(state => state.ads);
  
 
   useEffect(() => {
     dispatch(getAds())
     onClose();
-  }, [])
+  }, [ addsData , updateAdds ])
 
   const onClose = () => {
     setShowDrawer(false);

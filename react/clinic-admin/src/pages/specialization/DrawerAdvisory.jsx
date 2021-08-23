@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, message, AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
+import { postAdvisoryMembersList } from "../../actions/advisory";
 import Select from 'react-select';
 import { getUsersList } from "../../actions/users"
 import "./Drawer.css";
@@ -9,7 +10,7 @@ import "./Drawer.css";
 const DrawerAdvisory = (props) => {
 
     const [state, setState] = useState(props.editData);
-
+    const [ advisoryData , setAdvisoryData] = useState("");
     const { userList } = useSelector(state => state.users);
     const { specId } = useParams(); 
 
@@ -19,7 +20,6 @@ const DrawerAdvisory = (props) => {
     
     const list = []
     userList && userList.results && userList.results.map(item => {
-        console.log("user item" , item);
         return list.push(
             { value: item.id, label: <div><div>{item.username}</div><div>{item.email}</div><div>{item.qualifications}</div></div> }
         )
@@ -28,11 +28,16 @@ const DrawerAdvisory = (props) => {
     const dispatch = useDispatch();
 
     const handleChange = (item) => {
-        setState({ ...state, user_id: item , spec_id: specId});
+        const selectedAdvisoryMemberList = []
+        item && item.map(item  => {
+            console.log("item handlechange" , selectedAdvisoryMemberList);
+             selectedAdvisoryMemberList.push( {spec_id: specId, user_id : item.value })
+        })
+        setAdvisoryData(selectedAdvisoryMemberList);
     };
 
     const handleSubmit = () => {
-        console.log("state" , state);
+        dispatch(postAdvisoryMembersList())
     }
 
     return (
