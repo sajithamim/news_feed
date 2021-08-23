@@ -258,7 +258,7 @@ class SubSpecializationView(viewsets.ModelViewSet):
 class AdvisoryView(viewsets.ModelViewSet):
     queryset = Advisory.objects.all().order_by('-created_at')
     serializer_class = AdvisorySerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def create(self, request):
         specid = request.data[0]['spec_id']
         # userid = request.data['user_id']
@@ -276,3 +276,32 @@ class AdvisoryView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+class GetAdvisoryUser(APIView):
+    permission_classes = (IsAuthenticated,)
+    @csrf_exempt
+    def get(self,request,pk):
+        try:
+            adv = Advisory.objects.filter(spec_id=pk).order_by('spec_id__name')
+            serializers = AdvisorySerializer(adv,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'Advisory user details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
