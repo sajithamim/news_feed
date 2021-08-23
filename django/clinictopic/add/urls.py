@@ -1,9 +1,10 @@
 from django.urls import path
 from django.conf.urls import url, include
 from rest_framework import routers
-from .views import AdsViewset,AddUserView,SelectedUserlistView
+from .views import AdsViewset,AddUserView,SelectedUserlistView,AllUserAdsViewset
 router = routers.DefaultRouter()
 router.register('ads',AdsViewset , 'ads')
+router.register('alluseradd',AllUserAdsViewset,'alladd')
 
 urlpatterns = [
 
