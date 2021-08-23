@@ -31,6 +31,9 @@ const getUserProfile = (id) => {
 const getQualifications = () => {
     return http.get("auth/qualifications/");
 }
+const putProfilePic = (id , imageUrl) => {
+    return http.put(`auth/profilepic/${id}/profilepicaddadmin/` , imageUrl);
+}
 const Users = {
     getUsers,
     getUserCategory,
@@ -40,7 +43,8 @@ const Users = {
     deleteUser,
     postUserProfile,
     getUserProfile,
-    getQualifications
+    getQualifications,
+    putProfilePic
 }
 
 export default Users;

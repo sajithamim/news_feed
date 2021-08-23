@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Link  ,useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerAdvisory from "./DrawerAdvisory"
-import { getSpecialization, deleteSpec } from "../../actions/spec";
-import { getAdvisoryMembersList } from "../../actions/advisory";
+import { getSpecialization , getAdvisoryMembersList  , deleteAdvisoryMembers} from "../../actions/spec";
 import { getUsersList } from "../../actions/users"
 
 const AdvisoryBoardContent = () => {
@@ -16,35 +15,40 @@ const AdvisoryBoardContent = () => {
   const [editData, setEditData] = useState({});
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { specList, updateData } = useSelector(state => state.spec);
-  const { specId } = useParams(); 
-  
+  const { specList, advisoryMemberList  , addAdvisoryData} = useSelector(state => state.spec);
+  console.log("advisoryMemberList" , advisoryMemberList);
+  const { specId } = useParams();
+
   useEffect(() => {
     dispatch(getAdvisoryMembersList(specId))
     dispatch(getUsersList())
     onClose();
-  }, [updateData])
+  }, [ addAdvisoryData ])
 
   const onClose = () => {
     setShowDrawer(false);
   };
 
-  const onEdit = (record) => {
-    setEditData(record);
-    setShowDrawer(true);
-    setDrawerType("edit");
-  };
-
+  const advisoryGenerator = () => {
+    const items = [];
+    advisoryMemberList && advisoryMemberList.data && advisoryMemberList.data.map((item) => {
+     items.push({
+        id: item.id,
+        photo: item.user_id.profilepic,
+        name: item.user_id.name,
+        qualification: item.user_id.qualifications
+      })
+    })
+    return items;
+  }
   const onAdd = () => {
     setShowDrawer(true);
     setDrawerType("add");
   };
 
   const confirmDelete = (id) => {
-    dispatch(deleteSpec(id))
-      .then((res) => {
-        res.status === 204 ? message.success("Specialization is deleted successfully") : message.error("Specialization is not exist")
-      })
+    console.log("id" , id)
+    dispatch(deleteAdvisoryMembers(id))
   };
 
   const cancel = (e) => {
@@ -55,21 +59,6 @@ const AdvisoryBoardContent = () => {
     setCurrent(page)
     dispatch(getSpecialization(page));
   }
-
-  const specGenerator = () => {
-    const items = [];
-    specList && specList.results && specList.results.map((item, key) => {
-      key++;
-      return items.push({
-        sl_no: key,
-        id: item.id,
-        name: item.name,
-        icon: item.icon
-      })
-    })
-    return items;
-  }
-  const spec = specGenerator();
 
   const pagination = {
     current,
@@ -116,7 +105,7 @@ const AdvisoryBoardContent = () => {
       render: (text, record) => (
         <Space size="middle">
           <Popconfirm
-            title="Are you sure to delete this specialization?"
+            title="Are you sure to delete this Advisory Board Member?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
@@ -142,7 +131,7 @@ const AdvisoryBoardContent = () => {
         }
         style={{ width: "100%" }}
       >
-          <Table columns={columns} pagination={pagination} dataSource="" />
+        <Table columns={columns} pagination={pagination} dataSource={advisoryGenerator()}/>
       </Card>
       <Drawer
         title={
@@ -151,7 +140,7 @@ const AdvisoryBoardContent = () => {
             : null
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerAdvisory drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerAdvisory drawerType={drawerType} />
       </Drawer>
     </div>
   );

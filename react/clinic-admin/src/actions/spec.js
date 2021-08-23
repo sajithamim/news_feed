@@ -1,4 +1,5 @@
 import Specialization from "../services/Specialization";
+
 export const getSpecialization = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try {
@@ -134,7 +135,39 @@ export const deleteSpec = (id) => async (dispatch) => {
 
     export const image = () => async (dispatch) => {
     }
-
+    
+    export const getAdvisoryMembersList = (specId) => async (dispatch) => {
+        try {
+            const res = await Specialization.getAdvisoryMembersList(specId);
+            dispatch({
+                type: 'RETRIEVE_ADVISORYMEMBERS',
+                payload: res.data
+            }); 
+        } catch (err) {
+        }
+    }
+    
+    export const postAdvisoryMembersList = (advisoryData) => async (dispatch) => {
+        try {
+            const res = await Specialization.postAdvisoryMembersList(advisoryData);
+            dispatch({
+                type: 'POST_ADVISORYMEMBERS',
+                payload: res.data
+            });
+        } catch (err) {
+        }
+    }
+    export const deleteAdvisoryMembers = (id) => async (dispatch) => {
+        try {
+            const res = await Specialization.deleteAdvisoryMembers(id);
+            dispatch({
+                type: 'DELETE_ADVISORYMEMBERS',
+                payload: id
+            });
+        } catch (err) {
+        }
+    }
+    
 
 
 

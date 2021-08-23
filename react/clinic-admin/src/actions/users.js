@@ -66,7 +66,7 @@ export const deleteUser = (id) => async (dispatch) => {
 export const postUserProfile = (state) => async (dispatch) => {
     try {
         const res = await Users.postUserProfile(state);
-        console.log("res" , res);
+        console.log("res", res);
         dispatch({
             type: 'POST_USER_PROFILE',
             payload: res.data,
@@ -79,7 +79,7 @@ export const getUserProfile = (id) => async (dispatch) => {
     console.log("id", id);
     try {
         const res = await Users.getUserProfile(id);
-        console.log("user response",res);
+        console.log("user response", res);
         dispatch({
             type: 'GET_USER_PROFILE',
             payload: res.data,
@@ -97,6 +97,19 @@ export const getQualifications = () => async (dispatch) => {
             payload: res.data,
         })
         return res;
+    } catch (err) {
+        console.log(err)
+    }
+}
+export const putProfilePic = (id , imageUrl) => async (dispatch) => {
+    console.log("id" , id);
+    console.log("imageUrl" , imageUrl);
+    try {
+        const res = await Users.putProfilePic(id , imageUrl);
+        dispatch({
+            type: 'PUT_PROFILEPIC',
+            payload: res.data,
+        })
     } catch (err) {
         console.log(err)
     }

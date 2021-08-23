@@ -34,9 +34,8 @@ const UserDetails = () => {
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
   const [activeInput, setActiveInput] = useState(false);
-  const { loading, setLoading } = useState(false);
-  const [ imageUrl , setImageUrl ] = useState();
-
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState();
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
@@ -47,10 +46,8 @@ const UserDetails = () => {
             res ? (setState(res.data.data)) : (setState({}));
           })
       })
-
     dispatch(getQualifications());
   }, [])
-
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -73,7 +70,7 @@ const UserDetails = () => {
     { value: '6', label: 'Trainee' },
   ];
 
-  const beforeUpload = (file)=> {
+  const beforeUpload = (file) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!');
@@ -90,18 +87,16 @@ const UserDetails = () => {
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-  
+
   const handleFileChange = (info) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
-      return;
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, imageUrl => {
         setImageUrl(imageUrl);
         setLoading(false);
-        
       });
     }
   };
@@ -141,7 +136,7 @@ const UserDetails = () => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (!fields["name"]) {  
+    if (!fields["name"]) {
       formIsValid = false;
       errors["name"] = "Name is required";
     }
@@ -154,20 +149,14 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
-
-    // if (handleValidation()) {
     let newData = state;
     delete newData["empolyment_value"];
     delete newData["id"];
     delete newData["username"];
-    console.log("sttate media", state.profilepic);
-    // dispatch(putProfilePic(state.profilepic));
-    // dispatch(postUserProfile(newData))
-    //   .then(() => {
-    //     message.success("User details Added Successfully");
-    //   })
-    // }
-
+    dispatch(postUserProfile(newData))
+      .then(() => {
+        message.success("User details Added Successfully");
+    })
   }
 
   const renderTable = () => {
@@ -205,7 +194,7 @@ const UserDetails = () => {
                   listType="picture-card"
                   className="avatar-uploader"
                   showUploadList={false}
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  action={imageUrl ? dispatch(putProfilePic(userDetails.data.id, imageUrl)) : null}
                   beforeUpload={beforeUpload}
                   onChange={handleFileChange}
                 >
