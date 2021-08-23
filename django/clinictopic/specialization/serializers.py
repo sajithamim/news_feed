@@ -136,7 +136,7 @@ class UserSubSpecializationSerializer(serializers.ModelSerializer):
 
 
 class UserSpecializationSerializer(serializers.ModelSerializer):
-    sub_userspec_id = UserSubSpecializationSerializer(many=True,allow_null=True, required=False)
+    sub_userspec_id = UserSubSpecializationSerializer(many=True)
 
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -182,5 +182,5 @@ class AdvisorySerializer(serializers.ModelSerializer):
         fields = '__all__'
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['user_id'] = UserProfileSerializer(instance.spec_id).data
+        response['user_id'] = UserProfileSerializer(instance.user_id).data
         return response
