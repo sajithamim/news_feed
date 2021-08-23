@@ -182,5 +182,5 @@ class AdvisorySerializer(serializers.ModelSerializer):
         fields = '__all__'
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['user_id'] = UserProfileSerializer(instance.spec_id).data
+        response['user_id'] = UserProfileSerializer(instance.user_id).data
         return response
