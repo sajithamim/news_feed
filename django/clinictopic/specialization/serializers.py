@@ -136,7 +136,7 @@ class UserSubSpecializationSerializer(serializers.ModelSerializer):
 
 
 class UserSpecializationSerializer(serializers.ModelSerializer):
-    sub_userspec_id = UserSubSpecializationSerializer(many=True,allow_null=True, required=False)
+    sub_userspec_id = UserSubSpecializationSerializer(many=True)
 
     user_id=serializers.HiddenField(default=serializers.CurrentUserDefault())
 
