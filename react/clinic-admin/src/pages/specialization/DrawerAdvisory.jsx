@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, message, AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
-import { postAdvisoryMembersList } from "../../actions/advisory";
+import { postAdvisoryMembersList } from "../../actions/spec";
 import Select from 'react-select';
 import { getUsersList } from "../../actions/users"
 import "./Drawer.css";
@@ -10,7 +10,7 @@ import "./Drawer.css";
 const DrawerAdvisory = (props) => {
 
     const [state, setState] = useState(props.editData);
-    const [ advisoryData , setAdvisoryData] = useState("");
+    const [ advisoryData , setAdvisoryData] = useState([]);
     const { userList } = useSelector(state => state.users);
     const { specId } = useParams(); 
 
@@ -30,14 +30,16 @@ const DrawerAdvisory = (props) => {
     const handleChange = (item) => {
         const selectedAdvisoryMemberList = []
         item && item.map(item  => {
-            console.log("item handlechange" , selectedAdvisoryMemberList);
              selectedAdvisoryMemberList.push( {spec_id: specId, user_id : item.value })
         })
         setAdvisoryData(selectedAdvisoryMemberList);
     };
 
     const handleSubmit = () => {
-        dispatch(postAdvisoryMembersList())
+        dispatch(postAdvisoryMembersList(advisoryData))
+        .then(() => {
+            message.success("Advisory Members added successfully")
+        })
     }
 
     return (
@@ -47,7 +49,6 @@ const DrawerAdvisory = (props) => {
                     id="users"
                     isMulti={true}
                     isSearchable={true}
-                    value={state.user_id}
                     onChange={handleChange}
                     options={list}
                   />

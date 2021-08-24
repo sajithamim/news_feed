@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message } from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams , useHistory} from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
@@ -33,10 +33,14 @@ const UserDetails = () => {
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
-  const [activeInput, setActiveInput] = useState(false);
-  const { loading, setLoading } = useState(false);
-  const [ imageUrl , setImageUrl ] = useState();
 
+  const [activeInput, setActiveInput] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState();
+  const [previewImage, setPreviewImage] = useState({});
+  const [previewVisible, setPreviewVisible] = useState({});
+  const [previewTitle, setPreviewTitle] = useState({})
+  const [fileList, setFileList] = useState({})
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
@@ -47,10 +51,9 @@ const UserDetails = () => {
             res ? (setState(res.data.data)) : (setState({}));
           })
       })
-
     dispatch(getQualifications());
   }, [])
-
+  let history = useHistory();
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -73,7 +76,7 @@ const UserDetails = () => {
     { value: '6', label: 'Trainee' },
   ];
 
-  const beforeUpload = (file)=> {
+  const beforeUpload = (file) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!');
@@ -90,18 +93,16 @@ const UserDetails = () => {
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-  
+
   const handleFileChange = (info) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
-      return;
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, imageUrl => {
         setImageUrl(imageUrl);
         setLoading(false);
-        
       });
     }
   };
@@ -141,7 +142,7 @@ const UserDetails = () => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (!fields["name"]) {  
+    if (!fields["name"]) {
       formIsValid = false;
       errors["name"] = "Name is required";
     }
@@ -154,20 +155,16 @@ const UserDetails = () => {
   }
 
   const handleUserProfileSubmit = () => {
-
-    // if (handleValidation()) {
     let newData = state;
     delete newData["empolyment_value"];
     delete newData["id"];
     delete newData["username"];
-    console.log("sttate media", state.profilepic);
-    // dispatch(putProfilePic(state.profilepic));
-    // dispatch(postUserProfile(newData))
-    //   .then(() => {
-    //     message.success("User details Added Successfully");
-    //   })
-    // }
-
+    dispatch(postUserProfile(newData))
+      .then(() => {
+        message.success("User details Added Successfully");
+      })
+      setState({});
+      history.push("/users");
   }
 
   const renderTable = () => {
@@ -188,6 +185,19 @@ const UserDetails = () => {
     </div>
   );
 
+  const handlePreview = async file => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+
+  };
+
+  const handleFileList = ({ fileList }) => setFileList(fileList);
+
+
   return (
     <div className="main-content">
       <Container fluid>
@@ -202,14 +212,13 @@ const UserDetails = () => {
                   accept="image/png, image/jpeg" onChange={handleFileChange} /> */}
                 <Upload
                   name="avatar"
+                  multiple={false}
                   listType="picture-card"
                   className="avatar-uploader"
-                  showUploadList={false}
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  beforeUpload={beforeUpload}
-                  onChange={handleFileChange}
+                  onPreview={handlePreview}
+                  onChange={handleFileList}
                 >
-                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                  {fileList.length >= 1 ? null : uploadButton}
                 </Upload>
               </Form.Item>
             </Col>

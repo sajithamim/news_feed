@@ -20,7 +20,6 @@ const ModalContent = (props) => {
   const { specList } = useSelector(state => state.spec);
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
-  console.log("uuuuserslisr" , userList);
   const [errors, setErrors] = useState({});
 
   const specialization = [];
@@ -176,6 +175,7 @@ const ModalContent = (props) => {
 
   const handleSubmit = (e) => {
     if (handleValidation()) {
+      console.log('hgvhgfvhfv 123')
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -221,6 +221,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
+      console.log("state" , state);
       props.onFormSubmit(newData, form_data, form_data2, image_data);
     }
   }
@@ -272,19 +273,16 @@ const ModalContent = (props) => {
       formIsValid = false;
       errors["publishingtime"] = "Publish time cannot be empty";
     }
-    if (!fields["title1"]) {
-      formIsValid = false;
-      errors["title"] = " Title cannot be empty";
-    }
-    if (!fields["description1"]) {
-      formIsValid = false;
-      errors["description1"] = "Description cannot be empty";
-    }
     if(state.format === '1')
     {
+      console.log("format 1");
       if (!fields["title1"]) {
         formIsValid = false;
         errors["title1"] = " Title cannot be empty";
+      }
+      if (!fields["description1"]) {
+        formIsValid = false;
+        errors["description1"] = "Description cannot be empty";
       }
       if(state.pdfUrl === undefined){
         errors["pdf"] = "Please upload Front Pdf"
@@ -306,6 +304,7 @@ const ModalContent = (props) => {
     }
     if(state.format === '3')
     {
+      console.log("format 3");
       if (!fields["title3"]) {
         formIsValid = false;
         errors["title3"] = " Title cannot be empty";

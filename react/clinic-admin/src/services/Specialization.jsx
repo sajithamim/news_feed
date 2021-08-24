@@ -6,15 +6,15 @@ const getAll = (page) => {
   return http.get(`spec/specialization?page=${page}`);
 };
 
-const  getAllSubSpec = (id) => {
+const getAllSubSpec = (id) => {
   return http.get(`spec/specialization/${id}/spubspec_list`);
 }
 
-const postSpec =(state) => {
-  return http.post("spec/specialization/" , state);
+const postSpec = (state) => {
+  return http.post("spec/specialization/", state);
 }
 
-const updateSpec =(id, data) => {
+const updateSpec = (id, data) => {
   return http.put(`spec/specialization/${id}/`, data);
 }
 
@@ -26,25 +26,25 @@ const deleteSubSpecialization = (id) => {
   return http.delete(`spec/subspecialization/${id}`);
 }
 
-const postSubSpec =(state) => {
-  return http.post("spec/subspecialization/" , state);
+const postSubSpec = (state) => {
+  return http.post("spec/subspecialization/", state);
 }
 
-const updateSubSpec =(id, imageData) => {
-  return http.put(`spec/subspecialization/${id}/` , imageData);
+const updateSubSpec = (id, imageData) => {
+  return http.put(`spec/subspecialization/${id}/`, imageData);
 }
 
-const uploadImage =(id, imageData) => {
+const uploadImage = (id, imageData) => {
   let url = `${process.env.REACT_APP_API_URL}spec/specialization/${id}/icon/`;
   axios.put(url, imageData, {
     headers: {
       'content-type': 'multipart/form-data'
     }
   })
-  .then(res => {
-  return res
-  })
-  .catch(err => err)
+    .then(res => {
+      return res
+    })
+    .catch(err => err)
 }
 
 const uploadSubImage = (id, imageData) => {
@@ -54,12 +54,21 @@ const uploadSubImage = (id, imageData) => {
       'content-type': 'multipart/form-data'
     }
   })
-  .then(res => {
-  return res;
-  })
-  .catch(err => err)
+    .then(res => {
+      return res;
+    })
+    .catch(err => err)
 }
 
+const getAdvisoryMembersList = (id) => {
+  return http.get(`spec/advisoryuser/${id}/`);
+};
+const postAdvisoryMembersList = (advisoryData) => {
+  return http.post("spec/advisory/", advisoryData);
+};
+const deleteAdvisoryMembers = (id) => {
+  return http.delete(`spec/advisory/${id}/`);
+};
 
 const Specialization = {
   getAll,
@@ -71,7 +80,10 @@ const Specialization = {
   deleteSpec,
   deleteSubSpecialization,
   uploadImage,
-  uploadSubImage
+  uploadSubImage,
+  getAdvisoryMembersList,
+  postAdvisoryMembersList,
+  deleteAdvisoryMembers
 };
 
 export default Specialization;

@@ -31,15 +31,15 @@ const AddAds = () => {
         const adsUserList = [];
         let allUsers = false;
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
-            if (item.user_id)
+            if (item.user_id) 
                 adsUserList.push(item.user_id.id)
-            else {
+            else
                 allUsers = true;
-            }
         }) //ads selected users list for spec id
-
+        
         const users = [];
         const userVisibility = [];
+       
         specUsers && specUsers.results && specUsers.results.map((item) => {
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
@@ -235,7 +235,7 @@ const AddAds = () => {
                         (
                             <TabPane tab={specItem.label} key={specItem.value}>
                                 <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
-                                    <Checkbox onChange={onChecked} checked={state.allUsers}>To All Users</Checkbox>
+                                    <Checkbox onChange={onChecked} checked={state.allUsers} disabled={(state.users) ? true : false}>To All Users</Checkbox>
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 3, span: 9 }}><strong>OR</strong></Form.Item>
                                 <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
@@ -245,7 +245,7 @@ const AddAds = () => {
                                     <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
-                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add User</Button>
+                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add Advertisement</Button>
                                 </Form.Item>
                             </TabPane>
                         ))}

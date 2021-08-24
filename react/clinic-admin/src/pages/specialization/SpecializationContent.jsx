@@ -20,7 +20,6 @@ const SpecializationContent = () => {
   useEffect(() => {
     dispatch(getSpecialization())
     onClose();
-    //specGenerator();
   }, [updateData, addData])
 
   const onClose = () => {

@@ -35,13 +35,13 @@ export const routes = [
     icon: <AiFillContainer />
   },
   {
-    title: 'Advertisement',
+    title: 'Speciality Advertisements',
     path: '/advertisements',
     key: "ads",
     icon: <AiFillContainer />
   },
   {
-    title: 'Banner',
+    title: 'General Advertisement',
     path: '/banner',
     key: "banner",
     icon: <AiFillContainer />
