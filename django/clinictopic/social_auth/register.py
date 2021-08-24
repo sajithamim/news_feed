@@ -8,6 +8,7 @@ from clinictopic.settings.base import BASE_DIR
 from specialization.models import (UserSpecialization)
 from topics.models import (UserCategory)
 from rest_framework import status
+import datetime
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -51,7 +52,9 @@ def register_social_user(provider, user_id, email, name):
     else:
         user = {
             'username': generate_username(name), 'email': email,'phone':None,'otp':None,
-            'password': os.environ.get('SOCIAL_SECRET')}
+            'password': os.environ.get('SOCIAL_SECRET'),
+            'name':'',
+            'optvalid':datetime.datetime.now()}
         user = User.objects.create_user(**user)
         user.is_verified = True
         user.auth_provider = provider
