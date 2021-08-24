@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState , useEffect } from "react";
 import { Card, Table, Spin, Space, Popconfirm, Button, message } from "antd";
 import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
 
 const UserContent = () => {
-  const { userList } = useSelector(state => state.users);
+  const { userList , page} = useSelector(state => state.users);
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   let history = useHistory();
   useEffect(() => {
@@ -17,23 +20,38 @@ const UserContent = () => {
   }, [])
 
 
-  const onAdd = () => {
-  };
+  // const onAdd = () => {
+  // };
 
   const confirmDelete = (id) => {
     dispatch(deleteUser(id));
   };
+
+  const pagination = {
+    current,
+    pageSize,
+    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
+    total: userList.count
+  }
+
+  const handleChange = (page, size, sorter) => {
+    setCurrent(page);
+    setSlNo(page-1)
+    dispatch(getUsersList(page));
+  }
 
   const cancel = (e) => {
     message.error("Cancelled");
   };
 
   const userGenerator = () => {
+    let serialNo = pageSize * slNo;
     const Items = [];
     userList && userList.results && userList.results.map((item, key) => {
       key++;
+      serialNo++;
       return Items.push({
-        sl_no: key,
+        sl_no: serialNo,
         id: item.id,
         name: item.name,
         email: item.email,
@@ -96,8 +114,8 @@ const UserContent = () => {
     <div style={{ margin: "10px" }}>
       <Card
         title="Users"
-      > {userList && userList.results ?
-        (<Table columns={columns} dataSource={User} />) :
+      > {userList && userList.results && page == current ?
+        (<Table columns={columns} dataSource={User} pagination={pagination}/>) :
         (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
     </div>

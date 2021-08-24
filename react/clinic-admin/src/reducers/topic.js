@@ -9,7 +9,7 @@ const initialState= {
 export default (state = initialState , action) => {
     switch(action.type) {
         case 'GET_TOPIC':
-        return {...state , topicList: action.payload, addTopic: false, editTopic: false }
+        return {...state , topicList: action.payload, addTopic: false, editTopic: false , page: action.page }
         case 'DELETE_TOPIC':
         return {...state , topicList: Object.assign({},state.topicList,{results: state.topicList && state.topicList.results.filter(item => item.id !== action.payload)}) }
         case 'POST_TOPIC':

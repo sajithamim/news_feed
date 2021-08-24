@@ -175,7 +175,6 @@ const ModalContent = (props) => {
 
   const handleSubmit = (e) => {
     if (handleValidation()) {
-      console.log('hgvhgfvhfv 123')
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -221,40 +220,11 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log("state" , state);
       props.onFormSubmit(newData, form_data, form_data2, image_data);
     }
   }
 
   const dispatch = useDispatch();
-
-  // const formValidation = () => {
-  //   let entities = state;
-  //   const newErrorsState = { ...errors };
-
-  //   // if (!entities["title"]) {
-  //   //   newErrorsState.title = 'Title cannot be empty';
-  //   //   setErrors(newErrorsState);
-  //   //   return false;
-  //   // }
-  //   if (!entities["category_id"]) {
-  //     newErrorsState.category_id = 'Category cannot be empty';
-  //     setErrors(newErrorsState);
-  //     return false;
-  //   }
-  //   if (!entities["publishingtime"]) {
-  //     newErrorsState.publishingtime = 'Publish time cannot be empty';
-  //     setErrors(newErrorsState);
-  //     return false;
-  //   }
-  //   if (!entities["topic_topic"] && entities["topic_topic"]) {
-  //     newErrorsState.publishingtime = 'Specialization cannot be empty';
-  //     setErrors(newErrorsState);
-  //     return false;
-  //   }
-  //   setErrors({});
-  //   return true;
-  // }
 
   const handleValidation = () => {
     let fields = state;
@@ -275,7 +245,6 @@ const ModalContent = (props) => {
     }
     if(state.format === '1')
     {
-      console.log("format 1");
       if (!fields["title1"]) {
         formIsValid = false;
         errors["title1"] = " Title cannot be empty";
@@ -284,6 +253,8 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description1"] = "Description cannot be empty";
       }
+      const pdfName = state.pdfUrl.lastIndexOf("/" + 1);
+      console.log("pdfName" , pdfName);
       if(state.pdfUrl === undefined){
         errors["pdf"] = "Please upload Front Pdf"
        }
@@ -304,7 +275,6 @@ const ModalContent = (props) => {
     }
     if(state.format === '3')
     {
-      console.log("format 3");
       if (!fields["title3"]) {
         formIsValid = false;
         errors["title3"] = " Title cannot be empty";
@@ -425,8 +395,10 @@ const ModalContent = (props) => {
             </Form.Item></>) : null}
 
           {state.format === '1' ?
-            (<><Form.Item label="Pdf Front"><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
+            (<><Form.Item label="Pdf Front"><Input type="file" name="pdf"  accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+              {state.pdfUrl ? <p>{state.pdfUrl}</p> : null}
+              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf"  onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
+              {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null}
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}

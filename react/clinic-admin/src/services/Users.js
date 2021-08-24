@@ -1,8 +1,8 @@
 import { http } from "../http-common";
 
 
-const getUsers = () => {
-    return http.get("auth/userlist/");
+const getUsers = (page) => {
+    return http.get(`auth/userlist/?page=${page}`);
 }
 
 const getUserCategory = (emailId) => {

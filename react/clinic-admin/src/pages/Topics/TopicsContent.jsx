@@ -4,7 +4,7 @@ import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
-import { getTopic , deleteTopic, postTopic, updateTopic} from "../../actions/topic";
+import { getTopic , deleteTopic, postTopic, updateTopic  } from "../../actions/topic";
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -12,11 +12,10 @@ const TopicsContent = (props) => {
   const [expended, setExpended] = useState()
 
   const [data , setData] = useState({});
-  const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
+  const { topicList, addTopic, editTopic, successMsg  , page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState();
   const dispatch = useDispatch();
-  console.log("image_data" , editTopic);
   useEffect(() => {
     dispatch(getTopic())
     onClose();
@@ -103,13 +102,14 @@ const TopicsContent = (props) => {
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url:item.video_url,
-        pdf:item.pdf,
-        pdfsecond:item.pdfsecond,
+        pdfUrl:item.pdf && item.pdf.lastIndexOf("/"),
+        pdfUrlSecond:item.pdfsecond,
         format: item.format,
         external_url:item.external_url,
         username: {value: item.author && item.author.name, label: item.author && item.author.name},
         published_status: item.published
       }) 
+      
     });
     return items;
   }
@@ -119,6 +119,9 @@ const TopicsContent = (props) => {
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
     dispatch(getTopic(page));
+    // setCurrent(page)
+    // setSlNo(page-1)
+    // dispatch(getSpecialization(page));
   }
 
   const pagination =  {
@@ -171,7 +174,7 @@ const TopicsContent = (props) => {
             <Icon>add</Icon>
           </IconButton>
         } style={{ width: "100%" }} >
-        {topicList && topicList.results ?
+        {topicList && topicList.results && page == current ?
         (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer

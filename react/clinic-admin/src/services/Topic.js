@@ -1,8 +1,8 @@
 import { http} from "../http-common";
 import axios from 'axios';
 
-const getTopic = () => {
-  return http.get("topic/topic");
+const getTopic = (page) => {
+  return http.get(`topic/topic/?page=${page}`);
 };
 
 const deleteTopic = (id) => {

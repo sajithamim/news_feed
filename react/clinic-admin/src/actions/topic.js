@@ -1,11 +1,13 @@
 import Topic from "../services/Topic";
 
-export const getTopic = () => async (dispatch) => {
+export const getTopic = (page) => async (dispatch) => {
+    page = page != undefined ? page : 1;
     try {
-        const res = await Topic.getTopic();
+        const res = await Topic.getTopic(page);
         dispatch({
             type: 'GET_TOPIC',
             payload: res.data,
+            page: page
         })
     } catch (err) {
         console.log(err);
