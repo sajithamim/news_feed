@@ -6,7 +6,7 @@ from authentication.models import User
 from django.dispatch import receiver
 from clinictopic.settings.base import MEDIA_ROOT
 from specialization.models import (Specialization)
-from PIL import Image
+from PIL import Image as ImagePil
 from io import BytesIO
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -32,13 +32,13 @@ class Categoeries(models.Model):
       if self.image:
         filename = "%s.jpg" % self.image.name.split('.')[0]
 
-        im = Image.open(self.icon)
+        im = ImagePil.open(self.image)
         new_width  = 250
         new_height = 210
-        image = im.resize((new_width, new_height), Image.ANTIALIAS)
+        image = im.resize((new_width, new_height), ImagePil.ANTIALIAS)
          # for PNG images discarding the alpha channel and fill it with some color
         if image.mode in ('RGBA', 'LA'):
-            background = Image.new(image.mode[:-1], image.size, '#fff')
+            background = ImagePil.new(image.mode[:-1], image.size, '#fff')
             background.paste(image, image.split()[-1])
             image = background
         image_io = BytesIO()
