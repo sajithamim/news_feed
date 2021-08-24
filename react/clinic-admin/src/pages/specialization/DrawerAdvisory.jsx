@@ -30,7 +30,6 @@ const DrawerAdvisory = (props) => {
     const handleChange = (item) => {
         const selectedAdvisoryMemberList = []
         item && item.map(item  => {
-            console.log("item handlechange" , selectedAdvisoryMemberList);
              selectedAdvisoryMemberList.push( {spec_id: specId, user_id : item.value })
         })
         setAdvisoryData(selectedAdvisoryMemberList);
@@ -38,6 +37,9 @@ const DrawerAdvisory = (props) => {
 
     const handleSubmit = () => {
         dispatch(postAdvisoryMembersList(advisoryData))
+        .then(() => {
+            message.success("Advisory Members added successfully")
+        })
     }
 
     return (

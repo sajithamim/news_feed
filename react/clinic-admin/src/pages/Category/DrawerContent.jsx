@@ -82,7 +82,6 @@ const DrawerContent = (props) => {
         delete newData["sl_no"];
         delete newData["id"];
         delete newData["image"];
-
         dispatch(updateCategory(id, newData, form_data))
           .then((res) => {
             setState({});

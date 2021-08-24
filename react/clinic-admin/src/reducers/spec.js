@@ -35,7 +35,7 @@ export default (state = initialState, action) => {
     case 'ADD_SUB_IMAGE':
       return { ...state, subSpecImage: action.payload }
     case 'POST_ADVISORYMEMBERS':
-      return { ...state, addAdvisoryData: true }
+      return { ...state, addAdvisoryData: true  }
     case 'RETRIEVE_ADVISORYMEMBERS':
       return { ...state, advisoryMemberList: action.payload , addAdvisoryData: false }
     case 'DELETE_ADVISORYMEMBERS':

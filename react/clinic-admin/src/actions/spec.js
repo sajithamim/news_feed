@@ -150,6 +150,7 @@ export const deleteSpec = (id) => async (dispatch) => {
     export const postAdvisoryMembersList = (advisoryData) => async (dispatch) => {
         try {
             const res = await Specialization.postAdvisoryMembersList(advisoryData);
+            console.log("madded advisory" , res);
             dispatch({
                 type: 'POST_ADVISORYMEMBERS',
                 payload: res.data

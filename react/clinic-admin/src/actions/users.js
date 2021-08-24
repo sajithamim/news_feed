@@ -104,7 +104,7 @@ export const getQualifications = () => async (dispatch) => {
 export const putProfilePic = (id , imageUrl) => async (dispatch) => {
     console.log("id" , id);
     console.log("imageUrl" , imageUrl);
-    try {
+    /*try {
         const res = await Users.putProfilePic(id , imageUrl);
         dispatch({
             type: 'PUT_PROFILEPIC',
@@ -112,5 +112,5 @@ export const putProfilePic = (id , imageUrl) => async (dispatch) => {
         })
     } catch (err) {
         console.log(err)
-    }
+    }*/
 }

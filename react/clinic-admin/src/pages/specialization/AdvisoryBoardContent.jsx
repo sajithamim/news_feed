@@ -16,7 +16,6 @@ const AdvisoryBoardContent = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const { specList, advisoryMemberList  , addAdvisoryData} = useSelector(state => state.spec);
-  console.log("advisoryMemberList" , advisoryMemberList);
   const { specId } = useParams();
 
   useEffect(() => {
@@ -47,8 +46,10 @@ const AdvisoryBoardContent = () => {
   };
 
   const confirmDelete = (id) => {
-    console.log("id" , id)
     dispatch(deleteAdvisoryMembers(id))
+    .then(() => {
+      message.success("Advisory Member deleted successfully")
+  })
   };
 
   const cancel = (e) => {
@@ -77,6 +78,9 @@ const AdvisoryBoardContent = () => {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",
+      render: (text, record) => {
+        return (<img src={`${process.env.REACT_APP_API_BASE_URL}${record.photo}`} style={{width:'70px', height: '70px'}}/>);
+      }
     },
     {
       title: "Name",
