@@ -293,7 +293,6 @@ const ModalContent = (props) => {
     }
     if(state.format === '2')
     {
-      console.log("format 2");
       if (!fields["title2"]) {
         formIsValid = false;
         errors["title2"] = " Title cannot be empty";
