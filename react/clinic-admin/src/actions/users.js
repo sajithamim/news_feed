@@ -2,12 +2,14 @@ import ActionButton from "antd/lib/modal/ActionButton";
 import Users from "../services/Users";
 
 
-export const getUsersList = () => async (dispatch) => {
+export const getUsersList = (page) => async (dispatch) => {
+    page = page != undefined ? page : 1;
     try {
-        const res = await Users.getUsers();
+        const res = await Users.getUsers(page);
         dispatch({
             type: 'GET_USER',
             payload: res.data,
+            page:page
         })
     } catch (err) {
         console.log(err);

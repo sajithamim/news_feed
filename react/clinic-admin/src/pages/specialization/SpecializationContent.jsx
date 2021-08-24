@@ -129,7 +129,7 @@ const SpecializationContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {specList && specList.results && specList.results && page == current ?
+        {specList && specList.results  &&  page == current ?
           (<Table columns={columns} pagination={pagination} dataSource={specGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer

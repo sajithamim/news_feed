@@ -10,7 +10,7 @@ const initialState= {
 const users = (state = initialState , action) => {
     switch(action.type) {
         case 'GET_USER':
-        return {...state , userList: action.payload }
+        return {...state , userList: action.payload , page: action.page}
         case 'GET_USER_CATEGORY':
         return {...state , userCategory: action.payload }
         case 'GET_USER_SPEC':
