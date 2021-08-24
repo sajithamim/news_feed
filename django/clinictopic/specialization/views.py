@@ -135,7 +135,7 @@ class SpecializationView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     def create(self, request):
         name = request.data['name']
-        if Specialization.objects.filter(name__icontains=name):
+        if Specialization.objects.filter(name__iexact=name):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
@@ -149,7 +149,7 @@ class SpecializationView(viewsets.ModelViewSet):
         return Response(serializer.data)
     def update(self, request, *args, **kwargs):
         name = request.data['name']
-        if Specialization.objects.filter(name__icontains=name):
+        if Specialization.objects.filter(name__iexact=name):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
@@ -188,7 +188,7 @@ class SubSpecializationView(viewsets.ModelViewSet):
     def create(self, request):
         name = request.data['name']
         spec_id = request.data['spec_id']
-        if SubSpecialization.objects.filter(name__icontains=name,spec_id=spec_id):
+        if SubSpecialization.objects.filter(name__iexact=name,spec_id=spec_id):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
@@ -203,7 +203,7 @@ class SubSpecializationView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         name = request.data['name']
         spec_id = request.data['spec_id']
-        if  SubSpecialization.objects.filter(name__icontains=name,spec_id=spec_id):
+        if  SubSpecialization.objects.filter(name__iexact=name,spec_id=spec_id):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
