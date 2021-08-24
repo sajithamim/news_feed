@@ -92,7 +92,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     def create(self, request):
         name = request.data['title']
-        if Categoeries.objects.filter(title__icontains=name):
+        if Categoeries.objects.filter(title__iexact=name):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
@@ -106,7 +106,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     def update(self, request, *args, **kwargs):
         name = request.data['title']
-        if Categoeries.objects.filter(title__icontains=name):
+        if Categoeries.objects.filter(title__iexact=name):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
