@@ -6,6 +6,7 @@ from PIL import Image
 from io import BytesIO
 from django.core.files import File
 from django.core.files.base import ContentFile
+from django.dispatch import receiver
 
 # Create your models here.
 class Specialization(models.Model):
@@ -39,6 +40,30 @@ class Specialization(models.Model):
 
     class Meta:
         db_table = 'Specialization'
+#delete update image on delete
+# @receiver(models.signals.post_delete,sender=Specialization)
+# def auto_delete_file_on_delete(sender,instance,**kwargs):
+#     if instance.icon:
+#         if os.path.isfile(instance.icon.path):
+#             os.remove(instance.icon.path)
+
+# @receiver(models.signals.pre_save, sender=Specialization)
+# def auto_delete_file_on_change(sender, instance, **kwargs):
+#     if not instance.pk:
+#         return False
+#     try:
+#         # print(instance.pk)
+#         old_file = Specialization.objects.get(id=instance.pk).icon
+#         # print("old",old_file)
+#         if not old_file:
+#             return False
+#     except Specialization.DoesNotExist:
+#         return False
+
+#     new_file = instance.icon
+#     if not old_file == new_file:
+#         if os.path.isfile(old_file.path):
+#                 os.remove(old_file.path)
 
 class SubSpecialization(models.Model):
     spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name='specialization_id')
