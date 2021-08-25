@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message } from "antd";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams , useHistory} from 'react-router-dom';
+import { Link, useParams , useHistory, Redirect} from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
@@ -33,7 +33,7 @@ const UserDetails = () => {
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
-
+  const [otherQualification , setOtherQualification] = useState({});
   const [activeInput, setActiveInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState();
@@ -47,8 +47,12 @@ const UserDetails = () => {
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
         dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
+        
           .then((res) => {
             res ? (setState(res.data.data)) : (setState({}));
+            const data = res.data.data.qualifications(item => {
+              qualifications.filter(qual => qual.name == item)
+            })
           })
       })
     dispatch(getQualifications());
@@ -116,14 +120,14 @@ const UserDetails = () => {
   }
 
   const handleQualificationChange = (item) => {
+    console.log('item', item)
     const data = [];
     item.map(item => {
-      if (item.label === 'other') {
-        setActiveInput(true);
-      }
-      data.push(item.label)
+       data.push(item)
+       if (item.label === "Other"){
+         setActiveInput(true);
+       }
     })
-
     setState({ ...state, qualifications: data });
   }
 
@@ -154,19 +158,6 @@ const UserDetails = () => {
     return formIsValid;
   }
 
-  const handleUserProfileSubmit = () => {
-    let newData = state;
-    delete newData["empolyment_value"];
-    delete newData["id"];
-    delete newData["username"];
-    dispatch(postUserProfile(newData))
-      .then(() => {
-        message.success("User details Added Successfully");
-      })
-      setState({});
-      history.push("/users");
-  }
-
   const renderTable = () => {
     const specList = [];
     userSpec && userSpec.data && userSpec.data.map(item => {
@@ -195,8 +186,26 @@ const UserDetails = () => {
 
   };
 
-  const handleFileList = ({ fileList }) => setFileList(fileList);
+  const handleFileList = ({ fileList }) => {
+    setFileList(fileList);
+  }
+  const handleBlur = (e) => {
+    setOtherQualification({[e.target.name]: e.target.value});
+  }
 
+  
+  const handleUserProfileSubmit = () => {
+    let newData = state;
+    delete newData["empolyment_value"];
+    delete newData["id"];
+    delete newData["username"];
+    dispatch(postUserProfile(newData , otherQualification))
+      .then(() => {
+        message.success("User details Added Successfully");
+      })
+      setState({});
+      history.push("/users");
+  }
 
   return (
     <div className="main-content">
@@ -205,13 +214,9 @@ const UserDetails = () => {
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item >
-                {/* <img className="Avatar" width="128px" height="128px" style={{ borderRadius: '50%' }} alt="No Image" src="" />
-                <Input type="file"
-                  id="image"
-                  name="image"
-                  accept="image/png, image/jpeg" onChange={handleFileChange} /> */}
                 <Upload
                   name="avatar"
+                  action={dispatch(putProfilePic(state.id, fileList))}
                   multiple={false}
                   listType="picture-card"
                   className="avatar-uploader"
@@ -244,10 +249,10 @@ const UserDetails = () => {
               key="1"
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit}>
-                <Form.Item label="Name">
+                {/* <Form.Item label="Name">
                   <Input name="username" className="form-control" type="text" value={state.username} onChange={handleChange} />
                   <div className="errorMsg">{errors && errors.errors && errors.errors.name}</div>
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item label="About">
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
@@ -255,14 +260,14 @@ const UserDetails = () => {
                   <Select style={customStyles}
                     id="qualification"
                     isMulti={true}
-                    value={state.qualification}
+                    value={state.qualifications}
                     onChange={handleQualificationChange}
                     options={qualificationList}
                   />
                 </Form.Item>
                 {activeInput ?
                   (<Form.Item label="Other Qualification">
-                    <Input name="other_qualification" className="form-control" type="text" value="" onChange={handleChange} />
+                    <Input name="name" className="form-control" type="text" onChange={handleBlur} />
                   </Form.Item>) : null}
                 <Form.Item label="Experience">
                   <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />

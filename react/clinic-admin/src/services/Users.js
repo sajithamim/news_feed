@@ -1,4 +1,5 @@
 import { http } from "../http-common";
+import axios from 'axios'; 
 
 
 const getUsers = (page) => {
@@ -31,9 +32,24 @@ const getUserProfile = (id) => {
 const getQualifications = () => {
     return http.get("auth/qualifications/");
 }
-const putProfilePic = (id , imageUrl) => {
-    return http.put(`auth/profilepic/${id}/profilepicaddadmin/` , imageUrl);
+const putProfilePic = (id, imageData) => {
+    let accessToken = localStorage.getItem("accessToken");
+    let url = `${process.env.REACT_APP_API_URL}auth/profilepic/${id}/profilepicaddadmin/`;
+    axios.put(url, imageData, {
+      headers: {
+        'content-type': 'multipart/form-data',
+        'authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(res => {
+    return res
+    })
+    .catch(err => err)
 }
+const postOtherQualifications = (otherQualification) => {
+    return http.post(`auth/qualifications/` , otherQualification);
+}
+
 const Users = {
     getUsers,
     getUserCategory,
@@ -44,7 +60,8 @@ const Users = {
     postUserProfile,
     getUserProfile,
     getQualifications,
-    putProfilePic
+    putProfilePic,
+    postOtherQualifications
 }
 
 export default Users;

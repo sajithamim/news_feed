@@ -8,51 +8,74 @@ import { getUsersList } from "../../actions/users"
 import "./Drawer.css";
 
 const DrawerAdvisory = (props) => {
-
     const [state, setState] = useState(props.editData);
-    const [ advisoryData , setAdvisoryData] = useState([]);
+    const [oldAdvisoryData, setOldAdvisoryData] = useState([]);
+    const [newAdvisoryData, setNewAdvisoryData] = useState([]);
+    const [errors, setErrors] = useState("");
     const { userList } = useSelector(state => state.users);
-    const { specId } = useParams(); 
+    const { specId } = useParams();
+    const { advisoryMemberList } = useSelector(state => state.spec);
 
     useEffect(() => {
         dispatch(getUsersList())
-    }, [])
-    
+        const advisoryData = [];
+        advisoryMemberList.data && advisoryMemberList.data.map(item => {
+            advisoryData.push({ spec_id: specId, user_id: item.user_id.id })
+        })
+        setOldAdvisoryData(advisoryData);
+    }, []);
+
     const list = []
     userList && userList.results && userList.results.map(item => {
         return list.push(
             { value: item.id, label: <div><div>{item.username}</div><div>{item.email}</div><div>{item.qualifications}</div></div> }
         )
     })
-    
+
     const dispatch = useDispatch();
+
+    const handleValidation = () => {
+        let errors = {};
+        let formIsValid = true;
+        if (newAdvisoryData.length <= 0) {
+            formIsValid = false;
+            errors["user_id"] = "User is Mandatory";
+        }
+        setErrors({ errors });
+        return formIsValid;
+    }
 
     const handleChange = (item) => {
         const selectedAdvisoryMemberList = []
-        item && item.map(item  => {
-             selectedAdvisoryMemberList.push( {spec_id: specId, user_id : item.value })
+        item && item.map(item => {
+            selectedAdvisoryMemberList.push({ spec_id: specId, user_id: item.value })
         })
-        setAdvisoryData(selectedAdvisoryMemberList);
+        setNewAdvisoryData(selectedAdvisoryMemberList);
     };
 
     const handleSubmit = () => {
-        dispatch(postAdvisoryMembersList(advisoryData))
-        .then(() => {
-            message.success("Advisory Members added successfully")
-        })
+        console.log("errors", errors);
+        if (handleValidation()) {
+            const data = oldAdvisoryData.length > 0 ? newAdvisoryData.concat(oldAdvisoryData) : newAdvisoryData
+            dispatch(postAdvisoryMembersList(data))
+                .then(() => {
+                    message.success("Advisory Members added successfully")
+                })
+        }
     }
 
     return (
         <Form name="basic" labelCol={{ span: 10 }} wrapperCol={{ span: 15 }} onFinish={handleSubmit}>
             <Form.Item label="Select Members" >
-                  <Select 
+                <Select
                     id="users"
                     isMulti={true}
                     isSearchable={true}
                     onChange={handleChange}
                     options={list}
-                  />
+                />
             </Form.Item>
+            <div className="errorMsg">{errors && errors.errors && errors.errors.user_id}</div>
             <Form.Item wrapperCol={{ offset: 7 }}>
                 <Button id="advisory" type="primary" htmlType="submit" >
                     Save

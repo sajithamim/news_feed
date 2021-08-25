@@ -102,7 +102,7 @@ const TopicsContent = (props) => {
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url:item.video_url,
-        pdfUrl:item.pdf && item.pdf.lastIndexOf("/"),
+        pdfUrl:item.pdf ,
         pdfUrlSecond:item.pdfsecond,
         format: item.format,
         external_url:item.external_url,

@@ -14,6 +14,7 @@ import Select from 'react-select';
 const { Option } = Select;
 
 const ModalContent = (props) => {
+  console.log("props.editData" , props.editData)
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
@@ -106,7 +107,7 @@ const ModalContent = (props) => {
     const pdfFile = e.target.files[0];
     const newErrorsState = { ...errors };
     if (!pdfFile.name.match(/\.(pdf)$/)) {
-      newErrorsState.pdf = 'Please select valid pdf.';
+      newErrorsState.pdf = 'Please select valid pdf';  
       setErrors(newErrorsState);
       setFormSubmit(false);
     } else {
@@ -116,6 +117,7 @@ const ModalContent = (props) => {
       reader.readAsDataURL(e.target.files[0]);
     }
   }
+
   const handleFileChangeSecond = (e) => {
     setState({ ...state, pdfUrlSecond: e.target.files[0] });
     const pdfSecondFile = e.target.files[0];
@@ -253,13 +255,8 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description1"] = "Description cannot be empty";
       }
-      const pdfName = state.pdfUrl.lastIndexOf("/" + 1);
-      console.log("pdfName" , pdfName);
       if(state.pdfUrl === undefined){
         errors["pdf"] = "Please upload Front Pdf"
-       }
-      if(state.pdfUrlSecond === undefined) {
-        errors["pdfsecond"] = "Please upload Back Pdf"
       }
     }
     if(state.format === '2')
@@ -396,9 +393,9 @@ const ModalContent = (props) => {
 
           {state.format === '1' ?
             (<><Form.Item label="Pdf Front"><Input type="file" name="pdf"  accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              {state.pdfUrl ? <p>{state.pdfUrl}</p> : null}
+              <p>{props.drawerType === 'edit' ? state.pdfUrl : null}</p>
               <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf"  onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
-              {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null}
+              {/* {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null} */}
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}

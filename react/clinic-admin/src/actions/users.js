@@ -65,10 +65,11 @@ export const deleteUser = (id) => async (dispatch) => {
     }
 }
 
-export const postUserProfile = (state) => async (dispatch) => {
+export const postUserProfile = (state , otherQualification) => async (dispatch) => {
     try {
         const res = await Users.postUserProfile(state);
-        console.log("res", res);
+        const res1 = await Users.postOtherQualifications(otherQualification);
+        console.log("res", res1);
         dispatch({
             type: 'POST_USER_PROFILE',
             payload: res.data,
@@ -78,7 +79,6 @@ export const postUserProfile = (state) => async (dispatch) => {
     }
 }
 export const getUserProfile = (id) => async (dispatch) => {
-    console.log("id", id);
     try {
         const res = await Users.getUserProfile(id);
         console.log("user response", res);
@@ -103,16 +103,19 @@ export const getQualifications = () => async (dispatch) => {
         console.log(err)
     }
 }
-export const putProfilePic = (id , imageUrl) => async (dispatch) => {
-    console.log("id" , id);
-    console.log("imageUrl" , imageUrl);
-    /*try {
-        const res = await Users.putProfilePic(id , imageUrl);
-        dispatch({
-            type: 'PUT_PROFILEPIC',
-            payload: res.data,
-        })
-    } catch (err) {
-        console.log(err)
-    }*/
+export const putProfilePic = (id , image) => async (dispatch) => {
+    let form_data = null;
+    if (image[0] && image[0].name) {
+        form_data = new FormData();
+        form_data.append('profilepic', image[0]);
+        try {
+            const res = await Users.putProfilePic(id , form_data);
+            dispatch({
+                type: 'PUT_PROFILEPIC',
+                payload: res.data,
+            })
+        } catch (err) {
+            console.log(err)
+        }
+    }
 }

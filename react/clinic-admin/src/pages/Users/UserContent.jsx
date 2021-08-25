@@ -19,10 +19,6 @@ const UserContent = () => {
     dispatch(getUsersList())
   }, [])
 
-
-  // const onAdd = () => {
-  // };
-
   const confirmDelete = (id) => {
     dispatch(deleteUser(id));
   };
