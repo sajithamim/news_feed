@@ -31,7 +31,7 @@ from rest_framework import pagination
 
 
 class TwentyPagination(pagination.PageNumberPagination):       
-       page_size = 10
+       page_size = 30
 
 class UpdateTopicSpecialization(APIView):
     serializer_class = UpdateTopicSpecializationSerializer
