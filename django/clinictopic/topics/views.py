@@ -26,9 +26,12 @@ from rest_framework import mixins
 from datetime import datetime, tzinfo
 import pytz
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import pagination
 
 
 
+class TwentyPagination(pagination.PageNumberPagination):       
+       page_size = 30
 
 class UpdateTopicSpecialization(APIView):
     serializer_class = UpdateTopicSpecializationSerializer
@@ -140,6 +143,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topics.objects.all().order_by('-created_at')
     serializer_class = TopicSeriaizer
+    pagination_class = TwentyPagination
     permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     # ordering = ('title')

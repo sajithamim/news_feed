@@ -150,6 +150,12 @@ class Image(models.Model):
     # image = models.CharField(blank=True, null=True, max_length=50)
     image = models.ImageField(blank=True, null=True, upload_to=get_image_path_topic)
 
+# @receiver(models.signals.post_delete,sender=Image)
+# def auto_delete_file_on_delete(sender,instance,**kwargs):
+#     if instance.image:
+#         if os.path.isfile(instance.image.path):
+#             os.remove(instance.image.path)
+
 class TopicSpecialization(models.Model):
     spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name="Topic_specialization")
     topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="topic_topic")
