@@ -30,6 +30,7 @@ const AdvisoryBoardContent = () => {
 
   const advisoryGenerator = () => {
     const items = [];
+    const oldAdvisoryItems = [];
     advisoryMemberList && advisoryMemberList.data && advisoryMemberList.data.map((item) => {
      items.push({
         id: item.id,
