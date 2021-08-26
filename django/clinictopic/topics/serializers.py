@@ -123,8 +123,11 @@ class TopicSeriaizer(serializers.ModelSerializer):
 
     def get_externalurltype(self,obj):
         etype = ""
+        formattype = obj.format
         url = obj.external_url
-        if  url=="":
+        if  url=="" and formattype=='1':
+            etype='pdf'
+        elif  url=="":
             etype=""
         elif str(url)[-4:]=='.pdf':
             etype="pdf"
