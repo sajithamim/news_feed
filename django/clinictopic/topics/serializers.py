@@ -116,14 +116,21 @@ class TopicSeriaizer(serializers.ModelSerializer):
     topic_topic = TopicSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
     published = serializers.SerializerMethodField()
+    externalurltype = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
-    # def get_externalurltype(self,obj):
-    #     etype = ""
-    #     if obj.external_url=""
-    #         etype=""
-        
+
+    def get_externalurltype(self,obj):
+        etype = ""
+        url = obj.external_url
+        if  url=="":
+            etype=""
+        elif str(url)[-4:]=='.pdf':
+            etype="pdf"
+        else:
+            etype="external"
+        return etype
 
 
     def get_published(self, obj):
