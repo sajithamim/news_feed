@@ -149,7 +149,8 @@ class SpecializationView(viewsets.ModelViewSet):
         return Response(serializer.data)
     def update(self, request, *args, **kwargs):
         name = request.data['name']
-        if Specialization.objects.filter(name__iexact=name):
+        idpk=kwargs['pk']
+        if Specialization.objects.filter(name__iexact=name).exclude(id=idpk):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
@@ -203,7 +204,8 @@ class SubSpecializationView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         name = request.data['name']
         spec_id = request.data['spec_id']
-        if  SubSpecialization.objects.filter(name__iexact=name,spec_id=spec_id):
+        idpk=kwargs['pk']
+        if  SubSpecialization.objects.filter(name__iexact=name,spec_id=spec_id).exclude(id=idpk):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',

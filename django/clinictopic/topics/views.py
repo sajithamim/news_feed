@@ -93,6 +93,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
+    
     def create(self, request):
         name = request.data['title']
         if Categoeries.objects.filter(title__iexact=name):
@@ -109,7 +110,8 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     def update(self, request, *args, **kwargs):
         name = request.data['title']
-        if Categoeries.objects.filter(title__iexact=name):
+        idpk=kwargs['pk']
+        if Categoeries.objects.filter(title__iexact=name).exclude(id=idpk):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
