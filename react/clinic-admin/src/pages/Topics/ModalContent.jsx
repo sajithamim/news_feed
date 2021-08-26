@@ -134,6 +134,7 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
+    setState({});
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -273,22 +274,24 @@ const ModalContent = (props) => {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title1'];
         newData['description'] = newData['description1'];
+        newData['deliveryType'] = 'pdf';
         newData['title1'] && delete newData['title1']
         newData['description1'] && delete newData['description1']
       } else if (newData.format === '2') {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
+        newData['deliveryType'] = 'external_url';
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
+        newData['deliveryType'] = 'external_url';
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      props.onFormSubmit(newData, form_data, form_data2, image_data);
-
+      props.onFormSubmit(newData, form_data, form_data2, image_data );
     }
   }
 

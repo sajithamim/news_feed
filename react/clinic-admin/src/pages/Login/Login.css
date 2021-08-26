@@ -83,3 +83,9 @@ Input[type="text"]{
     border-radius: 0px;
   }
 }
+
+Input[type="email"]{
+  margin-left: 5px;
+  border-radius: 8px;
+}
+

@@ -103,13 +103,11 @@ const AddAds = () => {
             formIsValid = false;    
             errors["image"] ="Image is mandatory";
         }
-        console.log("state" , state.users);
         if(!fields["users"] === undefined){
-            console.log("select users");
         }
         setErrors({ errors });
         return formIsValid;
-    } // form validation
+    } 
 
     const handleChange = (e, field) => {
         let fields = state;
@@ -157,8 +155,6 @@ const AddAds = () => {
         const userList = [];
         let errors = {};
         let form_data = null;
-        console.log("userVisibility" , state.userVisibility);
-        console.log("allusers" , state.allUsers);
         if (state.userVisibility.length > 0  || state.allUsers === true) {
             if (state.allUsers) {
                 userList.push({ spec_id: state.specActiveId, user_id: null }) // to all users

@@ -52,6 +52,7 @@ const TopicsContent = (props) => {
       dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
       .then(() => {
         message.success('Topic edit successfully')
+        props.Form.resetFields();
       });
     } else {
       dispatch(postTopic(newData, form_data, form_data2 , image_data))
