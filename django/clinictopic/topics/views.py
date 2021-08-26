@@ -109,7 +109,8 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     def update(self, request, *args, **kwargs):
         name = request.data['title']
-        if Categoeries.objects.filter(title__iexact=name):
+        idpk=kwargs['pk']
+        if Categoeries.objects.filter(title__iexact=name).exclude(id=idpk):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                 'success': 'false',
