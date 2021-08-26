@@ -119,6 +119,12 @@ class TopicSeriaizer(serializers.ModelSerializer):
     class Meta:
         model = Topics
         fields = '__all__'
+    # def get_externalurltype(self,obj):
+    #     etype = ""
+    #     if obj.external_url=""
+    #         etype=""
+        
+
 
     def get_published(self, obj):
         now = datetime.utcnow()
@@ -191,6 +197,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
             instance.media_type ='image'
             instance.video_url=''
             instance.pdf=''
+            instance.pdfsecond=''
         if validated_data['format'] =='3':
             image =Image.objects.filter(topic_id=instance).delete()
             instance.source_url=''
@@ -215,6 +222,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.author = author
             instance.deliverytype='external'
             instance.media_type ='video'
+            instance.pdfsecond=''
             # instance.video_url=''
             instance.pdf=''
         instance.save()
