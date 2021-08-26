@@ -93,6 +93,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
+    
     def create(self, request):
         name = request.data['title']
         if Categoeries.objects.filter(title__iexact=name):
