@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm } from "antd";
+import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm ,TextArea } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import Select from 'react-select';
 const { Option } = Select;
 
 const ModalContent = (props) => {
-  console.log("props.editData" , props.editData)
+  const { TextArea } = Input;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
@@ -22,14 +22,13 @@ const ModalContent = (props) => {
   const { catlist } = useSelector(state => state.category);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
-
   const specialization = [];
   specList && specList.results && specList.results.map(item => {
     return specialization.push(
       { value: item.id, label: item.name }
     );
   })
-
+  
   const category = [];
   catlist && catlist.results && catlist.results.map(item => {
     return category.push(
@@ -70,16 +69,13 @@ const ModalContent = (props) => {
     var numFiles = e.target.files.length;
     const newErrorsState = { ...errors };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
-      console.log('i', i)
       var file = e.target.files[i];
-      if (!file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      if (!file.name.match(/\.(jpg|jpeg|png|gif|jfif|tiff|raw|bmp)$/)) {
         newErrorsState.multi_image = 'Please select valid image.';
         setErrors(newErrorsState);
         setFormSubmit(false);
       } else {
         const reader = new FileReader();
-        //setState({ ...state, pdfUrl: e.target.files[0]});
-        //console.log('FileChange', e.target.files[i])
         reader.addEventListener("load", () => {
           if (!state.topic_image) {
             setState({ ...state, topic_image: [reader.result] });
@@ -105,10 +101,10 @@ const ModalContent = (props) => {
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
-    const newErrorsState = { ...errors };
-    if (!pdfFile.name.match(/\.(pdf)$/)) {
-      newErrorsState.pdf = 'Please select valid pdf';  
-      setErrors(newErrorsState);
+    let errors = {};
+    if (pdfFile.name.match(/\.(pdf)$/) == null) {
+      errors["pdf"] = "Please select valid pdf"; 
+      setErrors({ errors });
       setFormSubmit(false);
     } else {
       const reader = new FileReader();
@@ -121,10 +117,10 @@ const ModalContent = (props) => {
   const handleFileChangeSecond = (e) => {
     setState({ ...state, pdfUrlSecond: e.target.files[0] });
     const pdfSecondFile = e.target.files[0];
-    const newErrorsState = { ...errors };
-    if (!pdfSecondFile.name.match(/\.(pdf)$/)) {
-      newErrorsState.pdf = 'Please select valid pdf.';
-      setErrors(newErrorsState);
+    let errors = {};
+    if (pdfSecondFile.name.match(/\.(pdf)$/) == null) {
+      errors["pdfsecond"] = "Please select valid pdf"; 
+      setErrors({ errors });
       setFormSubmit(false);
     } else {
       const reader = new FileReader();
@@ -145,7 +141,6 @@ const ModalContent = (props) => {
 
   const onOk = (value) => {
   }
-
   const radioOnChange = (val, e) => {
     if (val === 'publish') {
       const crntDateTime = new Date().toISOString();
@@ -175,8 +170,81 @@ const ModalContent = (props) => {
     setState({ ...state, publishingtime: laterTime })
   }
 
+  const handleValidation = () => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (!fields["topic_topic"]) {
+      formIsValid = false;
+      errors["topic_topic"] = "Specialization cannot be empty";
+    }
+    if (!fields["category_id"]) {
+      formIsValid = false;
+      errors["category_id"] = "Category cannot be empty";
+    }
+
+    if (!fields["publishingtime"]) {
+      formIsValid = false;
+      errors["publishingtime"] = "Publish time cannot be empty";
+    }
+    if(state.format === '1')
+    {
+      if (!fields["title1"]) {
+        formIsValid = false;
+        errors["title1"] = " Title cannot be empty";
+      }
+      if (!fields["description1"]) {
+        formIsValid = false;
+        errors["description1"] = "Description cannot be empty";
+      }
+      if(props.drawerType == 'add' && fields["pdfUrl"] === undefined){
+        formIsValid = false;
+        errors["pdf"] = "Please upload Front Pdf"
+      }
+      if(props.drawerType == 'edit' && fields["pdfFront"] === null ){
+        formIsValid = false;
+        errors["pdf"] = "Please upload Front Pdf"
+      }
+      if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
+        errors["pdf"] = "Please select valid pdf"; 
+        setErrors({ errors });
+        setFormSubmit(false);
+      } 
+      if (fields["pdfUrlSecond"] && fields["pdfUrlSecond"].name.match(/\.(pdf)$/) == null) {
+        errors["pdfsecond"] = "Please select valid pdf"; 
+        setErrors({ errors });
+        setFormSubmit(false);
+      }
+    }
+    if(state.format === '2')
+    {
+      if (!fields["title2"]) {
+        formIsValid = false;
+        errors["title2"] = " Title cannot be empty";
+      }
+      if (!fields["description2"]) {
+        formIsValid = false;
+        errors["description2"] = " Description cannot be empty";
+      }
+    }
+    if(state.format === '3')
+    {
+      if (!fields["title3"]) {
+        formIsValid = false;
+        errors["title3"] = " Title cannot be empty";
+      }
+      if (!fields["description3"]) {
+        formIsValid = false;
+        errors["description3"] = " Description cannot be empty";
+      }
+    }
+    setErrors({ errors });
+    return formIsValid;
+  }
+
+
   const handleSubmit = (e) => {
-    if (handleValidation()) {
+    if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -223,68 +291,13 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       props.onFormSubmit(newData, form_data, form_data2, image_data);
+      
     }
   }
 
   const dispatch = useDispatch();
 
-  const handleValidation = () => {
-    let fields = state;
-    let errors = {};
-    let formIsValid = true;
-    if (!fields["topic_topic"]) {
-      formIsValid = false;
-      errors["topic_topic"] = "Specialization cannot be empty";
-    }
-    if (!fields["category_id"]) {
-      formIsValid = false;
-      errors["category_id"] = "Category cannot be empty";
-    }
-
-    if (!fields["publishingtime"]) {
-      formIsValid = false;
-      errors["publishingtime"] = "Publish time cannot be empty";
-    }
-    if(state.format === '1')
-    {
-      if (!fields["title1"]) {
-        formIsValid = false;
-        errors["title1"] = " Title cannot be empty";
-      }
-      if (!fields["description1"]) {
-        formIsValid = false;
-        errors["description1"] = "Description cannot be empty";
-      }
-      if(state.pdfUrl === undefined){
-        errors["pdf"] = "Please upload Front Pdf"
-      }
-    }
-    if(state.format === '2')
-    {
-      if (!fields["title2"]) {
-        formIsValid = false;
-        errors["title2"] = " Title cannot be empty";
-      }
-      if (!fields["description2"]) {
-        formIsValid = false;
-        errors["description2"] = " Description cannot be empty";
-      }
-    }
-    if(state.format === '3')
-    {
-      if (!fields["title3"]) {
-        formIsValid = false;
-        errors["title3"] = " Title cannot be empty";
-      }
-      if (!fields["description3"]) {
-        formIsValid = false;
-        errors["description3"] = " Description cannot be empty";
-      }
-    }
-    setErrors({ errors });
-    return formIsValid;
-  }
-
+  
   const cancel = (e) => {
     message.error('Cancelled');
   }
@@ -356,7 +369,7 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div style={{ marginLeft: '-47px', width: '287px' }}>
-                  <Input name="description1" type="text" onChange={handleChange} key="desc" value={state.description1} /></div>
+                <TextArea name="description1"  maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
               </Form.Item></>) : null
           }
@@ -368,7 +381,7 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div style={{ marginLeft: '-47px', width: '287px' }}>
-                  <Input name="description2" type="text" onChange={handleChange} key="desc" value={state.description2} /></div>
+                <TextArea name="description2"  maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description2}</div>
               </Form.Item>
             </>) : null
@@ -381,7 +394,7 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div style={{ marginLeft: '-47px', width: '287px' }}>
-                  <Input name="description3" type="text" onChange={handleChange} key="desc" value={state.description3} /></div>
+                <TextArea name="description3"  maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description3}</div>
               </Form.Item></>) : null
           }
@@ -392,8 +405,9 @@ const ModalContent = (props) => {
             </Form.Item></>) : null}
 
           {state.format === '1' ?
-            (<><Form.Item label="Pdf Front"><Input type="file" name="pdf"  accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              <p>{props.drawerType === 'edit' ? state.pdfUrl : null}</p>
+            (<><p style={{marginLeft: '226px'}}>{props.drawerType === 'edit' ? state.pdfFront : null}</p><Form.Item label="Pdf Front">
+              <Input type="file" name="pdf"  accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+              <p style={{marginLeft: '226px'}}>{props.drawerType === 'edit' ? state.pdfBack : null}</p>
               <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf"  onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
               {/* {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null} */}
           {state.format === '2' ?

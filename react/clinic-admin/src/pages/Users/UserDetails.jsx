@@ -33,7 +33,7 @@ const UserDetails = () => {
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
-  const [otherQualification , setOtherQualification] = useState({});
+  const [otherQualification , setOtherQualification] = useState({name: ''});
   const [activeInput, setActiveInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState();
@@ -50,9 +50,13 @@ const UserDetails = () => {
         
           .then((res) => {
             res ? (setState(res.data.data)) : (setState({}));
-            const data = res.data.data.qualifications(item => {
-              qualifications.filter(qual => qual.name == item)
-            })
+            // const data = [];
+            // res.data && res.data.data && res.data.data.qualifications.map(item => {
+            //   const response = qualifications && qualifications.results && qualifications.results.filter(qual => qual.name == item);
+            //   console.log('res', response)
+            //   // if(response.length > 0)
+            //    data.push(response)
+            // }) 
           })
       })
     dispatch(getQualifications());
@@ -123,12 +127,12 @@ const UserDetails = () => {
     console.log('item', item)
     const data = [];
     item.map(item => {
-       data.push(item)
+       data.push(item.label)
        if (item.label === "Other"){
          setActiveInput(true);
        }
     })
-    setState({ ...state, qualifications: data });
+    setState({ ...state, qualification: item, qualifications: data });
   }
 
   const handleSelectChange = (value) => {
@@ -199,12 +203,13 @@ const UserDetails = () => {
     delete newData["empolyment_value"];
     delete newData["id"];
     delete newData["username"];
+    
     dispatch(postUserProfile(newData , otherQualification))
       .then(() => {
         message.success("User details Added Successfully");
+        setState({});
+        history.push("/users");
       })
-      setState({});
-      history.push("/users");
   }
 
   return (
@@ -260,7 +265,7 @@ const UserDetails = () => {
                   <Select style={customStyles}
                     id="qualification"
                     isMulti={true}
-                    value={state.qualifications}
+                    value={state.qualification}
                     onChange={handleQualificationChange}
                     options={qualificationList}
                   />
@@ -375,28 +380,6 @@ const UserDetails = () => {
             </TabPane>
           </Tabs>
         </Card>
-        {/* <Col span={12}>
-            <Card title="Specializations and Sub Specializations" bordered={true}>
-              <table className="table table-bordered">
-                <thead>
-                  <th>Specialization</th>
-                  <th>Sub Specialization</th>
-                </thead>
-                <tbody>
-                  {renderTable()}
-                </tbody>
-              </table>
-            </Card>
-          </Col> */}
-        {/* </Row> */}
-
-        {/* <Row gutter={12} style={{ marginTop: "-121px" }}>
-          <Col span={12}>
-            <Card title="Category List" bordered={true}>
-              <Table columns={columns} dataSource={catList} pagination={false} />
-            </Card>
-          </Col>
-        </Row> */}
       </Container>
     </div>
   );

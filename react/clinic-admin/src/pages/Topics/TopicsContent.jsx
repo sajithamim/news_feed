@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin, Form } from "antd";
 import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,11 +10,10 @@ const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
-
   const [data , setData] = useState({});
   const { topicList, addTopic, editTopic, successMsg  , page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState();
+  const [pageSize , setPageSize] = useState(30);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getTopic())
@@ -49,7 +48,6 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data2, image_data) => {
-    console.log('Topic Content')
     if(drawerType == 'edit') {
       dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
       .then(() => {
@@ -60,6 +58,7 @@ const TopicsContent = (props) => {
       .then(() => {
         message.success('Topic add successfully')
       });
+      
     }
   }
 
@@ -102,8 +101,8 @@ const TopicsContent = (props) => {
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url:item.video_url,
-        pdfUrl:item.pdf ,
-        pdfUrlSecond:item.pdfsecond,
+        pdfFront: item.pdf && item.pdf.substring(item.pdf.lastIndexOf('/')+1),
+        pdfBack: item.pdfsecond && item.pdfsecond.substring(item.pdfsecond.lastIndexOf('/')+1),
         format: item.format,
         external_url:item.external_url,
         username: {value: item.author && item.author.name, label: item.author && item.author.name},
@@ -119,14 +118,12 @@ const TopicsContent = (props) => {
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
     dispatch(getTopic(page));
-    // setCurrent(page)
-    // setSlNo(page-1)
-    // dispatch(getSpecialization(page));
   }
 
   const pagination =  {
     current ,
     pageSize,
+    showSizeChanger: false,
     onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
     total: topicList.count
   }

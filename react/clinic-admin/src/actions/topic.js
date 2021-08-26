@@ -63,26 +63,21 @@ export const postTopic = (state, form_data, form_data2, image_data) => async (di
     }
 }
 
-export const updateTopic = (id, state, form_data, image_data) => async (dispatch) => {
+export const updateTopic = (id, state, form_data, form_data2, image_data) => async (dispatch) => {
    
     state.topic_audience = "doctor";
     try {
         const res = await Topic.updateTopic(id, state);
         if (res && form_data !== null) {
             await Topic.putPdfdata(id, form_data);
-            // dispatch({
-            //     type: 'UPDATE_TOPIC',
-            //     payload: res.data,
-            // })
+        }
+        if(res.data.id && form_data2) {
+            await Topic.putPdfdata2(id, form_data2);
         }
         if(res && image_data !== null) {
             image_data.append('topic_id', id);
             await Topic.putImagedata(image_data);
-            // dispatch({
-            //     type: 'UPDATE_TOPIC',
-            //     payload: res.data,
-            // })
-       }
+        }
        dispatch({
             type: 'UPDATE_TOPIC',
             payload: res.data,
