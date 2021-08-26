@@ -352,30 +352,7 @@ const UserDetails = () => {
               key="4"
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
-                <Form.Item label="Publication Title">
-                  <Input name="pub_title" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item label="Image">
-                  <Input name="pub_title" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item label="Publisher">
-                  <Input name="publisher" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item label="Publication Date">
-                  <Input name="pub_title" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item label="Author">
-                  <Input name="author" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item label="Publication URL">
-                  <Input name="pub_url" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item label="Description">
-                  <Input name="pub_title" className="form-control" type="text" value="" />
-                </Form.Item>
-                <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-                  <Button type="primary" htmlType="submit">Save</Button>
-                </Form.Item>
+                
               </Form>
             </TabPane>
           </Tabs>

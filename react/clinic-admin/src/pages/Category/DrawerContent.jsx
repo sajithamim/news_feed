@@ -63,6 +63,8 @@ const DrawerContent = (props) => {
   }
 
   const handleSubmit = (e) => {
+    console.log("props",props);
+    console.log("State" , state);
     if (formValidation()) {
       setErrors({});
       let newData = state;
@@ -73,7 +75,12 @@ const DrawerContent = (props) => {
         form_data = new FormData();
         form_data.append('image', image, image.name);
       }
-      else if(image.name === undefined){
+      else if(props.drawerType === "edit" && image.name === undefined){
+        newErrorsState.image = 'Image cannot be empty';
+        setErrors(newErrorsState);
+        return false;
+      }
+      if(props.drawerType === "edit" && state.image != null){
         newErrorsState.image = 'Image cannot be empty';
         setErrors(newErrorsState);
         return false;
@@ -95,14 +102,13 @@ const DrawerContent = (props) => {
           res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
         });
       }
-    }
+       }
   }
 
   const formValidation = () => {
     let entities = state;
     const newErrorsState = { ...errors };
     if (!entities["title"]) {
-      console.log("coming title error");
       newErrorsState.title = 'Name cannot be empty';
       setErrors(newErrorsState);
       return false;

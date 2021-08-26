@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm ,TextArea } from "antd";
+import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, TextArea } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,7 @@ const ModalContent = (props) => {
       { value: item.id, label: item.name }
     );
   })
-  
+
   const category = [];
   catlist && catlist.results && catlist.results.map(item => {
     return category.push(
@@ -103,7 +103,7 @@ const ModalContent = (props) => {
     const pdfFile = e.target.files[0];
     let errors = {};
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
-      errors["pdf"] = "Please select valid pdf"; 
+      errors["pdf"] = "Please select valid pdf";
       setErrors({ errors });
       setFormSubmit(false);
     } else {
@@ -119,7 +119,7 @@ const ModalContent = (props) => {
     const pdfSecondFile = e.target.files[0];
     let errors = {};
     if (pdfSecondFile.name.match(/\.(pdf)$/) == null) {
-      errors["pdfsecond"] = "Please select valid pdf"; 
+      errors["pdfsecond"] = "Please select valid pdf";
       setErrors({ errors });
       setFormSubmit(false);
     } else {
@@ -187,8 +187,7 @@ const ModalContent = (props) => {
       formIsValid = false;
       errors["publishingtime"] = "Publish time cannot be empty";
     }
-    if(state.format === '1')
-    {
+    if (state.format === '1') {
       if (!fields["title1"]) {
         formIsValid = false;
         errors["title1"] = " Title cannot be empty";
@@ -197,27 +196,26 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description1"] = "Description cannot be empty";
       }
-      if(props.drawerType == 'add' && fields["pdfUrl"] === undefined){
+      if (props.drawerType == 'add' && fields["pdfUrl"] === undefined) {
         formIsValid = false;
         errors["pdf"] = "Please upload Front Pdf"
       }
-      if(props.drawerType == 'edit' && fields["pdfFront"] === null ){
+      if (props.drawerType == 'edit' && fields["pdfFront"] === null) {
         formIsValid = false;
         errors["pdf"] = "Please upload Front Pdf"
       }
       if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
-        errors["pdf"] = "Please select valid pdf"; 
+        errors["pdf"] = "Please select valid pdf";
         setErrors({ errors });
         setFormSubmit(false);
-      } 
+      }
       if (fields["pdfUrlSecond"] && fields["pdfUrlSecond"].name.match(/\.(pdf)$/) == null) {
-        errors["pdfsecond"] = "Please select valid pdf"; 
+        errors["pdfsecond"] = "Please select valid pdf";
         setErrors({ errors });
         setFormSubmit(false);
       }
     }
-    if(state.format === '2')
-    {
+    if (state.format === '2') {
       if (!fields["title2"]) {
         formIsValid = false;
         errors["title2"] = " Title cannot be empty";
@@ -227,8 +225,7 @@ const ModalContent = (props) => {
         errors["description2"] = " Description cannot be empty";
       }
     }
-    if(state.format === '3')
-    {
+    if (state.format === '3') {
       if (!fields["title3"]) {
         formIsValid = false;
         errors["title3"] = " Title cannot be empty";
@@ -291,13 +288,13 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       props.onFormSubmit(newData, form_data, form_data2, image_data);
-      
+
     }
   }
 
   const dispatch = useDispatch();
 
-  
+
   const cancel = (e) => {
     message.error('Cancelled');
   }
@@ -365,11 +362,11 @@ const ModalContent = (props) => {
             (<><Form.Item label="Title">
               <div style={{ marginLeft: '-47px', width: '287px' }}>
                 <Input name="title1" type="text" onChange={handleChange} value={state.title1} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.title1}</div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.title1}</div>
             </Form.Item>
               <Form.Item label="Description">
                 <div style={{ marginLeft: '-47px', width: '287px' }}>
-                <TextArea name="description1"  maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} style={{ marginLeft: '47px' }} /></div>
+                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
               </Form.Item></>) : null
           }
@@ -381,7 +378,7 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div style={{ marginLeft: '-47px', width: '287px' }}>
-                <TextArea name="description2"  maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} style={{ marginLeft: '47px' }} /></div>
+                  <TextArea name="description2" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description2}</div>
               </Form.Item>
             </>) : null
@@ -394,22 +391,10 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div style={{ marginLeft: '-47px', width: '287px' }}>
-                <TextArea name="description3"  maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} style={{ marginLeft: '47px' }} /></div>
+                  <TextArea name="description3" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description3}</div>
               </Form.Item></>) : null
           }
-          {state.format === '3' || state.format === '2' ?
-            (<><Form.Item label="Pdf/External URL">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
-                <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
-            </Form.Item></>) : null}
-
-          {state.format === '1' ?
-            (<><p style={{marginLeft: '226px'}}>{props.drawerType === 'edit' ? state.pdfFront : null}</p><Form.Item label="Pdf Front">
-              <Input type="file" name="pdf"  accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              <p style={{marginLeft: '226px'}}>{props.drawerType === 'edit' ? state.pdfBack : null}</p>
-              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf"  onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
-              {/* {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null} */}
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
@@ -422,6 +407,20 @@ const ModalContent = (props) => {
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
+          {state.format === '3' || state.format === '2' ?
+            (<><Form.Item label="Pdf/External URL">
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
+            </Form.Item></>) : null}
+
+          {state.format === '1' ?
+            (<><p style={{ marginLeft: '226px' }}>{props.drawerType === 'edit' ? state.pdfFront : null}</p><Form.Item label="Pdf Front">
+              <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+              <p style={{ marginLeft: '226px' }}>{props.drawerType === 'edit' ? state.pdfBack : null}</p>
+              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
+          {/* {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null} */}
+
+
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span style={{ color: "red" }}>Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
               <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
