@@ -11,3 +11,7 @@
     text-align: right;
     margin-right: 15px;
   }
+
+  .errorMsg{
+    margin-left: 50px;
+  }

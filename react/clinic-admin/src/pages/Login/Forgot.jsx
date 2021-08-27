@@ -37,6 +37,7 @@ const Forgot = () => {
     setLoading(true);
     dispatch(postRequestEmail(state))
     .then((res) => {
+      res === undefined ? message.error({content: "User doesn't exist"}) :
       message.success({
         content: 'We have sent you a link to reset your password',
         className: 'custom-class',
@@ -67,7 +68,7 @@ const Forgot = () => {
             ]}
           >
             <Input
-              style={{ borderRadius: "8px" }}
+              type="email"
               className="un"
               name="email"
               value={email}
