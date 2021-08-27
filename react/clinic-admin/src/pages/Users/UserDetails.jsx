@@ -1,12 +1,14 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message } from "antd";
+import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm } from "antd";
 import { Container } from "react-bootstrap";
+import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams , useHistory, Redirect} from 'react-router-dom';
+import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import DrawerContent from "../Category/DrawerContent";
 import "./Users.css";
 const columns = [
   {
@@ -33,9 +35,12 @@ const UserDetails = () => {
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
-  const [otherQualification , setOtherQualification] = useState({name: ''});
+  const [otherQualification, setOtherQualification] = useState({ name: '' });
   const [activeInput, setActiveInput] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [drawerType, setDrawerType] = useState("");
+  const [editData, setEditData] = useState({});
   const [imageUrl, setImageUrl] = useState();
   const [previewImage, setPreviewImage] = useState({});
   const [previewVisible, setPreviewVisible] = useState({});
@@ -47,7 +52,6 @@ const UserDetails = () => {
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
         dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
-        
           .then((res) => {
             res ? (setState(res.data.data)) : (setState({}));
             // const data = [];
@@ -127,10 +131,10 @@ const UserDetails = () => {
     console.log('item', item)
     const data = [];
     item.map(item => {
-       data.push(item.label)
-       if (item.label === "Other"){
-         setActiveInput(true);
-       }
+      data.push(item.label)
+      if (item.label === "Other") {
+        setActiveInput(true);
+      }
     })
     setState({ ...state, qualification: item, qualifications: data });
   }
@@ -194,23 +198,102 @@ const UserDetails = () => {
     setFileList(fileList);
   }
   const handleBlur = (e) => {
-    setOtherQualification({[e.target.name]: e.target.value});
+    setOtherQualification({ [e.target.name]: e.target.value });
   }
+  const onEdit = (record) => {
+    setEditData(record);
+    setShowDrawer(true);
+    setDrawerType("edit");
+  };
+  const onAdd = () => {
+    setShowDrawer(true);
+    setDrawerType("add");
+  };
+  const onClose = () => {
+    setShowDrawer(false);
+  };
 
-  
+  const pagination = () => {
+
+  }
+  const cancel = (e) => {
+  };
+
+  const onConfirm = (id) => {
+
+  };
   const handleUserProfileSubmit = () => {
     let newData = state;
     delete newData["empolyment_value"];
     delete newData["id"];
     delete newData["username"];
-    
-    dispatch(postUserProfile(newData , otherQualification))
+
+    dispatch(postUserProfile(newData, otherQualification))
       .then(() => {
         message.success("User details Added Successfully");
         setState({});
         history.push("/users");
       })
   }
+  const dataSource = [
+    {
+      key: '1',
+      sl_no: '01',
+      title: 2443,
+      image: '10 Downing Street',
+      publisher: 'john',
+    },
+    {
+      key: '2',
+      sl_no: '02',
+      title: 22223,
+      image: ' Downing Street',
+      publisher: 'doe',
+    },
+  ];
+  const publicationColumns = [
+    {
+      title: "Sl No:",
+      dataIndex: "sl_no",
+      key: "sl_no",
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+    },
+    {
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+    },
+    {
+      title: "Publisher",
+      dataIndex: "publisher",
+      key: "publisher",
+    },
+    {
+      title: "Action",
+      key: "id",
+      align: "center",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button type="link" onClick={() => onEdit(record)}>
+            Edit
+          </Button>
+          <Popconfirm
+            title="Are you sure to delete this category?"
+            onConfirm={() => onConfirm(record.id)}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="link">Delete</Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <div className="main-content">
@@ -352,7 +435,35 @@ const UserDetails = () => {
               key="4"
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
-                
+                <Card
+                  title="Publications"
+                  extra={
+                    <IconButton onClick={onAdd}>
+                      <Icon>add</Icon>
+                    </IconButton>
+                  }
+                  style={{ width: "100%" }}
+                >
+                  <Table columns={publicationColumns} dataSource={dataSource} pagination={pagination} />
+                </Card>
+                <Drawer
+                  title={
+                    drawerType === "edit"
+                      ? "Edit Category"
+                      : drawerType === "add"
+                        ? "Add Category"
+                        : ""
+                  }
+                  placement="right"
+                  width={750}
+                  closable={true}
+                  onClose={onClose}
+                  visible={showDrawer}
+                  key="drawer"
+                >
+                  <DrawerContent drawerType={drawerType} type="public" editData={(drawerType === 'edit') ? editData : {}} />
+                </Drawer>
+
               </Form>
             </TabPane>
           </Tabs>
