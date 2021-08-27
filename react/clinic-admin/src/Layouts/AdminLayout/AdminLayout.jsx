@@ -27,7 +27,6 @@ const AdminLayout = ({ children }) => {
   };
 
   const pathname = window.location.pathname;
-  console.log('pathname', pathname)
   return (
     <Layout>
       <Sider
@@ -46,7 +45,7 @@ const AdminLayout = ({ children }) => {
           </a>
         </div>
         {accessToken !== null && accessToken !== undefined ? 
-          (<Menu theme="dark" mode="inline" defaultSelectedKeys={["data"]} style={{ height: "100%" }}>
+          (<Menu theme="dark" mode="inline" defaultSelectedKeys={["data"]} style={{ height: "100%"}}>
             {routes && routes.map((subroute) => subroute.key !== 'logout' ? subroute.key !== 'settings' ?
               (<Menu.Item key={subroute.key} icon={subroute.icon}>
                 <NavLink to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>

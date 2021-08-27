@@ -11,12 +11,13 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
   const [data , setData] = useState({});
-  const { topicList, addTopic, editTopic, successMsg  , page} = useSelector(state => state.topic);
+  const { topicList, addTopic, editTopic, successMsg, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(30);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getTopic())
+    console.log("gettopic" , topicList);
+    dispatch(getTopic(page))
     onClose();
   }, [addTopic, editTopic])
 
@@ -52,7 +53,6 @@ const TopicsContent = (props) => {
       dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
       .then(() => {
         message.success('Topic edit successfully')
-        props.Form.resetFields();
       });
     } else {
       dispatch(postTopic(newData, form_data, form_data2 , image_data))
@@ -114,7 +114,7 @@ const TopicsContent = (props) => {
     return items;
   }
 
-  const topics = topicGenerator();
+  //const topics = topicGenerator();
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
@@ -172,8 +172,8 @@ const TopicsContent = (props) => {
             <Icon>add</Icon>
           </IconButton>
         } style={{ width: "100%" }} >
-        {topicList && topicList.results && page == current ?
-        (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
+        {topicList && topicList.results ?
+        (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topicGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={drawerType === "edit" ? "Edit Topic" : drawerType === "add" ? "Add Topic" : "" }

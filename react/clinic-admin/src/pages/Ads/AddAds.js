@@ -85,6 +85,7 @@ const AddAds = () => {
         let fields = state;
         let errors = {};
         let formIsValid = true;
+        console.log("state" , fields["image"]);
         if (!fields["title"]) {
             formIsValid = false;
             errors["title"] = "Title is required";
@@ -99,7 +100,7 @@ const AddAds = () => {
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
-        if (image.name === undefined){
+        if (image.name || state.image === undefined){
             formIsValid = false;    
             errors["image"] ="Image is mandatory";
         }
