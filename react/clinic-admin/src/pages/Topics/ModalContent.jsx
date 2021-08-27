@@ -134,13 +134,11 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    setErrors({})
     if (props.editData !== null) {
       setState(props.editData);
     }
   }, [props.editData])
   useEffect(() => {
-    setErrors({})
   }, [])
 
   const onOk = (value) => {
@@ -228,6 +226,11 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description2"] = " Description cannot be empty";
       }
+      // if(state.imageFormData === undefined)
+      // {
+      //   formIsValid = false;
+      //   errors["multi_image"] = "Image cannot be empty";
+      // }
     }
     if (state.format === '3') {
       if (!fields["title3"]) {
@@ -239,12 +242,14 @@ const ModalContent = (props) => {
         errors["description3"] = " Description cannot be empty";
       }
     }
+    console.log("handlevslida state",state);
     setErrors({ errors });
     return formIsValid;
   }
 
 
   const handleSubmit = (e) => {
+    console.log("handle submit state",state);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -406,7 +411,9 @@ const ModalContent = (props) => {
               <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-            </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></Form.Item>) : null}
+            </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
+            </Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div style={{ marginLeft: '-47px', width: '287px' }}><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
