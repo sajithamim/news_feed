@@ -134,11 +134,14 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    setState({});
+    setErrors({})
     if (props.editData !== null) {
       setState(props.editData);
     }
   }, [props.editData])
+  useEffect(() => {
+    setErrors({})
+  }, [])
 
   const onOk = (value) => {
   }
