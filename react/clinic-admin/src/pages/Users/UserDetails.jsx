@@ -8,7 +8,7 @@ import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import DrawerContent from "../Category/DrawerContent";
+import DrawerContent from "./DrawerContent";
 import "./Users.css";
 const columns = [
   {
