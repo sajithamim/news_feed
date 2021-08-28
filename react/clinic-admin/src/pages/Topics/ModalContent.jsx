@@ -174,6 +174,7 @@ const ModalContent = (props) => {
 
   const handleValidation = () => {
     let fields = state;
+    console.log('stat', state);
     let errors = {};
     let formIsValid = true;
     if (!fields["topic_topic"]) {
@@ -199,13 +200,16 @@ const ModalContent = (props) => {
         errors["description1"] = "Description cannot be empty";
       }
       if (props.drawerType == 'add' && fields["pdfUrl"] === undefined) {
+        console.log('add pdf')
         formIsValid = false;
         errors["pdf"] = "Please upload Front Pdf"
       }
-      if (props.drawerType == 'edit' && fields["pdfFront"] === null) {
+      /*if (props.drawerType == 'edit' && fields["pdfFront"] === null) {
+        console.log('edit pdf')
+        console.log("fields[pdfFront" , fields["pdfFront"]);
         formIsValid = false;
         errors["pdf"] = "Please upload Front Pdf"
-      }
+      }*/
       if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
         errors["pdf"] = "Please select valid pdf";
         setErrors({ errors });
@@ -226,11 +230,16 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description2"] = " Description cannot be empty";
       }
-      // if(state.imageFormData === undefined)
-      // {
-      //   formIsValid = false;
-      //   errors["multi_image"] = "Image cannot be empty";
-      // }
+      if(props.drawerType === 'edit'  && state.old_image[0] === undefined)
+      {
+         formIsValid = false;
+         errors["multi_image"] = "Image cannot be empty";
+      } 
+      if(props.drawerType === 'add'  && state.old_image === undefined)
+      {
+         formIsValid = false;
+         errors["multi_image"] = "Image cannot be empty";
+      } 
     }
     if (state.format === '3') {
       if (!fields["title3"]) {
@@ -242,14 +251,13 @@ const ModalContent = (props) => {
         errors["description3"] = " Description cannot be empty";
       }
     }
-    console.log("handlevslida state",state);
     setErrors({ errors });
     return formIsValid;
   }
 
 
   const handleSubmit = (e) => {
-    console.log("handle submit state",state);
+    console.log("state pdfurl",state);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {

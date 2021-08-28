@@ -42,8 +42,8 @@ export const routes = [
   },
   {
     title: 'General Advertisement',
-    path: '/banner',
-    key: "banner",
+    path: '/genads',
+    key: "genads",
     icon: <AiFillContainer />
   },
   {
