@@ -95,10 +95,10 @@ class GetTopicSeriaizer(serializers.ModelSerializer):
         model = Topics
         fields = '__all__'
         
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['category_id'] = CategorySerializer(instance.category_id).data
-        return response
+    # def to_representation(self, instance):
+    #     response = super().to_representation(instance)
+    #     response['category_id'] = CategorySerializer(instance.category_id).data
+    #     return response
 
 
 class TopicFavouriteserializer(serializers.ModelSerializer):
