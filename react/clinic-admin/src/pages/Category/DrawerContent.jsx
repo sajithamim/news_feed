@@ -87,8 +87,6 @@ const DrawerContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    console.log("props", props);
-    console.log("State", image.name);
     if (formValidation()) {
       setErrors({});
       let newData = state;
@@ -98,6 +96,7 @@ const DrawerContent = (props) => {
       if (image && image.name) {
         form_data = new FormData();
         form_data.append('image', image, image.name);
+        console.log("formdarta", form_data);
       }
       else if (props.drawerType === 'add' && image.name === undefined) {
         newErrorsState.image = 'Image cannot be empty';

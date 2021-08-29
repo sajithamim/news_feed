@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Radio, message } from "antd";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { postGeneralAdvertisement } from "../../actions/genAds";
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
+  
   const [state, setState] = useState(props.editData);
 
   const [errors, setErrors] = useState({ name: '' });
@@ -14,26 +15,36 @@ const DrawerContent = (props) => {
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
+ 
   
   const dispatch = useDispatch();
-
+  
+  useEffect(() => {
+  })
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
   };
 
-  const handleFileChange = () => {
-
+  const handleFileChange = (info) => {
+    setImage(info.target.files[0]);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setState({ ...state, image: reader.result })
+    });
+    reader.readAsDataURL(info.target.files[0]);
   }
 
   const radioOnChange = (status , e) => {
-    // const status;
     status = e.target.value ; 
-    console.log("STATUS", status);
     setState({ ...state, active: status === '1' ? true : false })
   }
-  const handleSubmit = () => {
-    
-    console.log("state", state);
+  const handleSubmit = (e) => {
+    let form_data = null;
+    if(image && image.name) {
+      form_data = new FormData();
+      form_data.append('addimage', image, image.name);
+    }
+    dispatch(postGeneralAdvertisement(state , form_data))
   }
 
   return (
@@ -47,16 +58,20 @@ const DrawerContent = (props) => {
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
-            <Input id="spec_name" name="name" onChange={handleChange} value={state.name} />
-            <div className="errorMsg">{errors.name}</div>
+            <Input id="title" name="title" onChange={handleChange}  />
+            <div className="errorMsg">{errors.url}</div>
           </Form.Item>
-          <Form.Item label="Name">
+          <Form.Item label="URL">
+            <Input id="url" name="url" onChange={handleChange} />
+            <div className="errorMsg">{errors.url}</div>
+          </Form.Item>
+          <Form.Item label="Image">
           <Input type="file"
               id="image"
               name="image"
               accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
           </Form.Item>
-          <Form.Item label="Name" wrapperCol={{ offset: 2, span: 14 }}>
+          <Form.Item label="Status" wrapperCol={{ offset: 2, span: 14 }}>
           <Radio.Group onChange={(e) => radioOnChange('status', e)} value="">
               <Radio value="1">
                 Enable 

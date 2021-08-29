@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
+import { getGeneralAdvertisment} from "../../actions/genAds";
 import DrawerContent from "./DrawerContent"
 
 const GenAdvertisementContent = () => {
+  
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
@@ -14,7 +16,11 @@ const GenAdvertisementContent = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
+
+  // const { getGenAdsList } = useSelector(state => state.genAds);
+  // console.log("genAdsList" , getGenAdsList);
   useEffect(() => {
+    dispatch(getGeneralAdvertisment())
     onClose();
   }, [])
 
