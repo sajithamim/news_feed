@@ -23,7 +23,7 @@ const AddAds = () => {
 
     useEffect(() => {
         dispatch(getSpecialization()); //get specialization list
-        if (adsId) 
+        if (adsId)
             dispatch(getEditAdsDetails(adsId)) //get edit details
     }, [])
 
@@ -31,15 +31,15 @@ const AddAds = () => {
         const adsUserList = [];
         let allUsers = false;
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
-            if (item.user_id) 
+            if (item.user_id)
                 adsUserList.push(item.user_id.id)
             else
                 allUsers = true;
         }) //ads selected users list for spec id
-        
+
         const users = [];
         const userVisibility = [];
-       
+
         specUsers && specUsers.results && specUsers.results.map((item) => {
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
@@ -59,7 +59,7 @@ const AddAds = () => {
             add_specialization.push({ spec_id: item.spec_id.id }) //using for save api call 
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name }); //selected specialization 
         })
-        setState({ ...state, title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization})
+        setState({ ...state, title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization })
     }, [adsDetails])
 
     const specialization = [];
@@ -85,7 +85,7 @@ const AddAds = () => {
         let fields = state;
         let errors = {};
         let formIsValid = true;
-        console.log("state" , fields["image"]);
+        console.log("state", fields["image"]);
         if (!fields["title"]) {
             formIsValid = false;
             errors["title"] = "Title is required";
@@ -100,15 +100,15 @@ const AddAds = () => {
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
-        if (image.name || state.image === undefined){
-            formIsValid = false;    
-            errors["image"] ="Image is mandatory";
+        if (image.name || state.image === undefined) {
+            formIsValid = false;
+            errors["image"] = "Image is mandatory";
         }
-        if(!fields["users"] === undefined){
+        if (!fields["users"] === undefined) {
         }
         setErrors({ errors });
         return formIsValid;
-    } 
+    }
 
     const handleChange = (e, field) => {
         let fields = state;
@@ -116,6 +116,9 @@ const AddAds = () => {
         setState({ ...state, fields })
     }
 
+    const onChange = () => {
+
+    }
     const handleScreen = () => {
         if (handleValidation()) {
             const id = state.specialization[0].value;
@@ -151,12 +154,23 @@ const AddAds = () => {
         });
         reader.readAsDataURL(info.target.files[0]);
     }
+    const optionsWithDisabled = [
+        { label: 'Apple', value: 'Apple' },
+        { label: 'Pear', value: 'Pear' },
+        { label: 'Orange', value: 'Orange', disabled: false },
+    ];
+
+    const options = [
+        { label: 'Apple', value: 'Apple' },
+        { label: 'Pear', value: 'Pear' },
+        { label: 'Orange', value: 'Orange' },
+    ];
 
     const handleSubmit = (id) => {
         const userList = [];
         let errors = {};
         let form_data = null;
-        if (state.userVisibility.length > 0  || state.allUsers === true) {
+        if (state.userVisibility.length > 0 || state.allUsers === true) {
             if (state.allUsers) {
                 userList.push({ spec_id: state.specActiveId, user_id: null }) // to all users
             }
@@ -172,7 +186,7 @@ const AddAds = () => {
                 form_data = new FormData();
                 form_data.append('addimage', image, image.name);
             }
-            if (state.users == []){
+            if (state.users == []) {
                 console.log("user is mandate");
             }
             setErrors({ errors });
@@ -180,7 +194,7 @@ const AddAds = () => {
             newData['add_specialization'] = state.add_specialization;
             newData['title'] = state.title;
             dispatch(postAdds(newData, userList, adsId, form_data)).then((res) => {
-                if(adsId !== undefined)
+                if (adsId !== undefined)
                     message.success('Edit Add created successfully')
                 else
                     message.success('Add created successfully')
@@ -201,33 +215,34 @@ const AddAds = () => {
                     style={{ marginTop: '25px' }}>
                     <Form.Item label="Title">
                         <Input name="title" value={state.title} onChange={(e) => { handleChange(e, "title") }} />
-                        <div className="errorMsg" style={{marginLeft: '50px'}}>{errors && errors.errors && errors.errors.title}</div>
+                        <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.title}</div>
                     </Form.Item>
                     <Form.Item label="Specialization">
-                        <div style={{marginLeft: '50px', width: '376px'}}>
-                        <Select name="specialization" placeholder="Select Specialization" isMulti={true} value={state.specialization}
-                            onChange={handleSpecChange} options={specialization} />
+                        <div style={{ marginLeft: '50px', width: '376px' }}>
+                            <Select name="specialization" placeholder="Select Specialization" isMulti={true} value={state.specialization}
+                                onChange={handleSpecChange} options={specialization} />
                         </div>
-                        <div className="errorMsg" style={{marginLeft: '50px'}}>{errors && errors.errors && errors.errors.specialization}</div>
+                        <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.specialization}</div>
                     </Form.Item>
                     <Form.Item label="Add Image">
-                        {state.image ? (<img className="playerProfilePic_home_tile" style={{marginLeft: '50px'}} width="128px" height="128px" alt={state.image} src={state.image} />) : null}
-                        <Input type="file" name="image" onChange={handleFileChange} style={{marginLeft: '50px', marginTop: '15px'}} />
-                        <div className="errorMsg" style={{marginLeft: '50px'}}>{errors && errors.errors && errors.errors.image}</div>
+                        {state.image ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={state.image} src={state.image} />) : null}
+                        <Input type="file" name="image" onChange={handleFileChange} style={{ marginLeft: '50px', marginTop: '15px' }} />
+                        <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.image}</div>
                     </Form.Item>
                     <Form.Item wrapperCol={{ offset: 4, span: 9 }}>
-                        <Button type="primary" onClick={handleScreen} style={{marginLeft: '9px'}}>
+                        <Button type="primary" onClick={handleScreen} style={{ marginLeft: '9px' }}>
                             Next
                         </Button>
                     </Form.Item>
                 </Form>
             </Card>
             <Card title={adsId ? "Edit Visibility" : "Add Visibility"} extra={<Button type="link">
-                    <Link to={"/advertisements"}>Back to Advertisement List</Link>
-                </Button>}
-                style={{display: toggle ? "block" : "none" }} >
+                <Link to={"/advertisements"}>Back to Advertisement List</Link>
+            </Button>}
+                style={{ display: toggle ? "block" : "none" }} >
                 <Form onFinish={handleSubmit} >
                     <Tabs defaultActiveKey="1" onChange={handleTab} >
+                    
                         {state.specialization && state.specialization.map(specItem =>
                         (
                             <TabPane tab={specItem.label} key={specItem.value}>
