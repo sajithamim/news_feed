@@ -31,4 +31,4 @@ export default (state = initialState, action) => {
         return state
     }
   }
-  //, userDetails: action.userDetails, selectedSpecid: action.selectedSpecid, specUsers: action.specUsers , specId:action.selectedSpecid
+  
