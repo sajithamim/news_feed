@@ -3,17 +3,16 @@ import  genAds from "../services/genAds"
 export const getGeneralAdvertisment = () => async (dispatch) => {
     try{
         const res = await genAds.getGenAds();
-        console.log("res",res);
+        console.log("response" , res);
         dispatch({
             type: 'GET_GEN_ADS',
-            payload: res ,
+            payload: res.data,
         });
     }catch(err){
 
     }
 }
 export const postGeneralAdvertisement = (state , imgData) => async (dispatch) => {
-    console.log("state", state);
      try{
         const res = await genAds.postGenAds(state);
         if(res && res.data && res.data.id){
@@ -28,4 +27,15 @@ export const postGeneralAdvertisement = (state , imgData) => async (dispatch) =>
      } catch(err) {
 
      }
+}
+export const deleteGenAds = (id) => async(dispatch) => {
+    try{
+        const res = await genAds.deleteGenAds(id);
+        dispatch({
+            type: 'DELETE_GEN_ADS',
+            payload: id,
+        })
+    }catch(err){
+        console.log("error");
+    }
 }

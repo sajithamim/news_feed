@@ -20,7 +20,10 @@ const DrawerContent = (props) => {
   const dispatch = useDispatch();
   
   useEffect(() => {
-  })
+    setState(props.editData)
+    console.log("statattprops",props);
+  }, [ props.editData ])
+
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
   };
@@ -38,6 +41,7 @@ const DrawerContent = (props) => {
     status = e.target.value ; 
     setState({ ...state, active: status === '1' ? true : false })
   }
+
   const handleSubmit = (e) => {
     let form_data = null;
     if(image && image.name) {
@@ -45,6 +49,9 @@ const DrawerContent = (props) => {
       form_data.append('addimage', image, image.name);
     }
     dispatch(postGeneralAdvertisement(state , form_data))
+    .then(() => {
+      message.success("Advertisement addedd successfully");
+    })
   }
 
   return (
@@ -58,7 +65,7 @@ const DrawerContent = (props) => {
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
-            <Input id="title" name="title" onChange={handleChange}  />
+            <Input id="title" name="title" onChange={handleChange} value= {state.title} />
             <div className="errorMsg">{errors.url}</div>
           </Form.Item>
           <Form.Item label="URL">

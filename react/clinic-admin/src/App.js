@@ -29,11 +29,21 @@ function App() {
   const { user } = useSelector(state => {
     return state.auth;
   });
+  // const onUserNavigate = () => {
+  //   const time = new Date();
+  //   time.getTime();
+  //   console.log("hjhj" , time.getTime());
+  //   let idleTime = getCurrentTime() - getPreviousNavTime();
+  //   // storeCurrentNavTime();
+  //   // if (idleTime > ALLOWED_IDLE_TIME)
+  //   //     window.location.href = "/";
+  // }
 
   return (
     <Router>
       <AdminLayout>
         <Switch>
+        {/* <Route path="/" onEnter={onUserNavigate} onChange={onUserNavigate}> */}
           <PrivateRoute path="/data" exact component={Overview} />
           <PrivateRoute path="/categories" exact component={Categories} />
           <PrivateRoute path="/topics" exact component={Topics} />
@@ -54,6 +64,7 @@ function App() {
           <Route path="/forgot_password" exact component={Forgot} />
           <Route path="/reset_password/" exact component={Reset} />
           <Route path="/login"  component={Login} />
+          {/* </Route> */}
           <Redirect from="/" to="/login" />
         </Switch>
       </AdminLayout>

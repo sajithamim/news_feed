@@ -7,7 +7,9 @@ import { postSpecialization, updateSpecialization, updateSubSpecialization } fro
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-  console.log("propssdds", props);
+
+  console.log("propssdds", state.props.editData);
+
   const [state, setState] = useState(props.editData);
 
   const [errors, setErrors] = useState({ name: '' });
@@ -17,6 +19,7 @@ const DrawerContent = (props) => {
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
+
   useEffect(() => {
     setState(props.editData);
     if (props.editData.icon && props.editData.icon.startsWith("/media"))
@@ -70,10 +73,8 @@ const DrawerContent = (props) => {
           newData['spec_id'] = specId;
           dispatch(postSubSpecialization(newData))
             .then((res) => {
-              console.log("res" , res);
               setState({});
               res != undefined ? (message.success('Sub Specialization added successfully')) : (message.error("Sub Specialization already exists with this name"));
-              // message.success('Sub Specialization added successfully')
             });
         }
       }
