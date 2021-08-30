@@ -10,7 +10,6 @@ import { deleteImages } from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
 
-
 const { Option } = Select;
 
 const ModalContent = (props) => {
