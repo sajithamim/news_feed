@@ -89,6 +89,32 @@ class GetUserCategoryApiview(APIView):
                 }
             return Response(response, status=status_code)
 # category model 
+class GetAllCategoryApiview(APIView):
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+    def get(self,request):
+        try:
+            # specids = UserSpecialization.objects.filter()
+            cat = Categoeries.objects.all().order_by('title')
+            serializers = CategorySerializer(spec,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'category details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
+            
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Categoeries.objects.all().order_by('title')
     serializer_class = CategorySerializer
