@@ -575,8 +575,8 @@ class AccomplilshmentsView(viewsets.ModelViewSet):
     serializer_class= AccomplishmentSerializer
     permission_classes = (permissions.IsAuthenticated,)
     def create(self, request):
-        user_id = request.data['user_id']
-        pro= Accomplishments.objects.filter(user_id=user_id).delete()
+        user_id = request.data['user']
+        pro= Accomplishments.objects.filter(user=user_id).delete()
         serializer = AccomplishmentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
