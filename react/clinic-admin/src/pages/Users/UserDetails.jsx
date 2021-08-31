@@ -31,8 +31,8 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList} = useSelector(state => state.users); 
-  console.log(publicationList)
+  const { userCategory, userSpec, userDetails, qualifications, publicationList } = useSelector(state => state.users);
+  console.log("publicationList", publicationList)
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -81,6 +81,19 @@ const UserDetails = () => {
       { value: item.id, label: item.name }
     )
   })
+  const publicationGenerator = () => {
+    const items = [];
+    publicationList && publicationList.results && publicationList.results.map((item) => {
+      console.log("item", item)
+      return items.push({
+        title: item.title,
+        image: item.Image,
+        publisher: item.publisher
+      })
+    })
+    return items;
+  }
+
   const options = [
     { value: '1', label: 'Full-time' },
     { value: '2', label: 'Part-time' },
@@ -431,7 +444,7 @@ const UserDetails = () => {
                   }
                   style={{ width: "100%" }}
                 >
-                  <Table columns={publicationColumns} dataSource="" pagination={pagination} />
+                  <Table columns={publicationColumns} dataSource={publicationGenerator()} pagination={pagination} />
                 </Card>
                 <Drawer
                   title={
