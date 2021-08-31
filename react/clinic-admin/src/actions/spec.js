@@ -138,7 +138,7 @@ export const deleteSpec = (id) => async (dispatch) => {
     
     export const getAdvisoryMembersList = (specId) => async (dispatch) => {
         try {
-            const res = await Specialization.getAdvisoryMembersList(specId);
+        const res = await Specialization.getAdvisoryMembersList(specId);
             dispatch({
                 type: 'RETRIEVE_ADVISORYMEMBERS',
                 payload: res.data

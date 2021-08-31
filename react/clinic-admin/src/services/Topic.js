@@ -20,6 +20,12 @@ const postTopic = (state) => {
 const updateTopic = (id , state) => {
   return http.put(`topic/topic/${id}/`, state);
 }
+const getSpecialization = () => {
+  return http.get("spec/getspec/")
+} 
+const getCategory = () => {
+  return http.get("topic/getallcategory/");
+}
 
 const putPdfdata =(id, pdfData) => {
   let accessToken = localStorage.getItem("accessToken");
@@ -74,7 +80,9 @@ const Topic = {
   putImagedata,
   deleteImage,
   updateTopic,
-  putPdfdata2
+  putPdfdata2,
+  getSpecialization,
+  getCategory
 };
 
 export default Topic;

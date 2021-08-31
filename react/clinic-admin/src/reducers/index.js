@@ -8,6 +8,7 @@ import topic from "./topic.js";
 import feedback from "./feedback.js";
 import settings from "./settings.js";
 import ads from "./ads.js";
+import genAds from "./genAds.js";
 
 export default combineReducers({
     spec,
@@ -18,5 +19,6 @@ export default combineReducers({
     topic,
     feedback,
     settings,
-    ads
+    ads,
+    genAds
 });

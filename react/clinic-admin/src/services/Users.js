@@ -1,7 +1,6 @@
 import { http } from "../http-common";
 import axios from 'axios'; 
 
-
 const getUsers = (page) => {
     return http.get(`auth/userlist/?page=${page}`);
 }
@@ -49,7 +48,13 @@ const putProfilePic = (id, imageData) => {
 const postOtherQualifications = (otherQualification) => {
     return http.post(`auth/qualifications/` , otherQualification);
 }
+const getPublicationList = () => {
+    return http.get("auth/accomplishments/");
+}
 
+const postPublicationDetails = (state) => {
+    return http.post("auth/accomplishments/" , state);
+}
 const Users = {
     getUsers,
     getUserCategory,
@@ -61,7 +66,9 @@ const Users = {
     getUserProfile,
     getQualifications,
     putProfilePic,
-    postOtherQualifications
+    postOtherQualifications,
+    getPublicationList,
+    postPublicationDetails 
 }
 
 export default Users;

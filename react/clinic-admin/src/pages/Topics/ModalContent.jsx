@@ -3,13 +3,10 @@ import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Tex
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getSpecialization } from "../../actions/spec";
-import { getCategory } from "../../actions/category";
 import { getUsersList } from "../../actions/users";
-import { deleteImages } from "../../actions/topic";
+import { deleteImages  , getSpecialization , getCategory} from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
-
 
 const { Option } = Select;
 
@@ -18,23 +15,23 @@ const ModalContent = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
-  const { specList } = useSelector(state => state.spec);
-  const { catlist } = useSelector(state => state.category);
+  // const { specList , catList} = useSelector(state => state.topic);
+  console.log("catlist");
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
   const specialization = [];
-  specList && specList.results && specList.results.map(item => {
-    return specialization.push(
-      { value: item.id, label: item.name }
-    );
-  })
+  // specList && specList.data && specList.data.map(item => {
+  //   return specialization.push(
+  //     { value: item.id, label: item.name }
+  //   );
+  // })
 
-  const category = [];
-  catlist && catlist.results && catlist.results.map(item => {
-    return category.push(
-      { value: item.id, label: item.title }
-    );
-  })
+  // const category = [];
+  // catList && catList.data && catList.data.map(item => {
+  //   return category.push(
+  //     { value: item.id, label: item.title }
+  //   );
+  // })
 
   const author = [];
   userList && userList.results && userList.results.map(item => {
@@ -138,8 +135,7 @@ const ModalContent = (props) => {
       setState(props.editData);
     }
   }, [props.editData])
-  useEffect(() => {
-  }, [])
+  
 
   const onOk = (value) => {
   }
@@ -351,7 +347,7 @@ const ModalContent = (props) => {
               isSearchable={true}
               value={state.category_data}
               onChange={handleCategoryChange}
-              options={category}
+              // options={category}
             />
             <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
           </Form.Item>

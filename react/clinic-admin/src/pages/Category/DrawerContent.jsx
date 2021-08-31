@@ -4,8 +4,8 @@ import { Form, Button, Input, Modal, message } from "antd";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import "./Drawer.css";
-import { postCategory } from "../../actions/category";
-import { updateCategory } from "../../actions/category";
+import { postCategory, updateCategory } from "../../actions/category";
+
 
 
 
@@ -63,8 +63,6 @@ const DrawerContent = (props) => {
       setFormSubmit(!formSubmit);
     }
   }
-
-
   const formValidation = () => {
     let fields = state;
     let errors = {};
@@ -87,8 +85,6 @@ const DrawerContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    console.log("props", props);
-    console.log("State", image.name);
     if (formValidation()) {
       setErrors({});
       let newData = state;
@@ -98,6 +94,7 @@ const DrawerContent = (props) => {
       if (image && image.name) {
         form_data = new FormData();
         form_data.append('image', image, image.name);
+        console.log("formdarta", form_data);
       }
       else if (props.drawerType === 'add' && image.name === undefined) {
         newErrorsState.image = 'Image cannot be empty';
@@ -115,16 +112,15 @@ const DrawerContent = (props) => {
           });
       }
       else {
-        dispatch(postCategory(state, form_data))
-          .then((res) => {
-            setState({});
-            res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
-          });
+        console.log("state", state)
+        // dispatch(postCategory(state, form_data))
+        //   .then((res) => {
+        //     setState({});
+        //     res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
+        //   });
       }
     }
   }
-
-
   return (
     <Form name="basic"
       labelCol={{

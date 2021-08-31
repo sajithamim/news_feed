@@ -3,7 +3,9 @@ const initialState= {
     addTopic: false,
     editTopic: false,
     pdf:{},
-    successMsg: ''
+    successMsg: '',
+    specList : {},
+    catList:{}
 };
 
 export default (state = initialState , action) => {
@@ -18,6 +20,10 @@ export default (state = initialState , action) => {
         return {...state , topicList:action.payload}
         case 'UPDATE_TOPIC':
         return { ...state , editTopic: true}
+        case 'GET_SPECIALIZATION':
+        return { ...state , specList: action.payload}
+        case 'GET_CATEGORY':
+        return { ...state , catList: action.payload}
         default: 
         return state;
     }
