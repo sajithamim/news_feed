@@ -96,7 +96,7 @@ class GetAllCategoryApiview(APIView):
         try:
             # specids = UserSpecialization.objects.filter()
             cat = Categoeries.objects.all().order_by('title')
-            serializers = CategorySerializer(spec,many=True)
+            serializers = CategorySerializer(cat,many=True)
             status_code = status.HTTP_200_OK
             response = {
             'success' : 'True',
