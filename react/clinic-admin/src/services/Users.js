@@ -51,6 +51,10 @@ const postOtherQualifications = (otherQualification) => {
 const getPublicationList = () => {
     return http.get("auth/accomplishments/");
 }
+
+const postPublicationDetails = (state) => {
+    return http.post("auth/accomplishments/" , state);
+}
 const Users = {
     getUsers,
     getUserCategory,
@@ -63,7 +67,8 @@ const Users = {
     getQualifications,
     putProfilePic,
     postOtherQualifications,
-    getPublicationList, 
+    getPublicationList,
+    postPublicationDetails 
 }
 
 export default Users;
