@@ -32,11 +32,14 @@ const AdvisoryBoardContent = () => {
     const items = [];
     const oldAdvisoryItems = [];
     advisoryMemberList && advisoryMemberList.data && advisoryMemberList.data.map((item) => {
+      console.log("item adv", item);
      items.push({
         id: item.id,
         photo: item.user_id.profilepic,
         name: item.user_id.name,
-        qualification: item.user_id.qualifications
+        ph_no: item.user_id.phone,
+        // qualification: item.user_id.qualifications
+        email: item.user_id.email
       })
     })
     return items;
@@ -93,15 +96,15 @@ const AdvisoryBoardContent = () => {
       dataIndex: "ph_no",
       key: "ph_no",
     },
+    // {
+    //   title: "Qualification",
+    //   dataIndex: "qualification",
+    //   key: "qualification",
+    // },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-    },
-    {
-      title: "Qualification",
-      dataIndex: "qualification",
-      key: "qualification",
     },
     {
       title: "Action",

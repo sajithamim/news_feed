@@ -3,9 +3,8 @@ import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Tex
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategory } from "../../actions/category";
 import { getUsersList } from "../../actions/users";
-import { deleteImages  , getSpecialization} from "../../actions/topic";
+import { deleteImages  , getSpecialization , getCategory} from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
 
@@ -17,23 +16,23 @@ const ModalContent = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
-  const { specList } = useSelector(state => state.topic);
-  const { catlist } = useSelector(state => state.category);
+  // const { specList , catList} = useSelector(state => state.topic);
+  console.log("catlist");
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
   const specialization = [];
-  specList && specList.data && specList.data.map(item => {
-    return specialization.push(
-      { value: item.id, label: item.name }
-    );
-  })
+  // specList && specList.data && specList.data.map(item => {
+  //   return specialization.push(
+  //     { value: item.id, label: item.name }
+  //   );
+  // })
 
-  const category = [];
-  catlist && catlist.results && catlist.results.map(item => {
-    return category.push(
-      { value: item.id, label: item.title }
-    );
-  })
+  // const category = [];
+  // catList && catList.data && catList.data.map(item => {
+  //   return category.push(
+  //     { value: item.id, label: item.title }
+  //   );
+  // })
 
   const author = [];
   userList && userList.results && userList.results.map(item => {
@@ -137,8 +136,7 @@ const ModalContent = (props) => {
       setState(props.editData);
     }
   }, [props.editData])
-  useEffect(() => {
-  }, [])
+  
 
   const onOk = (value) => {
   }
@@ -190,14 +188,14 @@ const ModalContent = (props) => {
       errors["publishingtime"] = "Publish time cannot be empty";
     }
     if (state.format === '1') {
-      // if (!fields["title1"]) {
-      //   formIsValid = false;
-      //   errors["title1"] = " Title cannot be empty";
-      // }
-      // if (!fields["description1"]) {
-      //   formIsValid = false;
-      //   errors["description1"] = "Description cannot be empty";
-      // }
+      if (!fields["title1"]) {
+        formIsValid = false;
+        errors["title1"] = " Title cannot be empty";
+      }
+      if (!fields["description1"]) {
+        formIsValid = false;
+        errors["description1"] = "Description cannot be empty";
+      }
       if (props.drawerType == 'add' && fields["pdfUrl"] === undefined) {
         console.log('add pdf')
         formIsValid = false;
@@ -287,11 +285,11 @@ const ModalContent = (props) => {
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
-        // newData['title'] = newData['title1'];
-        // newData['description'] = newData['description1'];
+        newData['title'] = newData['title1'];
+        newData['description'] = newData['description1'];
         newData['deliveryType'] = 'pdf';
-        // newData['title1'] && delete newData['title1']
-        // newData['description1'] && delete newData['description1']
+        newData['title1'] && delete newData['title1']
+        newData['description1'] && delete newData['description1']
       } else if (newData.format === '2') {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
@@ -350,7 +348,7 @@ const ModalContent = (props) => {
               isSearchable={true}
               value={state.category_data}
               onChange={handleCategoryChange}
-              options={category}
+              // options={category}
             />
             <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
           </Form.Item>
@@ -376,7 +374,7 @@ const ModalContent = (props) => {
               </Radio>
             </Radio.Group>
           </Form.Item>
-          {/* {(state.format === '1') ?
+          {(state.format === '1') ?
             (<><Form.Item label="Title">
               <div style={{ marginLeft: '-47px', width: '287px' }}>
                 <Input name="title1" type="text" onChange={handleChange} value={state.title1} /></div>
@@ -387,7 +385,7 @@ const ModalContent = (props) => {
                   <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} style={{ marginLeft: '47px' }} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
               </Form.Item></>) : null
-          } */}
+          }
           {(state.format === '2') ?
             (<><Form.Item label="Title">
               <div style={{ marginLeft: '-47px', width: '287px' }}>

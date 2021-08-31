@@ -18,7 +18,7 @@ import Contact from './pages/Settings/Contact';
 import UserDetails from './pages/Users/UserDetails';
 import Ads from './pages/Ads/Ads';
 import GenAdvertisement from './pages/GeneralAdvertisements/GenAdvertisement';
-import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
+// import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
 import AddAds from './pages/Ads/AddAds';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
