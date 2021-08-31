@@ -10,6 +10,7 @@ import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
 import "./Users.css";
+
 const columns = [
   {
     title: "",
@@ -84,7 +85,6 @@ const UserDetails = () => {
   const publicationGenerator = () => {
     const items = [];
     publicationList && publicationList.results && publicationList.results.map((item) => {
-      console.log("item", item)
       return items.push({
         title: item.title,
         image: item.Image,

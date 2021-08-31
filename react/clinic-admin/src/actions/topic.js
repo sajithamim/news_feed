@@ -26,6 +26,18 @@ export const getSpecialization = () => async (dispatch) => {
     }
 }
 
+export const getCategory = () => async (dispatch) => {
+    try {
+        const res = await Topic.getCategory();
+        dispatch({
+            type: 'GET_CATEGORY',
+            payload: res.data,
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const deleteTopic = (id) => async (dispatch) => {
     try {
         const res = await Topic.deleteTopic(id)

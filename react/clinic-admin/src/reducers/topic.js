@@ -4,7 +4,8 @@ const initialState= {
     editTopic: false,
     pdf:{},
     successMsg: '',
-    specList : {}
+    specList : {},
+    catList:{}
 };
 
 export default (state = initialState , action) => {
@@ -21,6 +22,8 @@ export default (state = initialState , action) => {
         return { ...state , editTopic: true}
         case 'GET_SPECIALIZATION':
         return { ...state , specList: action.payload}
+        case 'GET_CATEGORY':
+        return { ...state , catList: action.payload}
         default: 
         return state;
     }

@@ -23,6 +23,9 @@ const updateTopic = (id , state) => {
 const getSpecialization = () => {
   return http.get("spec/getspec/")
 } 
+const getCategory = () => {
+  return http.get("topic/getallcategory/");
+}
 
 const putPdfdata =(id, pdfData) => {
   let accessToken = localStorage.getItem("accessToken");
@@ -78,7 +81,8 @@ const Topic = {
   deleteImage,
   updateTopic,
   putPdfdata2,
-  getSpecialization
+  getSpecialization,
+  getCategory
 };
 
 export default Topic;

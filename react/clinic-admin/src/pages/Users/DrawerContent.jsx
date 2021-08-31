@@ -29,25 +29,28 @@ const DrawerContent = (props) => {
     const [activeInput, setActiveInput] = useState(false);
 
     const dispatch = useDispatch();
-    const [previewVisible, setPreviewVisible] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
 
-    const [image, setImage] = useState("");
-    const [imgData, setImgData] = useState(props.editData.image);
-
-    const [state, setState] = useState(props.editData);
+    const [state, setState] = useState();
     const [errors, setErrors] = useState({ title: '' });
+    const [authors , setAuthors] = useState([]);
 
+    const handleAuthorChange = (e) => {
+        const items = [];
+        if(e.target.name === 'authors'){
+            items.push(e.target.value.split(","))
+        }
+        console.log("items",items);
+        setState({ ...state, authors: items})
+    }
     const onDateChange = (value, dateString) => {
-        setState({ ...state, start_date: dateString})
+        setState({ ...state, publicationdate: dateString})
     }
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     };
 
     const handleSubmit = () => {
-        console.log("state", state)
-
+        console.log("state", state);
     }
 
     return (
@@ -62,30 +65,20 @@ const DrawerContent = (props) => {
             <Form.Item label="Title">
                 <Input name="title" className="form-control" type="text" onChange={handleChange} />
             </Form.Item>
-
-            <Form.Item label="Publisher" wrapperCol={{ offset:2, span: 10 }} >
-            <Select 
-              isMulti={true}
-              value=""
-              onChange={handleChange}
-              options="{Publisher}"
-            />
-            
-          </Form.Item>
+            <Form.Item label="Publisher">
+                <Input name="publisher" className="form-control" type="text" onChange={handleChange} />
+            </Form.Item>
+            <Form.Item label="Author">
+                <Input name="authors" className="form-control" type="text" onChange={handleAuthorChange} />
+            </Form.Item>
             <Form.Item label="Publication Date" >
-                <Space direction="vertical" size={15} style={{ marginLeft: '50px', width: '390px' }} >
-                    <DatePicker onChange={onDateChange} format={dateFormat} />
+                <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
+                    <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} />
                 </Space>
             </Form.Item>
             <Form.Item label="Publication URL">
-                <Input name="publication URL" className="form-control" type="text" onChange={handleChange} />
+                <Input name="publication_url" className="form-control" type="text" onChange={handleChange} />
             </Form.Item>
-            {/* <Form.Item label="Image">
-            <Input type="file"
-              id="image"
-              name="image"
-              accept="image/png, image/jpeg" onChange={handleChange} style={{ marginLeft: '50px' }} />
-          </Form.Item> */}
             <Form.Item label="Description">
                 <TextArea name="description" addonAfter="description" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} style={{ marginLeft: '47px' }} />
             </Form.Item>
