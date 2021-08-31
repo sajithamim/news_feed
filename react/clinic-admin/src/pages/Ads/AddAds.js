@@ -154,18 +154,7 @@ const AddAds = () => {
         });
         reader.readAsDataURL(info.target.files[0]);
     }
-    const optionsWithDisabled = [
-        { label: 'Apple', value: 'Apple' },
-        { label: 'Pear', value: 'Pear' },
-        { label: 'Orange', value: 'Orange', disabled: false },
-    ];
-
-    const options = [
-        { label: 'Apple', value: 'Apple' },
-        { label: 'Pear', value: 'Pear' },
-        { label: 'Orange', value: 'Orange' },
-    ];
-
+    
     const handleSubmit = (id) => {
         const userList = [];
         let errors = {};
