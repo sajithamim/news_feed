@@ -286,7 +286,7 @@ class GetUserAdvisoryUser(APIView):
     def get(self,request,pk):
         try:
             adv = Advisory.objects.filter(user_id=pk)
-            serializers = AdvisorySerializer(adv)
+            serializers = AdvisorySerializer(adv,many=True)
             status_code = status.HTTP_200_OK
             response = {
             'success' : 'True',
