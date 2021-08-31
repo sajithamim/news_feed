@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (GetSpecializations,GetAudienceView,UserTypeView,
 UserSpecializationApiView,SpecializationView,SubSpecializationView,GetUserSpecializationsApiview,AdvisoryView,
-GetAdvisoryUser)
+GetAdvisoryUser,GetUserAdvisoryUser)
 from django.conf.urls import url, include
 from rest_framework import routers
 
@@ -20,6 +20,7 @@ urlpatterns = [
         path('userspec/',UserSpecializationApiView.as_view()),
         path('getuserspecialization/<str:pk>/',GetUserSpecializationsApiview.as_view()),
         path('advisoryuser/<int:pk>/',GetAdvisoryUser.as_view()),
+        path('useradvisory/<int:pk>/',GetUserAdvisoryUser.as_view()),
         # path('getsubspecialization/',SubspecializationApiview.as_view()),
         url(r'^', include(router.urls)),
 
