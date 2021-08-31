@@ -135,6 +135,18 @@ export const getPublicationList = () => async (dispatch) => {
     }
 }
 
+export const postPublicationDetails = (state) => async (dispatch) => {
+    try {
+        const res = await Users.postPublicationDetails(state);
+        dispatch({
+            type: 'POST_PUBLICATION_LIST',
+            payload: res.data,
+        })
+        return res;
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 
 

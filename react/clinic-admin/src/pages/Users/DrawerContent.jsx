@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 import "./Users.css";
 import Select from 'react-select';
-import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
+import { postPublicationDetails , getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
 import { postCategory } from "../../actions/category";
 import { updateCategory } from "../../actions/category";
 import moment from 'moment';
@@ -37,20 +37,22 @@ const DrawerContent = (props) => {
     const handleAuthorChange = (e) => {
         const items = [];
         if(e.target.name === 'authors'){
-            items.push(e.target.value.split(","))
+            items.push(e.target.value.split(",").toString())
         }
         console.log("items",items);
-        setState({ ...state, authors: items})
+        setState({ ...state, authors: items , user : 85})
+       
     }
     const onDateChange = (value, dateString) => {
-        setState({ ...state, publicationdate: dateString})
+        setState({ ...state, publicationdate: dateString.toString()})
     }
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     };
 
     const handleSubmit = () => {
-        console.log("state", state);
+        console.log("state" , state)
+        dispatch(postPublicationDetails(state))
     }
 
     return (
