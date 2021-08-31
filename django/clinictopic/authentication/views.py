@@ -620,8 +620,8 @@ class getUserAccomplishementView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request,pk, *args, **kwargs):
         try:
-            user = Accomplishments.objects.get(user_id=pk)
-            serializers = AccomplishmentSerializer(user)
+            user = Accomplishments.objects.filter(user_id=pk)
+            serializers = AccomplishmentSerializer(user,many=True)
             response={
                 "success":"True",
                 "message":"user accomplishments",
