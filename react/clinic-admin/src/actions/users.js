@@ -68,6 +68,7 @@ export const deleteUser = (id) => async (dispatch) => {
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
     try {
         const res = await Users.postUserProfile(state);
+        console.log("res", res);
         if (otherQualification.name !== null)
             await Users.postOtherQualifications(otherQualification);
 
@@ -122,12 +123,13 @@ export const putProfilePic = (id, image) => async (dispatch) => {
     }
 }
 
-export const getPublicationList = () => async (dispatch) => {
+export const getPublicationList = (id) => async (dispatch) => {
     try {
-        const res = await Users.getPublicationList();
+        const res = await Users.getPublicationList(id);;
+        console.log("action id" , res);
         dispatch({
             type: 'GET_PUBLICATION_LIST',
-            payload: res.data,
+            payload: res,
         })
         return res;
     } catch (err) {

@@ -32,8 +32,9 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList } = useSelector(state => state.users);
-  console.log("publicationList", publicationList)
+  const { userCategory, userSpec, userDetails, qualifications, publicationList , addPublicationDetails } = useSelector(state => state.users);
+  // console.log("userDetails.data.id" , userDetails);
+  console.log("publicationList" , publicationList);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -66,8 +67,12 @@ const UserDetails = () => {
           })
       })
     dispatch(getQualifications());
-    dispatch(getPublicationList());
+    if(userDetails && userDetails.data && userDetails.data.id){
+      dispatch(getPublicationList(userDetails.data.id));
+    }
   }, [])
+
+ 
   let history = useHistory();
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
@@ -82,17 +87,17 @@ const UserDetails = () => {
       { value: item.id, label: item.name }
     )
   })
-  const publicationGenerator = () => {
-    const items = [];
-    publicationList && publicationList.results && publicationList.results.map((item) => {
-      return items.push({
-        title: item.title,
-        image: item.Image,
-        publisher: item.publisher
-      })
-    })
-    return items;
-  }
+
+  // const publicationGenerator = () => {
+  //   const items = [];
+  //   publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item) => {
+  //     return items.push({
+  //       title: item.title,
+  //       publisher: item.publisher
+  //     })
+  //   })
+  //   return items;
+  // }
 
   const options = [
     { value: '1', label: 'Full-time' },
@@ -444,7 +449,7 @@ const UserDetails = () => {
                   }
                   style={{ width: "100%" }}
                 >
-                  <Table columns={publicationColumns} dataSource={publicationGenerator()} pagination={pagination} />
+                  <Table columns={publicationColumns} dataSource="" pagination={pagination} />
                 </Card>
                 <Drawer
                   title={
@@ -461,7 +466,7 @@ const UserDetails = () => {
                   visible={showDrawer}
                   key="drawer"
                 >
-                  <DrawerContent drawerType={drawerType} type="public" editData={(drawerType === 'edit') ? editData : {}} />
+                  <DrawerContent drawerType={drawerType} type="public"  editData={(drawerType === 'edit') ? editData : {}} />
                 </Drawer>
 
               </Form>

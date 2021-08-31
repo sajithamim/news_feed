@@ -48,8 +48,9 @@ const putProfilePic = (id, imageData) => {
 const postOtherQualifications = (otherQualification) => {
     return http.post(`auth/qualifications/` , otherQualification);
 }
-const getPublicationList = () => {
-    return http.get("auth/accomplishments/");
+const getPublicationList = (id) => {
+    console.log("ser id" , id);
+    return http.get(`auth/getuseraccomplishment/${id}/`);
 }
 
 const postPublicationDetails = (state) => {
