@@ -8,7 +8,6 @@ import { deleteImages  , getSpecialization , getCategory} from "../../actions/to
 import moment from 'moment';
 import Select from 'react-select';
 
-
 const { Option } = Select;
 
 const ModalContent = (props) => {

@@ -280,7 +280,30 @@ class AdvisoryView(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+class GetUserAdvisoryUser(APIView):
+    permission_classes = (IsAuthenticated,)
+    @csrf_exempt
+    def get(self,request,pk):
+        try:
+            adv = Advisory.objects.filter(user_id=pk)
+            serializers = AdvisorySerializer(adv,many=True)
+            status_code = status.HTTP_200_OK
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'Advisory user details',
+            'data':serializers.data
+            }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'not found',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
 
 
 class GetAdvisoryUser(APIView):
