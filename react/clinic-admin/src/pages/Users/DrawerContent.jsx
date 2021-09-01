@@ -24,35 +24,30 @@ const customStyles = {
 }
 const DrawerContent = (props) => {
 
-    // const { userCategory, userSpec, userDetails, qualifications } = useSelector(state => state.users);
-    // const [otherQualification, setOtherQualification] = useState({ name: '' });
-    const [activeInput, setActiveInput] = useState(false);
-
     const dispatch = useDispatch();
 
     const [state, setState] = useState();
-    const [errors, setErrors] = useState({ title: '' });
-    const [authors , setAuthors] = useState([]);
 
     const handleAuthorChange = (e) => {
         const items = [];
         if(e.target.name === 'authors'){
             items.push(e.target.value.split(",").toString())
         }
-        console.log("items",items);
-        setState({ ...state, authors: items , user : 85})
+        setState({ ...state, authors: items})
        
     }
     const onDateChange = (value, dateString) => {
-        setState({ ...state, publicationdate: dateString.toString()})
+        setState({ ...state, publicationdate: dateString})
     }
     const handleChange = (e) => {
-        setState({ ...state, [e.target.name]: e.target.value })
+        setState({ ...state, [e.target.name]: e.target.value , user: props.user_id })
     };
 
     const handleSubmit = () => {
-        console.log("state" , state)
         dispatch(postPublicationDetails(state))
+        .then((res) => {
+            message.success("Publication Details added succesfully");
+        })
     }
 
     return (

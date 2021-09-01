@@ -112,12 +112,11 @@ const DrawerContent = (props) => {
           });
       }
       else {
-        console.log("state", state)
-        // dispatch(postCategory(state, form_data))
-        //   .then((res) => {
-        //     setState({});
-        //     res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
-        //   });
+        dispatch(postCategory(state, form_data))
+          .then((res) => {
+            setState({});
+            res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
+          });
       }
     }
   }

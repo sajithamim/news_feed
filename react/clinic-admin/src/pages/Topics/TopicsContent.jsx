@@ -113,8 +113,6 @@ const TopicsContent = (props) => {
     return items;
   }
 
-  //const topics = topicGenerator();
-
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
     dispatch(getTopic(page));
@@ -183,7 +181,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : {}} onFormSubmit={onFormSubmit}/>
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : null} onFormSubmit={onFormSubmit}/>
       </Drawer>
     </div>
   );

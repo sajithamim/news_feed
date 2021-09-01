@@ -4,8 +4,20 @@ import axios from 'axios';
 const postGenAds = (state) => {
     return http.post("add/alluseradd/" , state);
 }
-const putAdsImage = ( id ,imgData) => {
-    return http.put(`add/alluseradd/${id}/` , imgData)
+
+const putAdsImage = (id, imageData) => {
+    let accessToken = localStorage.getItem("accessToken");
+    let url = `${process.env.REACT_APP_API_URL}add/alluseradd/${id}/image/`;
+    axios.put(url, imageData, {
+      headers: {
+        'content-type': 'multipart/form-data',
+        'authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(res => {
+    return res
+    })
+    .catch(err => err)
 }
 
 const getGenAds = () => {

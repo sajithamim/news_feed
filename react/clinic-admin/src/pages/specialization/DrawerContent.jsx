@@ -8,8 +8,6 @@ import "./Drawer.css";
 
 const DrawerContent = (props) => {
 
-  console.log("propssdds", state.props.editData);
-
   const [state, setState] = useState(props.editData);
 
   const [errors, setErrors] = useState({ name: '' });
