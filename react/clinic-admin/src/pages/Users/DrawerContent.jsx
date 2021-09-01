@@ -13,7 +13,7 @@ const publisher = [];
 
 
 const { RangePicker } = DatePicker;
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'YYYY-MM-DD';
 const { TextArea } = Input;
 const { TabPane } = Tabs;
 const customStyles = {
