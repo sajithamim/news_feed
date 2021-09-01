@@ -6,7 +6,8 @@ const initialState= {
     userProfile:[],
     qualifications:[],
     publicationList:[],
-    addPublicationDetails:[]
+    addPublicationDetails:[],
+    addPublicationData: false
 };
 
 const users = (state = initialState , action) => {
@@ -28,9 +29,9 @@ const users = (state = initialState , action) => {
         case 'GET_QUALIFICATIONS':
         return {...state , qualifications:action.payload }
         case 'GET_PUBLICATION_LIST':
-        return {...state , publicationList:action.payload }
+        return {...state , publicationList:action.payload , addPublicationData: false}
         case 'POST_PUBLICATION_LIST':
-        return {...state , addPublicationDetails:action.payload }
+        return {...state , addPublicationDetails:action.payload , addPublicationData: true }
         default: 
         return state;
     }
