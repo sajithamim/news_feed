@@ -16,9 +16,10 @@ const ModalContent = (props) => {
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
   const { specList , catList} = useSelector(state => state.topic);
-  console.log("catlist");
+  console.log("catlist", catList);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
+
   const specialization = [];
   specList && specList.data && specList.data.map(item => {
     return specialization.push(
@@ -27,6 +28,7 @@ const ModalContent = (props) => {
   })
 
   const category = [];
+  console.log("category",category);
   catList && catList.data && catList.data.map(item => {
     return category.push(
       { value: item.id, label: item.title }
@@ -346,7 +348,7 @@ const ModalContent = (props) => {
               isSearchable={true}
               value={state.category_data}
               onChange={handleCategoryChange}
-              // options={category}
+              options={category}
             />
             <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
           </Form.Item>

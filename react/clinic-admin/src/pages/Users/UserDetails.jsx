@@ -68,7 +68,7 @@ const UserDetails = () => {
     if(userDetails && userDetails.data && userDetails.data.id){
       dispatch(getPublicationList(userDetails.data.id));
     }
-  }, [addPublicationData])
+  }, [ addPublicationData ])
 
  
   let history = useHistory();

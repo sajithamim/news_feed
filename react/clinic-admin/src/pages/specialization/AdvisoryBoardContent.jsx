@@ -31,14 +31,14 @@ const AdvisoryBoardContent = () => {
   const advisoryGenerator = () => {
     const items = [];
     const oldAdvisoryItems = [];
-    advisoryMemberList && advisoryMemberList.data && advisoryMemberList.data.map((item) => {
-      console.log("item adv", item);
+    advisoryMemberList && advisoryMemberList.data && advisoryMemberList.data.map((item , key) => {
+      key ++ ;
      items.push({
+        sl_no : key,
         id: item.id,
         photo: item.user_id.profilepic,
         name: item.user_id.name,
         ph_no: item.user_id.phone,
-        // qualification: item.user_id.qualifications
         email: item.user_id.email
       })
     })
@@ -65,13 +65,6 @@ const AdvisoryBoardContent = () => {
     dispatch(getSpecialization(page));
   }
 
-  const pagination = {
-    current,
-    pageSize,
-    onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
-    total: specList.count
-  }
-
   const columns = [
     {
       title: "Sl No",
@@ -96,11 +89,6 @@ const AdvisoryBoardContent = () => {
       dataIndex: "ph_no",
       key: "ph_no",
     },
-    // {
-    //   title: "Qualification",
-    //   dataIndex: "qualification",
-    //   key: "qualification",
-    // },
     {
       title: "Email",
       dataIndex: "email",
@@ -139,7 +127,7 @@ const AdvisoryBoardContent = () => {
         }
         style={{ width: "100%" }}
       >
-        <Table columns={columns} pagination={pagination} dataSource={advisoryGenerator()}/>
+        <Table columns={columns}  dataSource={advisoryGenerator()}/>
       </Card>
       <Drawer
         title={

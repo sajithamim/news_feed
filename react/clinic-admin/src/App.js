@@ -16,10 +16,9 @@ import Terms from './pages/Settings/Terms';
 import About from './pages/Settings/About';
 import Contact from './pages/Settings/Contact';
 import UserDetails from './pages/Users/UserDetails';
-import Ads from './pages/Ads/Ads';
-import GenAdvertisement from './pages/GeneralAdvertisements/GenAdvertisement';
-// import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
-import AddAds from './pages/Ads/AddAds';
+import SpecialityAdsList from './pages/SpecialityAds/SpecialityAdsList';
+import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
+import SpecialityAds from './pages/SpecialityAds/AddSpecialityAds';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import {  useSelector } from "react-redux";
@@ -29,16 +28,7 @@ function App() {
   const { user } = useSelector(state => {
     return state.auth;
   });
-  // const onUserNavigate = () => {
-  //   const time = new Date();
-  //   time.getTime();
-  //   console.log("hjhj" , time.getTime());
-  //   let idleTime = getCurrentTime() - getPreviousNavTime();
-  //   // storeCurrentNavTime();
-  //   // if (idleTime > ALLOWED_IDLE_TIME)
-  //   //     window.location.href = "/";
-  // }
-
+  
   return (
     <Router>
       <AdminLayout>
@@ -54,13 +44,13 @@ function App() {
           <PrivateRoute path="/privacy_policy" exact component={Policy} />
           <PrivateRoute path="/about" exact component={About} />
           <PrivateRoute path="/contact" exact component={Contact} />
-          <PrivateRoute path="/advertisements" exact component={Ads} />
+          <PrivateRoute path="/advertisements" exact component={SpecialityAdsList} />
           <PrivateRoute path="/terms" exact component={Terms} />
-          <PrivateRoute path="/new_add/" exact component={AddAds} />
+          <PrivateRoute path="/new_add/" exact component={SpecialityAds} />
           <PrivateRoute path="/advisory_board/:specId" exact component={AdvisoryBoardContent} />
-          <PrivateRoute path="/edit_add/:adsId" exact component={AddAds} />
+          <PrivateRoute path="/edit_add/:adsId" exact component={SpecialityAds} />
           <PrivateRoute path="/userdetails/:emailId" exact component={UserDetails} />
-          <PrivateRoute path="/genads/" exact component={GenAdvertisement} />
+          <PrivateRoute path="/genads/" exact component={GenAdvertisementContent} />
           <Route path="/forgot_password" exact component={Forgot} />
           <Route path="/reset_password/" exact component={Reset} />
           <Route path="/login"  component={Login} />

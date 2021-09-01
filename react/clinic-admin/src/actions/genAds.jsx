@@ -1,12 +1,14 @@
 import  genAds from "../services/genAds"
 
-export const getGeneralAdvertisment = () => async (dispatch) => {
+export const getGeneralAdvertisment = (page) => async (dispatch) => {
+    page = page != undefined ? page : 1;
     try{
         const res = await genAds.getGenAds();
         console.log("response" , res);
         dispatch({
             type: 'GET_GEN_ADS',
             payload: res.data,
+            page: page
         });
     }catch(err){
 

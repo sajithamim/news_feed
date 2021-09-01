@@ -13,14 +13,14 @@ const DrawerContent = (props) => {
   const dispatch = useDispatch();
 
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
+  // const [previewImage, setPreviewImage] = useState("");
 
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
 
   const [state, setState] = useState(props.editData);
   const [errors, setErrors] = useState({});
-  const [previewTitle, setPreviewTitle] = useState("");
+  // const [previewTitle, setPreviewTitle] = useState("");
   const [formSubmit, setFormSubmit] = useState(false);
 
 
@@ -67,7 +67,6 @@ const DrawerContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    let entities = state;
     if (!fields["title"]) {
       formIsValid = false;
       errors["title"] = "Title is required"

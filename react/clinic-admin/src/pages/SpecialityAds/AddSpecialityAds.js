@@ -3,18 +3,20 @@ import { Form, Input, Tabs, Button, Checkbox, message, Card } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import Select from 'react-select';
+import { MultiSelect } from "react-multi-select-component";
 import { getSpecialization } from "../../actions/spec";
 import { getSpecUsers, postAdds, getEditAdsDetails, getAdsSelectedUser } from "../../actions/ads";
 import { useParams, useHistory, Link } from "react-router-dom";
 
 
-const AddAds = () => {
+const SpecialityAds = () => {
     const { TabPane } = Tabs;
     const dispatch = useDispatch();
     const [state, setState] = useState({ allUsers: false });
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [image, setImage] = useState({});
+    const [selected, setSelected] = useState([]);
 
     const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
     const { specList } = useSelector(state => state.spec);
@@ -39,11 +41,12 @@ const AddAds = () => {
 
         const users = [];
         const userVisibility = [];
-
+        console.log("users" , users);
         specUsers && specUsers.results && specUsers.results.map((item) => {
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
-                users.push(<option value={item.id} selected>{item.username}</option>) //ads selected users list for spec id
+                // users.push(<option value={item.id} selected>{item.username}</option>) //ads selected users list for spec id
+                
             } else {
                 users.push(<option value={item.id}>{item.username}</option>) // all users list
             }
@@ -51,6 +54,16 @@ const AddAds = () => {
 
         setState({ ...state, selectedSpecid: selectedSpecid, userVisibility: userVisibility, users: users, allUsers: allUsers })
     }, [adsUserDetails, specUsers])
+    
+
+
+    const options = [
+        { label: "Grapes 🍇", value: "grapes" },
+        { label: "Mango 🥭", value: "mango" },
+        { label: "Strawberry 🍓", value: "strawberry", disabled: true },
+    ];
+
+
 
     useEffect(() => {
         const editAdsSpecialization = [];
@@ -85,7 +98,6 @@ const AddAds = () => {
         let fields = state;
         let errors = {};
         let formIsValid = true;
-        console.log("state", fields["image"]);
         if (!fields["title"]) {
             formIsValid = false;
             errors["title"] = "Title is required";
@@ -100,7 +112,7 @@ const AddAds = () => {
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
-        if (image.name || state.image === undefined) {
+        if (image.name === undefined || state.image === undefined) {
             formIsValid = false;
             errors["image"] = "Image is mandatory";
         }
@@ -146,6 +158,8 @@ const AddAds = () => {
         setState({ ...state, userVisibility: userVisibility })
     }
 
+    
+
     const handleFileChange = (info) => {
         setImage(info.target.files[0]);
         const reader = new FileReader();
@@ -154,7 +168,7 @@ const AddAds = () => {
         });
         reader.readAsDataURL(info.target.files[0]);
     }
-    
+
     const handleSubmit = (id) => {
         const userList = [];
         let errors = {};
@@ -230,33 +244,40 @@ const AddAds = () => {
             </Button>}
                 style={{ display: toggle ? "block" : "none" }} >
                 <Form onFinish={handleSubmit} >
-                    <Tabs defaultActiveKey="1" onChange={handleTab} >
-                    
+                    <Tabs defaultActiveKey="1" onChange={handleTab}style={{width:'1000px' , height : '900px'}} >
+
                         {state.specialization && state.specialization.map(specItem =>
                         (
-                            <TabPane tab={specItem.label} key={specItem.value}>
-                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
+                            <TabPane tab={specItem.label} key={specItem.value} >
+                                {/* <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
                                     <Checkbox onChange={onChecked} checked={state.allUsers} disabled={(state.users) ? true : false}>To All Users</Checkbox>
                                 </Form.Item>
-                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}><strong>OR</strong></Form.Item>
-                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
+                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}><strong>OR</strong></Form.Item> */}
+                                {/* <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
                                     <select name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectUser(e, specItem.value)}>
                                         {state.users}
                                     </select>
                                     <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
+                                </Form.Item> */}
+                                <Form.Item wrapperCol={{ offset: 3, span: 12 }}>
+                                    <MultiSelect
+                                        options={options}
+                                        value={selected}
+                                        onChange={setSelected}
+                                        style={{marginLeft: '150px'}}
+                                        labelledBy="Select"
+                                    />
                                 </Form.Item>
-                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
+                                {/* <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
                                     <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add Advertisement</Button>
-                                </Form.Item>
+                                </Form.Item> */}
                             </TabPane>
                         ))}
                     </Tabs>
                 </Form>
             </Card >
         </div >
-
-
     )
 }
 
-export default AddAds;
+export default SpecialityAds;

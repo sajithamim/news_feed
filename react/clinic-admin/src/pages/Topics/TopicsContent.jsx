@@ -14,9 +14,10 @@ const TopicsContent = (props) => {
   const { topicList, addTopic, editTopic, successMsg, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(30);
+  const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getTopic(page))
+    dispatch(getTopic())
     onClose();
   }, [addTopic, editTopic])
 
@@ -63,9 +64,10 @@ const TopicsContent = (props) => {
   }
 
   const topicGenerator = () => {
+    let serialNo = pageSize * slNo;
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
-      key++;
+      serialNo++;
       const topics = [];
       const specData = [];
       const images = [];
@@ -79,7 +81,7 @@ const TopicsContent = (props) => {
         })
        
       items.push({
-        sl_no: key,
+        sl_no: serialNo,
         id: item.id,
         title: item.title,
         title1: item.format === '1' ? item.title : null,
@@ -128,6 +130,11 @@ const TopicsContent = (props) => {
 
   const columns = [
     {
+      title: "Sl No",
+      dataIndex: "sl_no",
+      key: "sl_no",
+    },
+    {
       title: "Title",
       dataIndex: "title",
       key: "title",
@@ -169,7 +176,7 @@ const TopicsContent = (props) => {
             <Icon>add</Icon>
           </IconButton>
         } style={{ width: "100%" }} >
-        {topicList && topicList.results ?
+        {topicList && topicList.results  &&  page == current ?
         (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topicGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
