@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin } from "antd";
+import { Card, Table, Space, Drawer, Popconfirm, message, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import { getGeneralAdvertisment , deleteGenAds} from "../../actions/genAds";
 import DrawerContent from "./DrawerContent"
@@ -17,7 +16,7 @@ const GenAdvertisementContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
 
-  const { genAdsList , addGenAdd} = useSelector(state => state.genAds);
+  const { genAdsList , addGenAdd , page} = useSelector(state => state.genAds);
 
   useEffect(() => {
     dispatch(getGeneralAdvertisment())
@@ -29,7 +28,6 @@ const GenAdvertisementContent = () => {
   };
 
   const onEdit = (record) => {
-    console.log("record" , record);
     setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
@@ -53,11 +51,18 @@ const GenAdvertisementContent = () => {
 
 
   const genAdsGenerator = () => {
+    let serialNo = pageSize * slNo;
     const items = [];
     genAdsList && genAdsList.results && genAdsList.results.map((item) => {
+      console.log("url", item);
+      serialNo++;
       return items.push({
+        sl_no: serialNo,
         id: item.id,
-        title: item.title
+        title: item.title,
+        url: item.url,
+        active: item.active,
+        image: item.addimage
       })
     });
     return items;
@@ -72,7 +77,7 @@ const GenAdvertisementContent = () => {
     current,
     pageSize,
     onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
-    // total: specList.count
+    total: genAdsList.count
   }
 
   const columns = [
@@ -122,7 +127,7 @@ const GenAdvertisementContent = () => {
         }
         style={{ width: "100%" }}
       >
-        {genAdsList && genAdsList.results ? 
+        {genAdsList && genAdsList.results &&  page == current ? 
         (<Table columns={columns} dataSource={genAdsGenerator()} pagination={pagination} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer

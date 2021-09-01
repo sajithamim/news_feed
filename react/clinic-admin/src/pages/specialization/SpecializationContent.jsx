@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
-import { getUsersList } from "../../actions/users";
+// import { getUsersList } from "../../actions/users";
 
 const SpecializationContent = () => {
   const dispatch = useDispatch();

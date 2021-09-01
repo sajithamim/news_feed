@@ -6,9 +6,7 @@ import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import { getAds , deleteAdd} from "../../actions/ads";
 
-
-
-const Ads = () => {
+const SpecialityAdsList = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
@@ -134,4 +132,4 @@ const Ads = () => {
   );
 };
 
-export default Ads;
+export default SpecialityAdsList;
