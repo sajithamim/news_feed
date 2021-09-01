@@ -27,8 +27,9 @@ const DrawerAdvisory = (props) => {
 
     const list = []
     userList && userList.results && userList.results.map(item => {
+        console.log('test', item)
         return list.push(
-            { value: item.id, label: <div><div>{item.username}</div><div>{item.email}</div><div>{item.qualifications}</div></div> }
+            { value: item.id, label: <div><div><b>{item.username}</b><p style={{color:"grey", fontSize: '10px'}}>{item.qualifications}</p></div><div><img style={{width: '40px', height: '40px', marginTop: '-62px', marginLeft: '200px'}} src={`${process.env.REACT_APP_API_BASE_URL}${item.profilepic}`} /></div></div> }
         )
     })
 
@@ -65,7 +66,7 @@ const DrawerAdvisory = (props) => {
     }
 
     return (
-        <Form name="basic" labelCol={{ span: 10 }} wrapperCol={{ span: 15 }} onFinish={handleSubmit}>
+        <Form name="basic" labelCol={{ span: 6 }} wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
             <Form.Item label="Select Members" >
                 <Select
                     id="users"

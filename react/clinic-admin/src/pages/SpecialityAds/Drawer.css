@@ -17,6 +17,9 @@
     margin-bottom: 20px;
     text-align: center;
   }
+  .dropdown-content .panel-content {
+    padding-left:50px;
+  }
   /* .formBorder {
     width: 300px;
   } */
