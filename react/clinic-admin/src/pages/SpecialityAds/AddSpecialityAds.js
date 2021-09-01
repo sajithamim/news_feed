@@ -7,6 +7,7 @@ import { MultiSelect } from "react-multi-select-component";
 import { getSpecialization } from "../../actions/spec";
 import { getSpecUsers, postAdds, getEditAdsDetails, getAdsSelectedUser } from "../../actions/ads";
 import { useParams, useHistory, Link } from "react-router-dom";
+import "./Drawer.css";
 
 
 const SpecialityAds = () => {
@@ -41,14 +42,15 @@ const SpecialityAds = () => {
 
         const users = [];
         const userVisibility = [];
-        console.log("users" , users);
+        console.log("users" , specUsers);
+        console.log("len" , specUsers && specUsers.results && specUsers.results.length);
         specUsers && specUsers.results && specUsers.results.map((item) => {
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
-                // users.push(<option value={item.id} selected>{item.username}</option>) //ads selected users list for spec id
-                
+                //users.push(<option value={item.id} selected>{item.username}</option>) //ads selected users list for spec id
+                users.push({label: item.username, value: item.id});
             } else {
-                users.push(<option value={item.id}>{item.username}</option>) // all users list
+                users.push({label: item.username, value: item.id}) // all users list
             }
         })
 
@@ -137,7 +139,8 @@ const SpecialityAds = () => {
             setState({ ...state, specActiveId: id })
             setToggle(!toggle);
             dispatch(getSpecUsers(id))
-            dispatch(getAdsSelectedUser(adsId, id))
+            if(adsId)
+                dispatch(getAdsSelectedUser(adsId, id))
         }
     } //next button handling
 
@@ -261,7 +264,7 @@ const SpecialityAds = () => {
                                 </Form.Item> */}
                                 <Form.Item wrapperCol={{ offset: 3, span: 12 }}>
                                     <MultiSelect
-                                        options={options}
+                                        options={state.users ? state.users : [] }
                                         value={selected}
                                         onChange={setSelected}
                                         style={{marginLeft: '150px'}}
