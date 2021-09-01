@@ -15,23 +15,23 @@ const ModalContent = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
-  // const { specList , catList} = useSelector(state => state.topic);
+  const { specList , catList} = useSelector(state => state.topic);
   console.log("catlist");
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
   const specialization = [];
-  // specList && specList.data && specList.data.map(item => {
-  //   return specialization.push(
-  //     { value: item.id, label: item.name }
-  //   );
-  // })
+  specList && specList.data && specList.data.map(item => {
+    return specialization.push(
+      { value: item.id, label: item.name }
+    );
+  })
 
-  // const category = [];
-  // catList && catList.data && catList.data.map(item => {
-  //   return category.push(
-  //     { value: item.id, label: item.title }
-  //   );
-  // })
+  const category = [];
+  catList && catList.data && catList.data.map(item => {
+    return category.push(
+      { value: item.id, label: item.title }
+    );
+  })
 
   const author = [];
   userList && userList.results && userList.results.map(item => {
@@ -136,7 +136,6 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
   
-
   const onOk = (value) => {
   }
   const radioOnChange = (val, e) => {

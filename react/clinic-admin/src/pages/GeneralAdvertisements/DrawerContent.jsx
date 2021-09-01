@@ -10,11 +10,11 @@ const DrawerContent = (props) => {
 
   const [errors, setErrors] = useState({ name: '' });
 
-  const [imgData, setImgData] = useState("");
-
   const [image, setImage] = useState("");
 
   const [formSubmit, setFormSubmit] = useState(false);
+
+  const [imgData, setImgData] = useState("");
  
   
   const dispatch = useDispatch();
@@ -32,14 +32,13 @@ const DrawerContent = (props) => {
     setImage(info.target.files[0]);
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-      setState({ ...state, image: reader.result })
+      setImgData(reader.result);
     });
     reader.readAsDataURL(info.target.files[0]);
   }
 
-  const radioOnChange = (status , e) => {
-    status = e.target.value ; 
-    setState({ ...state, active: status === '1' ? true : false })
+  const radioOnChange = (val , e) => {
+    setState({ ...state, active: e.target.value })
   }
 
   const handleSubmit = (e) => {
@@ -48,7 +47,7 @@ const DrawerContent = (props) => {
       form_data = new FormData();
       form_data.append('addimage', image, image.name);
     }
-    dispatch(postGeneralAdvertisement(state , form_data))
+    dispatch(postGeneralAdvertisement(state, form_data))
     .then(() => {
       message.success("Advertisement addedd successfully");
     })
@@ -73,17 +72,18 @@ const DrawerContent = (props) => {
             <div className="errorMsg">{errors.url}</div>
           </Form.Item>
           <Form.Item label="Image">
+          {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
           <Input type="file"
               id="image"
               name="image"
               accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
           </Form.Item>
           <Form.Item label="Status" wrapperCol={{ offset: 2, span: 14 }}>
-          <Radio.Group onChange={(e) => radioOnChange('status', e)} value="">
-              <Radio value="1">
+          <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active}>
+              <Radio value={true}>
                 Enable 
               </Radio>
-              <Radio value="2">
+              <Radio value={false}>
                 Disable
               </Radio>
             </Radio.Group>
