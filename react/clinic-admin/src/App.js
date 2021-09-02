@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import Overview from './pages/Overview/Overview';
+import OverviewContent  from './pages/Overview/OverviewContent';
 import Login from './pages/Login/Login';
 import Forgot from './pages/Login/Forgot';
 import Reset from './pages/Login/Reset';
@@ -8,7 +8,7 @@ import Specialization from "./pages/specialization/Specialization";
 import SubSpecialization from "./pages/specialization/SubSpecializationContent";
 import AdvisoryBoardContent from "./pages/specialization/AdvisoryBoardContent"
 import Topics from './pages/Topics/Topics';
-import Categories from './pages/Category/Categories';
+import CategoriesContent from './pages/Category/CategoriesContent';
 import Feedback from './pages/Feedback/Feedback';
 import Users from './pages/Users/Users';
 import Policy from './pages/Settings/Policy';
@@ -34,8 +34,8 @@ function App() {
       <AdminLayout>
         <Switch>
         {/* <Route path="/" onEnter={onUserNavigate} onChange={onUserNavigate}> */}
-          <PrivateRoute path="/data" exact component={Overview} />
-          <PrivateRoute path="/categories" exact component={Categories} />
+          <PrivateRoute path="/data" exact component={OverviewContent} />
+          <PrivateRoute path="/categories" exact component={CategoriesContent} />
           <PrivateRoute path="/topics" exact component={Topics} />
           <PrivateRoute path="/specializations" exact component={Specialization} />
           <PrivateRoute path="/sub_specialization/:specId" exact component={SubSpecialization} />
