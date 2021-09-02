@@ -150,6 +150,20 @@ export const postPublicationDetails = (state) => async (dispatch) => {
     }
 }
 
+export const deleteUserPublication = (id) => async (dispatch) => {
+    try {
+        const res = await Users.deleteUserPublication(id);
+        dispatch({
+            type: 'DELETE_USER_PUBLICATION',
+            payload: id,
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+
 
 
 

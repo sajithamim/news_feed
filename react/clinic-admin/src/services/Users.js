@@ -56,6 +56,11 @@ const getPublicationList = (id) => {
 const postPublicationDetails = (state) => {
     return http.post("auth/accomplishments/" , state);
 }
+
+const deleteUserPublication = (id) => {
+    return http.delete(`auth/accomplishments/${id}`);
+    
+  }
 const Users = {
     getUsers,
     getUserCategory,
@@ -69,7 +74,8 @@ const Users = {
     putProfilePic,
     postOtherQualifications,
     getPublicationList,
-    postPublicationDetails 
+    postPublicationDetails,
+    deleteUserPublication,
 }
 
 export default Users;
