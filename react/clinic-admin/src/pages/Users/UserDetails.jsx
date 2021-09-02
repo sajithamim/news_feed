@@ -5,7 +5,7 @@ import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList,} from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList, deleteUserPublication} from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
@@ -32,8 +32,8 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData, deleteUserPublication,} = useSelector(state => state.users);
-  console.log("sttae employ", userDetails);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData} = useSelector(state => state.users);
+  console.log("userDetails" , userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -70,16 +70,14 @@ const UserDetails = () => {
               setState({})
             }
           })
-        
-
       })
     dispatch(getQualifications());
     if (userDetails && userDetails.data && userDetails.data.id) {
-      dispatch(getPublicationList(userDetails.data.id));
+      console.log("comimg publication")
+      dispatch(getPublicationList(userDetails && userDetails.data && userDetails.data.id));
     }
 
   }, [addPublicationData])
-  console.log("statecjkkk", state);
 
   let history = useHistory();
   const catList = []
@@ -100,6 +98,7 @@ const UserDetails = () => {
     const items = [];
     publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item) => {
       return items.push({
+        id: item.id,
         title: item.title,
         publisher: item.publisher
       })
@@ -251,9 +250,9 @@ const UserDetails = () => {
   };
   const confirmDelete = (id) => {
     dispatch(deleteUserPublication(id))
-      .then(() => {
-        message.success("User publication list is deleted successfully")
-      })
+      // .then(() => {
+      //   message.success("User publication list is deleted successfully")
+      // })
   };
 
   const handleUserProfileSubmit = () => {

@@ -32,10 +32,11 @@ const users = (state = initialState, action) => {
             return { ...state, publicationList: action.payload, addPublicationData: false }
         case 'POST_PUBLICATION_LIST':
             return { ...state, addPublicationDetails: action.payload, addPublicationData: true }
+        case 'DELETE_USER_PUBLICATION':
+            return { ...state, publicationList: Object.assign({}, state.publicationList, { results: state.publicationList && state.publicationList.data && state.publicationList.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
         default:
             return state;
-        case 'DELETE_USER_PUBLICATION':
-            return { ...state, publicationList: Object.assign({}, state.publicationList, { results: state.publicationList && state.publicationList.results && state.delectPublicationList.results.filter(item => item.id !== action.payload) }) }
+        
     }
 }
 export default users;
