@@ -73,10 +73,10 @@ const DrawerContent = (props) => {
             setErrors({});
             let form_data = null;
         }
-        // dispatch(postPublicationDetails(state))
-        // .then((res) => {
-        //     message.success("Publication Details added succesfully");
-        // })
+        dispatch(postPublicationDetails(state))
+        .then((res) => {
+            message.success("Publication Details added succesfully");
+        })
     }
 
     return (
