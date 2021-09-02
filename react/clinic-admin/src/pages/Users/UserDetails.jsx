@@ -33,7 +33,7 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData} = useSelector(state => state.users);
-  console.log("userDetails" , userDetails);
+  console.log("userDetails" , publicationList);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -53,29 +53,34 @@ const UserDetails = () => {
       .then((res) => {
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
+        dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
         dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
           .then((res) => {
             // res ? (setState(res.data.data)) : (setState({}));
             if (res) {
               // to get the qualification details of user
+              console.log('qual2', res)
               const getUserQualificationList = []
-              res && res.data && res.data.data && res.data.data.qualification && res.data.data.qualification.map(item => {
+              res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                 return getUserQualificationList.push(
                   { value: item, label: item }
                 )
               })
+              console.log('qual1', getUserQualificationList);
               let result = res.data.data;
-              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_type: result.empolyment_type, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+              
+              
+              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: {value: result.empolyment_type, label: result.empolyment_type}, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
             } else {
               setState({})
             }
           })
       })
     dispatch(getQualifications());
-    if (userDetails && userDetails.data && userDetails.data.id) {
-      console.log("comimg publication")
-      dispatch(getPublicationList(userDetails && userDetails.data && userDetails.data.id));
-    }
+    // if (userDetails && userDetails.data && userDetails.data.id) {
+    //   console.log("comimg publication")
+    //   dispatch(getPublicationList(userDetails && userDetails.data && userDetails.data.id));
+    // }
 
   }, [addPublicationData])
 
@@ -108,12 +113,12 @@ const UserDetails = () => {
   
 
   const options = [
-    { value: '1', label: 'Full-time' },
-    { value: '2', label: 'Part-time' },
-    { value: '3', label: 'Self-employed' },
-    { value: '4', label: 'Freelance' },
-    { value: '5', label: 'Internship' },
-    { value: '6', label: 'Trainee' },
+    { value: 'Full-time', label: 'Full-time' },
+    { value: 'Part-time', label: 'Part-time' },
+    { value: 'Self-employed', label: 'Self-employed' },
+    { value: 'Freelance', label: 'Freelance' },
+    { value: 'Internship', label: 'Internship' },
+    { value: 'Trainee', label: 'Trainee' },
   ];
 
   const beforeUpload = (file) => {
@@ -162,10 +167,12 @@ const UserDetails = () => {
         setActiveInput(true);
       }
     })
+    console.log('qual', item)
     setState({ ...state, qualification: item, qualifications: data });
   }
 
   const handleSelectChange = (value) => {
+    console.log('val', value)
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
   }
   const onDateChange = (value, dateString) => {
