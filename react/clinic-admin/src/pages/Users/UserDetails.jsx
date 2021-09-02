@@ -33,6 +33,7 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, qualifications, publicationList , addPublicationDetails , addPublicationData } = useSelector(state => state.users);
+  console.log("getuserdetails" , userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -146,7 +147,6 @@ const UserDetails = () => {
   }
 
   const handleQualificationChange = (item) => {
-    console.log('item', item)
     const data = [];
     item.map(item => {
       data.push(item.label)
@@ -238,14 +238,14 @@ const UserDetails = () => {
   };
 
   const onConfirm = (id) => {
-
+    // dispatch(cate(id))
   };
   const handleUserProfileSubmit = () => {
     let newData = state;
     delete newData["empolyment_value"];
     delete newData["id"];
     delete newData["username"];
-
+    console.log("user profile data save" , state);
     dispatch(postUserProfile(newData, otherQualification))
       .then(() => {
         message.success("User details Added Successfully");
