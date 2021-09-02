@@ -5,7 +5,7 @@ import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList } from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList,} from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
@@ -32,7 +32,7 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData, deleteUserPublication,} = useSelector(state => state.users);
   console.log("sttae employ", userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
@@ -106,6 +106,7 @@ const UserDetails = () => {
     })
     return items;
   }
+  
 
   const options = [
     { value: '1', label: 'Full-time' },
@@ -248,6 +249,12 @@ const UserDetails = () => {
   const onConfirm = (id) => {
     // dispatch(cate(id))
   };
+  const confirmDelete = (id) => {
+    dispatch(deleteUserPublication(id))
+      .then(() => {
+        message.success("User publication list is deleted successfully")
+      })
+  };
 
   const handleUserProfileSubmit = () => {
     let newData = state;
@@ -288,20 +295,36 @@ const UserDetails = () => {
       key: "id",
       align: "center",
       render: (text, record) => (
+        // <Space size="middle">
+        //   <Button type="link" onClick={() => onEdit(record)}>
+        //     Edit
+        //   </Button>
+        //   <Popconfirm
+        //     title="Are you sure to delete this category?"
+        //     onConfirm={() => onConfirm(record.id)}
+        //     onCancel={cancel}
+        //     okText="Yes"
+        //     cancelText="No"
+        //   >
+        //     <Button type="link">Delete</Button>
+        //   </Popconfirm>
+        // </Space>
         <Space size="middle">
-          <Button type="link" onClick={() => onEdit(record)}>
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure to delete this category?"
-            onConfirm={() => onConfirm(record.id)}
-            onCancel={cancel}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="link">Delete</Button>
-          </Popconfirm>
-        </Space>
+        <IconButton onClick={() => onEdit(record)}>
+          <Icon>edit</Icon>
+        </IconButton>
+        <Popconfirm
+          title="Are you sure to delete this publicationList?"
+          onConfirm={() => confirmDelete(record.id)}
+          onCancel={cancel}
+          okText="Yes"
+          cancelText="No"
+        >
+          <IconButton >
+            <Icon>delete</Icon>
+          </IconButton>
+        </Popconfirm>
+      </Space>
       ),
     },
   ];
