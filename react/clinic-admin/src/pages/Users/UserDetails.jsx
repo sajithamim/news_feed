@@ -32,8 +32,8 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList , addPublicationDetails , addPublicationData } = useSelector(state => state.users);
-  console.log("getuserdetails" , userDetails);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData } = useSelector(state => state.users);
+  console.log("sttae employ", userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -55,23 +55,32 @@ const UserDetails = () => {
         dispatch(getUserSpecialization(emailId))
         dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
           .then((res) => {
-            res ? (setState(res.data.data)) : (setState({}));
-            // const data = [];
-            // res.data && res.data.data && res.data.data.qualifications.map(item => {
-            //   const response = qualifications && qualifications.results && qualifications.results.filter(qual => qual.name == item);
-            //   console.log('res', response)
-            //   // if(response.length > 0)
-            //    data.push(response)
-            // }) 
+            // res ? (setState(res.data.data)) : (setState({}));
+            if (res) {
+              // to get the qualification details of user
+              const getUserQualificationList = []
+              res && res.data && res.data.data && res.data.data.qualification && res.data.data.qualification.map(item => {
+                return getUserQualificationList.push(
+                  { value: item, label: item }
+                )
+              })
+              let result = res.data.data;
+              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_type: result.empolyment_type, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+            } else {
+              setState({})
+            }
           })
+        
+
       })
     dispatch(getQualifications());
-    if(userDetails && userDetails.data && userDetails.data.id){
+    if (userDetails && userDetails.data && userDetails.data.id) {
       dispatch(getPublicationList(userDetails.data.id));
     }
-  }, [ addPublicationData ])
 
- 
+  }, [addPublicationData])
+  console.log("statecjkkk", state);
+
   let history = useHistory();
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
@@ -83,7 +92,7 @@ const UserDetails = () => {
   const qualificationList = []
   qualifications && qualifications.results && qualifications.results.map(item => {
     return qualificationList.push(
-      { value: item.id, label: item.name }
+      { value: item.name, label: item.name }
     )
   })
 
@@ -124,7 +133,6 @@ const UserDetails = () => {
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-
   const handleFileChange = (info) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
@@ -240,12 +248,12 @@ const UserDetails = () => {
   const onConfirm = (id) => {
     // dispatch(cate(id))
   };
+
   const handleUserProfileSubmit = () => {
     let newData = state;
     delete newData["empolyment_value"];
     delete newData["id"];
     delete newData["username"];
-    console.log("user profile data save" , state);
     dispatch(postUserProfile(newData, otherQualification))
       .then(() => {
         message.success("User details Added Successfully");
@@ -340,10 +348,6 @@ const UserDetails = () => {
               key="1"
             >
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit}>
-                {/* <Form.Item label="Name">
-                  <Input name="username" className="form-control" type="text" value={state.username} onChange={handleChange} />
-                  <div className="errorMsg">{errors && errors.errors && errors.errors.name}</div>
-                </Form.Item> */}
                 <Form.Item label="About">
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
@@ -447,7 +451,7 @@ const UserDetails = () => {
                   }
                   style={{ width: "100%" }}
                 >
-                  <Table columns={publicationColumns} dataSource={ publicationGenerator() } pagination={pagination} />
+                  <Table columns={publicationColumns} dataSource={publicationGenerator()} pagination={pagination} />
                 </Card>
                 <Drawer
                   title={
@@ -464,7 +468,7 @@ const UserDetails = () => {
                   visible={showDrawer}
                   key="drawer"
                 >
-                  <DrawerContent drawerType={drawerType} user_id = {userDetails && userDetails.data && userDetails.data.id} type="public"  editData={(drawerType === 'edit') ? editData : {}} />
+                  <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? editData : {}} />
                 </Drawer>
 
               </Form>

@@ -82,6 +82,7 @@ export const postUserProfile = (state, otherQualification) => async (dispatch) =
 export const getUserProfile = (id) => async (dispatch) => {
     try {
         const res = await Users.getUserProfile(id);
+        console.log("user pro action" , res);
         dispatch({
             type: 'GET_USER_PROFILE',
             payload: res.data,
