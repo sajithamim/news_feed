@@ -17,7 +17,7 @@ const SpecialityAds = () => {
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [image, setImage] = useState({});
-    const [selected, setSelected] = useState([]);
+    const [addUser, setAddUser] = useState([]);
 
     const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
     const { specList } = useSelector(state => state.spec);
@@ -42,29 +42,17 @@ const SpecialityAds = () => {
 
         const users = [];
         const userVisibility = [];
-        console.log("users" , specUsers);
-        console.log("len" , specUsers && specUsers.results && specUsers.results.length);
         specUsers && specUsers.results && specUsers.results.map((item) => {
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
-                //users.push(<option value={item.id} selected>{item.username}</option>) //ads selected users list for spec id
-                users.push({label: item.username, value: item.id});
+                users.push({ label: item.username, value: item.id });
             } else {
-                users.push({label: item.username, value: item.id}) // all users list
+                users.push({ label: item.username, value: item.id }) // all users list
             }
         })
 
         setState({ ...state, selectedSpecid: selectedSpecid, userVisibility: userVisibility, users: users, allUsers: allUsers })
     }, [adsUserDetails, specUsers])
-    
-
-
-    const options = [
-        { label: "Grapes 🍇", value: "grapes" },
-        { label: "Mango 🥭", value: "mango" },
-        { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-    ];
-
 
 
     useEffect(() => {
@@ -139,7 +127,7 @@ const SpecialityAds = () => {
             setState({ ...state, specActiveId: id })
             setToggle(!toggle);
             dispatch(getSpecUsers(id))
-            if(adsId)
+            if (adsId)
                 dispatch(getAdsSelectedUser(adsId, id))
         }
     } //next button handling
@@ -150,18 +138,25 @@ const SpecialityAds = () => {
         setState({ ...state, specActiveId: activeKey })
     };
 
-    const handleMultiSelectUser = (e, id) => {
-        let { options } = e.target;
-        options = Array.apply(null, options)
-        const selectedValues = options.filter(x => x.selected).map(x => x.value);
-        const userVisibility = [];
-        selectedValues && selectedValues.map((item) => {
-            userVisibility.push({ spec_id: specId, user_id: item })
-        })
-        setState({ ...state, userVisibility: userVisibility })
-    }
+    // const handleMultiSelectUser = (e, id) => {
+    //     let { options } = e.target;
+    //     options = Array.apply(null, options)
+    //     const selectedValues = options.filter(x => x.selected).map(x => x.value);
+    //     const userVisibility = [];
+    //     selectedValues && selectedValues.map((item) => {
+    //         userVisibility.push({ spec_id: specId, user_id: item })
+    //     })
+    //     setState({ ...state, userVisibility: userVisibility })
+    // }
 
-    
+    const handleAddUser = (value) => {
+        console.log("E", value);
+        const userVisibility = [];
+        value && value.map((item) => {
+            userVisibility.push({ spec_id: specId, user_id: item.value })
+        })
+        setState({ ...state, addsUser: value , userVisibility: userVisibility })
+    }
 
     const handleFileChange = (info) => {
         setImage(info.target.files[0]);
@@ -172,45 +167,66 @@ const SpecialityAds = () => {
         reader.readAsDataURL(info.target.files[0]);
     }
 
+
     const handleSubmit = (id) => {
-        const userList = [];
-        let errors = {};
         let form_data = null;
-        if (state.userVisibility.length > 0 || state.allUsers === true) {
-            if (state.allUsers) {
-                userList.push({ spec_id: state.specActiveId, user_id: null }) // to all users
-            }
-            else {
-                let userData = state.userVisibility;
-                userData.map(item => {
-                    if (item.spec_id === state.specActiveId) {
-                        userList.push(item) // selected users
-                    }
-                })
-            }
-            if (image && image.name) {
-                form_data = new FormData();
-                form_data.append('addimage', image, image.name);
-            }
-            if (state.users == []) {
-                console.log("user is mandate");
-            }
-            setErrors({ errors });
-            let newData = {};
-            newData['add_specialization'] = state.add_specialization;
-            newData['title'] = state.title;
-            dispatch(postAdds(newData, userList, adsId, form_data)).then((res) => {
-                if (adsId !== undefined)
-                    message.success('Edit Add created successfully')
-                else
-                    message.success('Add created successfully')
-            })
-            return true;
-        } else {
-            errors["users"] = "Users is required";
-            setErrors({ errors });
-            return false;
+        if (image && image.name) {
+            form_data = new FormData();
+            form_data.append('addimage', image, image.name);
         }
+        let newData = {};
+        newData['add_specialization'] = state.add_specialization;
+        newData['title'] = state.title;
+        newData['url'] = state.url;
+        const userList = [];
+
+        let userData = state.userVisibility;
+        console.log("userList", userData);
+        userData.map(item => {
+            if (item.spec_id === state.specActiveId) {
+                userList.push(item) // selected users
+            }
+        })
+        dispatch(postAdds(newData, userList , adsId, form_data))
+
+        // const userList = [];
+        // let errors = {};
+        // let form_data = null;
+        // if (state.userVisibility.length > 0 || state.allUsers === true) {
+        //     if (state.allUsers) {
+        //         userList.push({ spec_id: state.specActiveId, user_id: null }) // to all users
+        //     }
+        //     else {
+        //         let userData = state.userVisibility;
+        //         userData.map(item => {
+        //             if (item.spec_id === state.specActiveId) {
+        //                 userList.push(item) // selected users
+        //             }
+        //         })
+        //     }
+        //     if (image && image.name) {
+        //         form_data = new FormData();
+        //         form_data.append('addimage', image, image.name);
+        //     }
+        //     if (state.users == []) {
+        //         console.log("user is mandate");
+        //     }
+        //     setErrors({ errors });
+        //     let newData = {};
+        //     newData['add_specialization'] = state.add_specialization;
+        //     newData['title'] = state.title;
+        //     dispatch(postAdds(newData, userList, adsId, form_data)).then((res) => {
+        //         if (adsId !== undefined)
+        //             message.success('Edit Add created successfully')
+        //         else
+        //             message.success('Add created successfully')
+        //     })
+        //     return true;
+        // } else {
+        //     errors["users"] = "Users is required";
+        //     setErrors({ errors });
+        //     return false;
+        // }
     }
 
     return (
@@ -230,6 +246,10 @@ const SpecialityAds = () => {
                         </div>
                         <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.specialization}</div>
                     </Form.Item>
+                    <Form.Item label="URL">
+                        <Input name="url" onChange={(e) => { handleChange(e, "url") }} />
+                        <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.url}</div>
+                    </Form.Item>
                     <Form.Item label="Add Image">
                         {state.image ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={state.image} src={state.image} />) : null}
                         <Input type="file" name="image" onChange={handleFileChange} style={{ marginLeft: '50px', marginTop: '15px' }} />
@@ -247,7 +267,7 @@ const SpecialityAds = () => {
             </Button>}
                 style={{ display: toggle ? "block" : "none" }} >
                 <Form onFinish={handleSubmit} >
-                    <Tabs defaultActiveKey="1" onChange={handleTab}style={{width:'1000px' , height : '900px'}} >
+                    <Tabs defaultActiveKey="1" onChange={handleTab} style={{ width: '1000px', height: '900px' }} >
 
                         {state.specialization && state.specialization.map(specItem =>
                         (
@@ -264,16 +284,16 @@ const SpecialityAds = () => {
                                 </Form.Item> */}
                                 <Form.Item wrapperCol={{ offset: 3, span: 12 }}>
                                     <MultiSelect
-                                        options={state.users ? state.users : [] }
-                                        value={selected}
-                                        onChange={setSelected}
-                                        style={{marginLeft: '150px'}}
+                                        options={state.users ? state.users : []}
+                                        value={state.addsUser ? state.addsUser : []}
+                                        onChange={(e) => handleAddUser(e)}
+                                        style={{ marginLeft: '150px' }}
                                         labelledBy="Select"
                                     />
                                 </Form.Item>
-                                {/* <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
+                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
                                     <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add Advertisement</Button>
-                                </Form.Item> */}
+                                </Form.Item>
                             </TabPane>
                         ))}
                     </Tabs>
