@@ -29,6 +29,11 @@ const DrawerContent = (props) => {
     const [state, setState] = useState();
     const [errors, setErrors] = useState({});
 
+    const [image, setImage] = useState("");
+    const [imgData, setImgData] = useState(props.editData.image);
+
+    const [formSubmit, setFormSubmit] = useState(false);
+
     const handleAuthorChange = (e) => {
         const items = [];
         if (e.target.name === 'authors') {
@@ -43,6 +48,26 @@ const DrawerContent = (props) => {
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value, user: props.user_id })
     };
+    const handleFileChange = (info) => {
+        setImage(info.target.files[0]);
+        const imageFile = info.target.files[0];
+        const newErrorsState = { ...errors };
+        if (!imageFile.name.match(/\.(jpg|jpeg|png|gif|jfif|BMP|BAT|Exif)$/)) {
+            newErrorsState.image = 'Please select valid image.';
+            setErrors(newErrorsState);
+            setFormSubmit(!formSubmit);
+            return false;
+        } else {
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+                setImgData(reader.result);
+            });
+            reader.readAsDataURL(info.target.files[0]);
+            newErrorsState.image = '';
+            setErrors({});
+            setFormSubmit(!formSubmit);
+        }
+    }
 
     const formValidation = () => {
         let fields = state;
@@ -65,18 +90,39 @@ const DrawerContent = (props) => {
             formIsValid = false;
             errors["description"] = "Description is required";
         }
+        if (props.drawerType === 'add' && image.name === undefined) {
+            formIsValid = false;
+            errors["image"] = "Image is required"
+          }
+          if (props.drawerType === 'edit' && props.editData.image === undefined) {
+            formIsValid = false;
+            errors["image"] = "Image is required"
+          }
         setErrors({ errors });
-    return formIsValid;
+        return formIsValid;
     }
     const handleSubmit = () => {
         if (formValidation()) {
             setErrors({});
+            let newData = state;
+            const id = state.id;
             let form_data = null;
+            const newErrorsState = { ...errors };
+            if (image && image.name) {
+                form_data = new FormData();
+                form_data.append('image', image, image.name);
+                console.log("formdarta", form_data);
+            }
+            else if (props.drawerType === 'add' && image.name === undefined) {
+                newErrorsState.image = 'Image cannot be empty';
+                setErrors(newErrorsState);
+                return false;
+            }
         }
         dispatch(postPublicationDetails(state))
-        .then((res) => {
-            message.success("Publication Details added succesfully");
-        })
+            .then((res) => {
+                message.success("Publication Details added succesfully");
+            })
     }
 
     return (
@@ -103,14 +149,15 @@ const DrawerContent = (props) => {
                 <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} />
                 </Space>
-                
+
             </Form.Item>
             <Form.Item label="Image">
-                {/* {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null} */}
+                {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
                 <Input type="file"
                     id="image"
                     name="image"
-                    accept="image/png, image/jpeg" onChange="" style={{ marginLeft: '50px' }} />
+                    accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
+                <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
             </Form.Item>
             <Form.Item label="Publication URL">
                 <Input name="publication_url" className="form-control" type="text" onChange={handleChange} />
