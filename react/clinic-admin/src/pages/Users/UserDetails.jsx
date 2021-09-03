@@ -5,7 +5,7 @@ import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
-import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList, deleteUserPublication} from "../../actions/users";
+import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList, deleteUserPublication } from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
@@ -32,8 +32,7 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData} = useSelector(state => state.users);
-  console.log("addPublicationDetails" , addPublicationDetails);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -56,32 +55,24 @@ const UserDetails = () => {
         dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
         dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
           .then((res) => {
-            // res ? (setState(res.data.data)) : (setState({}));
             if (res) {
               // to get the qualification details of user
-              console.log('qual2', res)
               const getUserQualificationList = []
               res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                 return getUserQualificationList.push(
                   { value: item, label: item }
                 )
               })
-              console.log('qual1', getUserQualificationList);
               let result = res.data.data;
-              
-              
-              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: {value: result.empolyment_type, label: result.empolyment_type}, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+
+
+              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
             } else {
               setState({})
             }
           })
       })
     dispatch(getQualifications());
-    // if (userDetails && userDetails.data && userDetails.data.id) {
-    //   console.log("comimg publication")
-    //   dispatch(getPublicationList(userDetails && userDetails.data && userDetails.data.id));
-    // }
-
   }, [addPublicationData])
 
   let history = useHistory();
@@ -111,7 +102,7 @@ const UserDetails = () => {
     });
     return items;
   }
-  
+
 
   const options = [
     { value: 'Full-time', label: 'Full-time' },
@@ -122,17 +113,17 @@ const UserDetails = () => {
     { value: 'Trainee', label: 'Trainee' },
   ];
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  }
+  // const beforeUpload = (file) => {
+  //   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  //   if (!isJpgOrPng) {
+  //     message.error('You can only upload JPG/PNG file!');
+  //   }
+  //   const isLt2M = file.size / 1024 / 1024 < 2;
+  //   if (!isLt2M) {
+  //     message.error('Image must smaller than 2MB!');
+  //   }
+  //   return isJpgOrPng && isLt2M;
+  // }
 
   function getBase64(img, callback) {
     const reader = new FileReader();
@@ -231,6 +222,9 @@ const UserDetails = () => {
   const handleFileList = ({ fileList }) => {
     setFileList(fileList);
   }
+  const handleUpload = () => {
+    dispatch(putProfilePic(userDetails.data.id, fileList))
+  }
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
@@ -253,14 +247,15 @@ const UserDetails = () => {
   const cancel = (e) => {
   };
 
-  const onConfirm = (id) => {
-    // dispatch(cate(id))
-  };
+  // const onConfirm = (id) => {
+  //   // dispatch(cate(id))
+  // };
+
   const confirmDelete = (id) => {
     dispatch(deleteUserPublication(id))
-      // .then(() => {
-      //   message.success("User publication list is deleted successfully")
-      // })
+    // .then(() => {
+    //   message.success("User publication list is deleted successfully")
+    // })
   };
 
   const handleUserProfileSubmit = () => {
@@ -302,36 +297,22 @@ const UserDetails = () => {
       key: "id",
       align: "center",
       render: (text, record) => (
-        // <Space size="middle">
-        //   <Button type="link" onClick={() => onEdit(record)}>
-        //     Edit
-        //   </Button>
-        //   <Popconfirm
-        //     title="Are you sure to delete this category?"
-        //     onConfirm={() => onConfirm(record.id)}
-        //     onCancel={cancel}
-        //     okText="Yes"
-        //     cancelText="No"
-        //   >
-        //     <Button type="link">Delete</Button>
-        //   </Popconfirm>
-        // </Space>
         <Space size="middle">
-        <IconButton onClick={() => onEdit(record)}>
-          <Icon>edit</Icon>
-        </IconButton>
-        <Popconfirm
-          title="Are you sure to delete this publicationList?"
-          onConfirm={() => confirmDelete(record.id)}
-          onCancel={cancel}
-          okText="Yes"
-          cancelText="No"
-        >
-          <IconButton >
-            <Icon>delete</Icon>
+          <IconButton onClick={() => onEdit(record)}>
+            <Icon>edit</Icon>
           </IconButton>
-        </Popconfirm>
-      </Space>
+          <Popconfirm
+            title="Are you sure to delete this publicationList?"
+            onConfirm={() => confirmDelete(record.id)}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <IconButton >
+              <Icon>delete</Icon>
+            </IconButton>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -345,12 +326,14 @@ const UserDetails = () => {
               <Form.Item >
                 <Upload
                   name="avatar"
-                  action={dispatch(putProfilePic(state.id, fileList))}
+
+                  // action={}
                   multiple={false}
                   listType="picture-card"
                   className="avatar-uploader"
                   onPreview={handlePreview}
                   onChange={handleFileList}
+                  action={handleUpload}
                 >
                   {fileList.length >= 1 ? null : uploadButton}
                 </Upload>

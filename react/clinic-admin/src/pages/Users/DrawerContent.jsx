@@ -65,7 +65,7 @@ const DrawerContent = (props) => {
             reader.readAsDataURL(info.target.files[0]);
             newErrorsState.image = '';
             setErrors({});
-            setFormSubmit(!formSubmit);
+            // setFormSubmit(!formSubmit);
         }
     }
 
@@ -93,11 +93,11 @@ const DrawerContent = (props) => {
         if (props.drawerType === 'add' && image.name === undefined) {
             formIsValid = false;
             errors["image"] = "Image is required"
-          }
-          if (props.drawerType === 'edit' && props.editData.image === undefined) {
+        }
+        if (props.drawerType === 'edit' && props.editData.image === undefined) {
             formIsValid = false;
             errors["image"] = "Image is required"
-          }
+        }
         setErrors({ errors });
         return formIsValid;
     }
@@ -111,18 +111,14 @@ const DrawerContent = (props) => {
             if (image && image.name) {
                 form_data = new FormData();
                 form_data.append('image', image, image.name);
-                console.log("formdarta", form_data);
             }
-            else if (props.drawerType === 'add' && image.name === undefined) {
-                newErrorsState.image = 'Image cannot be empty';
-                setErrors(newErrorsState);
-                return false;
-            }
+            dispatch(postPublicationDetails(state, form_data))
+                .then((res) => {
+                    message.success("Publication Details added succesfully");
+                })
         }
-        dispatch(postPublicationDetails(state))
-            .then((res) => {
-                message.success("Publication Details added succesfully");
-            })
+        // console.log("state" , image);
+
     }
 
     return (

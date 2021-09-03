@@ -31,6 +31,22 @@ const getUserProfile = (id) => {
 const getQualifications = () => {
     return http.get("auth/qualifications/");
 }
+const putpublicationImage = (id , image) => {
+    console.log("serv id", id);
+    console.log("serv image" , image);
+    let accessToken = localStorage.getItem("accessToken");
+    let url = `${process.env.REACT_APP_API_URL}auth/accomplishments/${id}/image/`;
+    axios.put(url, image, {
+      headers: {
+        'content-type': 'multipart/form-data',
+        'authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(res => {
+    return res
+    })
+    .catch(err => err)
+}
 const putProfilePic = (id, imageData) => {
     let accessToken = localStorage.getItem("accessToken");
     let url = `${process.env.REACT_APP_API_URL}auth/profilepic/${id}/profilepicaddadmin/`;
@@ -49,7 +65,6 @@ const postOtherQualifications = (otherQualification) => {
     return http.post(`auth/qualifications/` , otherQualification);
 }
 const getPublicationList = (id) => {
-    console.log("ser id" , id);
     return http.get(`auth/getuseraccomplishment/${id}/`);
 }
 
@@ -76,6 +91,7 @@ const Users = {
     getPublicationList,
     postPublicationDetails,
     deleteUserPublication,
+    putpublicationImage
 }
 
 export default Users;

@@ -8,10 +8,12 @@ const  postAdds = (state) => {
     return http.post(`add/ads/`,state);
 }
 const postAdsImage =(id, imageData) => {
+    let accessToken = localStorage.getItem("accessToken");
     let url = `${process.env.REACT_APP_API_URL}add/ads/${id}/image/`;
     axios.put(url, imageData, {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
+        'authorization': `Bearer ${accessToken}`
       }
     })
     .then(res => {

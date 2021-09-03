@@ -25,6 +25,7 @@ export const deleteAdd = (id) => async (dispatch) => {
 export const getSpecUsers = (id) => async (dispatch) => {
     try {
         const res = await Ads.getSpecUsers(id);
+        console.log("spec users" ,res.data.count )
         dispatch({
             type: 'GET_SPEC_USERS',
             payload: res.data,
@@ -35,7 +36,8 @@ export const getSpecUsers = (id) => async (dispatch) => {
     }
 }
 
-export const postAdds = (newData, userList, adsId , imgData) => async (dispatch) => {
+export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {
+    console.log("userList" , userList);     
     try {
         if (adsId === undefined) {
             const res = await Ads.postAdds(newData);
@@ -106,6 +108,7 @@ export const getEditAdsDetails = (id) => async (dispatch) => {
 export const getAdsSelectedUser = (adsId, specid) => async (dispatch) => {
     try {
         const res = await Ads.getAdsSelectedUser(adsId, specid);
+        console.log("response" , res);
         dispatch({
             type: 'GET_ADS_USER_DETAILS',
             payload: res.data,
