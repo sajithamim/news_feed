@@ -33,7 +33,7 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData} = useSelector(state => state.users);
-  console.log("userDetails" , publicationList);
+  console.log("addPublicationDetails" , addPublicationDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -101,13 +101,14 @@ const UserDetails = () => {
 
   const publicationGenerator = () => {
     const items = [];
-    publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item) => {
+    publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
       return items.push({
         id: item.id,
         title: item.title,
+        image: item.image,
         publisher: item.publisher
       })
-    })
+    });
     return items;
   }
   
