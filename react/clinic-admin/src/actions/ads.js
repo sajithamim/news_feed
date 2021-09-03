@@ -37,7 +37,7 @@ export const getSpecUsers = (id) => async (dispatch) => {
 }
 
 export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {
-    console.log("userList" , userList);
+    console.log("userList" , userList);     
     try {
         if (adsId === undefined) {
             const res = await Ads.postAdds(newData);

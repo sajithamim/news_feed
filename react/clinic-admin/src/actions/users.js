@@ -67,7 +67,6 @@ export const deleteUser = (id) => async (dispatch) => {
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
     try {
         const res = await Users.postUserProfile(state);
-        console.log("res", res);
         if (otherQualification.name !== null)
             await Users.postOtherQualifications(otherQualification);
 
@@ -113,7 +112,6 @@ export const putProfilePic = (id, image) => async (dispatch) => {
         form_data.append('profilepic', image[0]);
         try {
             const res = await Users.putProfilePic(id, form_data);
-            console.log("response" , res);
             dispatch({
                 type: 'PUT_PROFILEPIC',
                 payload: res.data,
@@ -126,8 +124,7 @@ export const putProfilePic = (id, image) => async (dispatch) => {
 
 export const getPublicationList = (id) => async (dispatch) => {
     try {
-        const res = await Users.getPublicationList(id);;
-        console.log("action id" , res);
+        const res = await Users.getPublicationList(id);
         dispatch({
             type: 'GET_PUBLICATION_LIST',
             payload: res,
@@ -138,9 +135,12 @@ export const getPublicationList = (id) => async (dispatch) => {
     }
 }
 
-export const postPublicationDetails = (state) => async (dispatch) => {
+export const postPublicationDetails = (state , image ) => async (dispatch) => {
     try {
         const res = await Users.postPublicationDetails(state);
+            if (image){
+                const res1 = await Users.putpublicationImage(res.data.id , image)
+            }
         dispatch({
             type: 'POST_PUBLICATION_LIST',
             payload: res.data,

@@ -9,7 +9,6 @@ import { getSpecUsers, postAdds, getEditAdsDetails, getAdsSelectedUser } from ".
 import { useParams, useHistory, Link } from "react-router-dom";
 import "./Drawer.css";
 
-
 const SpecialityAds = () => {
     const { TabPane } = Tabs;
     const dispatch = useDispatch();
@@ -17,7 +16,7 @@ const SpecialityAds = () => {
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [image, setImage] = useState({});
-    const [addUser, setAddUser] = useState([]);
+    // const [addUser, setAddUser] = useState([]);
 
     const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
     const { specList } = useSelector(state => state.spec);
@@ -140,17 +139,6 @@ const SpecialityAds = () => {
             dispatch(getAdsSelectedUser(adsId, activeKey)) // getting Users selected under each specialization during edit
         setState({ ...state, specActiveId: activeKey })
     };
-
-    // const handleMultiSelectUser = (e, id) => {
-    //     let { options } = e.target;
-    //     options = Array.apply(null, options)
-    //     const selectedValues = options.filter(x => x.selected).map(x => x.value);
-    //     const userVisibility = [];
-    //     selectedValues && selectedValues.map((item) => {
-    //         userVisibility.push({ spec_id: specId, user_id: item })
-    //     })
-    //     setState({ ...state, userVisibility: userVisibility })
-    // }
 
     const handleAddUser = (value) => {
         const userVisibility = [];
