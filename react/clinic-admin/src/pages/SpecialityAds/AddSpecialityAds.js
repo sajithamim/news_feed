@@ -42,7 +42,9 @@ const SpecialityAds = () => {
 
         const users = [];
         const userVisibility = [];
+        console.log("specUsers count" ,specUsers.count);
         specUsers && specUsers.results && specUsers.results.map((item) => {
+            
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
                 users.push({ label: item.username, value: item.id });
@@ -51,7 +53,7 @@ const SpecialityAds = () => {
             }
         })
 
-        setState({ ...state, selectedSpecid: selectedSpecid, userVisibility: userVisibility, users: users, allUsers: allUsers })
+        setState({ ...state, selectedSpecid: selectedSpecid, userVisibility: userVisibility, users: users, allUsers: allUsers, countSpecusers: specUsers.count })
     }, [adsUserDetails, specUsers])
 
 
@@ -133,8 +135,9 @@ const SpecialityAds = () => {
     } //next button handling
 
     const handleTab = activeKey => {
-        dispatch(getSpecUsers(activeKey))
-        dispatch(getAdsSelectedUser(adsId, activeKey))
+        dispatch(getSpecUsers(activeKey)) // getting Users under each Specialization
+        if (adsId)
+            dispatch(getAdsSelectedUser(adsId, activeKey)) // getting Users selected under each specialization during edit
         setState({ ...state, specActiveId: activeKey })
     };
 
@@ -150,12 +153,11 @@ const SpecialityAds = () => {
     // }
 
     const handleAddUser = (value) => {
-        console.log("E", value);
         const userVisibility = [];
         value && value.map((item) => {
             userVisibility.push({ spec_id: specId, user_id: item.value })
         })
-        setState({ ...state, addsUser: value , userVisibility: userVisibility })
+        setState({ ...state, addsUser: value , userVisibility: userVisibility , countOfUsersSelected:value.length})
     }
 
     const handleFileChange = (info) => {
@@ -178,15 +180,21 @@ const SpecialityAds = () => {
         newData['add_specialization'] = state.add_specialization;
         newData['title'] = state.title;
         newData['url'] = state.url;
+        
         const userList = [];
-
-        let userData = state.userVisibility;
-        console.log("userList", userData);
-        userData.map(item => {
-            if (item.spec_id === state.specActiveId) {
-                userList.push(item) // selected users
-            }
-        })
+        let countOfSpecUsers = state. countSpecusers
+        if (state.countOfUsersSelected === countOfSpecUsers){ // condition for setting user_id as null when all users are selected
+            console.log("Select all");
+            userList.push({ spec_id: state.specActiveId, user_id: null })
+         } 
+        else{ 
+            let userData = state.userVisibility; // selected users only
+             userData.map(item => {
+                if (item.spec_id === state.specActiveId) {
+                    userList.push(item) 
+                }
+            })
+        }    
         dispatch(postAdds(newData, userList , adsId, form_data))
 
         // const userList = [];
@@ -247,7 +255,7 @@ const SpecialityAds = () => {
                         <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.specialization}</div>
                     </Form.Item>
                     <Form.Item label="URL">
-                        <Input name="url" onChange={(e) => { handleChange(e, "url") }} />
+                        <Input name="url" value = {state.url} onChange={(e) => { handleChange(e, "url") }} />
                         <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.url}</div>
                     </Form.Item>
                     <Form.Item label="Add Image">

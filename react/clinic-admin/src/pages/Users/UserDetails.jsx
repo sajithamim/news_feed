@@ -223,6 +223,9 @@ const UserDetails = () => {
   const handleFileList = ({ fileList }) => {
     setFileList(fileList);
   }
+  const handleUpload = () => {
+    dispatch(putProfilePic(userDetails.data.id, fileList))
+  }
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
@@ -294,20 +297,6 @@ const UserDetails = () => {
       key: "id",
       align: "center",
       render: (text, record) => (
-        // <Space size="middle">
-        //   <Button type="link" onClick={() => onEdit(record)}>
-        //     Edit
-        //   </Button>
-        //   <Popconfirm
-        //     title="Are you sure to delete this category?"
-        //     onConfirm={() => onConfirm(record.id)}
-        //     onCancel={cancel}
-        //     okText="Yes"
-        //     cancelText="No"
-        //   >
-        //     <Button type="link">Delete</Button>
-        //   </Popconfirm>
-        // </Space>
         <Space size="middle">
         <IconButton onClick={() => onEdit(record)}>
           <Icon>edit</Icon>
@@ -337,12 +326,14 @@ const UserDetails = () => {
               <Form.Item >
                 <Upload
                   name="avatar"
-                  action={dispatch(putProfilePic(state.id, fileList))}
+                  
+                  // action={}
                   multiple={false}
                   listType="picture-card"
                   className="avatar-uploader"
                   onPreview={handlePreview}
                   onChange={handleFileList}
+                  action = {handleUpload}
                 >
                   {fileList.length >= 1 ? null : uploadButton}
                 </Upload>

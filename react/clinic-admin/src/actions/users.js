@@ -106,12 +106,14 @@ export const getQualifications = () => async (dispatch) => {
 
 
 export const putProfilePic = (id, image) => async (dispatch) => {
+    
     let form_data = null;
     if (image[0] && image[0].name) {
         form_data = new FormData();
         form_data.append('profilepic', image[0]);
         try {
             const res = await Users.putProfilePic(id, form_data);
+            console.log("response" , res);
             dispatch({
                 type: 'PUT_PROFILEPIC',
                 payload: res.data,
