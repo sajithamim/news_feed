@@ -28,6 +28,9 @@ const postUserProfile = (state) => {
 const getUserProfile = (id) => {
     return http.get(`auth/getuserprofile/${id}`);
 }
+const getUserProfilePic = (id) => {
+    return http.get(`auth/profilepic/${id}`);
+}
 const getQualifications = () => {
     return http.get("auth/qualifications/");
 }
@@ -91,7 +94,8 @@ const Users = {
     getPublicationList,
     postPublicationDetails,
     deleteUserPublication,
-    putpublicationImage
+    putpublicationImage,
+    getUserProfilePic
 }
 
 export default Users;

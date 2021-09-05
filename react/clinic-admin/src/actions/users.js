@@ -81,6 +81,10 @@ export const postUserProfile = (state, otherQualification) => async (dispatch) =
 export const getUserProfile = (id) => async (dispatch) => {
     try {
         const res = await Users.getUserProfile(id);
+        if(res){
+            const res1 = await Users.getUserProfilePic(id);
+            console.log("response pic " , res1)
+        }
         dispatch({
             type: 'GET_USER_PROFILE',
             payload: res.data,
@@ -138,7 +142,7 @@ export const getPublicationList = (id) => async (dispatch) => {
 export const postPublicationDetails = (state , image ) => async (dispatch) => {
     try {
         const res = await Users.postPublicationDetails(state);
-            if (image){
+            if (res && image){
                 const res1 = await Users.putpublicationImage(res.data.id , image)
             }
         dispatch({
