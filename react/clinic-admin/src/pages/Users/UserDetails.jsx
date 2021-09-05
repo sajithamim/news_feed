@@ -10,6 +10,7 @@ import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
 import "./Users.css";
+import axios from "axios";
 
 const columns = [
   {
@@ -32,7 +33,7 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationData } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -47,6 +48,9 @@ const UserDetails = () => {
   const [previewVisible, setPreviewVisible] = useState({});
   const [previewTitle, setPreviewTitle] = useState({})
   const [fileList, setFileList] = useState({})
+  const [defaultFileList, setDefaultFileList] = useState([]);
+  const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
@@ -64,9 +68,9 @@ const UserDetails = () => {
                 )
               })
               let result = res.data.data;
-
-
-              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+              const date = (result.start_date + "," + result.end_date).split(',');
+              // console.log("date" , date);
+              setState({ ...state, date : date , qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
             } else {
               setState({})
             }
@@ -113,17 +117,17 @@ const UserDetails = () => {
     { value: 'Trainee', label: 'Trainee' },
   ];
 
-  // const beforeUpload = (file) => {
-  //   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  //   if (!isJpgOrPng) {
-  //     message.error('You can only upload JPG/PNG file!');
-  //   }
-  //   const isLt2M = file.size / 1024 / 1024 < 2;
-  //   if (!isLt2M) {
-  //     message.error('Image must smaller than 2MB!');
-  //   }
-  //   return isJpgOrPng && isLt2M;
-  // }
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+  }
 
   function getBase64(img, callback) {
     const reader = new FileReader();
@@ -159,15 +163,14 @@ const UserDetails = () => {
         setActiveInput(true);
       }
     })
-    console.log('qual', item)
     setState({ ...state, qualification: item, qualifications: data });
   }
 
   const handleSelectChange = (value) => {
-    console.log('val', value)
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
   }
   const onDateChange = (value, dateString) => {
+    // console.log("date", dateString)
     setState({ ...state, start_date: dateString[0], end_date: dateString[1] })
   }
 
@@ -209,22 +212,66 @@ const UserDetails = () => {
     </div>
   );
 
-  const handlePreview = async file => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewVisible(true);
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  // const handlePreview = async file => {
+  //   if (!file.url && !file.preview) {
+  //     file.preview = await getBase64(file.originFileObj);
+  //   }
+  //   setPreviewImage(file.url || file.preview);
+  //   setPreviewVisible(true);
+  //   setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  // };
 
+  // const handleOnChange = ({ fileList }) => {
+  //   setFileList(fileList);
+  // }
+
+  // const uploadImage = () => {
+  //   dispatch(putProfilePic(userDetails.data.id, fileList))
+  // }
+
+  const handleOnChange = ({ file, fileList, event }) => {
+    // console.log(file, fileList, event);
+    //Using Hooks to update the state to the current filelist
+    setDefaultFileList(fileList);
+    //filelist - [{uid: "-1",url:'Some url to image'}]
   };
 
-  const handleFileList = ({ fileList }) => {
-    setFileList(fileList);
-  }
-  const handleUpload = () => {
-    dispatch(putProfilePic(userDetails.data.id, fileList))
-  }
+  const uploadImage = async options => {
+    const { onSuccess, onError, file, onProgress } = options;
+
+    const fmData = new FormData();
+    let accessToken = localStorage.getItem("accessToken");
+    const config = {
+      headers: { "content-type": "multipart/form-data" , 'authorization': `Bearer ${accessToken}`},
+      onUploadProgress: event => {
+        const percent = Math.floor((event.loaded / event.total) * 100);
+        setProgress(percent);
+        if (percent === 100) {
+          setTimeout(() => setProgress(0), 1000);
+        }
+        onProgress({ percent: (event.loaded / event.total) * 100 });
+      }
+    };
+    fmData.append("image", file);
+    try {
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_URL}auth/profilepic/${userDetails.data.id}/profilepicaddadmin/`,
+        fmData,
+        config
+      );
+      onSuccess("Ok");
+      console.log("server res: ", res);
+    } catch (err) {
+      console.log("Eroor: ", err);
+      const error = new Error("Some error");
+      onError({ err });
+    }
+  };
+
+
+
+
+
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
@@ -246,10 +293,6 @@ const UserDetails = () => {
   }
   const cancel = (e) => {
   };
-
-  // const onConfirm = (id) => {
-  //   // dispatch(cate(id))
-  // };
 
   const confirmDelete = (id) => {
     dispatch(deleteUserPublication(id))
@@ -325,15 +368,22 @@ const UserDetails = () => {
             <Col span={6}>
               <Form.Item >
                 <Upload
-                  name="avatar"
+                  // name="avatar"
+                  // multiple={false}
+                  // listType="picture-card"
+                  // className="avatar-uploader"
+                  // beforeUpload={beforeUpload}
+                  // onPreview={handlePreview}
+                  // onChange={handleFileList}
+                  // customRequest={handleUpload}
 
-                  // action={}
+                  accept="image/*"
                   multiple={false}
+                  customRequest={uploadImage}
+                  onChange={handleOnChange}
                   listType="picture-card"
-                  className="avatar-uploader"
-                  onPreview={handlePreview}
-                  onChange={handleFileList}
-                  action={handleUpload}
+                  defaultFileList={defaultFileList}
+                  className="image-upload-grid"
                 >
                   {fileList.length >= 1 ? null : uploadButton}
                 </Upload>
@@ -397,7 +447,7 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Select Date" >
                   <Space direction="vertical" size={15} style={{ marginLeft: '50px' }} >
-                    <RangePicker onChange={onDateChange} />
+                    <RangePicker onChange={onDateChange}/>
                   </Space>
                 </Form.Item>
                 <Form.Item label="Industry">

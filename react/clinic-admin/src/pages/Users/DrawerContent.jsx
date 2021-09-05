@@ -117,8 +117,6 @@ const DrawerContent = (props) => {
                     message.success("Publication Details added succesfully");
                 })
         }
-        // console.log("state" , image);
-
     }
 
     return (
