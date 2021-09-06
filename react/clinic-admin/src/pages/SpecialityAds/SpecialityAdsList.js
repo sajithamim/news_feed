@@ -59,7 +59,8 @@ const SpecialityAdsList = () => {
         addimage: item.addimage,
         add_specialization: addSpecItems.toString(),
         title: item.title,
-        url: item.url
+        url: item.url,
+        addimage: item.addimage
       })
       
     })
@@ -100,7 +101,7 @@ const SpecialityAdsList = () => {
             <Link to={"/edit_add/" + record.id}>Edit</Link>
           </Button>
           <Popconfirm
-            title="Are you sure to delete this specialization?"
+            title="Are you sure to delete this Advertisement?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"
