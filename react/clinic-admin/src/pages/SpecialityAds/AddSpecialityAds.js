@@ -19,6 +19,7 @@ const SpecialityAds = () => {
     // const [addUser, setAddUser] = useState([]);
 
     const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
+    console.log("adsUserDetails" , adsUserDetails);
     const { specList } = useSelector(state => state.spec);
     const { adsId } = useParams(); //get id
     const history = useHistory();
@@ -41,18 +42,17 @@ const SpecialityAds = () => {
 
         const users = [];
         const userVisibility = [];
-        console.log("specUsers count" ,specUsers.count);
+        const selectedUsers = [];
         specUsers && specUsers.results && specUsers.results.map((item) => {
-            
             if (adsUserList && adsUserList.includes(item.id)) {
                 userVisibility.push({ spec_id: specId, user_id: item.id })
                 users.push({ label: item.username, value: item.id });
+                selectedUsers.push({ label: item.username, value: item.id });
             } else {
                 users.push({ label: item.username, value: item.id }) // all users list
             }
         })
-
-        setState({ ...state, selectedSpecid: selectedSpecid, userVisibility: userVisibility, users: users, allUsers: allUsers, countSpecusers: specUsers.count })
+        setState({ ...state, selectedSpecid: selectedSpecid, addsUser:selectedUsers,  userVisibility: userVisibility, users: users, allUsers: allUsers, countSpecusers: specUsers.count })
     }, [adsUserDetails, specUsers])
 
 
@@ -63,7 +63,7 @@ const SpecialityAds = () => {
             add_specialization.push({ spec_id: item.spec_id.id }) //using for save api call 
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name }); //selected specialization 
         })
-        setState({ ...state, title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization })
+        setState({ ...state, url: adsDetails.url , image: adsDetails.addimage , title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization })
     }, [adsDetails])
 
     const specialization = [];
@@ -103,12 +103,12 @@ const SpecialityAds = () => {
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
-        if (image.name === undefined || state.image === undefined) {
+        if (image.name === undefined && state.image === undefined) {
             formIsValid = false;
             errors["image"] = "Image is mandatory";
         }
-        if (!fields["users"] === undefined) {
-        }
+        // if (!fields["users"] === undefined) {
+        // }
         setErrors({ errors });
         return formIsValid;
     }
@@ -141,6 +141,7 @@ const SpecialityAds = () => {
     };
 
     const handleAddUser = (value) => {
+        console.log("value" , value) ;
         const userVisibility = [];
         value && value.map((item) => {
             userVisibility.push({ spec_id: specId, user_id: item.value })
@@ -159,6 +160,21 @@ const SpecialityAds = () => {
 
 
     const handleSubmit = (id) => {
+        const userList = [];
+        let countOfSpecUsers = state. countSpecusers
+        if (state.countOfUsersSelected === countOfSpecUsers){ // condition for setting user_id as null when all users are selected
+            console.log("coming if");
+            userList.push({ spec_id: state.specActiveId, user_id: null })
+         } 
+        else{ 
+            console.log("coming else");
+            let userData = state.userVisibility; // selected users only
+             userData.map(item => {
+                if (item.spec_id === state.specActiveId) {
+                    userList.push(item) 
+                }
+            })
+        } 
         let form_data = null;
         if (image && image.name) {
             form_data = new FormData();
@@ -169,20 +185,6 @@ const SpecialityAds = () => {
         newData['title'] = state.title;
         newData['url'] = state.url;
         
-        const userList = [];
-        let countOfSpecUsers = state. countSpecusers
-        if (state.countOfUsersSelected === countOfSpecUsers){ // condition for setting user_id as null when all users are selected
-            console.log("Select all");
-            userList.push({ spec_id: state.specActiveId, user_id: null })
-         } 
-        else{ 
-            let userData = state.userVisibility; // selected users only
-             userData.map(item => {
-                if (item.spec_id === state.specActiveId) {
-                    userList.push(item) 
-                }
-            })
-        }    
         dispatch(postAdds(newData, userList , adsId, form_data))
 
         // const userList = [];

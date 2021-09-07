@@ -1,7 +1,9 @@
+import React, {useEffect ,  useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import OverviewContent  from './pages/Overview/OverviewContent';
+import OverviewContent from './pages/Overview/OverviewContent';
 import Login from './pages/Login/Login';
+import NoConnection from './pages/Login/NoConnection';
 import Forgot from './pages/Login/Forgot';
 import Reset from './pages/Login/Reset';
 import Specialization from "./pages/specialization/Specialization";
@@ -21,20 +23,76 @@ import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisem
 import SpecialityAds from './pages/SpecialityAds/AddSpecialityAds';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function App() {
-  
+
   const { user } = useSelector(state => {
     return state.auth;
   });
+
+  const [signoutTime, setSignoutTime] = useState(90000);
+  const [warningTime, setWarningTime] = useState(90000);
+  let warnTimeout;
+  let logoutTimeout;
+  const accessToken = localStorage.getItem("accessToken");
   
+  const warn = () => {
+    alert("you are idle for 1 min");
+  };
+  const logout = () => {
+    alert('You have been loged out');
+    const clearToken = localStorage.clear();
+  }
+
+  const destroy = () => {
+    console.log('Session destroyed');
+  }
+  const setTimeouts = () => {
+    warnTimeout = setTimeout(warn, warningTime);
+    logoutTimeout = setTimeout(logout, signoutTime);
+  };
+
+  const clearTimeouts = () => {
+    if (warnTimeout) clearTimeout(warnTimeout);
+    if (logoutTimeout) clearTimeout(logoutTimeout);
+  };
+
+  useEffect(() => {
+
+    const events = [
+      'load',
+      'mousemove',
+      'mousedown',
+      'click',
+      'scroll',
+      'keypress'
+    ];
+
+    const resetTimeout = () => {
+      clearTimeouts();
+      setTimeouts();
+    };
+
+    for (let i in events) {
+      window.addEventListener(events[i], resetTimeout);
+    }
+
+    setTimeouts();
+    return () => {
+      for (let i in events) {
+        window.removeEventListener(events[i], resetTimeout);
+        clearTimeouts();
+      }
+    }
+  }, []);
   return (
     <Router>
       <AdminLayout>
         <Switch>
-        {/* <Route path="/" onEnter={onUserNavigate} onChange={onUserNavigate}> */}
           <PrivateRoute path="/data" exact component={OverviewContent} />
+          <PrivateRoute path="/noconnection" exact component={NoConnection} />
           <PrivateRoute path="/categories" exact component={CategoriesContent} />
           <PrivateRoute path="/topics" exact component={Topics} />
           <PrivateRoute path="/specializations" exact component={Specialization} />
@@ -53,9 +111,10 @@ function App() {
           <PrivateRoute path="/genads/" exact component={GenAdvertisementContent} />
           <Route path="/forgot_password" exact component={Forgot} />
           <Route path="/reset_password/" exact component={Reset} />
-          <Route path="/login"  component={Login} />
-          {/* </Route> */}
-          <Redirect from="/" to="/login" />
+
+          {/* <Route path="/login"  component={Login} /> */}
+          <Route exact path={["/", "/login"]} component={Login} />
+          {/* <Redirect from="/" to="/login" /> */}
         </Switch>
       </AdminLayout>
     </Router>

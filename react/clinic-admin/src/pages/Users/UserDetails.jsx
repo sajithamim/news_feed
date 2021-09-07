@@ -33,7 +33,7 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationDetails, addPublicationData } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationData } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -132,17 +132,17 @@ const UserDetails = () => {
     { value: 'Trainee', label: 'Trainee' },
   ];
 
-  // const beforeUpload = (file) => {
-  //   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  //   if (!isJpgOrPng) {
-  //     message.error('You can only upload JPG/PNG file!');
-  //   }
-  //   const isLt2M = file.size / 1024 / 1024 < 2;
-  //   if (!isLt2M) {
-  //     message.error('Image must smaller than 2MB!');
-  //   }
-  //   return isJpgOrPng && isLt2M;
-  // }
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+  }
 
   function getBase64(img, callback) {
     const reader = new FileReader();
@@ -178,15 +178,14 @@ const UserDetails = () => {
         setActiveInput(true);
       }
     })
-    console.log('qual', item)
     setState({ ...state, qualification: item, qualifications: data });
   }
 
   const handleSelectChange = (value) => {
-    console.log('val', value)
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
   }
   const onDateChange = (value, dateString) => {
+    // console.log("date", dateString)
     setState({ ...state, start_date: dateString[0], end_date: dateString[1] })
   }
 
@@ -228,14 +227,28 @@ const UserDetails = () => {
     </div>
   );
 
-  const handlePreview = async file => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewVisible(true);
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  // const handlePreview = async file => {
+  //   if (!file.url && !file.preview) {
+  //     file.preview = await getBase64(file.originFileObj);
+  //   }
+  //   setPreviewImage(file.url || file.preview);
+  //   setPreviewVisible(true);
+  //   setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  // };
 
+  // const handleOnChange = ({ fileList }) => {
+  //   setFileList(fileList);
+  // }
+
+  // const uploadImage = () => {
+  //   dispatch(putProfilePic(userDetails.data.id, fileList))
+  // }
+
+  const handleOnChange = ({ file, fileList, event }) => {
+    // console.log(file, fileList, event);
+    //Using Hooks to update the state to the current filelist
+    setDefaultFileList(fileList);
+    //filelist - [{uid: "-1",url:'Some url to image'}]
   };
 
   // const handleOnChange = ({ file, fileList, event }) => {
@@ -340,10 +353,6 @@ const UserDetails = () => {
   const cancel = (e) => {
   };
 
-  // const onConfirm = (id) => {
-  //   // dispatch(cate(id))
-  // };
-
   const confirmDelete = (id) => {
     dispatch(deleteUserPublication(id))
     // .then(() => {
@@ -430,6 +439,8 @@ const UserDetails = () => {
       {progress > 0 ? <Progress percent={progress} /> : null}
                 {/* <Upload
                   multiple={false}
+                  customRequest={uploadImage}
+                  onChange={handleOnChange}
                   listType="picture-card"
                   className="avatar-uploader"
                   onPreview={handlePreview}
@@ -500,7 +511,7 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Select Date" >
                   <Space direction="vertical" size={15} style={{ marginLeft: '50px' }} >
-                    <RangePicker onChange={onDateChange} />
+                    <RangePicker onChange={onDateChange}/>
                   </Space>
                 </Form.Item>
                 <Form.Item label="Industry">

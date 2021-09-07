@@ -9,7 +9,6 @@ import AuthService from "../services/auth.service";
 
 export const login = (email, password) => (dispatch) => {
   return AuthService.login(email, password).then(
-
     (res) => {
       localStorage.setItem("refreshToken", res.data.tokens.refresh);
       localStorage.setItem("accessToken", res.data.tokens.access);

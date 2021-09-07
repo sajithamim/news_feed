@@ -36,19 +36,19 @@ export const getSpecUsers = (id) => async (dispatch) => {
     }
 }
 
-export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {
-    console.log("userList" , userList);     
+export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {    
     try {
         if (adsId === undefined) {
             const res = await Ads.postAdds(newData);
             if (res && res.data && res.data.id) {
+                console.log("coming to if");
                 const userData = []
                 userList.map(item => {
-                    userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.id })
+                    userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.user_id })
                 })
                 if (imgData)
                     await Ads.postAdsImage(res.data.id, imgData)
-
+                console.log("userData" , userData);
                 await Ads.postAddsVisibility(userData)
             dispatch({
                 type: 'POST_ADD',
@@ -58,6 +58,7 @@ export const postAdds = (newData, userList , adsId , imgData) => async (dispatch
             return res;
         }
         else {
+            console.log("coming to else");
             const res = await Ads.putAdds(newData, adsId);
             if (userList && res && res.data && adsId) {
                 const userData = []
