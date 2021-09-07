@@ -41,3 +41,21 @@ export const deleteGenAds = (id) => async(dispatch) => {
         console.log("error");
     }
 }
+
+export const updateGeneralAdvertisment = (id, newData, form_data) => async(dispatch) => {
+    try{
+        const res = await genAds.updateGeneralAdvertisment(id, newData);
+        console.log("update_adds", res)
+        if(res && res.data && res.data.id){
+            if (form_data){
+                await genAds.putAdsImage(res.data.id, form_data);
+            }
+        } 
+        dispatch({
+            type: 'UPDATE_GEN_ADS',
+            payload:res.data,
+        });
+    }catch(err){
+        console.log("error");
+    }
+}

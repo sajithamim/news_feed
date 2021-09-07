@@ -16,12 +16,12 @@ const GenAdvertisementContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
 
-  const { genAdsList , addGenAdd , page} = useSelector(state => state.genAds);
-
+  const { genAdsList , addGenAdd , updateGenAdd, page} = useSelector(state => state.genAds);
+console.log("genAdsList" , genAdsList);
   useEffect(() => {
     dispatch(getGeneralAdvertisment())
     onClose();
-  }, [ addGenAdd ])
+  }, [ addGenAdd, updateGenAdd])
 
   const onClose = () => {
     setShowDrawer(false);
