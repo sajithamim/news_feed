@@ -109,7 +109,7 @@ export const getQualifications = () => async (dispatch) => {
 
 
 export const putProfilePic = (id, image) => async (dispatch) => {
-    
+    console.log('enter1', image);
     let form_data = null;
     if (image[0] && image[0].name) {
         form_data = new FormData();

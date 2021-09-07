@@ -16,17 +16,18 @@ const Login = () => {
   const dispatch = useDispatch();
   const { error } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
-  console.log("accessToken", accessToken);
   const signin = (e) => {
     setLoading(true);
     dispatch(login(email,password))
   };
+
   if(window.navigator.onLine == true){
     if (accessToken && accessToken !== undefined) {
       history.push("/data");
     }
   }
-  else alert("No Internet Connection is there");
+  else 
+   history.push("/noconnection");
   
 
   const validateMessages = {

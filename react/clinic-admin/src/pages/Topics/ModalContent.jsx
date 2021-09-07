@@ -4,7 +4,7 @@ import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList } from "../../actions/users";
-import { deleteImages  , getSpecialization , getCategory} from "../../actions/topic";
+import { deleteImages, getSpecialization, getCategory } from "../../actions/topic";
 import moment from 'moment';
 import Select from 'react-select';
 
@@ -15,8 +15,7 @@ const ModalContent = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [state, setState] = useState({});
-  const { specList , catList} = useSelector(state => state.topic);
-  console.log("catlist", catList);
+  const { specList, catList } = useSelector(state => state.topic);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
 
@@ -28,7 +27,6 @@ const ModalContent = (props) => {
   })
 
   const category = [];
-  console.log("category",category);
   catList && catList.data && catList.data.map(item => {
     return category.push(
       { value: item.id, label: item.title }
@@ -137,7 +135,7 @@ const ModalContent = (props) => {
       setState(props.editData);
     }
   }, [props.editData])
-  
+
   const onOk = (value) => {
   }
   const radioOnChange = (val, e) => {
@@ -197,16 +195,13 @@ const ModalContent = (props) => {
         errors["description1"] = "Description cannot be empty";
       }
       if (props.drawerType == 'add' && fields["pdfUrl"] === undefined) {
-        console.log('add pdf')
         formIsValid = false;
         errors["pdf"] = "Please upload Front Pdf"
       }
-      /*if (props.drawerType == 'edit' && fields["pdfFront"] === null) {
-        console.log('edit pdf')
-        console.log("fields[pdfFront" , fields["pdfFront"]);
+      if (props.drawerType == 'add' && fields["pdfUrlSecond"] === undefined) {
         formIsValid = false;
-        errors["pdf"] = "Please upload Front Pdf"
-      }*/
+        errors["pdfsecond"] = "Please upload Back Pdf"
+      }
       if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
         errors["pdf"] = "Please select valid pdf";
         setErrors({ errors });
@@ -227,16 +222,14 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description2"] = " Description cannot be empty";
       }
-      if(props.drawerType === 'edit'  && state.old_image[0] === undefined)
-      {
-         formIsValid = false;
-         errors["multi_image"] = "Image cannot be empty";
-      } 
-      if(props.drawerType === 'add'  && state.old_image === undefined)
-      {
-         formIsValid = false;
-         errors["multi_image"] = "Image cannot be empty";
-      } 
+      if (props.drawerType === 'edit' && state.old_image[0] === undefined) {
+        formIsValid = false;
+        errors["multi_image"] = "Image cannot be empty";
+      }
+      if (props.drawerType === 'add' && state.old_image === undefined) {
+        formIsValid = false;
+        errors["multi_image"] = "Image cannot be empty";
+      }
     }
     if (state.format === '3') {
       if (!fields["title3"]) {
@@ -254,7 +247,6 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    console.log("state pdfurl",state);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -304,7 +296,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      props.onFormSubmit(newData, form_data, form_data2, image_data );
+      props.onFormSubmit(newData, form_data, form_data2, image_data);
     }
   }
 
@@ -417,7 +409,7 @@ const ModalContent = (props) => {
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple />
-            <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div style={{ marginLeft: '-47px', width: '287px' }}><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
@@ -432,12 +424,15 @@ const ModalContent = (props) => {
             </Form.Item></>) : null}
 
           {state.format === '1' ?
-            (<><p style={{ marginLeft: '226px' }}>{props.drawerType === 'edit' ? state.pdfFront : null}</p><Form.Item label="Pdf Front">
-              <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              <p style={{ marginLeft: '226px' }}>{props.drawerType === 'edit' ? state.pdfBack : null}</p>
-              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item></>) : null}
-          {/* {state.pdfUrlSecond ? <p>{state.pdfUrlSecond}</p> : null} */}
-
+            (<>
+              {state.pdfFront ? <a href={state.pdfFront} target="_blank" style={{ marginLeft: '226px' }}>PDF Front</a> : null}
+              <Form.Item label="Pdf Front">
+                <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+              {state.pdfBack ? <a href={state.pdfBack} target="_blank" style={{ marginLeft: '226px' }} >PDF Back</a> : null } 
+              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} />
+                <div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item>
+              </>)
+            : null}
 
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span style={{ color: "red" }}>Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">

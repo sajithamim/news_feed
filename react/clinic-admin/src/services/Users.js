@@ -51,6 +51,7 @@ const putpublicationImage = (id , image) => {
     .catch(err => err)
 }
 const putProfilePic = (id, imageData) => {
+    console.log('enter2');
     let accessToken = localStorage.getItem("accessToken");
     let url = `${process.env.REACT_APP_API_URL}auth/profilepic/${id}/profilepicaddadmin/`;
     axios.put(url, imageData, {
