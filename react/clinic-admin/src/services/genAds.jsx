@@ -28,11 +28,17 @@ const deleteGenAds = (id) => {
     return http.delete(`add/alluseradd/${id}`)
 }
 
+const updateGeneralAdvertisment = (id, newData) => {
+    console.log("hhjhjj" , newData);
+    return http.put(`add/alluseradd/${id}/` ,newData);
+}
+
 const genAds = {
     getGenAds,
     postGenAds,
     putAdsImage,
-    deleteGenAds
+    deleteGenAds,
+    updateGeneralAdvertisment
 }
 
 

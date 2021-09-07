@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Radio, message } from "antd";
 import { useDispatch } from "react-redux";
-import { postGeneralAdvertisement } from "../../actions/genAds";
+import { postGeneralAdvertisement, updateGeneralAdvertisment } from "../../actions/genAds";
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-  console.log("props", props.editData.image);
   const [state, setState] = useState(props.editData);
 
   const [errors, setErrors] = useState({ name: '' });
@@ -22,14 +21,12 @@ const DrawerContent = (props) => {
   useEffect(() => {
     setState(props.editData)
     if (props.editData.image && props.editData.image) {
-      console.log("comoing if");
       setImgData(props.editData.image);
-    }else {
-      console.log("comoing else");
+    } else {
       setImgData("");
       setImage("");
     }
-  }, [props.editData , props.editData.image])
+  }, [props.editData, props.editData.image])
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -64,10 +61,6 @@ const DrawerContent = (props) => {
       formIsValid = false;
       errors["image"] = "Image is required"
     }
-    // if (props.drawerType === 'edit' && image.name === undefined) {
-    //   formIsValid = false;
-    //   errors["image"] = "Image is required"
-    // }
     if (fields.active === undefined) {
       formIsValid = false;
       errors["status"] = "Status is required"
@@ -77,16 +70,30 @@ const DrawerContent = (props) => {
   }
 
   const handleSubmit = (e) => {
+    const id = state.id
     if (formValidation()) {
       let form_data = null;
       if (image && image.name) {
         form_data = new FormData();
         form_data.append('addimage', image, image.name);
       }
-      dispatch(postGeneralAdvertisement(state, form_data))
+      if (props.drawerType === "add") {
+        dispatch(postGeneralAdvertisement(state, form_data))
+          .then(() => {
+            message.success("Advertisement added successfully");
+          })
+      }else {
+        const newData = state;
+        delete newData["sl_no"]; 
+        delete newData["image"];
+        delete newData["id"];
+        console.log("adverti edit" , state)
+        dispatch(updateGeneralAdvertisment(id, newData, form_data ))
         .then(() => {
-          message.success("Advertisement added successfully");
-        })
+          message.success("Advertisement edit successfully")
+        }
+        )
+      }
     }
   }
 
@@ -114,9 +121,9 @@ const DrawerContent = (props) => {
               id="image"
               name="image"
               accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
-              <div className="errorMsg"   >{errors && errors.errors && errors.errors.image}</div>
+            <div className="errorMsg"   >{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
-          
+
           <Form.Item label="Status" wrapperCol={{ offset: 2, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active}>
               <Radio value={true}>

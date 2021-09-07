@@ -9,7 +9,7 @@ import Reset from './pages/Login/Reset';
 import Specialization from "./pages/specialization/Specialization";
 import SubSpecialization from "./pages/specialization/SubSpecializationContent";
 import AdvisoryBoardContent from "./pages/specialization/AdvisoryBoardContent"
-import Topics from './pages/Topics/Topics';
+import TopicsContent  from './pages/Topics/TopicsContent';
 import CategoriesContent from './pages/Category/CategoriesContent';
 import Feedback from './pages/Feedback/Feedback';
 import Users from './pages/Users/Users';
@@ -94,7 +94,7 @@ function App() {
           <PrivateRoute path="/data" exact component={OverviewContent} />
           <PrivateRoute path="/noconnection" exact component={NoConnection} />
           <PrivateRoute path="/categories" exact component={CategoriesContent} />
-          <PrivateRoute path="/topics" exact component={Topics} />
+          <PrivateRoute path="/topics" exact component={TopicsContent} />
           <PrivateRoute path="/specializations" exact component={Specialization} />
           <PrivateRoute path="/sub_specialization/:specId" exact component={SubSpecialization} />
           <PrivateRoute path="/feedback" exact component={Feedback} />
