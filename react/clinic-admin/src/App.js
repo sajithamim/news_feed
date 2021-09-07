@@ -39,7 +39,7 @@ function App() {
   const accessToken = localStorage.getItem("accessToken");
   
   const warn = () => {
-    alert("you are idle for 1 min");
+    alert("You are idle for several min");
   };
   const logout = () => {
     alert('You have been loged out');

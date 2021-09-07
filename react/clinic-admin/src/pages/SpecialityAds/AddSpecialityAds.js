@@ -16,10 +16,8 @@ const SpecialityAds = () => {
     const [toggle, setToggle] = useState(false);
     const [errors, setErrors] = useState({});
     const [image, setImage] = useState({});
-    // const [addUser, setAddUser] = useState([]);
 
     const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
-    console.log("adsUserDetails" , adsUserDetails);
     const { specList } = useSelector(state => state.spec);
     const { adsId } = useParams(); //get id
     const history = useHistory();
@@ -99,6 +97,11 @@ const SpecialityAds = () => {
             errors["specialization"] = "Specialization is required";
         }
 
+        if (fields["url"]) {
+            formIsValid = false;
+            errors["url"] = "URL is required";
+        }
+
         if (image.name && !image.name.match(/\.(jpg|jpeg|png|gif|jfif|PNG|BAT|Exif|BMP|TIFF)$/)) { //image validation
             formIsValid = false;
             errors["image"] = "Please select valid image.";
@@ -141,7 +144,6 @@ const SpecialityAds = () => {
     };
 
     const handleAddUser = (value) => {
-        console.log("value" , value) ;
         const userVisibility = [];
         value && value.map((item) => {
             userVisibility.push({ spec_id: specId, user_id: item.value })
@@ -163,11 +165,9 @@ const SpecialityAds = () => {
         const userList = [];
         let countOfSpecUsers = state. countSpecusers
         if (state.countOfUsersSelected === countOfSpecUsers){ // condition for setting user_id as null when all users are selected
-            console.log("coming if");
             userList.push({ spec_id: state.specActiveId, user_id: null })
          } 
         else{ 
-            console.log("coming else");
             let userData = state.userVisibility; // selected users only
              userData.map(item => {
                 if (item.spec_id === state.specActiveId) {

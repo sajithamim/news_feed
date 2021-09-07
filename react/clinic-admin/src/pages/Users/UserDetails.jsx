@@ -52,7 +52,7 @@ const UserDetails = () => {
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
-        console.log('res1', res)
+        console.log('res1tes', res)
         let userDetails = res.data.data;
         console.log('profile', userDetails.profilepic)
         if(userDetails.profilepic != null) {
@@ -68,7 +68,6 @@ const UserDetails = () => {
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
         if(res) {
-          console.log('res2')
           dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
@@ -244,12 +243,12 @@ const UserDetails = () => {
   //   dispatch(putProfilePic(userDetails.data.id, fileList))
   // }
 
-  const handleOnChange = ({ file, fileList, event }) => {
-    // console.log(file, fileList, event);
-    //Using Hooks to update the state to the current filelist
-    setDefaultFileList(fileList);
-    //filelist - [{uid: "-1",url:'Some url to image'}]
-  };
+  // const handleOnChange = ({ file, fileList, event }) => {
+  //   // console.log(file, fileList, event);
+  //   //Using Hooks to update the state to the current filelist
+  //   setDefaultFileList(fileList);
+  //   //filelist - [{uid: "-1",url:'Some url to image'}]
+  // };
 
   // const handleOnChange = ({ file, fileList, event }) => {
   //    console.log('sample', file, fileList, event);
