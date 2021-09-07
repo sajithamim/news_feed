@@ -1,30 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
 import { Form, Button, Input, Modal, message } from "antd";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import "./Drawer.css";
 import { postCategory, updateCategory } from "../../actions/category";
 
-
-
-
 const DrawerContent = (props) => {
   const dispatch = useDispatch();
-
-  const [previewVisible, setPreviewVisible] = useState(false);
-  // const [previewImage, setPreviewImage] = useState("");
-
+  //const [previewVisible, setPreviewVisible] = useState(false);
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
-
   const [state, setState] = useState(props.editData);
   const [errors, setErrors] = useState({});
-  // const [previewTitle, setPreviewTitle] = useState("");
   const [formSubmit, setFormSubmit] = useState(false);
 
-
   useEffect(() => {
+    console.log('test snap')
     setState(props.editData)
     setErrors({});
     if (props.editData.image && props.editData.image) {
@@ -36,8 +26,7 @@ const DrawerContent = (props) => {
     }
   }, [props.editData, props.editData.image])
 
-
-  const handleCancel = () => setPreviewVisible(false);
+  //const handleCancel = () => setPreviewVisible(false);
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -63,6 +52,7 @@ const DrawerContent = (props) => {
       setFormSubmit(!formSubmit);
     }
   }
+
   const formValidation = () => {
     let fields = state;
     let errors = {};
@@ -120,13 +110,7 @@ const DrawerContent = (props) => {
     }
   }
   return (
-    <Form name="basic"
-      labelCol={{
-        span: 8,
-      }}
-      wrapperCol={{
-        span: 10,
-      }} onFinish={handleSubmit}>
+    <Form labelCol={{span: 8}} wrapperCol={{span: 10}} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
@@ -136,21 +120,13 @@ const DrawerContent = (props) => {
 
           <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
-            <Input type="file"
-              id="image"
-              name="image"
-              accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
+            <Input type="file" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
         </div>
       </div>
-      <Form.Item
-        wrapperCol={{
-          offset: 10,
-          span: 2,
-        }}
-      >
-        <Button type="primary" htmlType="submit" style={{ marginLeft: '-6px' }} >
+      <Form.Item wrapperCol={{ offset: 10, span: 3 }}>
+        <Button type="primary" htmlType="submit">
           Save
         </Button>
       </Form.Item>

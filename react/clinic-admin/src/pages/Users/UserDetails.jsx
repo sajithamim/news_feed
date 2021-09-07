@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm } from "antd";
+import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
 import "./Users.css";
+import axios from 'axios'; 
 
 const columns = [
   {
@@ -46,31 +47,49 @@ const UserDetails = () => {
   const [previewImage, setPreviewImage] = useState({});
   const [previewVisible, setPreviewVisible] = useState({});
   const [previewTitle, setPreviewTitle] = useState({})
-  const [fileList, setFileList] = useState({})
+  const [defaultFileList, setDefaultFileList] = useState([]);
+  const [progress, setProgress] = useState(0);
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
+        console.log('res1', res)
+        let userDetails = res.data.data;
+        console.log('profile', userDetails.profilepic)
+        if(userDetails.profilepic != null) {
+          setDefaultFileList([{
+            uid: '-1',
+            name: userDetails.profilepic,
+            status: 'done',
+            url: `https://clinictopic.metrictreelabs.com${userDetails.profilepic}`,
+          }]);
+        }
+        
+        setState({ ...state, id: userDetails.id, profilepic: userDetails.profilepic})
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
-        dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
-        dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
-          .then((res) => {
-            if (res) {
-              // to get the qualification details of user
-              const getUserQualificationList = []
-              res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
-                return getUserQualificationList.push(
-                  { value: item, label: item }
-                )
-              })
-              let result = res.data.data;
-
-
-              setState({ ...state, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
-            } else {
-              setState({})
-            }
-          })
+        if(res) {
+          console.log('res2')
+          dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
+          dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
+            .then((res) => {
+              if (res) {
+                console.log('res 1', res)
+                // to get the qualification details of user
+                const getUserQualificationList = []
+                res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
+                  return getUserQualificationList.push(
+                    { value: item, label: item }
+                  )
+                })
+                let result = res.data.data;
+                console.log('result', result)
+                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+              } else {
+                setState({ ...state})
+              }
+            })
+        }
+        
       })
     dispatch(getQualifications());
   }, [addPublicationData])
@@ -219,12 +238,86 @@ const UserDetails = () => {
 
   };
 
-  const handleFileList = ({ fileList }) => {
-    setFileList(fileList);
-  }
-  const handleUpload = () => {
-    dispatch(putProfilePic(userDetails.data.id, fileList))
-  }
+  // const handleOnChange = ({ file, fileList, event }) => {
+  //    console.log('sample', file, fileList, event);
+  //   //Using Hooks to update the state to the current filelist
+  //   setDefaultFileList(fileList);
+  //   //filelist - [{uid: "-1",url:'Some url to image'}]
+  // };
+  // const uploadImage = async options => {
+  //   const { onSuccess, onError, file, onProgress } = options;
+
+  //   const fmData = new FormData();
+  //   const config = {
+  //     headers: { "content-type": "multipart/form-data" },
+  //     onUploadProgress: event => {
+  //       const percent = Math.floor((event.loaded / event.total) * 100);
+  //       setProgress(percent);
+  //       if (percent === 100) {
+  //         setTimeout(() => setProgress(0), 1000);
+  //       }
+  //       onProgress({ percent: (event.loaded / event.total) * 100 });
+  //     }
+  //   };
+  //   fmData.append("image", file);
+  //   console.log('file', file)
+  //   //dispatch(putProfilePic(userDetails && userDetails.data && userDetails.data.id, fileList))
+  //   // try {
+  //   //   const res = await axios.post(
+  //   //     "https://jsonplaceholder.typicode.com/posts",
+  //   //     fmData,
+  //   //     config
+  //   //   );
+
+  //   //   onSuccess("Ok");
+  //   //   console.log("server res: ", res);
+  //   // } catch (err) {
+  //   //   console.log("Eroor: ", err);
+  //   //   const error = new Error("Some error");
+  //   //   onError({ err });
+  //   // }
+  // };
+
+  const uploadImage = async options => {
+    const { onSuccess, onError, file, onProgress } = options;
+
+    const fmData = new FormData();
+    let accessToken = localStorage.getItem("accessToken");
+    const config = {
+      headers: { "content-type": "multipart/form-data", 'authorization': `Bearer ${accessToken}` },
+      onUploadProgress: event => {
+        const percent = Math.floor((event.loaded / event.total) * 100);
+        setProgress(percent);
+        if (percent === 100) {
+          setTimeout(() => setProgress(0), 1000);
+        }
+        onProgress({ percent: (event.loaded / event.total) * 100 });
+      }
+    };
+    fmData.append("profilepic", file);
+    try {
+      const res = await axios.put(
+        `https://clinictopic.metrictreelabs.com/api/auth/profilepic/${state.id}/profilepicaddadmin/`,
+        fmData,
+        config
+      );
+
+      onSuccess("Ok");
+      console.log("server res: ", res);
+    } catch (err) {
+      console.log("Eroor: ", err);
+      const error = new Error("Some error");
+      onError({ err });
+    }
+  };
+
+  const handleOnChange = ({ file, fileList, event }) => {
+    console.log('fileList', fileList);
+    //Using Hooks to update the state to the current filelist
+    setDefaultFileList(fileList);
+    //filelist - [{uid: "-1",url:'Some url to image'}]
+  };
+ 
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
@@ -316,7 +409,7 @@ const UserDetails = () => {
       ),
     },
   ];
-
+  console.log('test', defaultFileList)
   return (
     <div className="main-content">
       <Container fluid>
@@ -324,19 +417,29 @@ const UserDetails = () => {
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item >
-                <Upload
-                  name="avatar"
-
-                  // action={}
+              <Upload
+                accept="image/*"
+                customRequest={uploadImage}
+                onChange={handleOnChange}
+                listType="picture-card"
+                fileList={defaultFileList}
+                className="image-upload-grid"
+              >
+                {defaultFileList.length >= 1 ? null : <div>Upload Button</div>}
+              </Upload>
+      {progress > 0 ? <Progress percent={progress} /> : null}
+                {/* <Upload
                   multiple={false}
                   listType="picture-card"
                   className="avatar-uploader"
                   onPreview={handlePreview}
-                  onChange={handleFileList}
-                  action={handleUpload}
+                  defaultFileList={defaultFileList}
+                  onChange={handleOnChange}
+                  customRequest={uploadImage}
                 >
-                  {fileList.length >= 1 ? null : uploadButton}
+                  {defaultFileList.length >= 1 ? null : uploadButton}
                 </Upload>
+                {progress > 0 ? <Progress percent={progress} /> : null} */}
               </Form.Item>
             </Col>
             <Col span={16}>
