@@ -26,6 +26,7 @@ const UserContent = () => {
   const pagination = {
     current,
     pageSize,
+    showSizeChanger: false,
     onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
     total: userList.count
   }
@@ -67,9 +68,6 @@ const UserContent = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <Link to={"/data/UserDetails/" + record.email}>{text}</Link>
-      ),
     },
     {
       title: 'Email',

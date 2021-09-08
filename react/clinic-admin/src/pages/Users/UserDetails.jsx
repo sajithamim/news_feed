@@ -33,7 +33,7 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, addPublicationData } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData ,addPublicationData } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -52,9 +52,7 @@ const UserDetails = () => {
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
-        console.log('res1tes', res)
         let userDetails = res.data.data;
-        console.log('profile', userDetails.profilepic)
         if(userDetails.profilepic != null) {
           setDefaultFileList([{
             uid: '-1',
@@ -69,10 +67,10 @@ const UserDetails = () => {
         dispatch(getUserSpecialization(emailId))
         if(res) {
           dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
+          onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
               if (res) {
-                console.log('res 1', res)
                 // to get the qualification details of user
                 const getUserQualificationList = []
                 res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
@@ -81,17 +79,15 @@ const UserDetails = () => {
                   )
                 })
                 let result = res.data.data;
-                console.log('result', result)
                 setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
               } else {
                 setState({ ...state})
               }
             })
         }
-        
       })
     dispatch(getQualifications());
-  }, [addPublicationData])
+  }, [addPublicationData , updatePublicationData])
 
   let history = useHistory();
   const catList = []
@@ -111,11 +107,16 @@ const UserDetails = () => {
   const publicationGenerator = () => {
     const items = [];
     publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
+      console.log("item" , item);
       return items.push({
         id: item.id,
         title: item.title,
         image: item.image,
-        publisher: item.publisher
+        publisher: item.publisher,
+        authors: item.authors,
+        publicationdate: item.publicationdate,
+        publication_url:item.publication_url,
+        description:item.description
       })
     });
     return items;
@@ -354,9 +355,9 @@ const UserDetails = () => {
 
   const confirmDelete = (id) => {
     dispatch(deleteUserPublication(id))
-    // .then(() => {
-    //   message.success("User publication list is deleted successfully")
-    // })
+    .then(() => {
+      message.success("User publication list is deleted successfully")
+    })
   };
 
   const handleUserProfileSubmit = () => {
@@ -417,7 +418,6 @@ const UserDetails = () => {
       ),
     },
   ];
-  console.log('test', defaultFileList)
   return (
     <div className="main-content">
       <Container fluid>
@@ -435,21 +435,7 @@ const UserDetails = () => {
               >
                 {defaultFileList.length >= 1 ? null : <div>Upload Button</div>}
               </Upload>
-      {progress > 0 ? <Progress percent={progress} /> : null}
-                {/* <Upload
-                  multiple={false}
-                  customRequest={uploadImage}
-                  onChange={handleOnChange}
-                  listType="picture-card"
-                  className="avatar-uploader"
-                  onPreview={handlePreview}
-                  defaultFileList={defaultFileList}
-                  onChange={handleOnChange}
-                  customRequest={uploadImage}
-                >
-                  {defaultFileList.length >= 1 ? null : uploadButton}
-                </Upload>
-                {progress > 0 ? <Progress percent={progress} /> : null} */}
+              {progress > 0 ? <Progress percent={progress} /> : null} 
               </Form.Item>
             </Col>
             <Col span={16}>
@@ -556,7 +542,7 @@ const UserDetails = () => {
               key="3"
             >
               <Card title="Category List" bordered={true}>
-                <Table columns={columns} dataSource={catList} pagination={false} />
+                <Table columns={columns} dataSource={catList}  />
               </Card>
             </TabPane>
             <TabPane

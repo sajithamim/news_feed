@@ -7,7 +7,8 @@ const initialState = {
     qualifications: [],
     publicationList: [],
     addPublicationDetails: [],
-    addPublicationData: false
+    addPublicationData: false,
+    updatePublicationData: false
 };
 
 const users = (state = initialState, action) => {
@@ -32,8 +33,10 @@ const users = (state = initialState, action) => {
             return { ...state, publicationList: action.payload, addPublicationData: false }
         case 'POST_PUBLICATION_LIST':
             return { ...state, addPublicationDetails: action.payload, addPublicationData: true }
+        case 'UPDATE_PUBLICATION_LIST':
+                return { ...state, updatePublicationData: true }
         case 'DELETE_USER_PUBLICATION':
-            return { ...state, publicationList: Object.assign({}, state.publicationList, { results: state.publicationList && state.publicationList.data && state.publicationList.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
+            return { ...state, publicationList: Object.assign({}, state.publicationList, { results: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
         default:
             return state;
         
