@@ -23,7 +23,7 @@ const customStyles = {
     }),
 }
 const DrawerContent = (props) => {
-    console.log("props.editData.image" , props.editData.image);
+    console.log("props.editData.image", props.editData.image);
     const dispatch = useDispatch();
 
     const [state, setState] = useState(props.editData);
@@ -33,7 +33,14 @@ const DrawerContent = (props) => {
     const [imgData, setImgData] = useState(props.editData.image);
 
     const [formSubmit, setFormSubmit] = useState(false);
-
+    
+    useEffect(() => {
+        setState(props.editData);
+        if (props.editData.icon && props.editData.icon.startsWith("/media"))
+          setImgData(`${process.env.REACT_APP_API_BASE_URL}${props.editData.icon}`);
+        else
+          setImgData(props.editData.icon);
+      }, [props.editData])
     const handleAuthorChange = (e) => {
         const items = [];
         if (e.target.name === 'authors') {
@@ -101,13 +108,12 @@ const DrawerContent = (props) => {
         setErrors({ errors });
         return formIsValid;
     }
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         console.log("props", props);
+        const id = state.id
         if (formValidation()) {
-            setErrors({});
-            const pub_id = props.editData.id ;
+            const pub_id = props.editData.id;
             // let newData = state;
-            // const id = state.id;
             let form_data = null;
             const newErrorsState = { ...errors };
             if (image && image.name) {
@@ -121,11 +127,15 @@ const DrawerContent = (props) => {
                     })
             }
             else {
-                const newData= state;
+                const newData = state;
                 delete newData["image"];
-                dispatch(updatePublicationDetails(pub_id , state, form_data))
-                    .then((res) => {
+                delete newData["sl_no"];
+                delete newData["id"];
+                console.log("public edit", state)
+                dispatch(updatePublicationDetails(pub_id, state, form_data))
+                    .then(() => {
                         message.success("Publication Details edited succesfully");
+                        setState({});
                     })
             }
         }
@@ -149,7 +159,7 @@ const DrawerContent = (props) => {
                 <div className="errorMsg">{errors && errors.errors && errors.errors.publisher}</div>
             </Form.Item>
             <Form.Item label="Author">
-                <Input name="authors" className="form-control" value = {state.authors} type="text" onChange={handleAuthorChange} />
+                <Input name="authors" className="form-control" value={state.authors} type="text" onChange={handleAuthorChange} />
             </Form.Item>
             <Form.Item label="Publication Date" >
                 <Space direction="vertical" size={30} value={state.publicationdate} style={{ marginLeft: '50px', width: '450px' }} >
@@ -159,7 +169,7 @@ const DrawerContent = (props) => {
             </Form.Item>
             <Form.Item label="Image">
                 {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
-                <Input type="file"  id="image" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
+                <Input type="file" id="image" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
                 <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
             </Form.Item>
             <Form.Item label="Publication URL">

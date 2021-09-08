@@ -10,7 +10,7 @@ import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
 import "./Users.css";
-import axios from 'axios'; 
+import axios from 'axios';
 
 const columns = [
   {
@@ -33,8 +33,9 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData ,addPublicationData } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
   const { emailId } = useParams();
+  console.log("test", userDetails);
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
   const [otherQualification, setOtherQualification] = useState({ name: '' });
@@ -49,11 +50,12 @@ const UserDetails = () => {
   const [previewTitle, setPreviewTitle] = useState({})
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
         let userDetails = res.data.data;
-        if(userDetails.profilepic != null) {
+        if (userDetails.profilepic != null) {
           setDefaultFileList([{
             uid: '-1',
             name: userDetails.profilepic,
@@ -61,11 +63,11 @@ const UserDetails = () => {
             url: `https://clinictopic.metrictreelabs.com${userDetails.profilepic}`,
           }]);
         }
-        
-        setState({ ...state, id: userDetails.id, profilepic: userDetails.profilepic})
+
+        setState({ ...state, id: userDetails.id, profilepic: userDetails.profilepic })
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
-        if(res) {
+        if (res) {
           dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
           onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
@@ -81,13 +83,13 @@ const UserDetails = () => {
                 let result = res.data.data;
                 setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
               } else {
-                setState({ ...state})
+                setState({ ...state })
               }
             })
         }
       })
     dispatch(getQualifications());
-  }, [addPublicationData , updatePublicationData])
+  }, [addPublicationData, updatePublicationData])
 
   let history = useHistory();
   const catList = []
@@ -103,20 +105,27 @@ const UserDetails = () => {
       { value: item.name, label: item.name }
     )
   })
+  const onEdit = (record) => {
+    setEditData(record);
+    setShowDrawer(true);
+    setDrawerType("edit");
+  }; 
 
   const publicationGenerator = () => {
     const items = [];
     publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
-      console.log("item" , item);
+      console.log("item list", item);
+      key++;
       return items.push({
+        sl_no: key,
         id: item.id,
         title: item.title,
         image: item.image,
         publisher: item.publisher,
         authors: item.authors,
         publicationdate: item.publicationdate,
-        publication_url:item.publication_url,
-        description:item.description
+        publication_url: item.publication_url,
+        description: item.description
       })
     });
     return items;
@@ -227,69 +236,6 @@ const UserDetails = () => {
     </div>
   );
 
-  // const handlePreview = async file => {
-  //   if (!file.url && !file.preview) {
-  //     file.preview = await getBase64(file.originFileObj);
-  //   }
-  //   setPreviewImage(file.url || file.preview);
-  //   setPreviewVisible(true);
-  //   setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-  // };
-
-  // const handleOnChange = ({ fileList }) => {
-  //   setFileList(fileList);
-  // }
-
-  // const uploadImage = () => {
-  //   dispatch(putProfilePic(userDetails.data.id, fileList))
-  // }
-
-  // const handleOnChange = ({ file, fileList, event }) => {
-  //   // console.log(file, fileList, event);
-  //   //Using Hooks to update the state to the current filelist
-  //   setDefaultFileList(fileList);
-  //   //filelist - [{uid: "-1",url:'Some url to image'}]
-  // };
-
-  // const handleOnChange = ({ file, fileList, event }) => {
-  //    console.log('sample', file, fileList, event);
-  //   //Using Hooks to update the state to the current filelist
-  //   setDefaultFileList(fileList);
-  //   //filelist - [{uid: "-1",url:'Some url to image'}]
-  // };
-  // const uploadImage = async options => {
-  //   const { onSuccess, onError, file, onProgress } = options;
-
-  //   const fmData = new FormData();
-  //   const config = {
-  //     headers: { "content-type": "multipart/form-data" },
-  //     onUploadProgress: event => {
-  //       const percent = Math.floor((event.loaded / event.total) * 100);
-  //       setProgress(percent);
-  //       if (percent === 100) {
-  //         setTimeout(() => setProgress(0), 1000);
-  //       }
-  //       onProgress({ percent: (event.loaded / event.total) * 100 });
-  //     }
-  //   };
-  //   fmData.append("image", file);
-  //   console.log('file', file)
-  //   //dispatch(putProfilePic(userDetails && userDetails.data && userDetails.data.id, fileList))
-  //   // try {
-  //   //   const res = await axios.post(
-  //   //     "https://jsonplaceholder.typicode.com/posts",
-  //   //     fmData,
-  //   //     config
-  //   //   );
-
-  //   //   onSuccess("Ok");
-  //   //   console.log("server res: ", res);
-  //   // } catch (err) {
-  //   //   console.log("Eroor: ", err);
-  //   //   const error = new Error("Some error");
-  //   //   onError({ err });
-  //   // }
-  // };
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
@@ -330,15 +276,11 @@ const UserDetails = () => {
     setDefaultFileList(fileList);
     //filelist - [{uid: "-1",url:'Some url to image'}]
   };
- 
+
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
-  const onEdit = (record) => {
-    setEditData(record);
-    setShowDrawer(true);
-    setDrawerType("edit");
-  };
+  
   const onAdd = () => {
     setShowDrawer(true);
     setDrawerType("add");
@@ -355,9 +297,9 @@ const UserDetails = () => {
 
   const confirmDelete = (id) => {
     dispatch(deleteUserPublication(id))
-    .then(() => {
-      message.success("User publication list is deleted successfully")
-    })
+      .then(() => {
+        message.success("User publication list is deleted successfully")
+      })
   };
 
   const handleUserProfileSubmit = () => {
@@ -388,6 +330,9 @@ const UserDetails = () => {
       title: "Image",
       dataIndex: "image",
       key: "image",
+      render: (text, record) => {
+        return (<img src={`${process.env.REACT_APP_API_BASE_URL}${record.image}`} style={{ width: '70px', height: '70px' }} />);
+      }
     },
     {
       title: "Publisher",
@@ -425,21 +370,21 @@ const UserDetails = () => {
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item >
-              <Upload
-                accept="image/*"
-                customRequest={uploadImage}
-                onChange={handleOnChange}
-                listType="picture-card"
-                fileList={defaultFileList}
-                className="image-upload-grid"
-              >
-                {defaultFileList.length >= 1 ? null : <div>Upload Button</div>}
-              </Upload>
-              {progress > 0 ? <Progress percent={progress} /> : null} 
+                <Upload
+                  accept="image/*"
+                  customRequest={uploadImage}
+                  onChange={handleOnChange}
+                  listType="picture-card"
+                  fileList={defaultFileList}
+                  className="image-upload-grid"
+                >
+                  {defaultFileList.length >= 1 ? null : <div>Upload Button</div>}
+                </Upload>
+                {progress > 0 ? <Progress percent={progress} /> : null}
               </Form.Item>
             </Col>
             <Col span={16}>
-              <p>Name : {userDetails.data && userDetails.data.username}</p>
+              <p>Name : {userDetails.data && userDetails.data.name}</p>
               <p>Email : {userDetails.data && userDetails.data.email}</p>
               <p>Phone Number : {userDetails.data && userDetails.data.phone}</p>
             </Col>
@@ -496,7 +441,7 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Select Date" >
                   <Space direction="vertical" size={15} style={{ marginLeft: '50px' }} >
-                    <RangePicker onChange={onDateChange}/>
+                    <RangePicker onChange={onDateChange} />
                   </Space>
                 </Form.Item>
                 <Form.Item label="Industry">
@@ -542,7 +487,7 @@ const UserDetails = () => {
               key="3"
             >
               <Card title="Category List" bordered={true}>
-                <Table columns={columns} dataSource={catList}  />
+                <Table columns={columns} dataSource={catList} />
               </Card>
             </TabPane>
             <TabPane
@@ -579,7 +524,7 @@ const UserDetails = () => {
                   onClose={onClose}
                   visible={showDrawer}
                   key="drawer"
-                >
+                > 
                   <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? editData : {}} />
                 </Drawer>
 
