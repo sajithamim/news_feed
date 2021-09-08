@@ -36,6 +36,20 @@ class UserPoll(models.Model):
 class Feedback(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="feedback_user")
     feedback = models.CharField(max_length=2000)
+    REASON_CHOICES = (
+        ('Bug', 'Bug'),
+        ('Suggestion', 'Suggestion'),
+        ('Other', 'Other'),
+    )
+    reason = models.CharField(max_length=20,choices=REASON_CHOICES,blank=True,null=True)
+    RATING_CHOICES =(
+        ('1','1'),
+        ('2','2'),
+        ('3','3'),
+        ('4','4'),
+        ('5','5'),
+        )
+    rating = models.CharField(max_length=3,choices=RATING_CHOICES,blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     class Meta:
@@ -50,3 +64,12 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'Settings'
+
+
+class ContactUs(models.Model):
+    name = models.CharField(max_length=255)
+    email =models.EmailField(max_length=255)
+    phone = models.CharField(max_length=20,blank=True,null=True)
+    message = models.CharField(max_length=10000)
+    class Meta:
+        db_table = 'ContactUs'
