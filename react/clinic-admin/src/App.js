@@ -25,6 +25,7 @@ import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { logout } from "./actions/auth.js"
 
 function App() {
 
@@ -32,18 +33,19 @@ function App() {
     return state.auth;
   });
 
-  const [signoutTime, setSignoutTime] = useState(90000);
-  const [warningTime, setWarningTime] = useState(90000);
+  const [signoutTime, setSignoutTime] = useState(900000);
+  const [warningTime, setWarningTime] = useState(900000);
   let warnTimeout;
   let logoutTimeout;
   const accessToken = localStorage.getItem("accessToken");
+  const dispatch = useDispatch();
   
   const warn = () => {
-    alert("You are idle for several min");
+    alert("You are idle for several minutes");
   };
-  const logout = () => {
-    alert('You have been loged out');
+  const sessionlogout = () => {
     const clearToken = localStorage.clear();
+    dispatch(logout());
   }
 
   const destroy = () => {
@@ -51,7 +53,7 @@ function App() {
   }
   const setTimeouts = () => {
     warnTimeout = setTimeout(warn, warningTime);
-    logoutTimeout = setTimeout(logout, signoutTime);
+    logoutTimeout = setTimeout(sessionlogout, signoutTime);
   };
 
   const clearTimeouts = () => {
