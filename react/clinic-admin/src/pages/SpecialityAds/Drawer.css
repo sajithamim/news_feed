@@ -20,6 +20,6 @@
   .dropdown-content .panel-content {
     padding-left:50px;
   }
-  /* .formBorder {
-    width: 300px;
-  } */
+  .multi-select {
+    margin-left: 150px;
+  }

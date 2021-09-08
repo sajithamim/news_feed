@@ -6,7 +6,7 @@ import Select from 'react-select';
 import { MultiSelect } from "react-multi-select-component";
 import { getSpecialization } from "../../actions/spec";
 import { getSpecUsers, postAdds, getEditAdsDetails, getAdsSelectedUser } from "../../actions/ads";
-import { useParams, useHistory, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "./Drawer.css";
 
 const SpecialityAds = () => {
@@ -17,27 +17,26 @@ const SpecialityAds = () => {
     const [errors, setErrors] = useState({});
     const [image, setImage] = useState({});
 
-    const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId } = useSelector(state => state.ads);
+    const { adsDetails, selectedSpecid, adsUserDetails, specUsers, specId, newaddId } = useSelector(state => state.ads);
     const { specList } = useSelector(state => state.spec);
-    const { adsId } = useParams(); //get id
-    const history = useHistory();
+    let { adsId } = useParams(); //get id
 
     useEffect(() => {
-        dispatch(getSpecialization()); //get specialization list
+        dispatch(getSpecialization()); // get specialization list
         if (adsId)
-            dispatch(getEditAdsDetails(adsId)) //get edit details
+            dispatch(getEditAdsDetails(adsId)) // get edit details
     }, [])
 
     useEffect(() => {
         const adsUserList = [];
         let allUsers = false;
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
-            if (item.user_id)
+            if (item.user_id) 
                 adsUserList.push(item.user_id.id)
             else
                 allUsers = true;
         }) //ads selected users list for spec id
-
+       
         const users = [];
         const userVisibility = [];
         const selectedUsers = [];
@@ -48,6 +47,8 @@ const SpecialityAds = () => {
                 selectedUsers.push({ label: item.username, value: item.id });
             } else {
                 users.push({ label: item.username, value: item.id }) // all users list
+                if(allUsers)
+                    selectedUsers.push({ label: item.username, value: item.id });   
             }
         })
         setState({ ...state, selectedSpecid: selectedSpecid, addsUser:selectedUsers,  userVisibility: userVisibility, users: users, allUsers: allUsers, countSpecusers: specUsers.count })
@@ -69,7 +70,7 @@ const SpecialityAds = () => {
         return specialization.push(
             { value: item.id, label: item.name }
         );
-    })  //specialization list
+    })  // specialization list
 
     const handleSpecChange = (item) => {
         let topic = [];
@@ -78,10 +79,6 @@ const SpecialityAds = () => {
         })
         setState({ ...state, specialization: item, add_specialization: topic })
     } // specialization handle Change
-
-    const onChecked = (e) => {
-        setState({ ...state, allUsers: e.target.checked })
-    }
 
     const handleValidation = () => {
         let fields = state;
@@ -106,33 +103,30 @@ const SpecialityAds = () => {
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
+
         if (image.name === undefined && state.image === undefined) {
             formIsValid = false;
             errors["image"] = "Image is mandatory";
         }
-        // if (!fields["users"] === undefined) {
-        // }
+
         setErrors({ errors });
         return formIsValid;
     }
 
     const handleChange = (e, field) => {
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ //port
-            '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i');
-            console.log("pattern.test(e.target.value)", pattern.test(e.target.value));
-            return pattern.test(e.target.value);
+        // var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        //     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+        //     '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
+        //     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ //port
+        //     '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
+        //     '(\\#[-a-z\\d_]*)?$','i');
+        //     console.log("pattern.test(e.target.value)", pattern.test(e.target.value));
+        //     return pattern.test(e.target.value);
         let fields = state;
         fields[field] = e.target.value;
         setState({ ...state, fields })
     }
 
-    const onChange = () => {
-
-    }
     const handleScreen = () => {
         if (handleValidation()) {
             const id = state.specialization[0].value;
@@ -170,6 +164,7 @@ const SpecialityAds = () => {
 
 
     const handleSubmit = (id) => {
+        adsId = (adsId == null) ? newaddId : adsId;
         const userList = [];
         let countOfSpecUsers = state. countSpecusers
         if (state.countOfUsersSelected === countOfSpecUsers){ // condition for setting user_id as null when all users are selected
@@ -277,28 +272,18 @@ const SpecialityAds = () => {
 
                         {state.specialization && state.specialization.map(specItem =>
                         (
-                            <TabPane tab={specItem.label} key={specItem.value} >
-                                {/* <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
-                                    <Checkbox onChange={onChecked} checked={state.allUsers} disabled={(state.users) ? true : false}>To All Users</Checkbox>
-                                </Form.Item>
-                                <Form.Item wrapperCol={{ offset: 3, span: 9 }}><strong>OR</strong></Form.Item> */}
-                                {/* <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
-                                    <select name="list-box" disabled={state.allUsers} multiple onChange={(e) => handleMultiSelectUser(e, specItem.value)}>
-                                        {state.users}
-                                    </select>
-                                    <div className="errorMsg">{errors && errors.errors && errors.errors.users}</div>
-                                </Form.Item> */}
+                            <TabPane tab={specItem.label} key={specItem.value}>
                                 <Form.Item wrapperCol={{ offset: 3, span: 12 }}>
                                     <MultiSelect
+                                        className="multi-select"
                                         options={state.users ? state.users : []}
                                         value={state.addsUser ? state.addsUser : []}
                                         onChange={(e) => handleAddUser(e)}
-                                        style={{ marginLeft: '150px' }}
                                         labelledBy="Select"
                                     />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
-                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)} style={{ textAlign: "center" }} > Add Advertisement</Button>
+                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)}>Add Advertisement</Button>
                                 </Form.Item>
                             </TabPane>
                         ))}
