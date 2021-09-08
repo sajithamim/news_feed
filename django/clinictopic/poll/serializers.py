@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings
+from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings,ContactUs
 from authentication.models import User
 # from topics.serializers import TopicSeriaizer
 
@@ -78,3 +78,7 @@ class SettingsSerializer(serializers.ModelSerializer):
         settings, created = Settings.objects.update_or_create(**validated_data)
         return settings
 
+class ContactusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactUs
+        fields = '__all__'
