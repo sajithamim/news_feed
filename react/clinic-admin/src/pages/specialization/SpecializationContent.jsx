@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import DrawerContent from "./DrawerContent"
 import { getSpecialization, deleteSpec } from "../../actions/spec";
-// import { getUsersList } from "../../actions/users";
 
 const SpecializationContent = () => {
   const dispatch = useDispatch();
@@ -18,7 +17,7 @@ const SpecializationContent = () => {
   const [slNo, setSlNo] = useState(0);
   const { specList, updateData, addData, page } = useSelector(state => state.spec);
   useEffect(() => {
-    dispatch(getSpecialization())
+    dispatch(getSpecialization(page))
     onClose();
   }, [updateData, addData])
 

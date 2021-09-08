@@ -222,11 +222,11 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description2"] = " Description cannot be empty";
       }
-      if (props.drawerType === 'edit' && state.old_image[0] === undefined) {
-        formIsValid = false;
-        errors["multi_image"] = "Image cannot be empty";
-      }
-      if (props.drawerType === 'add' && state.old_image === undefined) {
+      // if (props.drawerType === 'edit' && state.old_image[0] === undefined) {
+      //   formIsValid = false;
+      //   errors["multi_image"] = "Image cannot be empty";
+      // }
+      if (props.drawerType === 'add' && state.imageFormData === undefined) {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
@@ -408,7 +408,8 @@ const ModalContent = (props) => {
               <span class="close">
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
-                <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+                <span class="close">
+                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section>
             <div style={{ marginLeft: '-47px', width: '287px' }}>
             <Input type="file" name="multi_image" accept="image/png, image/jpeg" style={{ marginLeft: '47px' }}  onChange={handleMultipleFile} multiple /></div>

@@ -50,9 +50,12 @@ export const postSpecialization = (state) => async (dispatch) => {
     }
 }
 
-export const updateSpecialization = (id, state, imageData) => async (dispatch) => {
+export const updateSpecialization = (id, state) => async (dispatch) => {
+    console.log("hjhjj spec act update" , id);
+    console.log("hjhjj spec act state" , state);
     try {
         const res = await Specialization.updateSpec(id, state);
+        console.log("spec action" , res);
         dispatch({
             type: 'EDIT_SPECIALIZATION',
             payload: res.data,

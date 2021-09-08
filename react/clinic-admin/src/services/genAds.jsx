@@ -20,8 +20,9 @@ const putAdsImage = (id, imageData) => {
     .catch(err => err)
 }
 
-const getGenAds = () => {
-    return http.get("add/alluseradd");
+const getGenAds = (page) => {
+    console.log("page serv", page)
+    return http.get(`add/alluseradd?page=${page}`);
 }
 
 const deleteGenAds = (id) => {

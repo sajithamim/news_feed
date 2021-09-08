@@ -35,15 +35,9 @@ const DrawerContent = (props) => {
       setErrors({});
       let newData = state;
       const id = state.id;
-      // let form_data = null;
-      // if (image && image.name) {
-      //   form_data = new FormData();
-      //   form_data.append('icon', image, image.name);
-      // }
-
       if (props.drawerType === "edit") {
         delete newData["id"];
-        // delete newData["icon"];
+        delete newData["icon"];
         delete newData["updated_at"];
         delete newData["created_at"];
         console.log("new data", newData);
