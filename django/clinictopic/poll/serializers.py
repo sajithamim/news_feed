@@ -29,7 +29,7 @@ class TopicPollSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-            print(validated_data)
+            # print(validated_data)
             polloption = validated_data.pop('poll_option')
             topicpoll = TopicPoll.objects.create(**validated_data)
             for polloption in polloption:
@@ -79,6 +79,20 @@ class SettingsSerializer(serializers.ModelSerializer):
         return settings
 
 class ContactusSerializer(serializers.ModelSerializer):
+
+    default_error_messages = {
+        'phone': 'The phone should only contain numeric characters'}
     class Meta:
         model = ContactUs
         fields = '__all__'
+    def validate(self, attrs):
+        email = attrs.get('email', '')
+        name = attrs.get('name', '')
+        phone = attrs.get('phone', '')
+        message = attrs.get('message', '')
+        # print(name)
+        if phone:
+            if not phone.isnumeric():
+                raise serializers.ValidationError(
+                    self.default_error_messages)
+        return attrs

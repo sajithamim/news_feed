@@ -69,7 +69,7 @@ class Settings(models.Model):
 class ContactUs(models.Model):
     name = models.CharField(max_length=255)
     email =models.EmailField(max_length=255)
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20,blank=True,null=True)
     message = models.CharField(max_length=10000)
     class Meta:
         db_table = 'ContactUs'
