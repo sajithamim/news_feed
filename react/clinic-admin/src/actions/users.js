@@ -83,7 +83,6 @@ export const getUserProfile = (id) => async (dispatch) => {
         const res = await Users.getUserProfile(id);
         if(res){
             const res1 = await Users.getUserProfilePic(id);
-            console.log("response pic " , res1)
         }
         dispatch({
             type: 'GET_USER_PROFILE',
@@ -153,8 +152,24 @@ export const postPublicationDetails = (state , image ) => async (dispatch) => {
     } catch (err) {
         console.log(err)
     }
+} 
+export const updatePublicationDetails = ( id , state , image ) => async (dispatch) => {
+    console.log("updatePublicationDetails action", state );
+    try {
+        const res = await Users.updatePublicationDetails(id, state);
+        console.log("pub res" , res);
+            if (res && image){
+                const res1 = await Users.putpublicationImage(res.data.id , image)
+            }
+        dispatch({
+            type: 'UPDATE_PUBLICATION_LIST',
+            payload: res.data,
+        })
+        return res;
+    } catch (err) {
+        console.log(err)
+    }
 }
-
 export const deleteUserPublication = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUserPublication(id);

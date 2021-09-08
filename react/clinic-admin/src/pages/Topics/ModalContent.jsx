@@ -405,10 +405,13 @@ const ModalContent = (props) => {
           }
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
-              <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+              <span class="close">
+                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-            </section><Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple />
+            </section>
+            <div style={{ marginLeft: '-47px', width: '287px' }}>
+            <Input type="file" name="multi_image" accept="image/png, image/jpeg" style={{ marginLeft: '47px' }}  onChange={handleMultipleFile} multiple /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
@@ -420,16 +423,20 @@ const ModalContent = (props) => {
           {state.format === '3' || state.format === '2' ?
             (<><Form.Item label="Pdf/External URL">
               <div style={{ marginLeft: '-47px', width: '287px' }}>
-                <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
+                <Input type="text" name="external_url" onChange={handleChange}style={{ marginLeft: '47px' }}  value={state.external_url} /></div>
             </Form.Item></>) : null}
 
           {state.format === '1' ?
             (<>
               {state.pdfFront ? <a href={state.pdfFront} target="_blank" style={{ marginLeft: '226px' }}>PDF Front</a> : null}
               <Form.Item label="Pdf Front">
-                <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /><div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></div>
+                <div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
               {state.pdfBack ? <a href={state.pdfBack} target="_blank" style={{ marginLeft: '226px' }} >PDF Back</a> : null } 
-              <Form.Item label=" Pdf Back"><Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} />
+              <Form.Item label=" Pdf Back">
+              <div style={{ marginLeft: '-47px', width: '287px' }}>
+                <Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item>
               </>)
             : null}

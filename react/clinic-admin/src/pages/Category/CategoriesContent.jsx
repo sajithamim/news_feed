@@ -17,7 +17,7 @@ const CategoriesContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { catlist , updateData, addData, page  } = useSelector(state => state.category);
-  
+  console.log("catlist" , catlist);
   useEffect(() => {
     dispatch(getCategory());
     onClose();

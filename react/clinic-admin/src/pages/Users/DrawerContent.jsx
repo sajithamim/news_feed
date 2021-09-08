@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 import "./Users.css";
 import Select from 'react-select';
-import { postPublicationDetails, getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic } from "../../actions/users";
+import { postPublicationDetails, updatePublicationDetails } from "../../actions/users";
 import { postCategory } from "../../actions/category";
 import { updateCategory } from "../../actions/category";
 import moment from 'moment';
@@ -23,10 +23,10 @@ const customStyles = {
     }),
 }
 const DrawerContent = (props) => {
-
+    console.log("props.editData.image" , props.editData.image);
     const dispatch = useDispatch();
 
-    const [state, setState] = useState();
+    const [state, setState] = useState(props.editData);
     const [errors, setErrors] = useState({});
 
     const [image, setImage] = useState("");
@@ -102,20 +102,32 @@ const DrawerContent = (props) => {
         return formIsValid;
     }
     const handleSubmit = () => {
+        console.log("props", props);
         if (formValidation()) {
             setErrors({});
-            let newData = state;
-            const id = state.id;
+            const pub_id = props.editData.id ;
+            // let newData = state;
+            // const id = state.id;
             let form_data = null;
             const newErrorsState = { ...errors };
             if (image && image.name) {
                 form_data = new FormData();
                 form_data.append('image', image, image.name);
             }
-            dispatch(postPublicationDetails(state, form_data))
-                .then((res) => {
-                    message.success("Publication Details added succesfully");
-                })
+            if (props.drawerType === 'add') {
+                dispatch(postPublicationDetails(state, form_data))
+                    .then((res) => {
+                        message.success("Publication Details added succesfully");
+                    })
+            }
+            else {
+                const newData= state;
+                delete newData["image"];
+                dispatch(updatePublicationDetails(pub_id , state, form_data))
+                    .then((res) => {
+                        message.success("Publication Details edited succesfully");
+                    })
+            }
         }
     }
 
@@ -129,36 +141,33 @@ const DrawerContent = (props) => {
             }} onFinish={handleSubmit}>
 
             <Form.Item label="Title">
-                <Input name="title" className="form-control" type="text" onChange={handleChange} />
+                <Input name="title" className="form-control" value={state.title} type="text" onChange={handleChange} />
                 <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
             </Form.Item>
             <Form.Item label="Publisher">
-                <Input name="publisher" className="form-control" type="text" onChange={handleChange} />
+                <Input name="publisher" className="form-control" value={state.publisher} type="text" onChange={handleChange} />
                 <div className="errorMsg">{errors && errors.errors && errors.errors.publisher}</div>
             </Form.Item>
             <Form.Item label="Author">
-                <Input name="authors" className="form-control" type="text" onChange={handleAuthorChange} />
+                <Input name="authors" className="form-control" value = {state.authors} type="text" onChange={handleAuthorChange} />
             </Form.Item>
             <Form.Item label="Publication Date" >
-                <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
+                <Space direction="vertical" size={30} value={state.publicationdate} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} />
                 </Space>
 
             </Form.Item>
             <Form.Item label="Image">
                 {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
-                <Input type="file"
-                    id="image"
-                    name="image"
-                    accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
+                <Input type="file"  id="image" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
                 <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
             </Form.Item>
             <Form.Item label="Publication URL">
-                <Input name="publication_url" className="form-control" type="text" onChange={handleChange} />
+                <Input name="publication_url" className="form-control" value={state.publication_url} type="text" onChange={handleChange} />
                 <div className="errorMsg">{errors && errors.errors && errors.errors.publication_url}</div>
             </Form.Item>
             <Form.Item label="Description">
-                <TextArea name="description" addonAfter="description" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} style={{ marginLeft: '47px' }} />
+                <TextArea name="description" addonAfter="description" value={state.description} rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} style={{ marginLeft: '47px' }} />
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description}</div>
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 10 }}>

@@ -53,14 +53,6 @@ export const postSpecialization = (state) => async (dispatch) => {
 export const updateSpecialization = (id, state, imageData) => async (dispatch) => {
     try {
         const res = await Specialization.updateSpec(id, state);
-        // if (res.data && imageData) {
-        //     //const imageRes = await Specialization.uploadImage(id, imageData);
-        //     await Specialization.uploadImage(id, imageData);
-        //     dispatch({
-        //         type: 'ADD_IMAGE',
-        //         payload: res.data,
-        //     })
-        // }
         dispatch({
             type: 'EDIT_SPECIALIZATION',
             payload: res.data,
@@ -74,11 +66,6 @@ export const updateSpecialization = (id, state, imageData) => async (dispatch) =
 export const updateSubSpecialization = (id, state) => async (dispatch) => {
     try {
         const res = await Specialization.updateSubSpec(id, state);
-        // console.log("sub spec edit", res);
-        // if (res.data && imageData) {
-        //     //const imageSubRes = await Specialization.uploadSubImage(id, imageData);
-        //     await Specialization.uploadSubImage(id, imageData);
-        //}
         dispatch({
             type: 'EDIT_SUB_SPECIALIZATION',
             payload: res.data,
@@ -92,15 +79,11 @@ export const updateSubSpecialization = (id, state) => async (dispatch) => {
 export const postSubSpecialization = (state, imageData) => async (dispatch) => {
     try {
         const res = await Specialization.postSubSpec(state);
-        // if (res.data.id && imageData) {
-        //     //const imageSubRes = await Specialization.uploadSubImage(res.data.id, imageData);
-        //     await Specialization.uploadSubImage(res.data.id, imageData);
             dispatch({
                 type: 'ADD_SUB_SPECIALIZATION',
                 payload: res.data,
             });
             return res;
-        //}
         } 
         catch (err) {
             console.log(err);

@@ -50,7 +50,6 @@ const DrawerContent = (props) => {
         if (props.type === "spec") {
           dispatch(updateSpecialization(id, newData))
             .then((res) => {
-              console.log("res",res);
               res != undefined ? (message.success('Specialization edited successfully')) : (message.error("Specialization already exists with this name"));
             });
         } else {

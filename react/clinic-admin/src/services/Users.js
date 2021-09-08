@@ -35,8 +35,6 @@ const getQualifications = () => {
     return http.get("auth/qualifications/");
 }
 const putpublicationImage = (id , image) => {
-    console.log("serv id", id);
-    console.log("serv image" , image);
     let accessToken = localStorage.getItem("accessToken");
     let url = `${process.env.REACT_APP_API_URL}auth/accomplishments/${id}/image/`;
     axios.put(url, image, {
@@ -75,7 +73,10 @@ const getPublicationList = (id) => {
 const postPublicationDetails = (state) => {
     return http.post("auth/accomplishments/" , state);
 }
-
+const updatePublicationDetails = (id ,state) => {
+    console.log("updatePublicationDetails service", state );
+    return http.put(`auth/accomplishments/${id}/` , state);
+}
 const deleteUserPublication = (id) => {
     return http.delete(`auth/accomplishments/${id}`);
     
@@ -96,7 +97,8 @@ const Users = {
     postPublicationDetails,
     deleteUserPublication,
     putpublicationImage,
-    getUserProfilePic
+    getUserProfilePic,
+    updatePublicationDetails
 }
 
 export default Users;
