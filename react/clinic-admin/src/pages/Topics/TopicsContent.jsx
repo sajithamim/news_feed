@@ -17,7 +17,7 @@ const TopicsContent = (props) => {
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getTopic())
+    dispatch(getTopic(page))
     onClose();
   }, [addTopic, editTopic])
 
@@ -117,6 +117,7 @@ const TopicsContent = (props) => {
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
+    setSlNo(page-1)
     dispatch(getTopic(page));
   }
 

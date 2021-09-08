@@ -36,9 +36,12 @@ export const getSpecUsers = (id) => async (dispatch) => {
     }
 }
 
-export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {    
+export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {  
+    console.log('newData', newData)  
+    console.log('newData', userList)
+    console.log('newData', adsId)
     try {
-        if (adsId === undefined) {
+        if (adsId === null) {
             const res = await Ads.postAdds(newData);
             if (res && res.data && res.data.id) {
                 console.log("coming to if");

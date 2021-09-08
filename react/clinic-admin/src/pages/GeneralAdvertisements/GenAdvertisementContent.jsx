@@ -17,9 +17,8 @@ const GenAdvertisementContent = () => {
   const [slNo, setSlNo] = useState(0);
 
   const { genAdsList , addGenAdd , updateGenAdd, page} = useSelector(state => state.genAds);
-console.log("genAdsList" , genAdsList);
   useEffect(() => {
-    dispatch(getGeneralAdvertisment())
+    dispatch(getGeneralAdvertisment(page))
     onClose();
   }, [ addGenAdd, updateGenAdd])
 
@@ -69,8 +68,10 @@ console.log("genAdsList" , genAdsList);
     }
 
   const handleChange = (page, size, sorter) => {
+    console.log("page", page);
     setCurrent(page)
     setSlNo(page-1)
+    dispatch(getGeneralAdvertisment(page))
   }
   
   const pagination = {
