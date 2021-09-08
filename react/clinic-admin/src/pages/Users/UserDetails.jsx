@@ -50,6 +50,7 @@ const UserDetails = () => {
   const [previewTitle, setPreviewTitle] = useState({})
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     dispatch(getUserDetails(emailId))
       .then((res) => {
@@ -104,6 +105,11 @@ const UserDetails = () => {
       { value: item.name, label: item.name }
     )
   })
+  const onEdit = (record) => {
+    setEditData(record);
+    setShowDrawer(true);
+    setDrawerType("edit");
+  }; 
 
   const publicationGenerator = () => {
     const items = [];
@@ -230,69 +236,6 @@ const UserDetails = () => {
     </div>
   );
 
-  // const handlePreview = async file => {
-  //   if (!file.url && !file.preview) {
-  //     file.preview = await getBase64(file.originFileObj);
-  //   }
-  //   setPreviewImage(file.url || file.preview);
-  //   setPreviewVisible(true);
-  //   setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-  // };
-
-  // const handleOnChange = ({ fileList }) => {
-  //   setFileList(fileList);
-  // }
-
-  // const uploadImage = () => {
-  //   dispatch(putProfilePic(userDetails.data.id, fileList))
-  // }
-
-  // const handleOnChange = ({ file, fileList, event }) => {
-  //   // console.log(file, fileList, event);
-  //   //Using Hooks to update the state to the current filelist
-  //   setDefaultFileList(fileList);
-  //   //filelist - [{uid: "-1",url:'Some url to image'}]
-  // };
-
-  // const handleOnChange = ({ file, fileList, event }) => {
-  //    console.log('sample', file, fileList, event);
-  //   //Using Hooks to update the state to the current filelist
-  //   setDefaultFileList(fileList);
-  //   //filelist - [{uid: "-1",url:'Some url to image'}]
-  // };
-  // const uploadImage = async options => {
-  //   const { onSuccess, onError, file, onProgress } = options;
-
-  //   const fmData = new FormData();
-  //   const config = {
-  //     headers: { "content-type": "multipart/form-data" },
-  //     onUploadProgress: event => {
-  //       const percent = Math.floor((event.loaded / event.total) * 100);
-  //       setProgress(percent);
-  //       if (percent === 100) {
-  //         setTimeout(() => setProgress(0), 1000);
-  //       }
-  //       onProgress({ percent: (event.loaded / event.total) * 100 });
-  //     }
-  //   };
-  //   fmData.append("image", file);
-  //   console.log('file', file)
-  //   //dispatch(putProfilePic(userDetails && userDetails.data && userDetails.data.id, fileList))
-  //   // try {
-  //   //   const res = await axios.post(
-  //   //     "https://jsonplaceholder.typicode.com/posts",
-  //   //     fmData,
-  //   //     config
-  //   //   );
-
-  //   //   onSuccess("Ok");
-  //   //   console.log("server res: ", res);
-  //   // } catch (err) {
-  //   //   console.log("Eroor: ", err);
-  //   //   const error = new Error("Some error");
-  //   //   onError({ err });
-  //   // }
-  // };
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
@@ -337,11 +280,7 @@ const UserDetails = () => {
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
-  const onEdit = (record) => {
-    setEditData(record);
-    setShowDrawer(true);
-    setDrawerType("edit");
-  };
+  
   const onAdd = () => {
     setShowDrawer(true);
     setDrawerType("add");
@@ -585,7 +524,7 @@ const UserDetails = () => {
                   onClose={onClose}
                   visible={showDrawer}
                   key="drawer"
-                >
+                > 
                   <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? editData : {}} />
                 </Drawer>
 
