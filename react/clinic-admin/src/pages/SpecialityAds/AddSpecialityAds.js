@@ -283,7 +283,7 @@ const SpecialityAds = () => {
                                     />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 3, span: 9 }}>
-                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)}>Add Advertisement</Button>
+                                    <Button type="primary" onClick={() => handleSubmit(specItem.value)} >Add Advertisement</Button>
                                 </Form.Item>
                             </TabPane>
                         ))}
