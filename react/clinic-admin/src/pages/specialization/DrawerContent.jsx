@@ -134,9 +134,11 @@ const DrawerContent = (props) => {
           offset: 7
         }}
       >
-        <Button type="primary" htmlType="submit" style={{ marginLeft: '21px' }}>
+        <div className="specSaveBtn">
+         <Button type="primary" htmlType="submit">
           Save
         </Button>
+        </div>
       </Form.Item>
     </Form>
   );

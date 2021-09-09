@@ -76,7 +76,7 @@ const AdvisoryBoardContent = () => {
       dataIndex: "photo",
       key: "photo",
       render: (text, record) => {
-        return (<img src={`${process.env.REACT_APP_API_BASE_URL}${record.photo}`} style={{width:'70px', height: '70px'}}/>);
+        return (<img src={`${process.env.REACT_APP_API_BASE_URL}${record.photo}`} className="advisoryPhoto"/>);
       }
     },
     {
@@ -117,16 +117,15 @@ const AdvisoryBoardContent = () => {
   ];
 
   return (
-    <div style={{ margin: "10px" }}>
+    <div className="specStyle">
       <Card
         title="Advisory Board Members"
+        className="specCard"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
           </IconButton>
-        }
-        style={{ width: "100%" }}
-      >
+        }>
         <Table columns={columns}  dataSource={advisoryGenerator()}/>
       </Card>
       <Drawer

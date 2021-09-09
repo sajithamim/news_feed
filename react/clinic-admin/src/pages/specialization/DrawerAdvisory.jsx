@@ -29,7 +29,7 @@ const DrawerAdvisory = (props) => {
     userList && userList.results && userList.results.map(item => {
         console.log('test', item)
         return list.push(
-            { value: item.id, label: <div><div><b>{item.username}</b><p style={{color:"grey", fontSize: '10px'}}>{item.qualifications}</p></div><div><img style={{width: '40px', height: '40px', marginTop: '-62px', marginLeft: '200px'}} src={`${process.env.REACT_APP_API_BASE_URL}${item.profilepic}`} /></div></div> }
+            { value: item.id, label: <div><div><b>{item.username}</b><p className="advisoryPara">{item.qualifications}</p></div><div><img className="advisoryImg" src={`${process.env.REACT_APP_API_BASE_URL}${item.profilepic}`} /></div></div> }
         )
     })
 
@@ -78,9 +78,11 @@ const DrawerAdvisory = (props) => {
             </Form.Item>
             <div className="errorMsg">{errors && errors.errors && errors.errors.user_id}</div>
             <Form.Item wrapperCol={{ offset: 7 }}>
-                <Button id="advisory" type="primary" htmlType="submit" >
-                    Save
-                </Button>
+                <div className="advisorySaveBtn">
+                    <Button id="advisory" type="primary" htmlType="submit" >
+                        Save
+                    </Button>
+                </div>
             </Form.Item>
         </Form>
     );

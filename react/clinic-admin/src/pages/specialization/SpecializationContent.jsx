@@ -49,10 +49,10 @@ const SpecializationContent = () => {
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
-    setSlNo(page-1)
+    setSlNo(page - 1)
     dispatch(getSpecialization(page));
   }
- 
+
   const specGenerator = () => {
     let serialNo = pageSize * slNo;
     const items = [];
@@ -67,7 +67,7 @@ const SpecializationContent = () => {
     })
     return items;
   }
-  
+
   const pagination = {
     current,
     pageSize,
@@ -118,18 +118,17 @@ const SpecializationContent = () => {
   ];
 
   return (
-    <div style={{ margin: "10px" }}>
+    <div className="specStyle">
       <Card
         title="Specialities and Sub Specialities"
+        className="specCard"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
           </IconButton>
-        }
-        style={{ width: "100%" }}
-      >
-        {specList && specList.results  &&  page == current ?
-          (<Table columns={columns} pagination={pagination} dataSource={specGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
+        }>
+        {specList && specList.results && page == current ?
+          (<Table columns={columns} pagination={pagination} dataSource={specGenerator()} />) : (<div className="spinner"><Spin tip="Loading..."/></div>)}
       </Card>
       <Drawer
         title={
