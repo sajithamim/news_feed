@@ -321,12 +321,22 @@ class CategoryselectedView(APIView):
         try:
             category = Categoeries.objects.all().order_by('title')
             serializers = CheckedCategorySerializer(category,many=True,context = {'request':request})
+            checkedall= False
+            allcategoryid =[]
+            for ids in category:
+                allcategoryid.append(int(ids.id))
+            usercat= UserCategory.objects.filter(user_id=request.user)
+            usercatid= []
+            for ids in usercat:
+                usercatid.append(ids.category_id.id)
+            if sorted(set(allcategoryid)) == sorted(set(usercatid)):
+                checkedall = True
             response={
                 "success":"True",
                 "message":"Category list",
                 "status":status.HTTP_200_OK,
                 "data":serializers.data,
-                # "checkall":
+                "checkall": checkedall    
             }
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
