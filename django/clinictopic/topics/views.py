@@ -326,7 +326,7 @@ class CategoryselectedView(APIView):
                 "message":"Category list",
                 "status":status.HTTP_200_OK,
                 "data":serializers.data,
-                # "checkall":
+                # "checkall":     
             }
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
