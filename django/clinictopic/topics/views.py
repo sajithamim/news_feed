@@ -324,11 +324,13 @@ class CategoryselectedView(APIView):
             checkedall= False
             allcategoryid =[]
             for ids in category:
-                allcategoryid.append(int(ids.id))
+                allcategoryid.append(ids.id)
+            # print(allcategoryid)
             usercat= UserCategory.objects.filter(user_id=request.user)
             usercatid= []
             for ids in usercat:
                 usercatid.append(ids.category_id.id)
+            # print(usercatid)
             if sorted(set(allcategoryid)) == sorted(set(usercatid)):
                 checkedall = True
             response={
