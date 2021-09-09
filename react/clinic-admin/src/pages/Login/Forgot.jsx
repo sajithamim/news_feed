@@ -21,8 +21,8 @@ const Forgot = () => {
   const { error } = useSelector(state => state.auth);
 
   const onChange = (e) => {
-    // setState({ ...state, email: e.target.value, redirect_url: `${process.env.REACT_APP_API_BASE_URL}/reset_password` })
-    setState({ ...state, email: e.target.value, redirect_url: `http://localhost:3000/reset_password/?token_valid=True&message=Credentials%20Valid&uidb64=MjA&token=ar4dcq-c5ef869aa3b81071cf6e8e9767d136f0` })
+     setState({ ...state, email: e.target.value, redirect_url: `${process.env.REACT_APP_API_BASE_URL}/reset_password` })
+    // setState({ ...state, email: e.target.value, redirect_url: `http://localhost:3000/reset_password/?token_valid=True&message=Credentials%20Valid&uidb64=MjA&token=ar4dcq-c5ef869aa3b81071cf6e8e9767d136f0` })
   };
 
   const validateMessages = {
@@ -75,7 +75,6 @@ const Forgot = () => {
               placeholder="Email"
               onChange={onChange}
             />
-            {/* <div class="errorMsg">{errors && errors}</div> */}
           </Form.Item>
           <div className="submit">
             <Button type="primary" htmlType="submit" disabled={loading}>
