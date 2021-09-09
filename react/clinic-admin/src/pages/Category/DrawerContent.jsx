@@ -13,9 +13,9 @@ const DrawerContent = (props) => {
   const [formSubmit, setFormSubmit] = useState(false);
 
   useEffect(() => {
-    setState(props.editData)
+    setState(props.editData);
     setErrors({});
-    if (props.editData.image && props.editData.image) {
+    if (props.drawerType === 'edit' && props.editData.image && props.editData.image) {
       setImgData(props.editData.image);
     }
     else {
