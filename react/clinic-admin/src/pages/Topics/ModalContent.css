@@ -28,5 +28,30 @@
   .img-wrap img {
     width: 41%;
     height: 148px;
-    margin-left: 10px
+    margin-left: 10px;
   }
+   
+  .inputStyle{
+    margin-left: -47px;
+    width:267px;
+  }
+
+  .inputStyle textarea{
+    margin-left: 50px;
+  }
+
+  .inputStyle input[type="file"]{
+    margin-left: 50px;
+  }
+
+  .clearfix{
+    display: inline;
+  }
+
+  .pdfStyle{
+    margin-left: 228px;
+  }
+  .publishedStatus{
+    color:#FF0000;
+  }
+

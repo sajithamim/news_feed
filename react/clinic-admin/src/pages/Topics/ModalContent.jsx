@@ -222,11 +222,7 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description2"] = " Description cannot be empty";
       }
-      if (props.drawerType === 'edit' && state.old_image[0] === undefined) {
-        formIsValid = false;
-        errors["multi_image"] = "Image cannot be empty";
-      }
-      if (props.drawerType === 'add' && state.old_image === undefined) {
+      if (props.drawerType === 'add' && state.imageFormData === undefined) {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
@@ -368,80 +364,80 @@ const ModalContent = (props) => {
           </Form.Item>
           {(state.format === '1') ?
             (<><Form.Item label="Title">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
+              <div className="inputStyle">
                 <Input name="title1" type="text" onChange={handleChange} value={state.title1} /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.title1}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <div style={{ marginLeft: '-47px', width: '287px' }}>
-                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} style={{ marginLeft: '47px' }} /></div>
+                <div className="inputStyle">
+                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1}/></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
               </Form.Item></>) : null
           }
           {(state.format === '2') ?
             (<><Form.Item label="Title">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
+              <div className="inputStyle">
                 <Input name="title2" type="text" onChange={handleChange} value={state.title2} /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.title2}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <div style={{ marginLeft: '-47px', width: '287px' }}>
-                  <TextArea name="description2" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} style={{ marginLeft: '47px' }} /></div>
+                <div className="inputStyle">
+                  <TextArea name="description2" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description2}</div>
               </Form.Item>
             </>) : null
           }
           {(state.format === '3') ?
             (<><Form.Item label="Title">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
+              <div className="inputStyle">
                 <Input name="title3" type="text" onChange={handleChange} value={state.title3} /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.title3}</div>
             </Form.Item>
               <Form.Item label="Description">
-                <div style={{ marginLeft: '-47px', width: '287px' }}>
-                  <TextArea name="description3" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} style={{ marginLeft: '47px' }} /></div>
+                <div className="inputStyle">
+                  <TextArea name="description3" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description3}</div>
               </Form.Item></>) : null
           }
           {state.format === '2' ?
-            (<Form.Item label="Images"><section className="clearfix" style={{ display: "inline" }}>{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
+            (<Form.Item label="Images"><section className="clearfix">{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
               <span class="close">
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span class="close"><Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section>
-            <div style={{ marginLeft: '-47px', width: '287px' }}>
-            <Input type="file" name="multi_image" accept="image/png, image/jpeg" style={{ marginLeft: '47px' }}  onChange={handleMultipleFile} multiple /></div>
+            <div className="inputStyle">
+            <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
-            (<Form.Item label="Video Url"><div style={{ marginLeft: '-47px', width: '287px' }}><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
+            (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
           {state.format === '3' || state.format === '2' ?
             (<><Form.Item label="Pdf/External URL">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
-                <Input type="text" name="external_url" onChange={handleChange}style={{ marginLeft: '47px' }}  value={state.external_url} /></div>
+              <div className="inputStyle">
+                <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
             </Form.Item></>) : null}
 
           {state.format === '1' ?
             (<>
-              {state.pdfFront ? <a href={state.pdfFront} target="_blank" style={{ marginLeft: '226px' }}>PDF Front</a> : null}
+              {state.pdfFront ? <a href={state.pdfFront} target="_blank" className="pdfStyle">PDF Front</a> : null}
               <Form.Item label="Pdf Front">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
+              <div className="inputStyle">
                 <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              {state.pdfBack ? <a href={state.pdfBack} target="_blank" style={{ marginLeft: '226px' }} >PDF Back</a> : null } 
+              {state.pdfBack ? <a href={state.pdfBack} target="_blank" className="pdfStyle" >PDF Back</a> : null } 
               <Form.Item label=" Pdf Back">
-              <div style={{ marginLeft: '-47px', width: '287px' }}>
+              <div className="inputStyle">
                 <Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item>
               </>)
             : null}
 
-          {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span style={{ color: "red" }}>Published</span></Form.Item></>) :
+          {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span className="publishedStatus">Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
               <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
                 <Radio value="now">
