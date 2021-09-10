@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin} from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin } from "antd";
 import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,12 +12,12 @@ const CategoriesContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist , updateData, addData, page  } = useSelector(state => state.category);
-  console.log("catlist" , catlist);
+  const { catlist, updateData, addData, page } = useSelector(state => state.category);
+
   useEffect(() => {
     dispatch(getCategory());
     onClose();
@@ -46,36 +46,36 @@ const CategoriesContent = () => {
       })
   };
 
-  const handleChange = (page , size , sorter) => {
+  const handleChange = (page, size, sorter) => {
     setCurrent(page)
-    setSlNo(page-1)
+    setSlNo(page - 1)
     dispatch(getCategory(page));
   }
 
-  const pagination =  {
-    current ,
+  const pagination = {
+    current,
     pageSize,
-    onChange: (page, pageSize) => {handleChange(page, pageSize)},
+    onChange: (page, pageSize) => { handleChange(page, pageSize) },
     total: catlist.count
   }
 
   const cancel = (e) => {
   };
-  
+
   const catGenerator = () => {
     let serialNo = pageSize * slNo;
     const items = [];
-    catlist && catlist.results && catlist.results.map((item , key) => {
+    catlist && catlist.results && catlist.results.map((item, key) => {
       serialNo++;
       return items.push({
-      sl_no: serialNo,
-      id: item.id,
-      title: item.title, 
-      image: item.image
+        sl_no: serialNo,
+        id: item.id,
+        title: item.title,
+        image: item.image
       })
     });
     return items;
-    }
+  }
 
 
   const columns = [
@@ -123,7 +123,7 @@ const CategoriesContent = () => {
         style={{ width: "100%" }}
       >
         {catlist.results && page == current ?
-          (<Table columns={columns} dataSource={catGenerator()} pagination={pagination}/>) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>)}
+          (<Table columns={columns} dataSource={catGenerator()} pagination={pagination} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer
         title={

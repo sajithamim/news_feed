@@ -23,7 +23,6 @@
   font-weight: 600;
   font-size: 12px;
   letter-spacing: 1px;
-  /* background: rgba(136, 126, 126, 0.04); */
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
@@ -71,7 +70,6 @@ form.form1 {
 
 a {
   text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
-  /* color: #e1bee7; */
   text-decoration: none;
 }
 Input[type="text"]{
@@ -84,8 +82,5 @@ Input[type="text"]{
   }
 }
 
-Input[type="email"]{
-  margin-left: 5px;
-  border-radius: 8px;
-}
+
 

@@ -45,7 +45,6 @@ const ModalContent = (props) => {
     setState({ ...state, [e.target.name]: e.target.value })
   };
 
-
   const handleSpecChange = (value) => {
     let topic = [];
     value && value.map(item => {
@@ -152,13 +151,13 @@ const ModalContent = (props) => {
     }
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
+  // const handleOk = () => {
+  //   setIsModalVisible(false);
+  // };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  // };
 
   const { RangePicker } = DatePicker;
 
@@ -185,6 +184,22 @@ const ModalContent = (props) => {
       formIsValid = false;
       errors["publishingtime"] = "Publish time cannot be empty";
     }
+
+    if (fields["video_url"]) {
+      var myUrl = fields.video_url;
+      var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      if (res === null) {
+        formIsValid = false;
+        errors["video_url"] = "Enter a valid URL";
+        console.log("false",errors);
+        return false;
+      }
+      else {
+        console.log("true");
+        return true;
+      }
+    }
+
     if (state.format === '1') {
       if (!fields["title1"]) {
         formIsValid = false;
@@ -370,7 +385,7 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1}/></div>
+                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
               </Form.Item></>) : null
           }
@@ -405,14 +420,15 @@ const ModalContent = (props) => {
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span class="close">
-                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section>
-            <div className="inputStyle">
-            <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
+              <div className="inputStyle">
+                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
-            (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div></Form.Item>) : null}
+            (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div>
+            <div className="errorMsg">{errors && errors.errors && errors.errors.video_url}</div></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
@@ -427,15 +443,15 @@ const ModalContent = (props) => {
             (<>
               {state.pdfFront ? <a href={state.pdfFront} target="_blank" className="pdfStyle">PDF Front</a> : null}
               <Form.Item label="Pdf Front">
-              <div className="inputStyle">
-                <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></div>
+                <div className="inputStyle">
+                  <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
-              {state.pdfBack ? <a href={state.pdfBack} target="_blank" className="pdfStyle" >PDF Back</a> : null } 
+              {state.pdfBack ? <a href={state.pdfBack} target="_blank" className="pdfStyle" >PDF Back</a> : null}
               <Form.Item label=" Pdf Back">
-              <div className="inputStyle">
-                <Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
+                <div className="inputStyle">
+                  <Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item>
-              </>)
+            </>)
             : null}
 
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span className="publishedStatus">Published</span></Form.Item></>) :

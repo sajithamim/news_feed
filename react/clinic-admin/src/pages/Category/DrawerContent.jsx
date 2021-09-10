@@ -6,7 +6,6 @@ import { postCategory, updateCategory } from "../../actions/category";
 
 const DrawerContent = (props) => {
   const dispatch = useDispatch();
-  //const [previewVisible, setPreviewVisible] = useState(false);
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
   const [state, setState] = useState(props.editData);
@@ -14,10 +13,9 @@ const DrawerContent = (props) => {
   const [formSubmit, setFormSubmit] = useState(false);
 
   useEffect(() => {
-    console.log('test snap')
-    setState(props.editData)
+    setState(props.editData);
     setErrors({});
-    if (props.editData.image && props.editData.image) {
+    if (props.drawerType === 'edit' && props.editData.image && props.editData.image) {
       setImgData(props.editData.image);
     }
     else {
@@ -26,7 +24,6 @@ const DrawerContent = (props) => {
     }
   }, [props.editData, props.editData.image])
 
-  //const handleCancel = () => setPreviewVisible(false);
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -109,7 +106,7 @@ const DrawerContent = (props) => {
     }
   }
   return (
-    <Form labelCol={{span: 8}} wrapperCol={{span: 10}} onFinish={handleSubmit}>
+    <Form labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
@@ -118,7 +115,7 @@ const DrawerContent = (props) => {
           </Form.Item>
 
           <Form.Item label="Image">
-            {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
+            {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
             <Input type="file" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>

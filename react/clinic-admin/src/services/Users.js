@@ -20,6 +20,7 @@ const getUserData = (emailId) => {
     return http.get(`auth/userdetail/${emailId}`)
 }
 const deleteUser = (id) => {
+    console.log("id", id);
     return http.delete(`auth/deleteuser/${id}`)
 }
 const postUserProfile = (state) => {

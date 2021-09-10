@@ -10,9 +10,7 @@ import "./Login.css";
 const Reset = () => {
   const dispatch = useDispatch();
   const [state, setState] = useState("");
-
   const [errors, setErrors] = useState({ name: '' });
-
   const search = useLocation().search;
   const token = new URLSearchParams(search).get('token');
   const uidb64 = new URLSearchParams(search).get('uidb64');

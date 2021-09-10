@@ -3,7 +3,6 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import OverviewContent from './pages/Overview/OverviewContent';
 import Login from './pages/Login/Login';
-import NoConnection from './pages/Login/NoConnection';
 import Forgot from './pages/Login/Forgot';
 import Reset from './pages/Login/Reset';
 import SpecializationContent from "./pages/specialization/SpecializationContent";
@@ -94,7 +93,6 @@ function App() {
       <AdminLayout>
         <Switch>
           <PrivateRoute path="/data" exact component={OverviewContent} />
-          <PrivateRoute path="/noconnection" exact component={NoConnection} />
           <PrivateRoute path="/categories" exact component={CategoriesContent} />
           <PrivateRoute path="/topics" exact component={TopicsContent} />
           <PrivateRoute path="/specializations" exact component={SpecializationContent} />

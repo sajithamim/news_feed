@@ -20,6 +20,7 @@ const DrawerContent = (props) => {
 
   useEffect(() => {
     setState(props.editData)
+    setErrors({});
     if (props.editData.image && props.editData.image) {
       setImgData(props.editData.image);
     } else {
@@ -116,7 +117,7 @@ const DrawerContent = (props) => {
             <div className="errorMsg">{errors && errors.errors && errors.errors.url}</div>
           </Form.Item>
           <Form.Item label="Image">
-            {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
+            {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
             <Input type="file"
               id="image"
               name="image"
@@ -142,7 +143,7 @@ const DrawerContent = (props) => {
           offset: 7
         }}
       >
-        <Button type="primary" htmlType="submit" style={{ marginLeft: '21px' }}>
+        <Button id="btn" type="primary" htmlType="submit" >
           Save
         </Button>
       </Form.Item>
