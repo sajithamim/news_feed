@@ -19,6 +19,18 @@ const ModalContent = (props) => {
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    dispatch(getSpecialization());
+    dispatch(getCategory());
+    dispatch(getUsersList())
+    if (props.editData !== null) {
+      setState(props.editData);
+    }
+    else{
+      setState({});
+    }
+  }, [props.editData])
+
   const specialization = [];
   specList && specList.data && specList.data.map(item => {
     return specialization.push(
@@ -126,15 +138,7 @@ const ModalContent = (props) => {
     }
   }
 
-  useEffect(() => {
-    dispatch(getSpecialization());
-    dispatch(getCategory());
-    dispatch(getUsersList())
-    if (props.editData !== null) {
-      setState(props.editData);
-    }
-  }, [props.editData])
-
+  
   const onOk = (value) => {
   }
   const radioOnChange = (val, e) => {
@@ -150,14 +154,6 @@ const ModalContent = (props) => {
       setState({ ...state, format: e.target.value })
     }
   };
-
-  // const handleOk = () => {
-  //   setIsModalVisible(false);
-  // };
-
-  // const handleCancel = () => {
-  //   setIsModalVisible(false);
-  // };
 
   const { RangePicker } = DatePicker;
 
@@ -183,21 +179,6 @@ const ModalContent = (props) => {
     if (!fields["publishingtime"]) {
       formIsValid = false;
       errors["publishingtime"] = "Publish time cannot be empty";
-    }
-
-    if (fields["video_url"]) {
-      var myUrl = fields.video_url;
-      var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-      if (res === null) {
-        formIsValid = false;
-        errors["video_url"] = "Enter a valid URL";
-        console.log("false",errors);
-        return false;
-      }
-      else {
-        console.log("true");
-        return true;
-      }
     }
 
     if (state.format === '1') {
@@ -250,6 +231,15 @@ const ModalContent = (props) => {
       if (!fields["description3"]) {
         formIsValid = false;
         errors["description3"] = " Description cannot be empty";
+      }
+      if (fields["video_url"]) {
+        var myUrl = fields.video_url;
+        var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if (res === null) {
+          formIsValid = false;
+          errors["video_url"] = "Enter a valid URL";
+          console.log("false",errors);
+        }
       }
     }
     setErrors({ errors });
@@ -307,6 +297,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
+      setState({});
       props.onFormSubmit(newData, form_data, form_data2, image_data);
     }
   }

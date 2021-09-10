@@ -49,6 +49,7 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data2, image_data) => {
+    onClose();
     if(drawerType == 'edit') {
       dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
       .then(() => {
@@ -57,9 +58,9 @@ const TopicsContent = (props) => {
     } else {
       dispatch(postTopic(newData, form_data, form_data2 , image_data))
       .then(() => {
+        
         message.success('Topic add successfully')
       });
-      
     }
   }
 
