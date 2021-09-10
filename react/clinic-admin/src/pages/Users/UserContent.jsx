@@ -1,9 +1,7 @@
 import React, { useState , useEffect } from "react";
 import { Card, Table, Spin, Space, Popconfirm, Button, message } from "antd";
-import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router';
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
@@ -14,7 +12,7 @@ const UserContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
-  let history = useHistory();
+  // let history = useHistory();
   useEffect(() => {
     dispatch(getUsersList())
   }, [])

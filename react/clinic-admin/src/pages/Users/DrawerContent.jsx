@@ -23,7 +23,7 @@ const customStyles = {
     }),
 }
 const DrawerContent = (props) => {
-    console.log("props.editData.image", props.editData.image);
+    console.log("props.editData.image", props);
     const dispatch = useDispatch();
 
     const [state, setState] = useState(props.editData);
@@ -41,6 +41,7 @@ const DrawerContent = (props) => {
         else
           setImgData(props.editData.icon);
       }, [props.editData])
+      
     const handleAuthorChange = (e) => {
         const items = [];
         if (e.target.name === 'authors') {
@@ -72,7 +73,6 @@ const DrawerContent = (props) => {
             reader.readAsDataURL(info.target.files[0]);
             newErrorsState.image = '';
             setErrors({});
-            // setFormSubmit(!formSubmit);
         }
     }
 
@@ -162,8 +162,8 @@ const DrawerContent = (props) => {
                 <Input name="authors" className="form-control" value={state.authors} type="text" onChange={handleAuthorChange} />
             </Form.Item>
             <Form.Item label="Publication Date" >
-                <Space direction="vertical" size={30} value={state.publicationdate} style={{ marginLeft: '50px', width: '450px' }} >
-                    <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} />
+                <Space direction="vertical" size={30}  style={{ marginLeft: '50px', width: '450px' }} >
+                    <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} value={moment(state.publicationdate)} />
                 </Space>
 
             </Form.Item>

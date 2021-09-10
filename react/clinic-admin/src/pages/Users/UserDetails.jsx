@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Tag, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
+import { Form, Input, Table, Col, Row,  Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,8 +34,8 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
+  console.log("userDetails" , userDetails);
   const { emailId } = useParams();
-  console.log("test", userDetails);
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
   const [otherQualification, setOtherQualification] = useState({ name: '' });
@@ -45,9 +45,9 @@ const UserDetails = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [imageUrl, setImageUrl] = useState();
-  const [previewImage, setPreviewImage] = useState({});
-  const [previewVisible, setPreviewVisible] = useState({});
-  const [previewTitle, setPreviewTitle] = useState({})
+  // const [previewImage, setPreviewImage] = useState({});
+  // const [previewVisible, setPreviewVisible] = useState({});
+  // const [previewTitle, setPreviewTitle] = useState({})
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
 
@@ -238,8 +238,8 @@ const UserDetails = () => {
 
 
   const uploadImage = async options => {
+    console.log("uploadImage" , userDetails.data.id);
     const { onSuccess, onError, file, onProgress } = options;
-
     const fmData = new FormData();
     let accessToken = localStorage.getItem("accessToken");
     const config = {
@@ -256,7 +256,7 @@ const UserDetails = () => {
     fmData.append("profilepic", file);
     try {
       const res = await axios.put(
-        `https://clinictopic.metrictreelabs.com/api/auth/profilepic/${state.id}/profilepicaddadmin/`,
+        `https://clinictopic.metrictreelabs.com/api/auth/profilepic/${userDetails.data.id}/profilepicaddadmin/`,
         fmData,
         config
       );
