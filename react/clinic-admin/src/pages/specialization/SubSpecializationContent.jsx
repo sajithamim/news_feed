@@ -113,18 +113,16 @@ const SubSpecializationContent = () => {
   }
 
   return (
-    <div style={{ margin: "10px" }}>
+    <div className="specStyle">
       <Card
         title="Sub Specialitity"
+        className="specCard"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
           </IconButton>
-        }
-        style={{ width: "100%" }}
-      >
-        {subspecialization &&  subspecialization ?
-          (<Table columns={columns}  dataSource={subSpecGenerator()}/>) : (<div className="spinner"><Spin tip="Loading..." style={{align:"center"}} /></div>)}
+        }>{subspecialization &&  subspecialization ?
+          (<Table columns={columns}  dataSource={subSpecGenerator()}/>) : (<div className="spinner"><Spin tip="Loading..."/></div>)}
       </Card>
       <Drawer
         title={
