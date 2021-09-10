@@ -141,6 +141,7 @@ const ModalContent = (props) => {
   
   const onOk = (value) => {
   }
+  
   const radioOnChange = (val, e) => {
     if (val === 'publish') {
       const crntDateTime = new Date().toISOString();
@@ -164,7 +165,6 @@ const ModalContent = (props) => {
 
   const handleValidation = () => {
     let fields = state;
-    console.log('stat', state);
     let errors = {};
     let formIsValid = true;
     if (!fields["topic_topic"]) {
@@ -199,14 +199,12 @@ const ModalContent = (props) => {
         errors["pdfsecond"] = "Please upload Back Pdf"
       }
       if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
+        formIsValid = false;
         errors["pdf"] = "Please select valid pdf";
-        setErrors({ errors });
-        setFormSubmit(false);
       }
       if (fields["pdfUrlSecond"] && fields["pdfUrlSecond"].name.match(/\.(pdf)$/) == null) {
+        formIsValid = false;
         errors["pdfsecond"] = "Please select valid pdf";
-        setErrors({ errors });
-        setFormSubmit(false);
       }
     }
     if (state.format === '2') {
@@ -238,7 +236,6 @@ const ModalContent = (props) => {
         if (res === null) {
           formIsValid = false;
           errors["video_url"] = "Enter a valid URL";
-          console.log("false",errors);
         }
       }
     }
@@ -248,7 +245,9 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
+    console.log('enter')
     if (handleValidation() && formSubmit) {
+      console.log('if')
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -330,7 +329,7 @@ const ModalContent = (props) => {
           <Form.Item label="Specializations">
             <Select
               isMulti={true}
-              value={state.spec_data}
+              value={state.spec_data || ''}
               onChange={handleSpecChange}
               options={specialization}
             />
@@ -340,7 +339,7 @@ const ModalContent = (props) => {
             <Select
               isMulti={false}
               isSearchable={true}
-              value={state.category_data}
+              value={state.category_data || ''}
               onChange={handleCategoryChange}
               options={category}
             />
@@ -350,7 +349,7 @@ const ModalContent = (props) => {
             <Select
               isMulti={false}
               isSearchable={true}
-              value={state.username}
+              value={state.username || ''}
               onChange={handleUserChange}
               options={author}
             />

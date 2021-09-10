@@ -92,20 +92,28 @@ export const updateTopic = (id, state, form_data, form_data2, image_data) => asy
     state.topic_audience = "doctor";
     try {
         const res = await Topic.updateTopic(id, state);
-        if (res && form_data !== null) {
-            await Topic.putPdfdata(id, form_data);
+        if(res.status == 200) {
+            if (form_data !== null)
+                await Topic.putPdfdata(id, form_data);
+            if(form_data2)
+                await Topic.putPdfdata2(id, form_data2);
+            if(image_data !== null) {
+                image_data.append('topic_id', id);
+                await Topic.putImagedata(image_data);
+            }
+            dispatch({
+                type: 'UPDATE_TOPIC',
+                message: 'Topic updated successfully.',
+                data: res.data
+            })
+        } else {
+            dispatch({
+                type: 'HANDLE_ERROR',
+                message: 'Some errors occured.',
+            })
         }
-        if(res.data.id && form_data2) {
-            await Topic.putPdfdata2(id, form_data2);
-        }
-        if(res && image_data !== null) {
-            image_data.append('topic_id', id);
-            await Topic.putImagedata(image_data);
-        }
-       dispatch({
-            type: 'UPDATE_TOPIC',
-            payload: res.data,
-        })
+
+        
         
     } catch (err) {
         console.log(err);
