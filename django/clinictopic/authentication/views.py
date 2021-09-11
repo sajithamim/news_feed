@@ -513,6 +513,7 @@ class UserProfileSearchView(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            
 
 from specialization.models import SubSpecialization
 class TestSMSView(APIView):
@@ -529,7 +530,7 @@ class TestSMSView(APIView):
         route = os.environ.get('SMS_ROUTE')
         eid= os.environ.get('SMS_ENTITY_ID')
         tid= os.environ.get('SMS_TEMPLATE_ID')
-        mno='919895203267789'
+        mno='918086465181'
         msg='1234 is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
         url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
         r = requests.get(url)
