@@ -98,7 +98,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
-    user_id = models.ForeignKey(User,on_delete=models.DO_NOTHING,blank=True,null=True,related_name="profile_user")
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,related_name="profile_user")
     about = models.CharField(max_length=10000,blank=True,null=True)
     experience=models.CharField(max_length=1000,blank=True,null=True)
     EMP_CHOICES = (
@@ -130,7 +130,7 @@ class Qualifications(models.Model):
 
 
 class Accomplishments(models.Model):
-    user = models.ForeignKey(User,on_delete=models.DO_NOTHING,blank=True,null=True,related_name="acc_user") 
+    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,related_name="acc_user") 
     title = models.CharField(max_length=255)
     image = models.ImageField(blank=True,null=True,upload_to="accomplishment")
     publisher = models.CharField(max_length=255,blank=True,null=True)
