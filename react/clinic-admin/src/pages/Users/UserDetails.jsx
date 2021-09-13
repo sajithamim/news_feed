@@ -76,6 +76,7 @@ const UserDetails = () => {
               if (res) {
                 // to get the qualification details of user
                 const getUserQualificationList = []
+                console.log("getUserQualificationList", res.data.data.qualifications);
                 res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                   return getUserQualificationList.push(
                     { value: item, label: item }
@@ -84,7 +85,7 @@ const UserDetails = () => {
 
                 
                 let result = res.data.data;
-                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
+                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, qualifications :res.data.data.qualifications , about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
               } else {
                 setState({ ...state })
               }
@@ -464,7 +465,7 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Start Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
-                    <DatePicker class="date_picker" name="start_date" onChange={onStartDateChange} format={dateFormat} style={{width: '337px' ,  height: '36px'}} value={state.end_date ? moment(state.end_date) : null} />
+                    <DatePicker  name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{width: '337px' ,  height: '36px'}} value={state.start_date ? moment(state.start_date) : null} />
                   </Space>
                 </Form.Item>
                 <Form.Item label="End Date" >
