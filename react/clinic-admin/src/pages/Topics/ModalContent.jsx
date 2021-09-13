@@ -245,9 +245,7 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    console.log('enter')
     if (handleValidation() && formSubmit) {
-      console.log('if')
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();

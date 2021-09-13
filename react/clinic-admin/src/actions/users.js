@@ -67,10 +67,10 @@ export const deleteUser = (id) => async (dispatch) => {
 
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
     try {
+        console.log("stateaction" , state);
         const res = await Users.postUserProfile(state);
         if (otherQualification.name !== null)
             await Users.postOtherQualifications(otherQualification);
-
         dispatch({
             type: 'POST_USER_PROFILE',
             payload: res.data,
@@ -82,6 +82,7 @@ export const postUserProfile = (state, otherQualification) => async (dispatch) =
 export const getUserProfile = (id) => async (dispatch) => {
     try {
         const res = await Users.getUserProfile(id);
+        console.log("user response detail", res);
         if(res){
             const res1 = await Users.getUserProfilePic(id);
         }
@@ -174,6 +175,7 @@ export const updatePublicationDetails = ( id , state , image ) => async (dispatc
 export const deleteUserPublication = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUserPublication(id);
+        console.log("res delte" , res);
         dispatch({
             type: 'DELETE_USER_PUBLICATION',
             payload: id,

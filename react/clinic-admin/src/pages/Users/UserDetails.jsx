@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row,  Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
+import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
+import moment from 'moment';
 import "./Users.css";
 import axios from 'axios';
 
@@ -34,7 +35,7 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
-  console.log("userDetails" , userDetails);
+  console.log("userDetails", userDetails);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -80,8 +81,10 @@ const UserDetails = () => {
                     { value: item, label: item }
                   )
                 })
+
+                
                 let result = res.data.data;
-                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
               } else {
                 setState({ ...state })
               }
@@ -92,6 +95,8 @@ const UserDetails = () => {
   }, [addPublicationData, updatePublicationData])
 
   let history = useHistory();
+  const dateFormat = 'YYYY-MM-DD';
+
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -109,7 +114,7 @@ const UserDetails = () => {
     setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
-  }; 
+  };
 
   const publicationGenerator = () => {
     const items = [];
@@ -158,24 +163,25 @@ const UserDetails = () => {
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-  const handleFileChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => {
-        setImageUrl(imageUrl);
-        setLoading(false);
-      });
-    }
-  };
+  // const handleFileChange = (info) => {
+  //   if (info.file.status === 'uploading') {
+  //     setLoading(true);
+  //   }
+  //   if (info.file.status === 'done') {
+  //     // Get this url from response in real world.
+  //     getBase64(info.file.originFileObj, imageUrl => {
+  //       setImageUrl(imageUrl);
+  //       setLoading(false);
+  //     });
+  //   }
+  // };
 
   const handleChange = (e) => {
     const data = [];
     if (e.target.name === "media") {
       data.push(e.target.value.split(',').toString())
     }
+
     setState({ ...state, [e.target.name]: e.target.value, user_id: userDetails.data && userDetails.data.id, media: data });
   }
 
@@ -193,29 +199,17 @@ const UserDetails = () => {
   const handleSelectChange = (value) => {
     setState({ ...state, empolyment_value: value, empolyment_type: value.label });
   }
-  const onDateChange = (value, dateString) => {
-    // console.log("date", dateString)
-    setState({ ...state, start_date: dateString[0], end_date: dateString[1] })
+  const onStartDateChange = (value, dateString) => {
+    console.log("dateString", dateString);
+    setState({ ...state, start_date: dateString, user_id: userDetails.data && userDetails.data.id })
+  }
+  const onEndDateChange = (value, dateString) => {
+    console.log("dateString", dateString);
+    setState({ ...state, end_date: dateString, user_id: userDetails.data && userDetails.data.id })
   }
 
   const showInput = () => {
     setinputVisible(false);
-  }
-
-  const handleValidation = () => {
-    let fields = state;
-    let errors = {};
-    let formIsValid = true;
-    if (!fields["name"]) {
-      formIsValid = false;
-      errors["name"] = "Name is required";
-    }
-    if (!fields["name"]) {
-      formIsValid = false;
-      errors["name"] = "Name is required";
-    }
-    setErrors({ errors });
-    return formIsValid;
   }
 
   const renderTable = () => {
@@ -238,7 +232,7 @@ const UserDetails = () => {
 
 
   const uploadImage = async options => {
-    console.log("uploadImage" , userDetails.data.id);
+    console.log("uploadImage", userDetails.data.id);
     const { onSuccess, onError, file, onProgress } = options;
     const fmData = new FormData();
     let accessToken = localStorage.getItem("accessToken");
@@ -271,7 +265,6 @@ const UserDetails = () => {
   };
 
   const handleOnChange = ({ file, fileList, event }) => {
-    console.log('fileList', fileList);
     //Using Hooks to update the state to the current filelist
     setDefaultFileList(fileList);
     //filelist - [{uid: "-1",url:'Some url to image'}]
@@ -280,7 +273,7 @@ const UserDetails = () => {
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
-  
+
   const onAdd = () => {
     setShowDrawer(true);
     setDrawerType("add");
@@ -302,17 +295,46 @@ const UserDetails = () => {
       })
   };
 
+  const disabledDate = (current) => {
+    let end = new Date(Date.now() - 86400000);
+    console.log("end" , end);
+    //  return current && current < moment().endOf('day');
+    if (current > moment(end)){
+      return true;
+  }
+  }
+
+  const handleValidation = () => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (fields["qualification"].length === 0) {
+      formIsValid = false;
+      errors["qualification"] = "Qualification is required";
+    }
+    if (!fields["media"]) {
+      formIsValid = false;
+      errors["media"] = "Media is required";
+    }
+    setErrors({ errors });
+    return formIsValid;
+  }
+
   const handleUserProfileSubmit = () => {
-    let newData = state;
-    delete newData["empolyment_value"];
-    delete newData["id"];
-    delete newData["username"];
-    dispatch(postUserProfile(newData, otherQualification))
-      .then(() => {
-        message.success("User details Added Successfully");
-        setState({});
-        history.push("/users");
-      })
+    if (handleValidation()) {
+      let newData = state;
+      console.log("state", newData);
+      delete newData["empolyment_value"];
+      delete newData["id"];
+      delete newData["username"];
+      delete newData["qualification"];
+      dispatch(postUserProfile(newData, otherQualification))
+        .then(() => {
+          message.success("User details Added Successfully");
+          setState({});
+          history.push("/users");
+        })
+    }
   }
 
   const publicationColumns = [
@@ -416,6 +438,7 @@ const UserDetails = () => {
                     onChange={handleQualificationChange}
                     options={qualificationList}
                   />
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.qualification}</div>
                 </Form.Item>
                 {activeInput ?
                   (<Form.Item label="Other Qualification">
@@ -439,9 +462,14 @@ const UserDetails = () => {
                 <Form.Item label="Location">
                   <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
-                <Form.Item label="Select Date" >
-                  <Space direction="vertical" size={15} style={{ marginLeft: '50px' }} >
-                    <RangePicker onChange={onDateChange} />
+                <Form.Item label="Start Date" >
+                  <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
+                    <DatePicker class="date_picker" name="start_date" onChange={onStartDateChange} format={dateFormat} style={{width: '337px' ,  height: '36px'}} value={state.end_date ? moment(state.end_date) : null} />
+                  </Space>
+                </Form.Item>
+                <Form.Item label="End Date" >
+                  <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
+                    <DatePicker name="end_date"  onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{width: '337px' ,  height: '36px'}} value={state.end_date ? moment(state.end_date) : null} />
                   </Space>
                 </Form.Item>
                 <Form.Item label="Industry">
@@ -452,6 +480,7 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Media URL">
                   <Input name="media" className="form-control" type="text" value={state.media} onChange={handleChange} />
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.media}</div>
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
                   <Button type="primary" htmlType="submit" >Save</Button>
@@ -524,7 +553,7 @@ const UserDetails = () => {
                   onClose={onClose}
                   visible={showDrawer}
                   key="drawer"
-                > 
+                >
                   <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? editData : {}} />
                 </Drawer>
 

@@ -23,7 +23,6 @@ const customStyles = {
     }),
 }
 const DrawerContent = (props) => {
-    console.log("props.editData.image", props);
     const dispatch = useDispatch();
 
     const [state, setState] = useState(props.editData);
@@ -36,11 +35,12 @@ const DrawerContent = (props) => {
     
     useEffect(() => {
         setState(props.editData);
-        if (props.editData.icon && props.editData.icon.startsWith("/media"))
-          setImgData(`${process.env.REACT_APP_API_BASE_URL}${props.editData.icon}`);
+        setErrors({});
+        if (props.editData.image && props.editData.image.startsWith("/media"))
+          setImgData(`${process.env.REACT_APP_API_BASE_URL}${props.editData.image}`);
         else
-          setImgData(props.editData.icon);
-      }, [props.editData])
+          setImgData(props.editData.image);
+      }, [props.editData , props.editData.image])
       
     const handleAuthorChange = (e) => {
         const items = [];
@@ -109,11 +109,9 @@ const DrawerContent = (props) => {
         return formIsValid;
     }
     const handleSubmit = (e) => {
-        console.log("props", props);
         const id = state.id
         if (formValidation()) {
             const pub_id = props.editData.id;
-            // let newData = state;
             let form_data = null;
             const newErrorsState = { ...errors };
             if (image && image.name) {
@@ -123,6 +121,7 @@ const DrawerContent = (props) => {
             if (props.drawerType === 'add') {
                 dispatch(postPublicationDetails(state, form_data))
                     .then((res) => {
+                        setState({});
                         message.success("Publication Details added succesfully");
                     })
             }
@@ -131,11 +130,9 @@ const DrawerContent = (props) => {
                 delete newData["image"];
                 delete newData["sl_no"];
                 delete newData["id"];
-                console.log("public edit", state)
                 dispatch(updatePublicationDetails(pub_id, state, form_data))
                     .then(() => {
-                        message.success("Publication Details edited succesfully");
-                        setState({});
+                        message.success("Publication Details edited succesfully"); 
                     })
             }
         }

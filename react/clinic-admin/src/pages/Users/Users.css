@@ -21,3 +21,6 @@ Input[type="text"] {
   margin-left: 50px;
   width: 340px; 
  }
+ .date_picker {
+   width: 1550px;
+ }

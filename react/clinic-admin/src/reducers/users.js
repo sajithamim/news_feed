@@ -30,11 +30,11 @@ const users = (state = initialState, action) => {
         case 'GET_QUALIFICATIONS':
             return { ...state, qualifications: action.payload }
         case 'GET_PUBLICATION_LIST':
-            return { ...state, publicationList: action.payload, addPublicationData: false }
+            return { ...state, publicationList: action.payload, addPublicationData: false, updatePublicationData:false }
         case 'POST_PUBLICATION_LIST':
-            return { ...state, addPublicationDetails: action.payload, addPublicationData: true }
+            return { ...state, addPublicationData: true,  publicationList: Object.assign({}, state.publicationList, {results: [...state , state.publicationList && state.publicationList.data && state.publicationList.data.data , action.payload , ]}) }
         case 'UPDATE_PUBLICATION_LIST':
-                return { ...state, updatePublicationData: true }
+                return { ...state , updatePublicationData: true , publicationList: Object.assign({}, state.publicationList, {results: [...state, state.publicationList && state.publicationList.data && state.publicationList.data.data, action.payload , ]}) }
         case 'DELETE_USER_PUBLICATION':
             return { ...state, publicationList: Object.assign({}, state.publicationList, { results: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
         default:

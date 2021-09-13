@@ -11,7 +11,7 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
   const [data , setData] = useState({});
-  const { topicList, success, error, successMsg, page} = useSelector(state => state.topic);
+  const { topicList, success, error, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(30);
   const [slNo, setSlNo] = useState(0);

@@ -15,12 +15,14 @@ export default (state = initialState , action) => {
         case 'DELETE_TOPIC':
         return {...state , topicList: Object.assign({},state.topicList,{results: state.topicList && state.topicList.results.filter(item => item.id !== action.payload)}) }
         case 'POST_TOPIC':
-        return {...state , addTopic: true }
+        let index = state.topicList && state.topicList.results.findIndex(item => item.id === action.data.id);
+        state.topicList.results[index] = action.data;
+        return {...state , success: action.message}
         case 'DELETE_IMAGE':
         return {...state , topicList:action.payload}
         case 'UPDATE_TOPIC':
-        let index = state.topicList && state.topicList.results.findIndex(item => item.id === action.data.id);
-        state.topicList.results[index] = action.data;
+        let index1 = state.topicList && state.topicList.results.findIndex(item => item.id === action.data.id);
+        state.topicList.results[index1] = action.data;
         return { ...state , success: action.message}
         case 'HANDLE_ERROR':
         return { ...state , error: action.message}

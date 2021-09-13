@@ -67,28 +67,35 @@ export const postTopic = (state, form_data, form_data2, image_data) => async (di
     state.topic_audience = "doctor";
     try {
         const res = await Topic.postTopic(state);
-        if (res.data.id && form_data) {
-            await Topic.putPdfdata(res.data.id, form_data);
+        if(res.status == 201){
+            console.log("COMING TO CONSDUITION");
+            if (res.data.id && form_data) {
+                await Topic.putPdfdata(res.data.id, form_data);
+            }
+            if(res.data.id && form_data2) {
+                await Topic.putPdfdata2(res.data.id, form_data2);
+            }
+            if(res.data.id && image_data) {
+                image_data.append('topic_id', res.data.id);
+                await Topic.putImagedata(image_data); 
+            }
+            dispatch({
+                type: 'POST_TOPIC',
+                message: 'Topic added successfully.',
+                data: res.data,
+            })    
+        }else{
+            dispatch({
+                type: 'HANDLE_ERROR',
+                message: 'Some errors occured.',
+            })
         }
-        if(res.data.id && form_data2) {
-            await Topic.putPdfdata2(res.data.id, form_data2);
-        }
-        if(res.data.id && image_data) {
-            image_data.append('topic_id', res.data.id);
-            await Topic.putImagedata(image_data); 
-        }
-        dispatch({
-            type: 'POST_TOPIC',
-            payload: res.data,
-        })
-        
     } catch (err) {
         console.log(err);
     }
 }
 
 export const updateTopic = (id, state, form_data, form_data2, image_data) => async (dispatch) => {
-   
     state.topic_audience = "doctor";
     try {
         const res = await Topic.updateTopic(id, state);
@@ -112,9 +119,6 @@ export const updateTopic = (id, state, form_data, form_data2, image_data) => asy
                 message: 'Some errors occured.',
             })
         }
-
-        
-        
     } catch (err) {
         console.log(err);
     }
