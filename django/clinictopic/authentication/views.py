@@ -513,6 +513,7 @@ class UserProfileSearchView(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            
 
 from specialization.models import SubSpecialization
 class TestSMSView(APIView):
@@ -524,16 +525,16 @@ class TestSMSView(APIView):
         #     # return qual.image
         # # except Images.DoesNotExist:
         #     # return ""
-        # api_key = os.environ.get('SMS_API_KEY')
-        # sid = os.environ.get('SMS_SENDER_ID')
-        # route = os.environ.get('SMS_ROUTE')
-        # eid= os.environ.get('SMS_ENTITY_ID')
-        # tid= os.environ.get('SMS_TEMPLATE_ID')
-        # mno=''
-        # msg='1234 is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
-        # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
-        # r = requests.get(url)
-        # print(r.text)
+        api_key = os.environ.get('SMS_API_KEY')
+        sid = os.environ.get('SMS_SENDER_ID')
+        route = os.environ.get('SMS_ROUTE')
+        eid= os.environ.get('SMS_ENTITY_ID')
+        tid= os.environ.get('SMS_TEMPLATE_ID')
+        mno='918086465181'
+        msg='1234 is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
+        url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
+        r = requests.get(url)
+        print(r.text)
         return Response({},status=status.HTTP_200_OK)
 
 class UserDeleteView(APIView):
