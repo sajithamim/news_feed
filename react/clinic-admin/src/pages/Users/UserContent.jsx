@@ -12,7 +12,6 @@ const UserContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
-  // let history = useHistory();
   useEffect(() => {
     dispatch(getUsersList())
   }, [])

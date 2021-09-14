@@ -11,7 +11,7 @@ const TopicsContent = (props) => {
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
   const [data , setData] = useState({});
-  const { topicList, addTopic, editTopic, successMsg, page} = useSelector(state => state.topic);
+  const { topicList, success, error, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(30);
   const [slNo, setSlNo] = useState(0);
@@ -19,7 +19,14 @@ const TopicsContent = (props) => {
   useEffect(() => {
     dispatch(getTopic(page))
     onClose();
-  }, [addTopic, editTopic])
+  }, [])
+
+  useEffect(() => {
+    if(success)
+    message.success(success);
+    else if(error) 
+    message.error(error);
+  }, [success, error])
 
 
   const onClose = () => {
@@ -51,16 +58,9 @@ const TopicsContent = (props) => {
   const onFormSubmit = (newData, form_data, form_data2, image_data) => {
     onClose();
     if(drawerType == 'edit') {
-      dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
-      .then(() => {
-        message.success('Topic edit successfully')
-      });
+      dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data));
     } else {
-      dispatch(postTopic(newData, form_data, form_data2 , image_data))
-      .then(() => {
-        
-        message.success('Topic add successfully')
-      });
+      dispatch(postTopic(newData, form_data, form_data2 , image_data));
     }
   }
 
