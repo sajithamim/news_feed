@@ -162,7 +162,6 @@ const DrawerContent = (props) => {
                 <Space direction="vertical" size={30}  style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} value={moment(state.publicationdate)} />
                 </Space>
-
             </Form.Item>
             <Form.Item label="Image">
                 {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}

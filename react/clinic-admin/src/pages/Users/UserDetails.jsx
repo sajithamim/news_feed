@@ -34,8 +34,7 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
-  console.log("userDetails", userDetails);
+  const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -46,9 +45,6 @@ const UserDetails = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [imageUrl, setImageUrl] = useState();
-  // const [previewImage, setPreviewImage] = useState({});
-  // const [previewVisible, setPreviewVisible] = useState({});
-  // const [previewTitle, setPreviewTitle] = useState({})
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
 
@@ -68,24 +64,24 @@ const UserDetails = () => {
         setState({ ...state, id: userDetails.id, profilepic: userDetails.profilepic })
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
-        if (res) {
-          dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
+        if (res && res.data && res.data.data) {
+          dispatch(getPublicationList(res.data && res.data.data && res.data.data.id))
+          .then((res) => {
+            console.log("publication res" , res);
+          });
           onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
               if (res) {
                 // to get the qualification details of user
                 const getUserQualificationList = []
-                console.log("getUserQualificationList", res.data.data.qualifications);
                 res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                   return getUserQualificationList.push(
                     { value: item, label: item }
                   )
                 })
-
-                
                 let result = res.data.data;
-                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, qualifications :res.data.data.qualifications , about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
+                setState({ ...state, id: result.user_id, media: result.media, qualification: getUserQualificationList, qualifications: result.qualifications, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
               } else {
                 setState({ ...state })
               }
@@ -120,7 +116,6 @@ const UserDetails = () => {
   const publicationGenerator = () => {
     const items = [];
     publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
-      console.log("item list", item);
       key++;
       return items.push({
         sl_no: key,
@@ -182,7 +177,9 @@ const UserDetails = () => {
     if (e.target.name === "media") {
       data.push(e.target.value.split(',').toString())
     }
-
+    if (e.target.name === "experience" && e.target.value.length > 2) {
+      e.target.value = "";
+    }
     setState({ ...state, [e.target.name]: e.target.value, user_id: userDetails.data && userDetails.data.id, media: data });
   }
 
@@ -198,15 +195,22 @@ const UserDetails = () => {
   }
 
   const handleSelectChange = (value) => {
-    setState({ ...state, empolyment_value: value, empolyment_type: value.label });
+    setState({ ...state, empolyment_value: { value: value.label, label: value.label }, empolyment_type: value.label });
   }
   const onStartDateChange = (value, dateString) => {
-    console.log("dateString", dateString);
     setState({ ...state, start_date: dateString, user_id: userDetails.data && userDetails.data.id })
   }
   const onEndDateChange = (value, dateString) => {
-    console.log("dateString", dateString);
-    setState({ ...state, end_date: dateString, user_id: userDetails.data && userDetails.data.id })
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (dateString < state.start_date) {
+      formIsValid = false;
+      errors["end_date"] = "Please Select a date greater than Start Date";
+    } else
+      setState({ ...state, end_date: dateString, user_id: userDetails.data && userDetails.data.id })
+    setErrors({ errors });
+    return formIsValid;
   }
 
   const showInput = () => {
@@ -215,6 +219,7 @@ const UserDetails = () => {
 
   const renderTable = () => {
     const specList = [];
+    
     userSpec && userSpec.data && userSpec.data.map(item => {
       specList.push(<tr><td>{item.spec_id.name}</td></tr>)
       item.sub_userspec_id && item.sub_userspec_id.map(subItem => {
@@ -233,7 +238,6 @@ const UserDetails = () => {
 
 
   const uploadImage = async options => {
-    console.log("uploadImage", userDetails.data.id);
     const { onSuccess, onError, file, onProgress } = options;
     const fmData = new FormData();
     let accessToken = localStorage.getItem("accessToken");
@@ -298,11 +302,9 @@ const UserDetails = () => {
 
   const disabledDate = (current) => {
     let end = new Date(Date.now() - 86400000);
-    console.log("end" , end);
-    //  return current && current < moment().endOf('day');
-    if (current > moment(end)){
+    if (current > moment(end)) {
       return true;
-  }
+    }
   }
 
   const handleValidation = () => {
@@ -324,7 +326,6 @@ const UserDetails = () => {
   const handleUserProfileSubmit = () => {
     if (handleValidation()) {
       let newData = state;
-      console.log("state", newData);
       delete newData["empolyment_value"];
       delete newData["id"];
       delete newData["username"];
@@ -446,7 +447,7 @@ const UserDetails = () => {
                     <Input name="name" className="form-control" type="text" onChange={handleBlur} />
                   </Form.Item>) : null}
                 <Form.Item label="Experience">
-                  <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
+                  <Input name="experience" id="experience" className="form-control" type="number" value={state.experience} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Employment Type">
                   <Select style={customStyles}
@@ -465,13 +466,14 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Start Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
-                    <DatePicker  name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{width: '337px' ,  height: '36px'}} value={state.start_date ? moment(state.start_date) : null} />
+                    <DatePicker name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.start_date ? moment(state.start_date) : null} />
                   </Space>
                 </Form.Item>
                 <Form.Item label="End Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
-                    <DatePicker name="end_date"  onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{width: '337px' ,  height: '36px'}} value={state.end_date ? moment(state.end_date) : null} />
+                    <DatePicker name="end_date" onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.end_date ? moment(state.end_date) : null} />
                   </Space>
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.end_date}</div>
                 </Form.Item>
                 <Form.Item label="Industry">
                   <Input name="industry" className="form-control" type="text" value={state.industry} onChange={handleChange} />

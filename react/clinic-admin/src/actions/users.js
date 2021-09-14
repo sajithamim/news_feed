@@ -55,7 +55,6 @@ export const getUserDetails = (emailId) => async (dispatch) => {
 export const deleteUser = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUser(id);
-        console.log("response" , res);
         dispatch({
             type: 'DELETE USER',
             payload: id,
@@ -67,7 +66,6 @@ export const deleteUser = (id) => async (dispatch) => {
 
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
     try {
-        console.log("stateaction" , state);
         const res = await Users.postUserProfile(state);
         if (otherQualification.name !== null)
             await Users.postOtherQualifications(otherQualification);
@@ -82,7 +80,6 @@ export const postUserProfile = (state, otherQualification) => async (dispatch) =
 export const getUserProfile = (id) => async (dispatch) => {
     try {
         const res = await Users.getUserProfile(id);
-        console.log("user response detail", res);
         if(res){
             const res1 = await Users.getUserProfilePic(id);
         }
@@ -110,7 +107,6 @@ export const getQualifications = () => async (dispatch) => {
 
 
 export const putProfilePic = (id, image) => async (dispatch) => {
-    console.log('enter1', image);
     let form_data = null;
     if (image[0] && image[0].name) {
         form_data = new FormData();
@@ -148,7 +144,7 @@ export const postPublicationDetails = (state , image ) => async (dispatch) => {
             }
         dispatch({
             type: 'POST_PUBLICATION_LIST',
-            payload: res.data,
+            payload: res,
         })
         return res;
     } catch (err) {
@@ -156,10 +152,8 @@ export const postPublicationDetails = (state , image ) => async (dispatch) => {
     }
 } 
 export const updatePublicationDetails = ( id , state , image ) => async (dispatch) => {
-    console.log("updatePublicationDetails action", state );
     try {
         const res = await Users.updatePublicationDetails(id, state);
-        console.log("pub res" , res);
             if (res && image){
                 const res1 = await Users.putpublicationImage(res.data.id , image)
             }
