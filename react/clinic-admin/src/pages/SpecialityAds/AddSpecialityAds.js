@@ -93,17 +93,22 @@ const SpecialityAds = () => {
             formIsValid = false;
             errors["specialization"] = "Specialization is required";
         }
-
+        if (fields["url"]) {
+            var myUrl = fields.url;
+            var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+            if (res === null) {
+              formIsValid = false;
+              errors["url"] = "Enter a valid URL";
+            }
+          }
         if (image.name && !image.name.match(/\.(jpg|jpeg|png|gif|jfif|PNG|BAT|Exif|BMP|TIFF)$/)) { //image validation
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
-
         if (image.name === undefined && state.image === undefined) {
             formIsValid = false;
             errors["image"] = "Image is mandatory";
         }
-
         setErrors({ errors });
         return formIsValid;
     }

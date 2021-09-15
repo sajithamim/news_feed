@@ -57,6 +57,13 @@ const DrawerContent = (props) => {
     if (!fields["url"]) {
       formIsValid = false;
       errors["url"] = "URL is required";
+    } else{
+      var myUrl = fields.url;
+            var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+            if (res === null) {
+              formIsValid = false;
+              errors["url"] = "Enter a valid URL";
+            }
     }
     if (props.drawerType === 'add' && image.name === undefined) {
       formIsValid = false;

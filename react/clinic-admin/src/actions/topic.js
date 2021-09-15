@@ -68,7 +68,6 @@ export const postTopic = (state, form_data, form_data2, image_data) => async (di
     try {
         const res = await Topic.postTopic(state);
         if(res.status == 201){
-            console.log("COMING TO CONSDUITION");
             if (res.data.id && form_data) {
                 await Topic.putPdfdata(res.data.id, form_data);
             }

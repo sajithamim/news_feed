@@ -7,9 +7,9 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case 'POST_GEN_ADS':
-            return { ...state, addGenAdd: true }
+            return { ...state, addGenAdd: true , genAdsList: Object.assign({}, state.genAdsList, {results: [...state.genAdsList.results, action.payload , ]}) }
         case 'UPDATE_GEN_ADS':
-            return { ...state, updateGenAdd: true }
+            return { ...state, updateGenAdd: true , genAdsList: Object.assign({}, state.genAdsList, {results: [...state.genAdsList.results, action.payload , ]}) }
         case 'GET_GEN_ADS':
             return { ...state, genAdsList: action.payload, page: action.page }
         case 'DELETE_GEN_ADS':
