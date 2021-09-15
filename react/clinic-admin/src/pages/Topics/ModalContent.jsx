@@ -26,7 +26,7 @@ const ModalContent = (props) => {
     if (props.editData !== null) {
       setState(props.editData);
     }
-    else{
+    else {
       setState({});
     }
   }, [props.editData])
@@ -138,10 +138,10 @@ const ModalContent = (props) => {
     }
   }
 
-  
+
   const onOk = (value) => {
   }
-  
+
   const radioOnChange = (val, e) => {
     if (val === 'publish') {
       const crntDateTime = new Date().toISOString();
@@ -153,6 +153,9 @@ const ModalContent = (props) => {
     }
     else if (val === 'format') {
       setState({ ...state, format: e.target.value })
+    }
+    else if (val === 'pdfExternalUrl') {
+      setState({ ...state, pdfExternalUrl: e.target.value })
     }
   };
 
@@ -220,6 +223,14 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
+      if (fields["externalpdf_url2"]) {
+        var myUrl = fields.externalpdf_url2;
+        var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if (res === null) {
+          formIsValid = false;
+          errors["externalpdf_url2"] = "Enter a valid URL";
+        }
+      }
     }
     if (state.format === '3') {
       if (!fields["title3"]) {
@@ -236,6 +247,15 @@ const ModalContent = (props) => {
         if (res === null) {
           formIsValid = false;
           errors["video_url"] = "Enter a valid URL";
+        }
+      }
+      if (fields["externalpdf_url3"]) {
+        var myUrl = fields.externalpdf_url3;
+        var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if (res === null) {
+          formIsValid = false;
+          errors["externalpdf_url3"] = "Enter a valid URL";
+          console.log("valid url");
         }
       }
     }
@@ -375,8 +395,7 @@ const ModalContent = (props) => {
                 <div className="inputStyle">
                   <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
-              </Form.Item></>) : null
-          }
+              </Form.Item></>) : null}
           {(state.format === '2') ?
             (<><Form.Item label="Title">
               <div className="inputStyle">
@@ -416,17 +435,61 @@ const ModalContent = (props) => {
             </Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div>
-            <div className="errorMsg">{errors && errors.errors && errors.errors.video_url}</div></Form.Item>) : null}
+              <div className="errorMsg">{errors && errors.errors && errors.errors.video_url}</div></Form.Item>) : null}
           {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
             : null)}
-          {state.format === '3' || state.format === '2' ?
-            (<><Form.Item label="Pdf/External URL">
-              <div className="inputStyle">
-                <Input type="text" name="external_url" onChange={handleChange} value={state.external_url} /></div>
-            </Form.Item></>) : null}
-
+          {state.format === '2' ?
+            (<Form.Item label="Detail Page">
+              <Radio.Group onChange={(e) => radioOnChange('pdfExternalUrl', e)} value={state.pdfExternalUrl}>
+                <Radio value="pdf_file2">
+                  Pdf
+                </Radio>
+                <Radio value="externalpdf_url2">
+                  External URL
+                </Radio>
+              </Radio.Group>
+            </Form.Item>) : null}
+          {state.format === '2' ?
+            (<>
+              {state.pdfExternalUrl === 'pdf_file2' ?
+                (<Form.Item label="Pdf">
+                  <div className="inputStyle">
+                    <Input type="file" name="pdf2" accept="image/pdf" onChange={handleFileChange} /></div>
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.pdf2}</div></Form.Item>) : null}
+              {state.pdfExternalUrl === 'externalpdf_url2' ?
+                (<><Form.Item label="External URL">
+                  <div className="inputStyle">
+                    <Input type="text" name="externalpdf_url2" onChange={handleChange} value={state.externalpdf_url2} /></div>
+                    <div className="errorMsg">{errors && errors.errors && errors.errors.externalpdf_url2}</div></Form.Item></>) : null}
+            </>)
+            : null}
+          {state.format === '3' ?
+            (<Form.Item label="Detail Page">
+              <Radio.Group onChange={(e) => radioOnChange('pdfExternalUrl', e)} value={state.pdfExternalUrl}>
+                <Radio value="pdf_file3">
+                  Pdf 
+                </Radio>
+                <Radio value="externalpdf_url3">
+                  External URL
+                </Radio>
+              </Radio.Group>
+            </Form.Item>) : null}
+          {state.format === '3' ?
+            (<>
+              {state.pdfExternalUrl === 'pdf_file3' ?
+                (<Form.Item label="Pdf">
+                  <div className="inputStyle">
+                    <Input type="file" name="pdf3" accept="image/pdf" onChange={handleFileChange} /></div>
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.pdf3}</div></Form.Item>) : null}
+              {state.pdfExternalUrl === 'externalpdf_url3' ?
+                (<><Form.Item label="External URL">
+                  <div className="inputStyle">
+                    <Input type="text" name="externalpdf_url3" onChange={handleChange} value={state.externalpdf_url3} /></div>
+                    <div className="errorMsg">{errors && errors.errors && errors.errors.externalpdf_url3}</div></Form.Item></>) : null}
+            </>)
+            : null}
           {state.format === '1' ?
             (<>
               {state.pdfFront ? <a href={state.pdfFront} target="_blank" className="pdfStyle">PDF Front</a> : null}
@@ -441,7 +504,6 @@ const ModalContent = (props) => {
                 <div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item>
             </>)
             : null}
-
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span className="publishedStatus">Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
               <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>

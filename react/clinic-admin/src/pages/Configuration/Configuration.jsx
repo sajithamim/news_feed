@@ -8,7 +8,7 @@ const Configuration =(props) =>{
         <Form labelCol={{ span: 15 }} wrapperCol={{ span:10 }} onFinish="">
         <div>
           <div className="modalStyle">
-           <div className="inputStyle">
+           <div className="configStyle">
            <Form.Item label="Ads showing interval">
               <Input name="name" onChange="" value={state.title} />
             </Form.Item>
