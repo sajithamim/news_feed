@@ -5,22 +5,17 @@ import { Form, Button, Input, Modal, message } from "antd";
 const Configuration =(props) =>{
     const [state, setState] = useState(props);
     return (
-        <Form onFinish="">
+        <Form labelCol={{ span: 15 }} wrapperCol={{ span:10 }} onFinish="">
         <div>
           <div className="modalStyle">
            <div className="inputStyle">
-           <Form.Item label="Name">
-              <Input name="title" onChange="" value={state.title} />
-            </Form.Item>
-           </div> 
-           <div className="inputStyle">
-           <Form.Item label="Name">
+           <Form.Item label="Ads showing interval">
               <Input name="name" onChange="" value={state.title} />
             </Form.Item>
-           </div>
+           </div> 
           </div>
         </div>
-        <Form.Item wrapperCol={{ offset: 12, span:8}}>
+        <Form.Item wrapperCol={{ offset:7 , span:8}}>
             <div className="configSaveBtn">
             <Button type="primary" htmlType="submit" >
             Save

@@ -2,9 +2,9 @@
     margin-top: 25px;
   }
   .inputStyle{
-    margin: auto;
-    width:270px;
+    /* margin-left:25px; */
+    width:500px;
   }
   .configSaveBtn{
-   margin-left:-25px;
+   margin-left:-32px;
   } 
