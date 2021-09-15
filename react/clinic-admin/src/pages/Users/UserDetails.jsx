@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
+import { Form, Input, Checkbox , Table, Col, Row, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,6 +47,7 @@ const UserDetails = () => {
   const [imageUrl, setImageUrl] = useState();
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [checked , setChecked] = useState("")
 
   useEffect(() => {
     dispatch(getUserDetails(emailId))
@@ -311,20 +312,34 @@ const UserDetails = () => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (fields["qualification"].length === 0) {
+    if (fields["qualification"]) {
       formIsValid = false;
       errors["qualification"] = "Qualification is required";
     }
-    if (!fields["media"]) {
+    if (!fields["media"]){
+      console.log("Media is required")
       formIsValid = false;
       errors["media"] = "Media is required";
+    }else{
+      console.log("Enter a valid URL")
+      var media_url = fields.media.toString();
+      var res = media_url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      if (res === null) {
+        formIsValid = false;
+        errors["media"] = "Enter a valid URL";
+      }
     }
     setErrors({ errors });
     return formIsValid;
   }
 
+  const onChange = (e) => {
+    // console.log(`checked = ${e.target.checked}`);
+    {e.target.checked === true ? (setChecked(true)) : (setChecked(false)) }
+  }
   const handleUserProfileSubmit = () => {
     if (handleValidation()) {
+      console.log("coming without validation");
       let newData = state;
       delete newData["empolyment_value"];
       delete newData["id"];
@@ -464,17 +479,20 @@ const UserDetails = () => {
                 <Form.Item label="Location">
                   <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
+                <Form.Item>
+                <Checkbox onChange={onChange} style = {{ marginLeft: '180px', width: '250px' }}>I am currently working here</Checkbox>
+                </Form.Item>
                 <Form.Item label="Start Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.start_date ? moment(state.start_date) : null} />
                   </Space>
                 </Form.Item>
-                <Form.Item label="End Date" >
+                { checked === true ? null :(<Form.Item label="End Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="end_date" onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.end_date ? moment(state.end_date) : null} />
                   </Space>
                   <div className="errorMsg">{errors && errors.errors && errors.errors.end_date}</div>
-                </Form.Item>
+                </Form.Item>) }
                 <Form.Item label="Industry">
                   <Input name="industry" className="form-control" type="text" value={state.industry} onChange={handleChange} />
                 </Form.Item>

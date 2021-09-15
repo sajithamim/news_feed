@@ -55,6 +55,7 @@ export const getUserDetails = (emailId) => async (dispatch) => {
 export const deleteUser = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUser(id);
+        console.log("response", res);
         dispatch({
             type: 'DELETE USER',
             payload: id,
