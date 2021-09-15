@@ -1,10 +1,4 @@
 Input[type="text"] {
-    /* position: absolute;
-    z-index: -1;
-    top: 10px;
-    left: 8px;
-    font-size: 17px;
-    color: #b8b8b8; */
     margin-left: 50px;
   }
   .avatar {
@@ -21,6 +15,6 @@ Input[type="text"] {
   margin-left: 50px;
   width: 340px; 
  }
- .date_picker {
-   width: 1550px;
- }
+ Input[type="number"] {
+  margin-left: 50px;
+}

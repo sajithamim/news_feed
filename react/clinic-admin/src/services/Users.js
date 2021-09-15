@@ -14,6 +14,7 @@ const getTopic = () => {
 }
 
 const getUserSpec = (emailId) => {
+    console.log("emailId",emailId);
     return http.get(`spec/getuserspecialization/${emailId}`)
 }
 const getUserData = (emailId) => {
