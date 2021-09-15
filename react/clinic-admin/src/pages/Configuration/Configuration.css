@@ -1,0 +1,10 @@
+.modalStyle {
+    margin-top: 25px;
+  }
+  .inputStyle{
+    /* margin-left:25px; */
+    width:500px;
+  }
+  .configSaveBtn{
+   margin-left:-32px;
+  } 

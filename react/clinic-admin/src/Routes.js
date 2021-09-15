@@ -1,7 +1,8 @@
 import React from 'react';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
-import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUnlock } from "react-icons/ai";
+import { MdConfirmationNumber} from "react-icons/md";
+import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUnlock} from "react-icons/ai";
 
 export const routes = [
   {
@@ -83,6 +84,12 @@ export const routes = [
     path: '/feedback',
     key: "feed",
     icon: <IoIcons.IoIosPaper />
+  },
+  {
+    title: 'Configuration',
+    path: '/Configuration',
+    key: "config",
+    icon: <MdConfirmationNumber/>
   },
   {
     title: 'Logout',
