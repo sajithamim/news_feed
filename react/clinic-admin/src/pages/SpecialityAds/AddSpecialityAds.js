@@ -31,12 +31,12 @@ const SpecialityAds = () => {
         const adsUserList = [];
         let allUsers = false;
         adsUserDetails && adsUserDetails.data && adsUserDetails.data.map((item) => {
-            if (item.user_id) 
+            if (item.user_id)
                 adsUserList.push(item.user_id.id)
             else
                 allUsers = true;
         }) //ads selected users list for spec id
-       
+
         const users = [];
         const userVisibility = [];
         const selectedUsers = [];
@@ -47,11 +47,11 @@ const SpecialityAds = () => {
                 selectedUsers.push({ label: item.username, value: item.id });
             } else {
                 users.push({ label: item.username, value: item.id }) // all users list
-                if(allUsers)
-                    selectedUsers.push({ label: item.username, value: item.id });   
+                if (allUsers)
+                    selectedUsers.push({ label: item.username, value: item.id });
             }
         })
-        setState({ ...state, selectedSpecid: selectedSpecid, addsUser:selectedUsers,  userVisibility: userVisibility, users: users, allUsers: allUsers, countSpecusers: specUsers.count })
+        setState({ ...state, selectedSpecid: selectedSpecid, addsUser: selectedUsers, userVisibility: userVisibility, users: users, allUsers: allUsers, countSpecusers: specUsers.count })
     }, [adsUserDetails, specUsers])
 
 
@@ -62,7 +62,7 @@ const SpecialityAds = () => {
             add_specialization.push({ spec_id: item.spec_id.id }) //using for save api call 
             editAdsSpecialization.push({ value: item.spec_id.id, label: item.spec_id.name }); //selected specialization 
         })
-        setState({ ...state, url: adsDetails.url , image: adsDetails.addimage , title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization })
+        setState({ ...state, url: adsDetails.url, image: adsDetails.addimage, title: adsDetails.title, image: adsDetails.addimage, specialization: editAdsSpecialization, add_specialization: add_specialization })
     }, [adsDetails])
 
     const specialization = [];
@@ -93,35 +93,27 @@ const SpecialityAds = () => {
             formIsValid = false;
             errors["specialization"] = "Specialization is required";
         }
-
-        // if (fields["url"]) {
-        //     formIsValid = false;
-        //     errors["url"] = "URL is required";
-        // }
-
+        if (fields["url"]) {
+            var myUrl = fields.url;
+            var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+            if (res === null) {
+              formIsValid = false;
+              errors["url"] = "Enter a valid URL";
+            }
+          }
         if (image.name && !image.name.match(/\.(jpg|jpeg|png|gif|jfif|PNG|BAT|Exif|BMP|TIFF)$/)) { //image validation
             formIsValid = false;
             errors["image"] = "Please select valid image.";
         }
-
         if (image.name === undefined && state.image === undefined) {
             formIsValid = false;
             errors["image"] = "Image is mandatory";
         }
-
         setErrors({ errors });
         return formIsValid;
     }
 
     const handleChange = (e, field) => {
-        // var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-        //     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-        //     '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
-        //     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ //port
-        //     '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
-        //     '(\\#[-a-z\\d_]*)?$','i');
-        //     console.log("pattern.test(e.target.value)", pattern.test(e.target.value));
-        //     return pattern.test(e.target.value);
         let fields = state;
         fields[field] = e.target.value;
         setState({ ...state, fields })
@@ -150,7 +142,7 @@ const SpecialityAds = () => {
         value && value.map((item) => {
             userVisibility.push({ spec_id: specId, user_id: item.value })
         })
-        setState({ ...state, addsUser: value , userVisibility: userVisibility , countOfUsersSelected:value.length})
+        setState({ ...state, addsUser: value, userVisibility: userVisibility, countOfUsersSelected: value.length })
     }
 
     const handleFileChange = (info) => {
@@ -166,18 +158,18 @@ const SpecialityAds = () => {
     const handleSubmit = (id) => {
         adsId = (adsId == null) ? newaddId : adsId;
         const userList = [];
-        let countOfSpecUsers = state. countSpecusers
-        if (state.countOfUsersSelected === countOfSpecUsers){ // condition for setting user_id as null when all users are selected
+        let countOfSpecUsers = state.countSpecusers
+        if (state.countOfUsersSelected === countOfSpecUsers) { // condition for setting user_id as null when all users are selected
             userList.push({ spec_id: state.specActiveId, user_id: null })
-         } 
-        else{ 
+        }
+        else {
             let userData = state.userVisibility; // selected users only
-             userData.map(item => {
+            userData.map(item => {
                 if (item.spec_id === state.specActiveId) {
-                    userList.push(item) 
+                    userList.push(item)
                 }
             })
-        } 
+        }
         let form_data = null;
         if (image && image.name) {
             form_data = new FormData();
@@ -187,47 +179,10 @@ const SpecialityAds = () => {
         newData['add_specialization'] = state.add_specialization;
         newData['title'] = state.title;
         newData['url'] = state.url;
-        
-        dispatch(postAdds(newData, userList , adsId, form_data))
-
-        // const userList = [];
-        // let errors = {};
-        // let form_data = null;
-        // if (state.userVisibility.length > 0 || state.allUsers === true) {
-        //     if (state.allUsers) {
-        //         userList.push({ spec_id: state.specActiveId, user_id: null }) // to all users
-        //     }
-        //     else {
-        //         let userData = state.userVisibility;
-        //         userData.map(item => {
-        //             if (item.spec_id === state.specActiveId) {
-        //                 userList.push(item) // selected users
-        //             }
-        //         })
-        //     }
-        //     if (image && image.name) {
-        //         form_data = new FormData();
-        //         form_data.append('addimage', image, image.name);
-        //     }
-        //     if (state.users == []) {
-        //         console.log("user is mandate");
-        //     }
-        //     setErrors({ errors });
-        //     let newData = {};
-        //     newData['add_specialization'] = state.add_specialization;
-        //     newData['title'] = state.title;
-        //     dispatch(postAdds(newData, userList, adsId, form_data)).then((res) => {
-        //         if (adsId !== undefined)
-        //             message.success('Edit Add created successfully')
-        //         else
-        //             message.success('Add created successfully')
-        //     })
-        //     return true;
-        // } else {
-        //     errors["users"] = "Users is required";
-        //     setErrors({ errors });
-        //     return false;
-        // }
+        dispatch(postAdds(newData, userList, adsId, form_data))
+        .then((res) => {
+            message.success("Users added to Speciality advertisements");
+        })
     }
 
     return (
@@ -248,7 +203,7 @@ const SpecialityAds = () => {
                         <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.specialization}</div>
                     </Form.Item>
                     <Form.Item label="URL">
-                        <Input name="url" value = {state.url} onChange={(e) => { handleChange(e, "url") }} />
+                        <Input name="url" value={state.url} onChange={(e) => { handleChange(e, "url") }} />
                         <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.url}</div>
                     </Form.Item>
                     <Form.Item label="Add Image">

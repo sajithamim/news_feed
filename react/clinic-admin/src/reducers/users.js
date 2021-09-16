@@ -12,6 +12,11 @@ const initialState = {
 };
 
 const users = (state = initialState, action) => {
+        if(action.type == 'DELETE_USER_PUBLICATION') {
+            const list = Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) })
+            console.log('list', list);
+        }
+    
     switch (action.type) {
         case 'GET_USER':
             return { ...state, userList: action.payload, page: action.page }
@@ -22,7 +27,7 @@ const users = (state = initialState, action) => {
         case 'GET_USER_DETAILS':
             return { ...state, userDetails: action.payload }
         case 'DELETE USER':
-            return { ...state, userList: Object.assign({}, state.userList, { data: state.userList && state.userList.data && state.userList.data.filter(item => item.id !== action.payload) }) }
+            return { ...state, userList: Object.assign({}, state.userList, { data: state.userList && state.userList.results && state.userList.results.filter(item => item.id !== action.payload) }) }
         case 'POST_USER_PROFILE':
             return { ...state, userProfile: action.payload }
         case 'GET_USER_PROFILE':
@@ -36,7 +41,7 @@ const users = (state = initialState, action) => {
         case 'UPDATE_PUBLICATION_LIST':
                 return { ...state , updatePublicationData: true , publicationList: Object.assign({}, state.publicationList, {results: [...state.publicationList.data.data, action.payload , ]}) }
         case 'DELETE_USER_PUBLICATION':
-            return { ...state, publicationList: Object.assign({}, state.publicationList, { results: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
+            return { ...state, publicationList: Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
         default:
             return state;
         

@@ -8,13 +8,14 @@ import { getUsersList, deleteUser } from "../../actions/users"
 
 const UserContent = () => {
   const { userList , page} = useSelector(state => state.users);
+  console.log("user" , userList);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUsersList())
-  }, [])
+  }, [userList])
 
   const confirmDelete = (id) => {
     dispatch(deleteUser(id));

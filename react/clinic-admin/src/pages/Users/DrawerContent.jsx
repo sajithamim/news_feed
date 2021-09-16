@@ -34,6 +34,7 @@ const DrawerContent = (props) => {
     const [formSubmit, setFormSubmit] = useState(false);
     
     useEffect(() => {
+        console.log("props" , props);
         setState(props.editData);
         setErrors({});
         if (props.editData.image && props.editData.image.startsWith("/media"))
@@ -92,7 +93,14 @@ const DrawerContent = (props) => {
         if (!fields["publication_url"]) {
             formIsValid = false;
             errors["publication_url"] = "Publisher url is required";
-        }
+        } else{
+            var myUrl = fields.publication_url;
+            var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+            if (res === null) {
+              formIsValid = false;
+              errors["publication_url"] = "Enter a valid URL";
+            }
+          }
         if (!fields["description"]) {
             formIsValid = false;
             errors["description"] = "Description is required";
@@ -160,7 +168,7 @@ const DrawerContent = (props) => {
             </Form.Item>
             <Form.Item label="Publication Date" >
                 <Space direction="vertical" size={30}  style={{ marginLeft: '50px', width: '450px' }} >
-                    <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} value={moment(state.publicationdate)} />
+                    <DatePicker name="publicationdate" onChange={onDateChange} format={dateFormat} style={{ width: '290px' }}value= {state.publicationdate ? moment(state.publicationdate) : null } />
                 </Space>
             </Form.Item>
             <Form.Item label="Image">

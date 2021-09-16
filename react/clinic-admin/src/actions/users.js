@@ -55,6 +55,7 @@ export const getUserDetails = (emailId) => async (dispatch) => {
 export const deleteUser = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUser(id);
+        console.log("response", res);
         dispatch({
             type: 'DELETE USER',
             payload: id,
@@ -168,8 +169,8 @@ export const updatePublicationDetails = ( id , state , image ) => async (dispatc
 }
 export const deleteUserPublication = (id) => async (dispatch) => {
     try {
-        const res = await Users.deleteUserPublication(id);
-        console.log("res delte" , res);
+        //const res = await Users.deleteUserPublication(id);
+        //console.log("res delte" , res);
         dispatch({
             type: 'DELETE_USER_PUBLICATION',
             payload: id,
