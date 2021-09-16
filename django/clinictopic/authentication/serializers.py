@@ -47,8 +47,8 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         now = datetime.datetime.now()
         now_plus= now + datetime.timedelta(minutes = 5)
-        if User.objects.filter(phone=validated_data['phone'],phone_verified=False,,auth_provider='email').exists():
-            userdel=User.objects.filter(phone=validated_data['phone'],phone_verified=False,,auth_provider='email').delete()
+        if User.objects.filter(phone=validated_data['phone'],phone_verified=False,auth_provider='email').exists():
+            userdel=User.objects.filter(phone=validated_data['phone'],phone_verified=False,auth_provider='email').delete()
         return User.objects.create_user(**validated_data,optvalid=now_plus)
 
 
