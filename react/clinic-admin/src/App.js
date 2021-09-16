@@ -21,6 +21,7 @@ import SpecialityAdsList from './pages/SpecialityAds/SpecialityAdsList';
 import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
 import SpecialityAds from './pages/SpecialityAds/AddSpecialityAds';
 import Configuration from './pages/Configuration/Configuration';
+import Verify from "./pages/Verification/Verify";
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import { useSelector } from "react-redux";
@@ -113,7 +114,7 @@ function App() {
           <PrivateRoute path="/genads/" exact component={GenAdvertisementContent} />
           <Route path="/forgot_password" exact component={Forgot} />
           <Route path="/reset_password/" exact component={Reset} />
-
+          <Route path="/verify/" exact component={Verify} />
           {/* <Route path="/login"  component={Login} /> */}
           <Route exact path={["/", "/login"]} component={Login} />
           {/* <Redirect from="/" to="/login" /> */}
