@@ -35,6 +35,7 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
+  console.log('publicationList', publicationList) 
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -115,8 +116,10 @@ const UserDetails = () => {
   };
 
   const publicationGenerator = () => {
+      console.log('publicationGenerator');
     const items = [];
     publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
+      console.log('item', item);
       key++;
       return items.push({
         sl_no: key,
