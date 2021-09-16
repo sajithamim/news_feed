@@ -49,6 +49,7 @@ class CustomRedirect(HttpResponsePermanentRedirect):
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
 
 
+
 class RegisterView(generics.GenericAPIView):
 
     serializer_class = RegisterSerializer
