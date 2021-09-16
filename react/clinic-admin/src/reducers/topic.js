@@ -3,12 +3,13 @@ const initialState= {
     success: '',
     error: '',
     pdf:{},
-    successMsg: '',
+    // successMsg: '',
     specList : {},
     catList:{}
 };
 
 export default (state = initialState , action) => {
+    console.log("action topic" , action.data);
     switch(action.type) {
         case 'GET_TOPIC':
         return {...state , topicList: action.payload, addTopic: false, editTopic: false, page: action.page }

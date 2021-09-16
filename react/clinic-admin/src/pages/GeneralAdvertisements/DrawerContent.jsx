@@ -14,7 +14,7 @@ const DrawerContent = (props) => {
   const [formSubmit, setFormSubmit] = useState(false);
 
   const [imgData, setImgData] = useState(props.editData.image);
-
+  
 
   const dispatch = useDispatch();
 

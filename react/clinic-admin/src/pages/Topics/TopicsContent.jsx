@@ -19,7 +19,7 @@ const TopicsContent = (props) => {
   useEffect(() => {
     dispatch(getTopic(page))
     onClose();
-  }, [])
+  }, [success])
 
   useEffect(() => {
     if(success)
