@@ -41,6 +41,7 @@ from rest_framework.pagination import PageNumberPagination
 import datetime
 import pytz
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -61,7 +62,17 @@ class RegisterView(generics.GenericAPIView):
             serializer = self.serializer_class(data=user)
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
-            email_verify = User.objects.filter(email=user['email'],phone_verified=True).first()
+            social_verify = User.objects.filter(email=user['email']).exclude(auth_provider='email').first()
+            if social_verify:
+                user_provider = social_verify.auth_provider
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'User with this email already exists!.Please continue your login using ' + user_provider,
+                }
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            email_verify = User.objects.filter(email=user['email'],phone_verified=True,auth_provider='email').first()
             if email_verify:
                 user_provider = email_verify.auth_provider
                 status_code = status.HTTP_400_BAD_REQUEST
@@ -71,7 +82,7 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'User with this email already exists!.Please continue your login using ' + user_provider,
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
-            phone_verify = User.objects.filter(phone=user['phone'],phone_verified=True).first()
+            phone_verify = User.objects.filter(phone=user['phone'],phone_verified=True,auth_provider='email').first()
             if phone_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
@@ -171,11 +182,14 @@ class VerifyEmail(views.APIView):
             if not user.email_verifield:
                 user.email_verifield = True
                 user.save()
-            return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+            return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?message=Email Successfully activated')
+            # return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError as identifier:
-            return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
+            return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?message=Activation Expired')
+            # return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
-            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+            return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?message=Invalid token')
+            # return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(generics.GenericAPIView):
