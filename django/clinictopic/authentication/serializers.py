@@ -344,7 +344,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = User
-        fields = ['id','username','email','phone','profilepic','name','qualifications']
+        fields = ['id','username','email','phone','profilepic','name''email_verifield','phone_verified','qualifications']
     def get_qualifications(self,obj):
         try:
             qual = Profile.objects.get(user_id__id= obj.id)
