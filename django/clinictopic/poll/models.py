@@ -73,3 +73,8 @@ class ContactUs(models.Model):
     message = models.CharField(max_length=10000)
     class Meta:
         db_table = 'ContactUs'
+
+class AddSetting(models.Model):
+    addaftertopic = models.IntegerField()
+    class meta:
+        db_table = 'AddSettings'

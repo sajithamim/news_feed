@@ -46,7 +46,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         now = datetime.datetime.now()
-        now_plus= now + datetime.timedelta(minutes = 3)
+        now_plus= now + datetime.timedelta(minutes = 5)
+        if User.objects.filter(phone=validated_data['phone'],phone_verified=False).exists():
+            userdel=User.objects.filter(phone=validated_data['phone'],phone_verified=False).delete()
         return User.objects.create_user(**validated_data,optvalid=now_plus)
 
 
@@ -79,7 +81,7 @@ class Signinserializer(serializers.ModelSerializer):
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
             now = datetime.datetime.now()
-            now_plus= now + datetime.timedelta(minutes = 3)
+            now_plus= now + datetime.timedelta(minutes = 5)
             phone_verify.optvalid=now_plus
             phone_verify.save()
             smsphone  = str(phone)
@@ -342,7 +344,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = User
-        fields = ['id','username','email','phone','profilepic','name','qualifications']
+        fields = ['id','username','email','phone','profilepic','name''email_verifield','phone_verified','qualifications']
     def get_qualifications(self,obj):
         try:
             qual = Profile.objects.get(user_id__id= obj.id)

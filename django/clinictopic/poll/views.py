@@ -8,8 +8,8 @@ from rest_framework import viewsets, filters
 # from rest_framework.decorators import detail_route
 from rest_framework.decorators import action
 from rest_framework import parsers
-from .serializers import TopicPollSerializer,UserPollSerializer,FeedbackSerializer,SettingsSerializer,ContactusSerializer
-from .models import Feedback,TopicPoll,Settings,ContactUs
+from .serializers import TopicPollSerializer,UserPollSerializer,FeedbackSerializer,SettingsSerializer,ContactusSerializer,AddSettingSerializer
+from .models import Feedback,TopicPoll,Settings,ContactUs,AddSetting
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
@@ -97,4 +97,9 @@ class SettingsViewSet(generics.ListCreateAPIView):
 class ContactusView(viewsets.ModelViewSet):
     queryset = ContactUs.objects.all().order_by('id')
     serializer_class = ContactusSerializer
+    permission_classes = (IsAuthenticated,)
+
+class AddSettingView(viewsets.ModelViewSet):
+    queryset = AddSetting.objects.all().order_by('id')
+    serializer_class = AddSettingSerializer
     permission_classes = (IsAuthenticated,)
