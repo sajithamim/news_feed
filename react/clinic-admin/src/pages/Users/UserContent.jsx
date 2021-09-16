@@ -15,7 +15,7 @@ const UserContent = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUsersList())
-  }, [userList])
+  }, [])
 
   const confirmDelete = (id) => {
     dispatch(deleteUser(id));
