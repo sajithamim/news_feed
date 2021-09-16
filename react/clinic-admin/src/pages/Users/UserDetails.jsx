@@ -68,9 +68,6 @@ const UserDetails = () => {
         dispatch(getUserSpecialization(emailId))
         if (res && res.data && res.data.data) {
           dispatch(getPublicationList(res.data && res.data.data && res.data.data.id))
-          .then((res) => {
-            console.log("publication res" , res);
-          });
           onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
@@ -118,8 +115,7 @@ const UserDetails = () => {
   const publicationGenerator = () => {
       console.log('publicationGenerator');
     const items = [];
-    publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
-      console.log('item', item);
+    publicationList && publicationList.data  && publicationList.data.map((item, key) => {
       key++;
       return items.push({
         sl_no: key,
@@ -188,12 +184,14 @@ const UserDetails = () => {
   }
 
   const handleQualificationChange = (item) => {
+    console.log("item othe" , item);
     const data = [];
     item.map(item => {
       data.push(item.label)
-      if (item.label === "Other") {
-        setActiveInput(true);
-      }
+      // if (item.label === "Other") {
+      //   setActiveInput(true);
+      // }
+      item.label === "Other" ?  setActiveInput(true) : setActiveInput(false);
     })
     setState({ ...state, qualification: item, qualifications: data });
   }
@@ -315,7 +313,7 @@ const UserDetails = () => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (fields["qualification"]) {
+    if (fields["qualification"].length === 0) {
       formIsValid = false;
       errors["qualification"] = "Qualification is required";
     }
@@ -324,7 +322,6 @@ const UserDetails = () => {
       formIsValid = false;
       errors["media"] = "Media is required";
     }else{
-      console.log("Enter a valid URL")
       var media_url = fields.media.toString();
       var res = media_url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
       if (res === null) {

@@ -41,7 +41,7 @@ const users = (state = initialState, action) => {
         case 'UPDATE_PUBLICATION_LIST':
                 return { ...state , updatePublicationData: true , publicationList: Object.assign({}, state.publicationList, {results: [...state.publicationList.data.data, action.payload , ]}) }
         case 'DELETE_USER_PUBLICATION':
-            return { ...state, publicationList: Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) }) }
+            return { ...state, publicationList: Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data &&  state.publicationList.data.filter(item => item.id !== action.payload) }) }
         default:
             return state;
         
