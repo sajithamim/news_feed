@@ -40,6 +40,7 @@ from django.http import Http404
 from rest_framework.pagination import PageNumberPagination
 import datetime
 import pytz
+from django.views.decorators.csrf import csrf_exempt
 
 load_dotenv(BASE_DIR+str("/.env"))
 

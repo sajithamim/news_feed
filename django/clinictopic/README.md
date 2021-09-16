@@ -1,4 +1,4 @@
-Income Expenses API
+
 
 ## Installation steps
 
@@ -16,5 +16,3 @@ Income Expenses API
 
 7. Run the django development server using `python manage.py runserver`
 
-
-8. kfdhlkndf

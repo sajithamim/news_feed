@@ -46,7 +46,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         now = datetime.datetime.now()
-        now_plus= now + datetime.timedelta(minutes = 3)
+        now_plus= now + datetime.timedelta(minutes = 5)
         return User.objects.create_user(**validated_data,optvalid=now_plus)
 
 
@@ -79,7 +79,7 @@ class Signinserializer(serializers.ModelSerializer):
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
             now = datetime.datetime.now()
-            now_plus= now + datetime.timedelta(minutes = 3)
+            now_plus= now + datetime.timedelta(minutes = 5)
             phone_verify.optvalid=now_plus
             phone_verify.save()
             smsphone  = str(phone)
