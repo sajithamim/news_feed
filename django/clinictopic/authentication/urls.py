@@ -4,7 +4,8 @@ from .views import (AccomplilshmentsView, RegisterView, LogoutAPIView, SetNewPas
 VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail,
 SignInOtpview,AdminLoginAPIView,UserProfile,UserProfilepicView,Userlist,
 UserDetailApiview,UsernameAddview,UserSpecializationApiView,UserProfileSearchView,
-TestSMSView,UserDeleteView,ProfileView,QualificationView,getUserProfileView,getUserAccomplishementView)
+TestSMSView,UserDeleteView,ProfileView,QualificationView,getUserProfileView,getUserAccomplishementView,
+EmailActivatelinkView)
 # from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework import routers
@@ -27,6 +28,7 @@ urlpatterns = [
     path('login/', LoginAPIView.as_view(), name="login"),
     path('logout/', LogoutAPIView.as_view(), name="logout"),
     path('email-verify/', VerifyEmail.as_view(), name="email-verify"),
+    path('email-activate/', EmailActivatelinkView.as_view(), name="email-activate"),
     path('token/refresh/',  jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('request-reset-email/', RequestPasswordResetEmail.as_view(),
          name="request-reset-email"),

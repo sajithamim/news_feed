@@ -60,7 +60,7 @@ class RegisterView(generics.GenericAPIView):
             serializer = self.serializer_class(data=user)
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
-            email_verify = User.objects.filter(email=user['email']).first()
+            email_verify = User.objects.filter(email=user['email'],phone_verified=True).first()
             if email_verify:
                 user_provider = email_verify.auth_provider
                 status_code = status.HTTP_400_BAD_REQUEST
@@ -70,7 +70,7 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'User with this email already exists!.Please continue your login using ' + user_provider,
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
-            phone_verify = User.objects.filter(phone=user['phone']).first()
+            phone_verify = User.objects.filter(phone=user['phone'],phone_verified=True).first()
             if phone_verify:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response = {
@@ -125,6 +125,35 @@ class RegisterView(generics.GenericAPIView):
                 }
             return Response(response, status=status_code)
 
+class EmailActivatelinkView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        try:
+            user = User.objects.get(email=request.user)
+            token = RefreshToken.for_user(user).access_token
+            current_site = get_current_site(request).domain
+            relativeLink = reverse('email-verify')
+            absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
+            email_body = 'Hi '+user.username + \
+                ' Use the link below to verify your email \n' + absurl
+            data = {'email_body': email_body, 'to_email': user.email,
+                    'email_subject': 'Verify your email'}
+            Util.send_email(data)
+            response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'verification link sent in email',
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'False',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'error',
+                'error': str(e)
+                }
+            return Response(response, status=status_code)
 
 class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
@@ -134,7 +163,6 @@ class VerifyEmail(views.APIView):
 
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
-        # print(request.user)
         token = request.GET.get('token')
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
@@ -624,13 +652,13 @@ class getUserAccomplishementView(APIView):
         try:
             user = Accomplishments.objects.filter(user_id=pk)
             serializers = AccomplishmentSerializer(user,many=True)
-            response={
-                "success":"True",
-                "message":"user accomplishments",
-                "status":status.HTTP_200_OK,
-                "data":serializers.data
-            }
-            return Response(response,status=status.HTTP_200_OK)
+            # response={
+            #     "success":"True",
+            #     "message":"user accomplishments",
+            #     "status":status.HTTP_200_OK,
+            #     "data":serializers.data
+            # }
+            return Response(serializers.data,status=status.HTTP_200_OK)
         except Exception as e:
             response={
                 "success":"False",
