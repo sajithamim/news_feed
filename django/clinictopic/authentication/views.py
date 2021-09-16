@@ -62,7 +62,7 @@ class RegisterView(generics.GenericAPIView):
             serializer = self.serializer_class(data=user)
             user['password'] = os.environ.get('SOCIAL_SECRET')
             user['otp'] = random.randrange(1000,9999)
-            social_verify = User.objects.filter(email=user['email'],~Q(auth_provider='email'))
+            social_verify = User.objects.filter(email=user['email']).exclude(auth_provider='email').first()
             if social_verify:
                 user_provider = social_verify.auth_provider
                 status_code = status.HTTP_400_BAD_REQUEST
