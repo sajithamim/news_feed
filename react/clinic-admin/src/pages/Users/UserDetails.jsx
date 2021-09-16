@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Table, Col, Row,  Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
+import { Form, Input, Checkbox , Table, Col, Row, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import DrawerContent from "./DrawerContent";
+import moment from 'moment';
 import "./Users.css";
 import axios from 'axios';
 
@@ -33,8 +34,8 @@ const UserDetails = () => {
   const [state, setState] = useState("");
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
-  console.log("userDetails" , userDetails);
+  const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
+  console.log('publicationList', publicationList) 
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -45,11 +46,9 @@ const UserDetails = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const [imageUrl, setImageUrl] = useState();
-  // const [previewImage, setPreviewImage] = useState({});
-  // const [previewVisible, setPreviewVisible] = useState({});
-  // const [previewTitle, setPreviewTitle] = useState({})
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [checked , setChecked] = useState("")
 
   useEffect(() => {
     dispatch(getUserDetails(emailId))
@@ -67,8 +66,11 @@ const UserDetails = () => {
         setState({ ...state, id: userDetails.id, profilepic: userDetails.profilepic })
         dispatch(getUserCategory(emailId))
         dispatch(getUserSpecialization(emailId))
-        if (res) {
-          dispatch(getPublicationList(res.data && res.data.data && res.data.data.id));
+        if (res && res.data && res.data.data) {
+          dispatch(getPublicationList(res.data && res.data.data && res.data.data.id))
+          .then((res) => {
+            console.log("publication res" , res);
+          });
           onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
@@ -81,7 +83,7 @@ const UserDetails = () => {
                   )
                 })
                 let result = res.data.data;
-                setState({ ...state, id: result.user_id, qualification: getUserQualificationList, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description })
+                setState({ ...state, id: result.user_id, media: result.media, qualification: getUserQualificationList, qualifications: result.qualifications, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
               } else {
                 setState({ ...state })
               }
@@ -92,6 +94,8 @@ const UserDetails = () => {
   }, [addPublicationData, updatePublicationData])
 
   let history = useHistory();
+  const dateFormat = 'YYYY-MM-DD';
+
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -109,12 +113,13 @@ const UserDetails = () => {
     setEditData(record);
     setShowDrawer(true);
     setDrawerType("edit");
-  }; 
+  };
 
   const publicationGenerator = () => {
+      console.log('publicationGenerator');
     const items = [];
     publicationList && publicationList.data && publicationList.data.data && publicationList.data.data.map((item, key) => {
-      console.log("item list", item);
+      console.log('item', item);
       key++;
       return items.push({
         sl_no: key,
@@ -158,23 +163,26 @@ const UserDetails = () => {
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-  const handleFileChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => {
-        setImageUrl(imageUrl);
-        setLoading(false);
-      });
-    }
-  };
+  // const handleFileChange = (info) => {
+  //   if (info.file.status === 'uploading') {
+  //     setLoading(true);
+  //   }
+  //   if (info.file.status === 'done') {
+  //     // Get this url from response in real world.
+  //     getBase64(info.file.originFileObj, imageUrl => {
+  //       setImageUrl(imageUrl);
+  //       setLoading(false);
+  //     });
+  //   }
+  // };
 
   const handleChange = (e) => {
     const data = [];
     if (e.target.name === "media") {
       data.push(e.target.value.split(',').toString())
+    }
+    if (e.target.name === "experience" && e.target.value.length > 2) {
+      e.target.value = "";
     }
     setState({ ...state, [e.target.name]: e.target.value, user_id: userDetails.data && userDetails.data.id, media: data });
   }
@@ -191,35 +199,31 @@ const UserDetails = () => {
   }
 
   const handleSelectChange = (value) => {
-    setState({ ...state, empolyment_value: value, empolyment_type: value.label });
+    setState({ ...state, empolyment_value: { value: value.label, label: value.label }, empolyment_type: value.label });
   }
-  const onDateChange = (value, dateString) => {
-    // console.log("date", dateString)
-    setState({ ...state, start_date: dateString[0], end_date: dateString[1] })
+  const onStartDateChange = (value, dateString) => {
+    setState({ ...state, start_date: dateString, user_id: userDetails.data && userDetails.data.id })
+  }
+  const onEndDateChange = (value, dateString) => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (dateString < state.start_date) {
+      formIsValid = false;
+      errors["end_date"] = "Please Select a date greater than Start Date";
+    } else
+      setState({ ...state, end_date: dateString, user_id: userDetails.data && userDetails.data.id })
+    setErrors({ errors });
+    return formIsValid;
   }
 
   const showInput = () => {
     setinputVisible(false);
   }
 
-  const handleValidation = () => {
-    let fields = state;
-    let errors = {};
-    let formIsValid = true;
-    if (!fields["name"]) {
-      formIsValid = false;
-      errors["name"] = "Name is required";
-    }
-    if (!fields["name"]) {
-      formIsValid = false;
-      errors["name"] = "Name is required";
-    }
-    setErrors({ errors });
-    return formIsValid;
-  }
-
   const renderTable = () => {
     const specList = [];
+    
     userSpec && userSpec.data && userSpec.data.map(item => {
       specList.push(<tr><td>{item.spec_id.name}</td></tr>)
       item.sub_userspec_id && item.sub_userspec_id.map(subItem => {
@@ -238,7 +242,6 @@ const UserDetails = () => {
 
 
   const uploadImage = async options => {
-    console.log("uploadImage" , userDetails.data.id);
     const { onSuccess, onError, file, onProgress } = options;
     const fmData = new FormData();
     let accessToken = localStorage.getItem("accessToken");
@@ -271,7 +274,6 @@ const UserDetails = () => {
   };
 
   const handleOnChange = ({ file, fileList, event }) => {
-    console.log('fileList', fileList);
     //Using Hooks to update the state to the current filelist
     setDefaultFileList(fileList);
     //filelist - [{uid: "-1",url:'Some url to image'}]
@@ -280,7 +282,7 @@ const UserDetails = () => {
   const handleBlur = (e) => {
     setOtherQualification({ [e.target.name]: e.target.value });
   }
-  
+
   const onAdd = () => {
     setShowDrawer(true);
     setDrawerType("add");
@@ -302,17 +304,57 @@ const UserDetails = () => {
       })
   };
 
+  const disabledDate = (current) => {
+    let end = new Date(Date.now() - 86400000);
+    if (current > moment(end)) {
+      return true;
+    }
+  }
+
+  const handleValidation = () => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (fields["qualification"]) {
+      formIsValid = false;
+      errors["qualification"] = "Qualification is required";
+    }
+    if (!fields["media"]){
+      console.log("Media is required")
+      formIsValid = false;
+      errors["media"] = "Media is required";
+    }else{
+      console.log("Enter a valid URL")
+      var media_url = fields.media.toString();
+      var res = media_url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      if (res === null) {
+        formIsValid = false;
+        errors["media"] = "Enter a valid URL";
+      }
+    }
+    setErrors({ errors });
+    return formIsValid;
+  }
+
+  const onChange = (e) => {
+    // console.log(`checked = ${e.target.checked}`);
+    {e.target.checked === true ? (setChecked(true)) : (setChecked(false)) }
+  }
   const handleUserProfileSubmit = () => {
-    let newData = state;
-    delete newData["empolyment_value"];
-    delete newData["id"];
-    delete newData["username"];
-    dispatch(postUserProfile(newData, otherQualification))
-      .then(() => {
-        message.success("User details Added Successfully");
-        setState({});
-        history.push("/users");
-      })
+    if (handleValidation()) {
+      console.log("coming without validation");
+      let newData = state;
+      delete newData["empolyment_value"];
+      delete newData["id"];
+      delete newData["username"];
+      delete newData["qualification"];
+      dispatch(postUserProfile(newData, otherQualification))
+        .then(() => {
+          message.success("User details Added Successfully");
+          setState({});
+          history.push("/users");
+        })
+    }
   }
 
   const publicationColumns = [
@@ -416,13 +458,14 @@ const UserDetails = () => {
                     onChange={handleQualificationChange}
                     options={qualificationList}
                   />
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.qualification}</div>
                 </Form.Item>
                 {activeInput ?
                   (<Form.Item label="Other Qualification">
                     <Input name="name" className="form-control" type="text" onChange={handleBlur} />
                   </Form.Item>) : null}
                 <Form.Item label="Experience">
-                  <Input name="experience" className="form-control" type="text" value={state.experience} onChange={handleChange} />
+                  <Input name="experience" id="experience" className="form-control" type="number" value={state.experience} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Employment Type">
                   <Select style={customStyles}
@@ -439,11 +482,20 @@ const UserDetails = () => {
                 <Form.Item label="Location">
                   <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
-                <Form.Item label="Select Date" >
-                  <Space direction="vertical" size={15} style={{ marginLeft: '50px' }} >
-                    <RangePicker onChange={onDateChange} />
+                <Form.Item>
+                <Checkbox onChange={onChange} style = {{ marginLeft: '180px', width: '250px' }}>I am currently working here</Checkbox>
+                </Form.Item>
+                <Form.Item label="Start Date" >
+                  <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
+                    <DatePicker name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.start_date ? moment(state.start_date) : null} />
                   </Space>
                 </Form.Item>
+                { checked === true ? null :(<Form.Item label="End Date" >
+                  <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
+                    <DatePicker name="end_date" onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.end_date ? moment(state.end_date) : null} />
+                  </Space>
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.end_date}</div>
+                </Form.Item>) }
                 <Form.Item label="Industry">
                   <Input name="industry" className="form-control" type="text" value={state.industry} onChange={handleChange} />
                 </Form.Item>
@@ -452,6 +504,7 @@ const UserDetails = () => {
                 </Form.Item>
                 <Form.Item label="Media URL">
                   <Input name="media" className="form-control" type="text" value={state.media} onChange={handleChange} />
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.media}</div>
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
                   <Button type="primary" htmlType="submit" >Save</Button>
@@ -524,7 +577,7 @@ const UserDetails = () => {
                   onClose={onClose}
                   visible={showDrawer}
                   key="drawer"
-                > 
+                >
                   <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? editData : {}} />
                 </Drawer>
 

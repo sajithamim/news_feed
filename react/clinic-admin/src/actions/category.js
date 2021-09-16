@@ -40,6 +40,7 @@ export const postCategory = (state, imageData) => async (dispatch) => {
 export const deleteCategory = (id) => async (dispatch) => {
     try {
         const res = await Category.deleteCategory(id);
+        console.log("res cat delete" , res);
         dispatch({
             type: 'DELETE_SUCCESS',
             payload: id,

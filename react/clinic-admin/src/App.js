@@ -20,6 +20,7 @@ import UserDetails from './pages/Users/UserDetails';
 import SpecialityAdsList from './pages/SpecialityAds/SpecialityAdsList';
 import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
 import SpecialityAds from './pages/SpecialityAds/AddSpecialityAds';
+import Configuration from './pages/Configuration/Configuration';
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import { PrivateRoute } from './PrivateRoute';
 import { useSelector } from "react-redux";
@@ -105,6 +106,7 @@ function App() {
           <PrivateRoute path="/advertisements" exact component={SpecialityAdsList} />
           <PrivateRoute path="/terms" exact component={Terms} />
           <PrivateRoute path="/new_add/" exact component={SpecialityAds} />
+          <PrivateRoute path="/configuration/" exact component={Configuration} />
           <PrivateRoute path="/advisory_board/:specId" exact component={AdvisoryBoardContent} />
           <PrivateRoute path="/edit_add/:adsId" exact component={SpecialityAds} />
           <PrivateRoute path="/userdetails/:emailId" exact component={UserDetails} />

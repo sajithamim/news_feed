@@ -1,7 +1,8 @@
 import React from 'react';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
-import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUnlock } from "react-icons/ai";
+import { MdConfirmationNumber} from "react-icons/md";
+import { AiFillDatabase, AiFillCopy, AiFillContainer, AiTwotoneLock, AiTwotoneUnlock} from "react-icons/ai";
 
 export const routes = [
   {
@@ -19,25 +20,25 @@ export const routes = [
   {
     title: 'Specialities',
     path: '/specializations',
-    key: "spec",
+    key: "specializations",
     icon: <AiFillDatabase />
   },
   {
     title: 'Categories',
     path: '/categories',
-    key: "cat",
+    key: "categories",
     icon: <AiFillCopy />
   },
   {
     title: 'Topics',
     path: '/topics',
-    key: "topic",
+    key: "topics",
     icon: <AiFillContainer />
   },
   {
     title: 'Speciality Advertisements',
     path: '/advertisements',
-    key: "ads",
+    key: "advertisements",
     icon: <AiFillContainer />
   },
   {
@@ -55,13 +56,13 @@ export const routes = [
       {
         title: 'Privacy policy',
         path: '/privacy_policy',
-        key: "Policy",
+        key: "privacy_policy",
         icon: <IoIcons.IoIosPaper />,
       },
       {
         title: 'Terms And Conditions',
         path: '/terms',
-        key: "Terms",
+        key: "terms",
         icon: <IoIcons.IoIosPaper />,
       },
       {
@@ -81,8 +82,14 @@ export const routes = [
   {
     title: 'Feedback',
     path: '/feedback',
-    key: "feed",
+    key: "feedback",
     icon: <IoIcons.IoIosPaper />
+  },
+  {
+    title: 'Configuration',
+    path: '/Configuration',
+    key: "Configuration",
+    icon: <MdConfirmationNumber/>
   },
   {
     title: 'Logout',

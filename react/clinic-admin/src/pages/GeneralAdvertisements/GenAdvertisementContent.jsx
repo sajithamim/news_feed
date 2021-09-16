@@ -17,6 +17,7 @@ const GenAdvertisementContent = () => {
   const [slNo, setSlNo] = useState(0);
 
   const { genAdsList , addGenAdd , updateGenAdd, page} = useSelector(state => state.genAds);
+  console.log("genAdsList" , genAdsList);
   useEffect(() => {
     dispatch(getGeneralAdvertisment(page))
     onClose();
