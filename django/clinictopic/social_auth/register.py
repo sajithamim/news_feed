@@ -57,6 +57,7 @@ def register_social_user(provider, user_id, email, name):
             'optvalid':datetime.datetime.now()}
         user = User.objects.create_user(**user)
         user.is_verified = True
+        user.email_verifield=True
         user.auth_provider = provider
         user.save()
         new_user = authenticate(

@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings,ContactUs
+from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings,ContactUs,AddSetting
 from authentication.models import User
 # from topics.serializers import TopicSeriaizer
 
@@ -96,3 +96,12 @@ class ContactusSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     self.default_error_messages)
         return attrs
+
+class AddSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddSetting
+        fields = '__all__'
+    def create(self, validated_data):
+            add = AddSetting.objects.all().delete()
+            addsetting=AddSetting.objects.create(**validated_data)
+            return addsetting

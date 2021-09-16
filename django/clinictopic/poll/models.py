@@ -74,7 +74,7 @@ class ContactUs(models.Model):
     class Meta:
         db_table = 'ContactUs'
 
-# class AddSetting(models.Model):
-#     addaftertopic = models.IntegerField()
-#     class meta:
-#         db_table = 'AddSettings'
+class AddSetting(models.Model):
+    addaftertopic = models.IntegerField()
+    class meta:
+        db_table = 'AddSettings'
