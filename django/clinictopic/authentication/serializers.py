@@ -220,6 +220,12 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     class Meta:
         fields = ['email']
 
+class VerifyPhoneSerializer(serializers.Serializer):
+    otp = serializers.CharField(read_only =True,max_length = 10)
+    class Meta:
+        fields = ['otp']
+        # model = User
+
 
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(
@@ -319,9 +325,19 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         fields = ['profilepic']
 
 class PhoneUpdateSerializer(serializers.ModelSerializer):
+
+    default_error_messages = {
+        'phone': 'The phone should only contain numeric characters'}
+
     class Meta:
         model = User
         fields = ['phone']
+    def validate(self, attrs):
+        phone = attrs.get('phone', '')
+        if not phone.isnumeric():
+            raise serializers.ValidationError(
+                self.default_error_messages)
+        return attrs
 
 class UsernameChangeSerializer(serializers.ModelSerializer):
     class Meta:
