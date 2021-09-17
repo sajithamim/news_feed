@@ -2,12 +2,19 @@ import React, { useEffect, useState } from "react";
 import "./Configuration.css";
 import { Form, Button, Input, Modal, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { postConfiguration } from "../../actions/Config";
+import { getConfiguration, postConfiguration } from "../../actions/Config";
+import { getContrastRatio } from "@material-ui/core";
 
 const Configuration = (props) => {
   const dispatch = useDispatch();
   const [state, setState] = useState("");
+  const { getConfigData } = useSelector(state => state.Config);
+  console.log("getdata", getConfigData);
 
+  useEffect(() => {
+    dispatch(getConfiguration)()
+  }, [])
+  
   // const formValidation = () => {
   //   let entities = state;
   //   const newErrorsState = { ...errors };
