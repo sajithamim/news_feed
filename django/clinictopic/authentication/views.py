@@ -2,7 +2,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
 from .serializers import (AccomplishmentImageSerializer, AccomplishmentSerializer, RegisterSerializer, SetNewPasswordSerializer,
- ResetPasswordEmailRequestSerializer, EmailVerificationSerializer, 
+ ResetPasswordEmailRequestSerializer, EmailVerificationSerializer,PhoneUpdateSerializer,
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
  ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer)
 from rest_framework.response import Response
@@ -151,6 +151,7 @@ class EmailActivatelinkView(views.APIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Verify your email'}
             Util.send_email(data)
+            status_code = status.HTTP_200_OK
             response = {
             'success' : 'True',
             'status code' : status_code,
@@ -182,13 +183,13 @@ class VerifyEmail(views.APIView):
             if not user.email_verifield:
                 user.email_verifield = True
                 user.save()
-            return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?message=Email Successfully activated')
+            return CustomRedirect(os.environ.get('EMAIL_VERIFY_URL', '')+'?message=Email Successfully activated')
             # return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError as identifier:
-            return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?message=Activation Expired')
+            return CustomRedirect(os.environ.get('EMAIL_VERIFY_URL', '')+'?message=Activation Expired')
             # return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
-            return CustomRedirect(os.environ.get('FRONTEND_URL', '')+'?message=Invalid token')
+            return CustomRedirect(os.environ.get('EMAIL_VERIFY_URL', '')+'?message=Invalid token')
             # return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -504,6 +505,16 @@ class UsernameAddview(viewsets.ModelViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
+        # @action(detail=False,methods=['PUT'],serializer_class=PhoneUpdateSerializer)
+        # def phoneadd(self, request):
+        #     obj = User.objects.get(email=request.user)
+        #     serializer = self.serializer_class(obj, data=request.data,
+        #                                     partial=True)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response(serializer.data)
+        #     return Response(serializer.errors,
+        #                          status.HTTP_400_BAD_REQUEST)
 # class UsernameAddview(generics.CreateAPIView):
 #     serializer_class = UsernameChangeSerializer
 #     pagination_class = None
