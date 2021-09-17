@@ -60,7 +60,7 @@ const AdminLayout = ({ children }) => {
           </a>
         </div>
         {accessToken !== null && accessToken !== undefined ? 
-          (<Menu theme="dark" mode="inline" defaultOpenKeys={['settings']} defaultSelectedKeys={[selectedKey]} style={{ height: "100%"}}>
+          (<Menu theme="dark" mode="inline" defaultOpenKeys={['openKey']} defaultSelectedKeys={[selectedKey]} style={{ height: "100%"}}>
             {routes && routes.map((subroute) => subroute.key !== 'logout' ? subroute.key !== 'settings' ?
               (<Menu.Item key={subroute.key} icon={subroute.icon}>
                 <NavLink to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
