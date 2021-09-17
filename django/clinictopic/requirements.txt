@@ -11,7 +11,7 @@ django-filter==2.4.0
 django-rest-swagger==2.2.0
 django-rest-swagger-swaggerdoc==1.0.post3
 djangorestframework==3.12.4
-djangorestframework-simplejwt==4.4.0
+djangorestframework-simplejwt
 drf-rw-serializers==1.0.4
 drf-writable-nested==0.6.3
 drf-yasg==1.17.1
