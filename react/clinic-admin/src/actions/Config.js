@@ -1,8 +1,8 @@
-import Configuration from "../services/Config";
+import Config from "../services/Config";
 
-export const postConfiguration = (name) => async (dispatch) => {
+export const postConfiguration = (state) => async (dispatch) => {
     try {
-        const res = await Configuration.postConfiguration(name);
+        const res = await Config.postConfiguration(state);
             dispatch({
                 type: 'POST_CONFIGURATION',
                 payload: res.data,

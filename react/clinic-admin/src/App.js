@@ -39,6 +39,7 @@ function App() {
   let warnTimeout;
   let logoutTimeout;
   const accessToken = localStorage.getItem("accessToken");
+  console.log("accessToken" , accessToken);
   const dispatch = useDispatch();
   
   const warn = () => {
@@ -92,7 +93,9 @@ function App() {
   }, []);
   return (
     <Router>
-      <AdminLayout>
+      {accessToken === null && accessToken === undefined ? 
+       (<Route path="/verify/?message" exact component={Verify} />) :
+      (<AdminLayout> 
         <Switch>
           <PrivateRoute path="/data" exact component={OverviewContent} />
           <PrivateRoute path="/categories" exact component={CategoriesContent} />
@@ -119,7 +122,8 @@ function App() {
           <Route exact path={["/", "/login"]} component={Login} />
           {/* <Redirect from="/" to="/login" /> */}
         </Switch>
-      </AdminLayout>
+      </AdminLayout> )
+      } 
     </Router>
   );
 }

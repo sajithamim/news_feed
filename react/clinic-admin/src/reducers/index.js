@@ -9,6 +9,7 @@ import feedback from "./feedback.js";
 import settings from "./settings.js";
 import ads from "./ads.js";
 import genAds from "./genAds.js";
+import Config from "./Config.js";
 
 export default combineReducers({
     spec,
@@ -20,5 +21,6 @@ export default combineReducers({
     feedback,
     settings,
     ads,
+    Config,
     genAds
 });

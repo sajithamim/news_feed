@@ -6,8 +6,7 @@ import { postConfiguration } from "../../actions/Config";
 
 const Configuration = (props) => {
   const dispatch = useDispatch();
-  const [name, setName] = useState("");
-  const [errors, setErrors] = useState({ name: '' });
+  const [state, setState] = useState("");
 
   // const formValidation = () => {
   //   let entities = state;
@@ -19,30 +18,35 @@ const Configuration = (props) => {
   //   }
   //   return true;
   // }
-  const handleSubmit = (name) => {
-    // if (formValidation()) {
-      console.log("name", name);
-      // setErrors({});
-      dispatch(postConfiguration(name))
-        // .then((res) => {
-        //   setState({});
-        //   message.success("Configuration added succesfully");
-        // })
-
-    // }
-  }
   const handleChange = (e) => {
-    console.log("e.target.value",e.target.value);
-    setName(e.target.value)
+    setState({ ...state,  [e.target.name]: e.target.value })
   };
+  // const handleSubmit = (name) => {
+  //   // if (formValidation()) {
+  //     console.log("name", name);
+  //     // setErrors({});
+  //     // dispatch(postConfiguration(name))
+  //       // .then((res) => {
+  //       //   setState({});
+  //       //   message.success("Configuration added succesfully");
+  //       // })
+
+  //   // }
+  // }
+  
+  const handleSubmit = (e) => {
+   console.log("state" , state);
+   dispatch(postConfiguration(state)) 
+  }
+
   return (
     <Form labelCol={{ span: 3 }} wrapperCol={{ span: 6 }} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
           <div className="configStyle">
             <Form.Item label="Ads showing interval">
-              <Input name="name" onChange={handleChange} value={name} />
-              <div className="errorMsg">{errors.name}</div>
+              <Input name="addaftertopic" onChange={handleChange} value={state.addaftertopic} />
+              {/* <div className="errorMsg">{errors.name}</div> */}
             </Form.Item>
           </div>
         </div>
