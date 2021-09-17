@@ -4,7 +4,8 @@ from rest_framework import generics, status, views, permissions
 from .serializers import (AccomplishmentImageSerializer, AccomplishmentSerializer, RegisterSerializer, SetNewPasswordSerializer,
  ResetPasswordEmailRequestSerializer, EmailVerificationSerializer,PhoneUpdateSerializer,
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
- ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer)
+ ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer,
+ VerifyPhoneSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Accomplishments, User,Profile,Qualifications
@@ -458,6 +459,40 @@ class Userlist(APIView,PageNumberPagination):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+class VerifyPhone(generics.GenericAPIView):
+    serializer_class = VerifyPhoneSerializer
+    # permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request,*args, **kwargs):
+        try:
+            user =User.objects.get(email=request.user)
+            otp= request.data['otp']
+            userotp = user.otp
+            if int(otp) == int(userotp):
+                response={
+                "success":"True",
+                "message":"user Phone verified",
+                "status":status.HTTP_200_OK,
+                 }
+                if not user.phone_verified:
+                    user.phone_verified = True
+                    user.save()
+            else:
+                response={
+                "success":"False",
+                "message":"Invalid Otp",
+                "status":status.HTTP_200_OK,
+                    }
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not found",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserDetailApiview(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request,email, *args, **kwargs):
@@ -505,16 +540,16 @@ class UsernameAddview(viewsets.ModelViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
-        # @action(detail=False,methods=['PUT'],serializer_class=PhoneUpdateSerializer)
-        # def phoneadd(self, request):
-        #     obj = User.objects.get(email=request.user)
-        #     serializer = self.serializer_class(obj, data=request.data,
-        #                                     partial=True)
-        #     if serializer.is_valid():
-        #         serializer.save()
-        #         return Response(serializer.data)
-        #     return Response(serializer.errors,
-        #                          status.HTTP_400_BAD_REQUEST)
+        @action(detail=False,methods=['PUT'],serializer_class=PhoneUpdateSerializer)
+        def phoneadd(self, request):
+            obj = User.objects.get(email=request.user)
+            serializer = self.serializer_class(obj, data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
 # class UsernameAddview(generics.CreateAPIView):
 #     serializer_class = UsernameChangeSerializer
 #     pagination_class = None
@@ -580,14 +615,17 @@ class TestSMSView(APIView):
         #     # return qual.image
         # # except Images.DoesNotExist:
         #     # return ""
-        api_key = os.environ.get('SMS_API_KEY')
-        sid = os.environ.get('SMS_SENDER_ID')
+        api_key = 'iY5PGVLZU0m8zH1sBe9hkw'
+        sid = 'SMSHUB'
         route = os.environ.get('SMS_ROUTE')
         eid= os.environ.get('SMS_ENTITY_ID')
         tid= os.environ.get('SMS_TEMPLATE_ID')
-        mno='918086465181'
+        mno='33757130734'
+        # 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=yourapicode&senderid=SMSHUB&channel=INT&DCS=0&flashsms=0&number=12093158246&text=test message&route=16'
         msg='1234 is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
-        url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
+        url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=INT&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route=16'
+        print()
+        # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
         r = requests.get(url)
         print(r.text)
         return Response({},status=status.HTTP_200_OK)
