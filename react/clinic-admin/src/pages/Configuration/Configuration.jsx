@@ -9,7 +9,7 @@ const Configuration = (props) => {
   const dispatch = useDispatch();
   const [state, setState] = useState("");
   const { getConfigData } = useSelector(state => state.Config);
-  console.log("getdata", getConfigData);
+  console.log("getConfigData", getConfigData);
 
   useEffect(() => {
     dispatch(getConfiguration)()

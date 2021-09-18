@@ -5,13 +5,12 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-    console.log(action.payload)
+    console.log("action:hjhjhjhjh" , action.payload)
     switch (action.type) {
-
         case 'RETRIEVE_CONFIGURATION':
-            return { ...state, getConfigData: true, configData: action.payload }
+            return { ...state,  configData: action.payload , addConfigData: false , getConfigData: false,}
         case 'POST_CONFIGURATION':
-            return { ...state, addConfigData: true }
+            return { ...state, addConfigData: true, configData: action.payload }
         default:
             return state;
     }

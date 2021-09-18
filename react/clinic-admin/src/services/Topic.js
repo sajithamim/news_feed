@@ -28,6 +28,7 @@ const getCategory = () => {
 }
 
 const putPdfdata =(id, pdfData) => {
+  console.log("pdfData", pdfData);
   let accessToken = localStorage.getItem("accessToken");
   let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/pdf/`;
   axios.put(url, pdfData, {
@@ -43,6 +44,7 @@ const putPdfdata =(id, pdfData) => {
 }
 
 const putPdfdata2 =(id, pdfData2) => {
+  console.log("pdfData", pdfData2);
   let accessToken = localStorage.getItem("accessToken");
   let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/secondpdf/`;
   axios.put(url, pdfData2, {
