@@ -12,15 +12,15 @@ import "./logo.css";
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-const AdminLayout = ({ children }) => {
+const AuthLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem]= useState('item1');
   const accessToken = localStorage.getItem("accessToken");
 
-  // const handleClick = () => {
-  //   dispatch(logout())
-  // }
+  const handleClick = () => {
+    dispatch(logout())
+  }
 
   const toggle = () => {
     setCollapsed(!collapsed)
@@ -59,25 +59,10 @@ const AdminLayout = ({ children }) => {
             <h1>Clinic Topics - Admin</h1>
           </a>
         </div>
-        {accessToken !== null && accessToken !== undefined ? 
-          (<Menu theme="dark" mode="inline" defaultOpenKeys={['openKey']} defaultSelectedKeys={[selectedKey]} style={{ height: "100%"}}>
-            {routes && routes.map((subroute) => subroute.key !== 'logout' ? subroute.key !== 'settings' ?
-              (<Menu.Item key={subroute.key} icon={subroute.icon}>
-                <NavLink to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
-              </Menu.Item>) :
-              (<SubMenu key={subroute.key} icon={subroute.icon} title={subroute.title}>
-                {subroute.subNav.map((subItem) => (
-                    <Menu.Item key={subItem.key} icon={subItem.icon}>
-                      <NavLink key={subItem.key} to={subItem.path} style={{ textDecoration: "none" }}>{subItem.title}</NavLink>
-                    </Menu.Item>
-                ))}
-                </SubMenu>) :
-              // (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>
-              //   <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
-              //   </Menu.Item>)
-              null
-          )}
-          </Menu>) : null }
+        {accessToken === null && accessToken === undefined ? 
+          (<Menu><Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>
+            <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
+            </Menu.Item> </Menu>): null }
       </Sider>
 
       <Layout className="site-layout">
@@ -106,4 +91,4 @@ const AdminLayout = ({ children }) => {
     </Layout>
   );
 };
-export default AdminLayout;
+export default AuthLayout;

@@ -11,7 +11,6 @@ import Select from 'react-select';
 const { Option } = Select;
 
 const ModalContent = (props) => {
-  console.log("Props", props);
   const { TextArea } = Input;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
@@ -496,7 +495,7 @@ const ModalContent = (props) => {
           {state.format === '2' ?
             (<>
               {state.pdfExternalUrl === 'pdf_file2' ?
-                (<>{state.pdfSecond ? <a href={state.pdfFront} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null }
+                (<>{state.pdfSecond ? <a href={state.pdfSecond} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null }
                 <Form.Item label="Pdf">
                   <div className="inputStyle">
                     <Input type="file" name="pdf2" accept="image/pdf" onChange={handleFileChangeSecond} /></div>

@@ -56,7 +56,6 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
-    console.log("form_data",newData);
     onClose();
     if(drawerType == 'edit') {
       dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
@@ -81,7 +80,7 @@ const TopicsContent = (props) => {
         item.topic_image && item.topic_image.map(item => {
           images.push({id: item.id, image: item.image});
         })
-       
+       console.log("item", item);
       items.push({
         sl_no: serialNo,
         id: item.id,
