@@ -15,7 +15,7 @@ const { SubMenu } = Menu;
 const AuthLayout = ({ children }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem]= useState('item1');
+  // const [selectedMenuItem, setSelectedMenuItem]= useState('item1');
   const accessToken = localStorage.getItem("accessToken");
 
   const handleClick = () => {
@@ -26,22 +26,22 @@ const AuthLayout = ({ children }) => {
     setCollapsed(!collapsed)
   };
 
-  const pathname = window.location.pathname;
-  const defaultKey = pathname.split('/');
-  let selectedKey = '';
-  let openKey = ''
-  if(defaultKey[1] == 'userdetails')
-  selectedKey = 'users';
-  else if(defaultKey[1] == 'sub_specialization')
-  selectedKey = 'specializations';
-  else if(defaultKey[1] == 'advisory_board')
-  selectedKey = 'specializations'; 
-  else if(defaultKey[1] == 'privacy_policy')
-    openKey = 'settings';
-  else if(defaultKey[1] == 'terms')
-    openKey = 'settings';
-  else if(defaultKey[1] == 'contact')
-    openKey = 'settings';
+  // const pathname = window.location.pathname;
+  // const defaultKey = pathname.split('/');
+  // let selectedKey = '';
+  // let openKey = ''
+  // if(defaultKey[1] == 'userdetails')
+  // selectedKey = 'users';
+  // else if(defaultKey[1] == 'sub_specialization')
+  // selectedKey = 'specializations';
+  // else if(defaultKey[1] == 'advisory_board')
+  // selectedKey = 'specializations'; 
+  // else if(defaultKey[1] == 'privacy_policy')
+  //   openKey = 'settings';
+  // else if(defaultKey[1] == 'terms')
+  //   openKey = 'settings';
+  // else if(defaultKey[1] == 'contact')
+  //   openKey = 'settings';
   return (
     <Layout>
       <Sider

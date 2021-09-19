@@ -286,6 +286,7 @@ const ModalContent = (props) => {
         }
       }
     }
+    state.pdfExternalUrl === 'pdf_file2' ? state.deliverytype = 'pdf' : state.deliverytype ='external_url' 
     setErrors({ errors });
     return formIsValid;
   }
@@ -343,7 +344,7 @@ const ModalContent = (props) => {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
         newData['external_url'] = newData['external_url2'];
-        newData['deliveryType'] = 'external_url';
+        newData['deliveryType'] = newData['deliveryType'];
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
@@ -351,10 +352,11 @@ const ModalContent = (props) => {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
         newData['external_url'] = newData['external_url3'];
-        newData['deliveryType'] = 'external_url';
+        newData['deliveryType'] = newData['deliveryType'];
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
+      console.log("state" , state);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2,form_data3, image_data);
     }
@@ -477,10 +479,10 @@ const ModalContent = (props) => {
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div>
               <div className="errorMsg">{errors && errors.errors && errors.errors.video_url}</div></Form.Item>) : null}
-          {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
+          {/* {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
-            : null)}
+            : null)} */}
           {state.format === '2' ?
             (<Form.Item label="Detail Page">
               <Radio.Group onChange={(e) => radioOnChange('pdfExternalUrl', e)} value={state.pdfExternalUrl}>
