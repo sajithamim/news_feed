@@ -25,4 +25,17 @@ export const getConfiguration = () => async (dispatch) => {
     }
 }
 
+export const updateConfiguration = (state) => async (dispatch) => {
+    try {
+        const res = await Config.updateConfig(state);
+        dispatch({
+            type: 'EDIT_CONFIGURATION',
+            payload: res.data,
+        })
+        return res;
+    } catch (err) {
+    
+    }
+}
+
 
