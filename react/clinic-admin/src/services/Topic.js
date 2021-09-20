@@ -26,9 +26,10 @@ const getSpecialization = () => {
 const getCategory = () => {
   return http.get("topic/getallcategory/");
 }
-
+const searchUsers = (value) => {
+    return http.get(`auth/usersearck/${value}/`);
+}
 const putPdfdata =(id, pdfData) => {
-  console.log("pdfData", pdfData);
   let accessToken = localStorage.getItem("accessToken");
   let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/pdf/`;
   axios.put(url, pdfData, {
@@ -84,7 +85,8 @@ const Topic = {
   updateTopic,
   putPdfdata2,
   getSpecialization,
-  getCategory
+  getCategory,
+  searchUsers
 };
 
 export default Topic;
