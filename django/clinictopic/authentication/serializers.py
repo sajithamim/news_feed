@@ -360,9 +360,9 @@ class PhoneUpdateSerializer(serializers.ModelSerializer):
         fields = ['phone']
     def validate(self, attrs):
         phone = attrs.get('phone', '')
-        if not phone.isnumeric():
-            raise serializers.ValidationError(
-                self.default_error_messages)
+        # if not phone.isnumeric():
+        #     raise serializers.ValidationError(
+        #         self.default_error_messages)
         return attrs
 
 class UsernameChangeSerializer(serializers.ModelSerializer):
