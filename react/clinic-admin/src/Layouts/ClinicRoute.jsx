@@ -1,6 +1,8 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-export const ClinicLayout = ({ component: Component, ...rest }) => (
+const ClinicRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => (<Component {...props} />)} />
 )
+
+export default ClinicRoute;

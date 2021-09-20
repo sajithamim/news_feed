@@ -80,7 +80,7 @@ const TopicsContent = (props) => {
         item.topic_image && item.topic_image.map(item => {
           images.push({id: item.id, image: item.image});
         })
-       console.log("item", item);
+       
       items.push({
         sl_no: serialNo,
         id: item.id,
@@ -100,7 +100,8 @@ const TopicsContent = (props) => {
         topic_topic: topics,
         publishingtime: item.publishingtime,
         publishtype: "later",
-        deliverytype: item.deliverytype,
+        deliverytype:item.deliverytype,
+        P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url:item.video_url,

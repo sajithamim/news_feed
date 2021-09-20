@@ -8,11 +8,11 @@ import { getContrastRatio } from "@material-ui/core";
 const Configuration = (props) => {
   const dispatch = useDispatch();
   const [state, setState] = useState("");
-  const { getConfigData } = useSelector(state => state.Config);
-  console.log("getConfigData", getConfigData);
+  const { configData } = useSelector(state => state.Config);
+  console.log("getConfigData", configData);
 
   useEffect(() => {
-    dispatch(getConfiguration)()
+    dispatch(getConfiguration())
   }, [])
   
   // const formValidation = () => {

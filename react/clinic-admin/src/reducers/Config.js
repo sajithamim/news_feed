@@ -5,7 +5,6 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-    console.log("action:hjhjhjhjh" , action.payload)
     switch (action.type) {
         case 'RETRIEVE_CONFIGURATION':
             return { ...state,  configData: action.payload , addConfigData: false , getConfigData: false,}

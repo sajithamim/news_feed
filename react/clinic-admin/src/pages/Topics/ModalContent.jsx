@@ -11,6 +11,7 @@ import Select from 'react-select';
 const { Option } = Select;
 
 const ModalContent = (props) => {
+  console.log("props", props);
   const { TextArea } = Input;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
@@ -182,8 +183,8 @@ const ModalContent = (props) => {
     else if (val === 'format') {
       setState({ ...state, format: e.target.value })
     }
-    else if (val === 'pdfExternalUrl') {
-      setState({ ...state, pdfExternalUrl: e.target.value })
+    else if (val === 'deliverytype') {
+      setState({ ...state, deliverytype: e.target.value })
     }
   };
 
@@ -286,7 +287,7 @@ const ModalContent = (props) => {
         }
       }
     }
-    state.pdfExternalUrl === 'pdf_file2' ? state.deliverytype = 'pdf' : state.deliverytype ='external_url' 
+    state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype ='external' 
     setErrors({ errors });
     return formIsValid;
   }
@@ -485,24 +486,24 @@ const ModalContent = (props) => {
             : null)} */}
           {state.format === '2' ?
             (<Form.Item label="Detail Page">
-              <Radio.Group onChange={(e) => radioOnChange('pdfExternalUrl', e)} value={state.pdfExternalUrl}>
-                <Radio value="pdf_file2">
+              <Radio.Group onChange={(e) => radioOnChange('deliverytype', e)} value={state.deliverytype}>
+                <Radio value="pdf">
                   Pdf
                 </Radio>
-                <Radio value="externalpdf_url2">
+                <Radio value="external">
                   External URL
                 </Radio>
               </Radio.Group>
             </Form.Item>) : null}
           {state.format === '2' ?
             (<>
-              {state.pdfExternalUrl === 'pdf_file2' ?
+              {state.deliverytype === 'pdf' ?
                 (<>{state.pdfSecond ? <a href={state.pdfSecond} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null }
                 <Form.Item label="Pdf">
                   <div className="inputStyle">
                     <Input type="file" name="pdf2" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
                   <div className="errorMsg">{errors && errors.errors && errors.errors.pdf2}</div></Form.Item></>) : null}
-              {state.pdfExternalUrl === 'externalpdf_url2' ?
+              {state.deliverytype === 'external' ?
                 (<><Form.Item label="External URL">
                   <div className="inputStyle">
                     <Input type="text" name="external_url2" onChange={handleChange} value={state.external_url2} /></div>

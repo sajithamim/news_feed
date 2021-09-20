@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
+import AdminLayout from "../Layouts/AdminLayout/AdminLayout";
 
-export const PrivateRoute = ({ component: Component, ...rest }) => (
+const AdminRoute = ({ component: Component, ...rest }) => (
     <AdminLayout> 
     <Route {...rest} render={props => (
         localStorage.getItem('accessToken')
@@ -11,3 +11,5 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
     )} />
     </AdminLayout>
 )
+
+export default AdminRoute;

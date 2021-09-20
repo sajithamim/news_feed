@@ -24,7 +24,7 @@ import Configuration from './pages/Configuration/Configuration';
 import Verify from "./pages/Verification/Verify";
 import AdminRoute from "./Layouts/AdminRoute";
 import AuthRoute from "./Layouts/AuthRoute";
-import ClinicRoute from './Layouts/AdminLayout';
+import ClinicRoute from './Layouts/ClinicRoute';
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "./actions/auth.js"
 
@@ -39,7 +39,6 @@ function App() {
   let warnTimeout;
   let logoutTimeout;
   const accessToken = localStorage.getItem("accessToken");
-  console.log("accessToken" , accessToken);
   const dispatch = useDispatch();
   
   const warn = () => {
@@ -94,28 +93,28 @@ function App() {
   return (
     <Router>
         <Switch>
-          <AdminLayout path="/data" exact component={OverviewContent} />
-          <AdminLayout path="/categories" exact component={CategoriesContent} />
-          <AdminLayout path="/topics" exact component={TopicsContent} />
-          <AdminLayout path="/specializations" exact component={SpecializationContent} />
-          <AdminLayout path="/sub_specialization/:specId" exact component={SubSpecialization} />
-          <AdminLayout path="/feedback" exact component={Feedback} />
-          <AdminLayout path="/users" exact component={Users} />
-          <AdminLayout path="/privacy_policy" exact component={Policy} />
-          <AdminLayout path="/about" exact component={About} />
-          <AdminLayout path="/contact" exact component={Contact} />
-          <AdminLayout path="/advertisements" exact component={SpecialityAdsList} />
-          <AdminLayout path="/terms" exact component={Terms} />
-          <AdminLayout path="/new_add/" exact component={SpecialityAds} />
-          <AdminLayout path="/configuration/" exact component={Configuration} />
-          <AdminLayout path="/advisory_board/:specId" exact component={AdvisoryBoardContent} />
-          <AdminLayout path="/edit_add/:adsId" exact component={SpecialityAds} />
-          <AdminLayout path="/userdetails/:emailId" exact component={UserDetails} />
-          <AdminLayout path="/genads/" exact component={GenAdvertisementContent} />
-          <AuthLayout path="/forgot_password" exact component={Forgot} />
-          <AuthLayout path="/reset_password/" exact component={Reset} />
-          <AdminRoute exact path={["/", "/login"]} component={Login} />
-          <ClinicLayout path="/verify/" exact component={Verify} />
+          <AdminRoute path="/data" exact component={OverviewContent} />
+          <AdminRoute path="/categories" exact component={CategoriesContent} />
+          <AdminRoute path="/topics" exact component={TopicsContent} />
+          <AdminRoute path="/specializations" exact component={SpecializationContent} />
+          <AdminRoute path="/sub_specialization/:specId" exact component={SubSpecialization} />
+          <AdminRoute path="/feedback" exact component={Feedback} />
+          <AdminRoute path="/users" exact component={Users} />
+          <AdminRoute path="/privacy_policy" exact component={Policy} />
+          <AdminRoute path="/about" exact component={About} />
+          <AdminRoute path="/contact" exact component={Contact} />
+          <AdminRoute path="/advertisements" exact component={SpecialityAdsList} />
+          <AdminRoute path="/terms" exact component={Terms} />
+          <AdminRoute path="/new_add/" exact component={SpecialityAds} />
+          <AdminRoute path="/configuration/" exact component={Configuration} />
+          <AdminRoute path="/advisory_board/:specId" exact component={AdvisoryBoardContent} />
+          <AdminRoute path="/edit_add/:adsId" exact component={SpecialityAds} />
+          <AdminRoute path="/userdetails/:emailId" exact component={UserDetails} />
+          <AdminRoute path="/genads/" exact component={GenAdvertisementContent} />
+          <AuthRoute path="/forgot_password" exact component={Forgot} />
+          <AuthRoute path="/reset_password/" exact component={Reset} />
+          <AuthRoute exact path={["/", "/login"]} component={Login} />
+          <ClinicRoute path="/verify" exact component={Verify} />
         </Switch>
     </Router>
   );

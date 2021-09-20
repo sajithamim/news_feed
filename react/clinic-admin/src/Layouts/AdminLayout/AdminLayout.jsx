@@ -18,9 +18,9 @@ const AdminLayout = ({ children }) => {
   const [selectedMenuItem, setSelectedMenuItem]= useState('item1');
   const accessToken = localStorage.getItem("accessToken");
 
-  // const handleClick = () => {
-  //   dispatch(logout())
-  // }
+  const handleClick = () => {
+    dispatch(logout())
+  }
 
   const toggle = () => {
     setCollapsed(!collapsed)
@@ -72,10 +72,9 @@ const AdminLayout = ({ children }) => {
                     </Menu.Item>
                 ))}
                 </SubMenu>) :
-              // (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>
-              //   <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
-              //   </Menu.Item>)
-              null
+              (<Menu.Item key={subroute.key} icon={subroute.icon} onClick={handleClick}>
+                <NavLink key={subroute.key} to={subroute.path} style={{ textDecoration: "none" }}>{subroute.title}</NavLink>
+                </Menu.Item>)
           )}
           </Menu>) : null }
       </Sider>
