@@ -3,7 +3,7 @@ const initialState= {
     success: '',
     error: '',
     pdf:{},
-    userList1:{},
+    userList:{},
     specList : {},
     catList:{}
 };
@@ -31,7 +31,7 @@ export default (state = initialState , action) => {
         case 'GET_CATEGORY':
         return { ...state , catList: action.payload}
         case 'SEARCH_USERS':
-        return { ...state , userList1: action.payload}
+        return { ...state , userList: action.payload}
         default: 
         return state;
     }

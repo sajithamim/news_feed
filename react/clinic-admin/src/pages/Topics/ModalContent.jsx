@@ -19,10 +19,11 @@ const ModalContent = (props) => {
   const [formSubmit, setFormSubmit] = useState(true);
   const [crntDateTime , setCrntDateTime] = useState('');
   const [state, setState] = useState({});
-  const { specList, catList , userList1} = useSelector(state => state.topic);
-  // console.log("userList" , userList);
-  const { userList } = useSelector(state => state.users);
+  const { specList, catList , userList} = useSelector(state => state.topic);
+  console.log("userList" , userList);
+  // const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
+  const [data , setData] = useState([]);
 
   useEffect(() => {
     dispatch(getSpecialization());
@@ -34,6 +35,7 @@ const ModalContent = (props) => {
     else {
       setState({});
     }
+    userList.data ? setData(userList.data) : setData([])
   }, [props.editData])
 
   const specialization = [];
@@ -211,11 +213,12 @@ const ModalContent = (props) => {
   }
   const fetchUser = (value) => {
     console.log("vale" , value);
+    setData([]);
     dispatch(searchUsers(value))
   }
-  const userHandleChange = () => {
+  // const userHandleChange = () =>{
 
-  }
+  // }
   const handleValidation = () => {
     let fields = state;
     let errors = {};
@@ -439,7 +442,7 @@ const ModalContent = (props) => {
               options={author}
             />
           </Form.Item>
-          {/* <Form.Item label="Author">
+          <Form.Item label="Author">
             <Select
               mode="multiple"
               labelInValue
@@ -448,14 +451,14 @@ const ModalContent = (props) => {
               notFoundContent={fetching ? <Spin size="small" /> : null}
               filterOption={false}
               onSearch={fetchUser}
-              onChange={userHandleChange}
+              // onChange={userHandleChange}
               style={{ width: '100%' }}
             >
-              {data.map(d => (
-                <Option key={d.value}>{d.text}</Option>
+              {data && data.map(item => (
+                <Option key={item.id}>{item.username}</Option>
               ))}
             </Select>
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
               <Radio value="1">
