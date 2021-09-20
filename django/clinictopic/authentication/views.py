@@ -654,7 +654,12 @@ class TestSMSView(APIView):
         # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
         r = requests.get(url)
         print(type(json.loads(r.text)))
-        return Response({},status=status.HTTP_200_OK)
+        response={
+                "success":"True",
+                "message":"user Phone verified",
+                "status":status.HTTP_200_OK,
+                 }
+        return Response(response,status=status.HTTP_200_OK)
 
 class UserDeleteView(APIView):
     permission_classes = (permissions.IsAuthenticated,)

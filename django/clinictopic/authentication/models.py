@@ -114,6 +114,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=1000,blank=True,null=True)
     start_date = models.DateField(blank=True,null=True)
     end_date = models.DateField(blank=True,null=True)
+    current= models.BooleanField()
     industry = models.CharField(max_length=1000,blank=True,null=True)
     description = models.CharField(max_length=10000,blank=True,null=True)
     media = ArrayField(models.CharField(max_length=200), blank=True,null=True)
