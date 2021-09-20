@@ -13,7 +13,6 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  console.log(action.payload)
   switch (action.type) {
     case 'RETRIEVE_SPECIALIZATION':
       return { ...state, specList: action.payload, addData: false, updateData: false, page: action.page };

@@ -81,18 +81,21 @@ export const routes = [
   },
   {
     title: 'Feedback',
+    layout: "/admin",
     path: '/feedback',
     key: "feedback",
     icon: <IoIcons.IoIosPaper />
   },
   {
     title: 'Configuration',
+    layout: "/admin",
     path: '/Configuration',
     key: "Configuration",
     icon: <MdConfirmationNumber/>
   },
   {
     title: 'Logout',
+    layout: "/auth",
     path: '',
     key: "logout",
     icon: <AiTwotoneLock />

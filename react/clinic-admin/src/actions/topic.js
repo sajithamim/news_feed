@@ -63,16 +63,23 @@ export const deleteImages = (id) => async (dispatch) => {
     }
 }
 
-export const postTopic = (state, form_data, form_data2, image_data) => async (dispatch) => {
+export const postTopic = (state, form_data, form_data_back , form_data2, form_data3, image_data) => async (dispatch) => {
     state.topic_audience = "doctor";
     try {
         const res = await Topic.postTopic(state);
+        console.log("action pdf res" , res);
         if(res.status == 201){
             if (res.data.id && form_data) {
                 await Topic.putPdfdata(res.data.id, form_data);
             }
+            if(res.data.id && form_data_back) {
+                await Topic.putPdfdata2(res.data.id, form_data_back);
+            }
             if(res.data.id && form_data2) {
-                await Topic.putPdfdata2(res.data.id, form_data2);
+                await Topic.putPdfdata(res.data.id, form_data2);
+            }
+            if(res.data.id && form_data3) {
+                await Topic.putPdfdata(res.data.id, form_data3);
             }
             if(res.data.id && image_data) {
                 image_data.append('topic_id', res.data.id);
@@ -94,15 +101,19 @@ export const postTopic = (state, form_data, form_data2, image_data) => async (di
     }
 }
 
-export const updateTopic = (id, state, form_data, form_data2, image_data) => async (dispatch) => {
+export const updateTopic = (id, state, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
     state.topic_audience = "doctor";
     try {
         const res = await Topic.updateTopic(id, state);
         if(res.status == 200) {
             if (form_data !== null)
                 await Topic.putPdfdata(id, form_data);
+            if(form_data_back)
+                await Topic.putPdfdata2(id, form_data_back);
             if(form_data2)
                 await Topic.putPdfdata2(id, form_data2);
+            if(form_data3)
+                await Topic.putPdfdata2(id, form_data3);
             if(image_data !== null) {
                 image_data.append('topic_id', id);
                 await Topic.putImagedata(image_data);

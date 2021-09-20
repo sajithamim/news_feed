@@ -55,12 +55,12 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
 
-  const onFormSubmit = (newData, form_data, form_data2, image_data) => {
+  const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
     onClose();
     if(drawerType == 'edit') {
-      dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data));
+      dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
     } else {
-      dispatch(postTopic(newData, form_data, form_data2 , image_data));
+      dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
     }
   }
 
@@ -100,14 +100,19 @@ const TopicsContent = (props) => {
         topic_topic: topics,
         publishingtime: item.publishingtime,
         publishtype: "later",
-        deliverytype: item.deliverytype,
+        deliverytype:item.deliverytype,
+        P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url:item.video_url,
         pdfFront: item.pdf,
         pdfBack: item.pdfsecond,
+        pdfSecond: item.pdf,
+        pdfThird:item.pdf,
         format: item.format,
         external_url:item.external_url,
+        external_url2: item.external_url,
+        external_url3: item.external_url,
         username: {value: item.author && item.author.name, label: item.author && item.author.name},
         published_status: item.published
       }) 
