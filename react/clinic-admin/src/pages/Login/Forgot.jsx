@@ -37,9 +37,7 @@ const Forgot = () => {
     setLoading(true);
     dispatch(postRequestEmail(state))
     .then((res) => {
-      res === undefined ? message.error({content: "User doesn't exist"}) :
-      message.success({
-        content: 'We have sent you a link to reset your password',
+      (res.request.status === 'undefined') ? message.error({content: "User doesn't exist"}) : message.success({content: 'We have sent you a link to reset your password',
         className: 'custom-class',
         style: {
           marginLeft: '25vh',

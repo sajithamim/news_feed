@@ -19,10 +19,11 @@ const ModalContent = (props) => {
   const [formSubmit, setFormSubmit] = useState(true);
   const [crntDateTime , setCrntDateTime] = useState('');
   const [state, setState] = useState({});
-  const { specList, catList , userList1} = useSelector(state => state.topic);
-  // console.log("userList" , userList);
-  const { userList } = useSelector(state => state.users);
+  const { specList, catList , userList} = useSelector(state => state.topic);
+  console.log("userList" , userList);
+  // const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
+  const [data , setData] = useState([]);
 
   useEffect(() => {
     dispatch(getSpecialization());
@@ -34,6 +35,7 @@ const ModalContent = (props) => {
     else {
       setState({});
     }
+    userList.data ? setData(userList.data) : setData([])
   }, [props.editData])
 
   const specialization = [];
@@ -183,12 +185,8 @@ const ModalContent = (props) => {
 
   const radioOnChange = (val, e) => {
     if (val === 'publishtype') {
-      if(e.target.value === 'now'){
-        setCrntDateTime(new Date().toISOString());
-      }else if(e.target.value === 'later'){
-        setCrntDateTime();
-      } 
-      setState({ ...state, publishtype: e.target.value, publishingtime: crntDateTime, published: (e.target.value === 'now') ? '1' : '0' })
+      const crntDateTime = new Date().toISOString();
+      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
@@ -206,16 +204,14 @@ const ModalContent = (props) => {
 
   const onChange = (value, dateString) => {
     const laterTime = new Date(dateString).toISOString();
-    setCrntDateTime(laterTime);
-    // setState({ ...state, publishingtime: laterTime })
+    setState({ ...state, publishingtime: laterTime })
   }
   const fetchUser = (value) => {
     console.log("vale" , value);
+    setData([]);
     dispatch(searchUsers(value))
   }
-  const userHandleChange = () => {
-
-  }
+  
   const handleValidation = () => {
     let fields = state;
     let errors = {};
@@ -309,16 +305,16 @@ const ModalContent = (props) => {
       }
     }
     state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
+    setState({ ...state, publishingtime: crntDateTime })
     setErrors({ errors });
     return formIsValid;
   }
 
 
   const handleSubmit = (e) => {
-    console.log("setCrntDateTime" ,crntDateTime );
-    setState({ ...state, publishingtime: crntDateTime })
     if (handleValidation() && formSubmit) {
       let form_data = null;
+      console.log("setCrntDateTime" ,state.publishingtime );
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
         form_data.append('pdf', state.pdfUrl, state.pdfUrl.name);
@@ -439,7 +435,7 @@ const ModalContent = (props) => {
               options={author}
             />
           </Form.Item>
-          {/* <Form.Item label="Author">
+          <Form.Item label="Author">
             <Select
               mode="multiple"
               labelInValue
@@ -448,14 +444,14 @@ const ModalContent = (props) => {
               notFoundContent={fetching ? <Spin size="small" /> : null}
               filterOption={false}
               onSearch={fetchUser}
-              onChange={userHandleChange}
+              // onChange={userHandleChange}
               style={{ width: '100%' }}
             >
-              {data.map(d => (
-                <Option key={d.value}>{d.text}</Option>
+              {data && data.map(item => (
+                <Option key={item.id}>{item.username}</Option>
               ))}
             </Select>
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
               <Radio value="1">

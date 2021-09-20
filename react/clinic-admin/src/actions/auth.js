@@ -39,6 +39,7 @@ export const logout = () => (dispatch) => {
 export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
+      console.log("response" , res);
       dispatch({
           type: POST_EMAIL,
           payload: res.data,
