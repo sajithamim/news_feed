@@ -106,7 +106,7 @@ class RegisterView(generics.GenericAPIView):
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Verify your email'}
             Util.send_email(data)
-            # print(1)
+            # print(1) 
             smsphone = request.data['phone']
             if smsphone.split("-")[0]=='91':
                 smsnumber = smsphone.replace("-","")
