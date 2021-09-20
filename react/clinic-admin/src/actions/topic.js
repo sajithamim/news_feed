@@ -137,10 +137,11 @@ export const updateTopic = (id, state, form_data,form_data_back, form_data2, for
 export const searchUsers = (value) => async(dispatch) => {
     try{
         const res = await Topic.searchUsers(value);
-        dispatch({
-            type: 'SEARCH_USERS',
-            payload: res.data,
-        })
+        return res;
+        // dispatch({
+        //     type: 'SEARCH_USERS',
+        //     payload: res.data,
+        // })
     }catch (err) {
 
     }

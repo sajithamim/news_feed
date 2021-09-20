@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
 import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select,Spin } from "antd";
 import { useState } from "react";
-import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList } from "../../actions/users";
 import { deleteImages, getSpecialization, getCategory , searchUsers} from "../../actions/topic";
 import moment from 'moment';
 import SelectBox from 'react-select';
+import "./ModalContent.css";
 
 const { Option } = Select;
 
 const ModalContent = (props) => {
-  console.log("props", props);
   const { TextArea } = Input;
   const [lastFetchId , setLastFetchId]=useState(0);
   const [fetching , setFetching]=useState(0);
@@ -20,12 +19,12 @@ const ModalContent = (props) => {
   const [crntDateTime , setCrntDateTime] = useState('');
   const [state, setState] = useState({});
   const { specList, catList , userList} = useSelector(state => state.topic);
-  console.log("userList" , userList);
-  // const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
+  const [value , setValue] = useState("");
   const [data , setData] = useState([]);
 
   useEffect(() => {
+    setErrors({});
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
@@ -35,7 +34,6 @@ const ModalContent = (props) => {
     else {
       setState({});
     }
-    userList.data ? setData(userList.data) : setData([])
   }, [props.editData])
 
   const specialization = [];
@@ -58,12 +56,6 @@ const ModalContent = (props) => {
       { value: item.email, label: item.username }
     );
   })
-
-  const value = []
-  console.log("useritem value" , value);
-  userList && userList.data && userList.data.map(user => {
-    value.push(user.username)
-  });
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -213,12 +205,12 @@ const ModalContent = (props) => {
   }
   const fetchUser = (value) => {
     console.log("vale" , value);
-    setData([]);
+    //setData([]);
     dispatch(searchUsers(value))
   }
-  // const userHandleChange = () =>{
+  const userHandleChange = () =>{
 
-  // }
+  }
   const handleValidation = () => {
     let fields = state;
     let errors = {};
@@ -409,7 +401,22 @@ const ModalContent = (props) => {
     }
 
   }
+  const handleSearch = value => {
+    if (value) {
+      dispatch(searchUsers(value))
+      .then((res) => {
+        if(res.data) 
+          setData(res.data.data);
+      })
+    } else {
+      setData([]);
+    }
+  };
+  const handleSearchChange = value => {
+    setState({ ...state, email: value});
+  };
 
+  const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
   return (
     <div>
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
@@ -434,29 +441,19 @@ const ModalContent = (props) => {
             <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Author">
-            <SelectBox
-              isMulti={false}
-              isSearchable={true}
-              value={state.username || ''}
-              onChange={(e) => handleUserChange}
-              options={author}
-            />
-          </Form.Item>
-          <Form.Item label="Author">
             <Select
-              mode="multiple"
-              labelInValue
-              value={value}
+              showSearch
+              value={state.email || null}
               placeholder="Search users"
-              notFoundContent={fetching ? <Spin size="small" /> : null}
-              filterOption={false}
-              onSearch={fetchUser}
-              // onChange={userHandleChange}
               style={{ width: '100%' }}
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              filterOption={false}
+              onSearch={handleSearch}
+              onChange={handleSearchChange}
+              notFoundContent={null}
             >
-              {data && data.map(item => (
-                <Option key={item.id}>{item.username}</Option>
-              ))}
+              {options}
             </Select>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
