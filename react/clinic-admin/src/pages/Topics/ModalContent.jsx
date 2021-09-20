@@ -1,22 +1,26 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, TextArea } from "antd";
+import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select,Spin } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList } from "../../actions/users";
-import { deleteImages, getSpecialization, getCategory } from "../../actions/topic";
+import { deleteImages, getSpecialization, getCategory , searchUsers} from "../../actions/topic";
 import moment from 'moment';
-import Select from 'react-select';
+import SelectBox from 'react-select';
 
 const { Option } = Select;
 
 const ModalContent = (props) => {
   console.log("props", props);
   const { TextArea } = Input;
+  const [lastFetchId , setLastFetchId]=useState(0);
+  const [fetching , setFetching]=useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
+  const [crntDateTime , setCrntDateTime] = useState('');
   const [state, setState] = useState({});
-  const { specList, catList } = useSelector(state => state.topic);
+  const { specList, catList , userList1} = useSelector(state => state.topic);
+  // console.log("userList" , userList);
   const { userList } = useSelector(state => state.users);
   const [errors, setErrors] = useState({});
 
@@ -53,6 +57,11 @@ const ModalContent = (props) => {
     );
   })
 
+  const value = []
+  console.log("useritem value" , value);
+  userList && userList.data && userList.data.map(user => {
+    value.push(user.username)
+  });
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -71,6 +80,7 @@ const ModalContent = (props) => {
   };
 
   const handleUserChange = (item) => {
+    console.log("e", item);
     setState({ ...state, username: item, email: item.value, author: { name: item.label } });
   };
 
@@ -172,9 +182,13 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
-    if (val === 'publish') {
-      const crntDateTime = new Date().toISOString();
-      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value == "now") ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
+    if (val === 'publishtype') {
+      if(e.target.value === 'now'){
+        setCrntDateTime(new Date().toISOString());
+      }else if(e.target.value === 'later'){
+        setCrntDateTime();
+      } 
+      setState({ ...state, publishtype: e.target.value, publishingtime: crntDateTime, published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
@@ -192,9 +206,16 @@ const ModalContent = (props) => {
 
   const onChange = (value, dateString) => {
     const laterTime = new Date(dateString).toISOString();
-    setState({ ...state, publishingtime: laterTime })
+    setCrntDateTime(laterTime);
+    // setState({ ...state, publishingtime: laterTime })
   }
+  const fetchUser = (value) => {
+    console.log("vale" , value);
+    dispatch(searchUsers(value))
+  }
+  const userHandleChange = () => {
 
+  }
   const handleValidation = () => {
     let fields = state;
     let errors = {};
@@ -208,7 +229,7 @@ const ModalContent = (props) => {
       errors["category_id"] = "Category cannot be empty";
     }
 
-    if (!fields["publishingtime"]) {
+    if (!fields["publishtype"]) {
       formIsValid = false;
       errors["publishingtime"] = "Publish time cannot be empty";
     }
@@ -287,13 +308,15 @@ const ModalContent = (props) => {
         }
       }
     }
-    state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype ='external' 
+    state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
     setErrors({ errors });
     return formIsValid;
   }
 
 
   const handleSubmit = (e) => {
+    console.log("setCrntDateTime" ,crntDateTime );
+    setState({ ...state, publishingtime: crntDateTime })
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -306,14 +329,14 @@ const ModalContent = (props) => {
         form_data_back.append('pdfsecond', state.pdfUrlBack, state.pdfUrlBack.name);
       }
       let form_data2 = null;
-      if (state.format !== '1' &&  state.pdfUrlSecond && state.pdfUrlSecond.name) {
-        console.log("coming to format 2 if cond" ,state.pdfUrlSecond.name );
+      if (state.format !== '1' && state.pdfUrlSecond && state.pdfUrlSecond.name) {
+        console.log("coming to format 2 if cond", state.pdfUrlSecond.name);
         form_data2 = new FormData();
         form_data2.append('pdf', state.pdfUrlSecond, state.pdfUrlSecond.name);
       }
       let form_data3 = null;
-      if (state.format !== '1' &&  state.pdfUrlThird && state.pdfUrlThird.name) {
-        console.log("coming to format 2 if cond" ,state.pdfUrlThird.name );
+      if (state.format !== '1' && state.pdfUrlThird && state.pdfUrlThird.name) {
+        console.log("coming to format 2 if cond", state.pdfUrlThird.name);
         form_data3 = new FormData();
         form_data3.append('pdf', state.pdfUrlThird, state.pdfUrlThird.name);
       }
@@ -357,9 +380,9 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log("state" , state);
+      console.log("state", state);
       setState({});
-      props.onFormSubmit(newData, form_data, form_data_back, form_data2,form_data3, image_data);
+      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
 
@@ -389,7 +412,7 @@ const ModalContent = (props) => {
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
           <Form.Item label="Specializations">
-            <Select
+            <SelectBox
               isMulti={true}
               value={state.spec_data || ''}
               onChange={handleSpecChange}
@@ -398,7 +421,7 @@ const ModalContent = (props) => {
             <div className="errorMsg">{errors && errors.errors && errors.errors.topic_topic}</div>
           </Form.Item>
           <Form.Item label="Category">
-            <Select
+            <SelectBox
               isMulti={false}
               isSearchable={true}
               value={state.category_data || ''}
@@ -408,14 +431,31 @@ const ModalContent = (props) => {
             <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Author">
-            <Select
+            <SelectBox
               isMulti={false}
               isSearchable={true}
               value={state.username || ''}
-              onChange={handleUserChange}
+              onChange={(e) => handleUserChange}
               options={author}
             />
           </Form.Item>
+          {/* <Form.Item label="Author">
+            <Select
+              mode="multiple"
+              labelInValue
+              value={value}
+              placeholder="Search users"
+              notFoundContent={fetching ? <Spin size="small" /> : null}
+              filterOption={false}
+              onSearch={fetchUser}
+              onChange={userHandleChange}
+              style={{ width: '100%' }}
+            >
+              {data.map(d => (
+                <Option key={d.value}>{d.text}</Option>
+              ))}
+            </Select>
+          </Form.Item> */}
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
               <Radio value="1">
@@ -498,43 +538,43 @@ const ModalContent = (props) => {
           {state.format === '2' ?
             (<>
               {state.deliverytype === 'pdf' ?
-                (<>{state.pdfSecond ? <a href={state.pdfSecond} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null }
-                <Form.Item label="Pdf">
-                  <div className="inputStyle">
-                    <Input type="file" name="pdf2" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
-                  <div className="errorMsg">{errors && errors.errors && errors.errors.pdf2}</div></Form.Item></>) : null}
+                (<>{state.pdfSecond ? <a href={state.pdfSecond} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null}
+                  <Form.Item label="Pdf">
+                    <div className="inputStyle">
+                      <Input type="file" name="pdf2" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
+                    <div className="errorMsg">{errors && errors.errors && errors.errors.pdf2}</div></Form.Item></>) : null}
               {state.deliverytype === 'external' ?
                 (<><Form.Item label="External URL">
                   <div className="inputStyle">
                     <Input type="text" name="external_url2" onChange={handleChange} value={state.external_url2} /></div>
-                    <div className="errorMsg">{errors && errors.errors && errors.errors.external_url2}</div></Form.Item></>) : null}
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.external_url2}</div></Form.Item></>) : null}
             </>)
             : null}
           {state.format === '3' ?
             (<Form.Item label="Detail Page">
-              <Radio.Group onChange={(e) => radioOnChange('pdfExternalUrl', e)} value={state.pdfExternalUrl}>
-                <Radio value="pdf_file3">
-                  Pdf 
+              <Radio.Group onChange={(e) => radioOnChange('deliverytype', e)} value={state.deliverytype}>
+                <Radio value="pdf">
+                  Pdf
                 </Radio>
-                <Radio value="externalpdf_url3">
+                <Radio value="external">
                   External URL
                 </Radio>
               </Radio.Group>
             </Form.Item>) : null}
           {state.format === '3' ?
             (<>
-              {state.pdfExternalUrl === 'pdf_file3' ?
+              {state.deliverytype === 'pdf' ?
                 (<>
-                {state.pdfSecond ? <a href={state.pdfFront} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null }
-                <Form.Item label="Pdf">
-                  <div className="inputStyle">
-                    <Input type="file" name="pdf3" accept="image/pdf" onChange={handleFileChangeThird} /></div>
-                  <div className="errorMsg">{errors && errors.errors && errors.errors.pdf3}</div></Form.Item></>) : null}
-              {state.pdfExternalUrl === 'externalpdf_url3' ?
+                  {state.pdfSecond ? <a href={state.pdfFront} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null}
+                  <Form.Item label="Pdf">
+                    <div className="inputStyle">
+                      <Input type="file" name="pdf3" accept="image/pdf" onChange={handleFileChangeThird} /></div>
+                    <div className="errorMsg">{errors && errors.errors && errors.errors.pdf3}</div></Form.Item></>) : null}
+              {state.deliverytype === 'external' ?
                 (<><Form.Item label="External URL">
                   <div className="inputStyle">
                     <Input type="text" name="external_url3" onChange={handleChange} value={state.external_url3} /></div>
-                    <div className="errorMsg">{errors && errors.errors && errors.errors.external_url3}</div></Form.Item></>) : null}
+                  <div className="errorMsg">{errors && errors.errors && errors.errors.external_url3}</div></Form.Item></>) : null}
             </>)
             : null}
           {state.format === '1' ?
@@ -553,7 +593,7 @@ const ModalContent = (props) => {
             : null}
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span className="publishedStatus">Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
-              <Radio.Group onChange={(e) => radioOnChange('publish', e)} value={state.publishtype}>
+              <Radio.Group onChange={(e) => radioOnChange('publishtype', e)} value={state.publishtype}>
                 <Radio value="now">
                   Publish Now
                 </Radio>
@@ -561,7 +601,7 @@ const ModalContent = (props) => {
                   Later
                 </Radio>
               </Radio.Group>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.publishingtime}</div>
+              <div className="errorMsg">{errors && errors.errors && errors.errors.publishtype}</div>
             </Form.Item>
 
               {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
