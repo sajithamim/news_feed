@@ -31,11 +31,11 @@ const customStyles = {
 }
 
 const UserDetails = () => {
-  const [state, setState] = useState("");
+  const [state, setState] = useState({current:false});
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
-  console.log('publicationList', publicationList) 
+  console.log(' userProuserDetailsusfile', userProfile) 
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -48,7 +48,6 @@ const UserDetails = () => {
   const [imageUrl, setImageUrl] = useState();
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
-  const [checked , setChecked] = useState("")
 
   useEffect(() => {
     dispatch(getUserDetails(emailId))
@@ -74,13 +73,14 @@ const UserDetails = () => {
               if (res) {
                 // to get the qualification details of user
                 const getUserQualificationList = []
+                
                 res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                   return getUserQualificationList.push(
                     { value: item, label: item }
                   )
                 })
                 let result = res.data.data;
-                setState({ ...state, id: result.user_id, media: result.media, qualification: getUserQualificationList, qualifications: result.qualifications, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, start_date: result.start_date, end_date: result.end_date })
+                setState({ ...state, id: result.user_id, media: result.media, qualification: getUserQualificationList, qualifications: result.qualifications, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, current: result.current, start_date: result.start_date, end_date: result.end_date })
               } else {
                 setState({ ...state })
               }
@@ -92,7 +92,7 @@ const UserDetails = () => {
 
   let history = useHistory();
   const dateFormat = 'YYYY-MM-DD';
-
+ 
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -113,7 +113,6 @@ const UserDetails = () => {
   };
 
   const publicationGenerator = () => {
-      console.log('publicationGenerator');
     const items = [];
     publicationList && publicationList.data  && publicationList.data.map((item, key) => {
       key++;
@@ -184,7 +183,6 @@ const UserDetails = () => {
   }
 
   const handleQualificationChange = (item) => {
-    console.log("item othe" , item);
     const data = [];
     item.map(item => {
       data.push(item.label)
@@ -318,7 +316,6 @@ const UserDetails = () => {
       errors["qualification"] = "Qualification is required";
     }
     if (!fields["media"]){
-      console.log("Media is required")
       formIsValid = false;
       errors["media"] = "Media is required";
     }else{
@@ -329,17 +326,17 @@ const UserDetails = () => {
         errors["media"] = "Enter a valid URL";
       }
     }
+    // if (fields["current"].checked === false) {
+    //   formIsValid = false;
+    // }
     setErrors({ errors });
     return formIsValid;
   }
-
   const onChange = (e) => {
-    // console.log(`checked = ${e.target.checked}`);
-    {e.target.checked === true ? (setChecked(true)) : (setChecked(false)) }
+    e.target.checked === true ? setState({...state ,current: true}) : setState({...state ,current: false})
   }
   const handleUserProfileSubmit = () => {
     if (handleValidation()) {
-      console.log("coming without validation");
       let newData = state;
       delete newData["empolyment_value"];
       delete newData["id"];
@@ -443,7 +440,7 @@ const UserDetails = () => {
               }
               key="1"
             >
-              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit}>
+              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit} initialValues={{current: true }}>
                 <Form.Item label="About">
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
@@ -479,15 +476,15 @@ const UserDetails = () => {
                 <Form.Item label="Location">
                   <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
-                <Form.Item>
-                <Checkbox onChange={onChange} style = {{ marginLeft: '180px', width: '250px' }}>I am currently working here</Checkbox>
+                <Form.Item >
+                <Checkbox name="current"  checked={state.current} onChange={onChange} style = {{ marginLeft: '180px', width: '250px' }}>I am currently working here</Checkbox>
                 </Form.Item>
                 <Form.Item label="Start Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.start_date ? moment(state.start_date) : null} />
                   </Space>
                 </Form.Item>
-                { checked === true ? null :(<Form.Item label="End Date" >
+                {state.current === true ? null :(<Form.Item label="End Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="end_date" onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.end_date ? moment(state.end_date) : null} />
                   </Space>
