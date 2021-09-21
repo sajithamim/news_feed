@@ -6,6 +6,7 @@ from .serializers import (AccomplishmentImageSerializer, AccomplishmentSerialize
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
  ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer,
  VerifyPhoneSerializer)
+from .emails import send_email_from_app
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Accomplishments, User,Profile,Qualifications
@@ -101,12 +102,13 @@ class RegisterView(generics.GenericAPIView):
             current_site = get_current_site(request).domain
             relativeLink = reverse('email-verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
-            email_body = 'Hi '+user.username + \
-                ' Use the link below to verify your email \n' + absurl
-            data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Verify your email'}
-            Util.send_email(data)
-            # print(1) 
+            # email_body = 'Hi '+user.username + \
+            #     ' Use the link below to verify your email \n' + absurl
+            # data = {'email_body': email_body, 'to_email': user.email,
+            #         'email_subject': 'Verify your email'}
+            # Util.send_email(data)
+            send_email_from_app(to=user.email,link=absurl)
+            # print(1)
             smsphone = request.data['phone']
             if smsphone.split("-")[0]=='91':
                 smsnumber = smsphone.replace("-","")
@@ -173,11 +175,12 @@ class EmailActivatelinkView(views.APIView):
             current_site = get_current_site(request).domain
             relativeLink = reverse('email-verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
-            email_body = 'Hi '+user.username + \
-                ' Use the link below to verify your email \n' + absurl
-            data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Verify your email'}
-            Util.send_email(data)
+            # email_body = 'Hi '+user.username + \
+            #     ' Use the link below to verify your email \n' + absurl
+            # data = {'email_body': email_body, 'to_email': user.email,
+            #         'email_subject': 'Verify your email'}
+            # Util.send_email(data)
+            send_email_from_app(to=user.email,link=absurl)
             status_code = status.HTTP_200_OK
             response = {
             'success' : 'True',
@@ -654,12 +657,7 @@ class TestSMSView(APIView):
         # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
         r = requests.get(url)
         print(type(json.loads(r.text)))
-        response={
-                "success":"True",
-                "message":"user Phone verified",
-                "status":status.HTTP_200_OK,
-                 }
-        return Response(response,status=status.HTTP_200_OK)
+        return Response({},status=status.HTTP_200_OK)
 
 class UserDeleteView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -762,3 +760,17 @@ class getUserAccomplishementView(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+from django.http import JsonResponse
+
+
+
+def send_email_api(request):
+    send_email_from_app(to='ajith@metrictreelabs.com',link='https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fbc3-production-blobs-us-east-2.s3.us-east-2.amazonaws.com%2Faedf9176-1791-11ec-8937-8e17cd0352bb%3Fresponse-content-disposition%3Dinline%253B%2520filename%253D%2522Verify%2520email%2520text%2520.pptx%2522%253B%2520filename%252A%253DUTF-8%2527%2527Verify%252520email%252520text%252520.pptx%26response-content-type%3Dapplication%252Fvnd.openxmlformats-officedocument.presentationml.presentation%26X-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAS5PME4CT5QW2PJJU%252F20210921%252Fus-east-2%252Fs3%252Faws4_request%26X-Amz-Date%3D20210921T050830Z%26X-Amz-Expires%3D86400%26X-Amz-SignedHeaders%3Dhost%26X-Amz-Signature%3Ddbd0ce78f378503c7fa392c62161582cfc47efaef6a2de124a0e8480a5d79b26&wdOrigin=BROWSELINK')
+    data = {
+        'success': True,
+        'message': 'api to send an email'
+    }
+
+    return JsonResponse(data)
+
