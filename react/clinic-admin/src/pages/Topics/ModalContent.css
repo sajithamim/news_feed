@@ -54,6 +54,9 @@
   .publishedStatus{
     color:#FF0000;
   }
+  .errorMsg {
+    margin-left: 0px !important;
+  }
 
   @media only screen and (min-width : 320px) {
     .ant-card ant-card-bordered{

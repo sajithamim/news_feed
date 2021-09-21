@@ -113,7 +113,7 @@ const TopicsContent = (props) => {
         external_url:item.external_url,
         external_url2: item.external_url,
         external_url3: item.external_url,
-        username: {value: item.author && item.author.name, label: item.author && item.author.name},
+        email: item.author && item.author.username,
         published_status: item.published
       }) 
       
