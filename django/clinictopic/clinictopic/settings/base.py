@@ -99,7 +99,7 @@ ROOT_URLCONF = 'clinictopic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -204,6 +204,8 @@ AUTH_KEY ="362791AzG86a8K60cc822eP1"
 MEDIA_DIR = os.path.join(BASE_DIR,"media")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+APPLICATION_EMAIL = 'CLINICTOPICS<'+os.environ.get("EMAIL_HOST_USER")+'>'
+DEFAULT_FROM_EMAIL = 'CLINICTOPICS<'+os.environ.get("EMAIL_HOST_USER")+'>'
 
 #STATICFILES_DIRS = (
 #    "/var/www/static/",
@@ -220,3 +222,5 @@ DATABASES = {
         'PORT': os.environ.get("DB_PORT"),
     }
 }
+
+
