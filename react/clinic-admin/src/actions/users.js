@@ -11,7 +11,7 @@ export const getUsersList = (page) => async (dispatch) => {
             page: page
         })
     } catch (err) {
-        console.log(err);
+       
     }
 }
 
@@ -23,7 +23,7 @@ export const getUserCategory = (emailId) => async (dispatch) => {
             payload: res.data,
         })
     } catch (err) {
-        console.log(err);
+       
     }
 }
 
@@ -35,7 +35,7 @@ export const getUserSpecialization = (emailId) => async (dispatch) => {
             payload: res.data,
         })
     } catch (err) {
-        console.log(err);
+        
     }
 }
 
@@ -48,20 +48,20 @@ export const getUserDetails = (emailId) => async (dispatch) => {
         })
         return res;
     } catch (err) {
-        console.log(err);
+       
     }
 }
 
 export const deleteUser = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUser(id);
-        console.log("response", res);
+        
         dispatch({
             type: 'DELETE USER',
             payload: id,
         })
     } catch (err) {
-        console.log(err);
+       
     }
 }
 
@@ -75,7 +75,7 @@ export const postUserProfile = (state, otherQualification) => async (dispatch) =
             payload: res.data,
         })
     } catch (err) {
-        console.log(err)
+      
     }
 }
 export const getUserProfile = (id) => async (dispatch) => {
@@ -90,7 +90,19 @@ export const getUserProfile = (id) => async (dispatch) => {
         })
         return res;
     } catch (err) {
-        console.log(err)
+        
+    }
+}
+export const updateUserProfile = (id, state) => async (dispatch) => {
+    try {
+        const res = await Users.updateUserProfile(id, state);
+        dispatch({
+            type: 'UPDATE_USER_PROFILE',
+            payload: res.data,
+        })
+        return res;
+    } catch (err) {
+        
     }
 }
 export const getQualifications = () => async (dispatch) => {
@@ -102,7 +114,7 @@ export const getQualifications = () => async (dispatch) => {
         })
         return res;
     } catch (err) {
-        console.log(err)
+        
     }
 }
 
@@ -119,7 +131,7 @@ export const putProfilePic = (id, image) => async (dispatch) => {
                 payload: res.data,
             })
         } catch (err) {
-            console.log(err)
+          
         }
     }
 }
@@ -133,7 +145,7 @@ export const getPublicationList = (id) => async (dispatch) => {
         })
         return res;
     } catch (err) {
-        console.log(err)
+   
     }
 }
 
@@ -149,7 +161,7 @@ export const postPublicationDetails = (state , image ) => async (dispatch) => {
         })
         return res;
     } catch (err) {
-        console.log(err)
+    
     }
 } 
 export const updatePublicationDetails = ( id , state , image ) => async (dispatch) => {
@@ -164,19 +176,18 @@ export const updatePublicationDetails = ( id , state , image ) => async (dispatc
         })
         return res;
     } catch (err) {
-        console.log(err)
+       
     }
 }
 export const deleteUserPublication = (id) => async (dispatch) => {
     try {
         const res = await Users.deleteUserPublication(id);
-        console.log("res delte" , res);
         dispatch({
             type: 'DELETE_USER_PUBLICATION',
             payload: id,
         });
     } catch (err) {
-        console.log(err);
+        
     }
 }
 

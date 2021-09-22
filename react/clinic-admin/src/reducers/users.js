@@ -12,11 +12,11 @@ const initialState = {
 };
 
 const users = (state = initialState, action) => {
-        if(action.type == 'DELETE_USER_PUBLICATION') {
-            const list = Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) })
-            console.log('list', list);
-        }
-    
+    if (action.type == 'DELETE_USER_PUBLICATION') {
+        const list = Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.data && state.publicationList.data.data.filter(item => item.id !== action.payload) })
+        console.log('list', list);
+    }
+
     switch (action.type) {
         case 'GET_USER':
             return { ...state, userList: action.payload, page: action.page }
@@ -32,19 +32,21 @@ const users = (state = initialState, action) => {
             return { ...state, userProfile: action.payload }
         case 'GET_USER_PROFILE':
             return { ...state, userProfile: action.payload }
+        case 'UPDATE_USER_PROFILE':
+            return { ...state, updateUserData: true, userProfile: Object.assign({}, state.userProfile, { results: [...state.userProfile.data.data, action.payload,] }) }
         case 'GET_QUALIFICATIONS':
             return { ...state, qualifications: action.payload }
         case 'GET_PUBLICATION_LIST':
-            return { ...state, publicationList: action.payload, addPublicationData: false, updatePublicationData:false }
+            return { ...state, publicationList: action.payload, addPublicationData: false, updatePublicationData: false }
         case 'POST_PUBLICATION_LIST':
-            return { ...state, addPublicationData: true,  publicationList: Object.assign({}, state.publicationList, {results: [...state.publicationList.data.data , action.payload , ]}) }
+            return { ...state, addPublicationData: true, publicationList: Object.assign({}, state.publicationList, { results: [...state.publicationList.data.data, action.payload,] }) }
         case 'UPDATE_PUBLICATION_LIST':
-                return { ...state , updatePublicationData: true , publicationList: Object.assign({}, state.publicationList, {results: [...state.publicationList.data.data, action.payload , ]}) }
+            return { ...state, updatePublicationData: true, publicationList: Object.assign({}, state.publicationList, { results: [...state.publicationList.data.data, action.payload,] }) }
         case 'DELETE_USER_PUBLICATION':
-            return { ...state, publicationList: Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data &&  state.publicationList.data.filter(item => item.id !== action.payload) }) }
+            return { ...state, publicationList: Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.filter(item => item.id !== action.payload) }) }
         default:
             return state;
-        
+
     }
 }
 export default users;

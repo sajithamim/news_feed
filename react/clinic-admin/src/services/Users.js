@@ -14,14 +14,12 @@ const getTopic = () => {
 }
 
 const getUserSpec = (emailId) => {
-    console.log("emailId",emailId);
     return http.get(`spec/getuserspecialization/${emailId}`)
 }
 const getUserData = (emailId) => {
     return http.get(`auth/userdetail/${emailId}`)
 }
 const deleteUser = (id) => {
-    console.log("id", id);
     return http.delete(`auth/deleteuser/${id}`)
 }
 const postUserProfile = (state) => {
@@ -32,6 +30,9 @@ const getUserProfile = (id) => {
 }
 const getUserProfilePic = (id) => {
     return http.get(`auth/profilepic/${id}`);
+}
+const updateUserProfile = (id ,state) => {
+    return http.put(`/auth/userprofile/${id}/` , state);
 }
 const getQualifications = () => {
     return http.get("auth/qualifications/");
@@ -51,7 +52,6 @@ const putpublicationImage = (id , image) => {
     .catch(err => err)
 }
 const putProfilePic = (id, imageData) => {
-    console.log('enter2');
     let accessToken = localStorage.getItem("accessToken");
     let url = `${process.env.REACT_APP_API_URL}auth/profilepic/${id}/profilepicaddadmin/`;
     axios.put(url, imageData, {
@@ -76,7 +76,6 @@ const postPublicationDetails = (state) => {
     return http.post("auth/accomplishments/" , state);
 }
 const updatePublicationDetails = (id ,state) => {
-    console.log("updatePublicationDetails service", state );
     return http.put(`auth/accomplishments/${id}/` , state);
 }
 const deleteUserPublication = (id) => {
@@ -95,6 +94,7 @@ const Users = {
     getQualifications,
     putProfilePic,
     postOtherQualifications,
+    updateUserProfile,
     getPublicationList,
     postPublicationDetails,
     deleteUserPublication,
