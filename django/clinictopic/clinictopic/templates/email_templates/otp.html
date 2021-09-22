@@ -242,7 +242,7 @@
         <td>&nbsp;</td>
         <td class="container">
           <div class="content">
-            <span class="preheader">Activate email</span>
+            <span class="preheader">Login otp</span>
             <table class="main">
 
               <!-- START MAIN CONTENT AREA -->
@@ -253,7 +253,7 @@
                       <td>
 
                         <h1 style="background-color: #1b6ac9;font-weight: 20;color:white">CLINICTOPICS</h1>
-                        <h2>You are just one step away to Confirm your email - {{name}}</h2>
+                        <!-- <h2>You are just one step away to Confirm your email - {{name}}</h2> -->
                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -261,7 +261,7 @@
                                 <table border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-                                      <td> <a href={{ link }} target="_blank">confirm email</a> </td>
+                                      <!-- <td> <a href={{ link }} target="_blank">Your otp</a> </td> -->
                                     </tr>
                                   </tbody>
                                 </table>
@@ -269,7 +269,10 @@
                             </tr>
                           </tbody>
                         </table>
-                        <p>If you received this email by mistake, simply delete it.</p>
+                        <br>
+                        <br>
+                        <p> Dear {{ name }} , Your OTP is {{ otp }}. Use this Passcode to complete your Login into ClinicTopics. Thank you.
+                        </p>
       
                       </td>
                     </tr>
