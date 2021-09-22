@@ -67,7 +67,6 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
     state.topic_audience = "doctor";
     try {
         const res = await Topic.postTopic(state);
-        console.log("action pdf res" , res);
         if(res.status == 201){
             if (res.data.id && form_data) {
                 await Topic.putPdfdata(res.data.id, form_data);

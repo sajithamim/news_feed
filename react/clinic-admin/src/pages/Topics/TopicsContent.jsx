@@ -12,6 +12,7 @@ const TopicsContent = (props) => {
   const [expended, setExpended] = useState()
   const [data , setData] = useState({});
   const { topicList, success, error, page} = useSelector(state => state.topic);
+  console.log("topicList" , topicList);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(30);
   const [slNo, setSlNo] = useState(0);
