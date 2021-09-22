@@ -74,7 +74,6 @@ const ModalContent = (props) => {
   };
 
   const handleUserChange = (item) => {
-    console.log("e", item);
     setState({ ...state, username: item, email: item.value, author: { name: item.label } });
   };
 
@@ -301,7 +300,6 @@ const ModalContent = (props) => {
   const handleSubmit = (e) => {
     if (handleValidation() && formSubmit) {
       let form_data = null;
-      console.log("setCrntDateTime" ,state.publishingtime );
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
         form_data.append('pdf', state.pdfUrl, state.pdfUrl.name);
@@ -313,13 +311,11 @@ const ModalContent = (props) => {
       }
       let form_data2 = null;
       if (state.format !== '1' && state.pdfUrlSecond && state.pdfUrlSecond.name) {
-        console.log("coming to format 2 if cond", state.pdfUrlSecond.name);
         form_data2 = new FormData();
         form_data2.append('pdf', state.pdfUrlSecond, state.pdfUrlSecond.name);
       }
       let form_data3 = null;
       if (state.format !== '1' && state.pdfUrlThird && state.pdfUrlThird.name) {
-        console.log("coming to format 2 if cond", state.pdfUrlThird.name);
         form_data3 = new FormData();
         form_data3.append('pdf', state.pdfUrlThird, state.pdfUrlThird.name);
       }
@@ -350,7 +346,7 @@ const ModalContent = (props) => {
       } else if (newData.format === '2') {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
-        newData['external_url'] = newData['external_url2'];
+        newData['external_url'] = newData['external_url2'] 
         newData['deliveryType'] = newData['deliveryType'];
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
@@ -363,7 +359,6 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log("state", state);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
