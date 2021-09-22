@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 from authentication.models import AUTH_PROVIDERS, User
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.db.models import Q
-from specialization.models import UserSpecialization
+from specialization.models import UserSpecialization,UserSubSpecialization
 # from rest_framework.decorators import list_route
 from rest_framework import mixins
 from datetime import datetime, tzinfo
@@ -202,9 +202,11 @@ class TopicViewSet(viewsets.ModelViewSet):
             # now = datetime.utcnow()
             userCategory = UserCategory.objects.filter(user_id=self.request.user)
             idscat = list(userCategory.category_id.id for userCategory in userCategory)
-            userspec = UserSpecialization.objects.filter(user_id=self.request.user)
-            idsspec = list(userspec.spec_id.id for userspec in userspec)
-            query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+            userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
+            idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
+            # query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+            query_set = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+
             # print(query_set.query)
         return query_set
 
