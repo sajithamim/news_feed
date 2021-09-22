@@ -761,6 +761,7 @@ class getUserAccomplishementView(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+
 from django.http import JsonResponse
 
 
