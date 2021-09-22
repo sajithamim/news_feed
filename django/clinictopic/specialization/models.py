@@ -140,3 +140,13 @@ class Advisory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table ='Advisory'
+
+
+class Quiz(models.Model):
+    title = models.CharField(max_length=100)
+    sub_spec_id = models.ForeignKey(SubSpecialization,on_delete=models.CASCADE,related_name="quiz_subspec_id")  
+    url = models.CharField(max_length=100)
+    active = models.BooleanField(default=True)
+    class Meta:
+        db_table = 'Quiz'
+

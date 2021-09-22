@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
 from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,
-UserSubSpecialization,Advisory)
+UserSubSpecialization,Advisory,Quiz)
 from rest_framework import  status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from authentication.models import User
@@ -183,4 +183,14 @@ class AdvisorySerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response['user_id'] = UserProfileSerializer(instance.user_id).data
+        return response
+
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['sub_spec_id'] = GetSpecializationseriallizer(instance.sub_spec_id).data
         return response

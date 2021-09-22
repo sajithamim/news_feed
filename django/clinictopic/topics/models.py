@@ -5,7 +5,7 @@ from django.db.models.deletion import CASCADE
 from authentication.models import User
 from django.dispatch import receiver
 from clinictopic.settings.base import MEDIA_ROOT
-from specialization.models import (Specialization)
+from specialization.models import (Specialization,SubSpecialization)
 from PIL import Image as ImagePil
 from io import BytesIO
 from django.core.files import File
@@ -163,6 +163,11 @@ class TopicSpecialization(models.Model):
     class Meta:
         db_table = 'TopicSpecialization'
 
+class TopicSubSpecialization(models.Model):
+    topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="topic_subspec")
+    subspec_id = models.ForeignKey(SubSpecialization,on_delete=models.CASCADE,related_name="Topic_subspecialization")
+    class Meta:
+        db_table = 'TopicSubSpecialization'
 
 class Favourite(models.Model):
     user_id  = models.ForeignKey(User,on_delete=models.CASCADE,related_name="favourite_user")

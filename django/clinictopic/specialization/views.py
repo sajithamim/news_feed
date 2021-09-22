@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from .models import (Advisory, Audience, Specialization,UserSpecialization,SubSpecialization)
+from .models import (Advisory, Audience, Specialization,UserSpecialization,SubSpecialization,Quiz)
 from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
 GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
-GetSpecializationandsub,AdvisorySerializer)
+GetSpecializationandsub,AdvisorySerializer,QuizSerializer)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -330,3 +330,9 @@ class GetAdvisoryUser(APIView):
                 'error': str(e)
                 }
             return Response(response, status=status_code)
+
+
+class QuizView(viewsets.ModelViewSet):
+    queryset = Quiz.objects.all().order_by('title')
+    serializer_class = QuizSerializer
+    permission_classes = (IsAuthenticated,)
