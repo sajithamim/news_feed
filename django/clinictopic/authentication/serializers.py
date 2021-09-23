@@ -17,6 +17,7 @@ from topics.models import (UserCategory)
 from .utils import Util
 import requests
 import datetime
+from .emails import send_email_from_app_otp
 
 load_dotenv(BASE_DIR+str("/.env"))
 import random
@@ -139,7 +140,8 @@ class Signinserializer(serializers.ModelSerializer):
             email_body = "Dear "+email+" , Your OTP is " +str(otp) + ". Use this Passcode to complete your Login into ClinicTopics. Thank you."
             data = {'email_body': email_body, 'to_email': email,
                     'email_subject': 'Login otp'}
-            Util.send_email(data)
+            # Util.send_email(data)
+            send_email_from_app_otp(to=email,otp=str(otp))
         # return attrs
         return {
             'email': phone_verify.email,

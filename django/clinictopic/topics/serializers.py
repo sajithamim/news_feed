@@ -3,8 +3,8 @@ from sys import setswitchinterval
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
-from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
+from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite,TopicSubSpecialization)
+from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization,GetSubspecializationSerializer)
 from authentication.models import User
 from authentication.serializers import UserProfileSerializer
 from poll.models import UserPoll
@@ -68,6 +68,17 @@ class TopicSpecializationSerializer(serializers.ModelSerializer):
         response['spec_id'] = GetSpecialization(instance.spec_id).data
         return response
 
+class TopicsubSpecializationSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    class Meta:
+        model = TopicSubSpecialization
+        fields = ['id','subspec_id']
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['subspec_id'] = GetSubspecializationSerializer(instance.subspec_id).data
+        return response
+
 class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -111,7 +122,7 @@ class TopicFavouriteserializer(serializers.ModelSerializer):
 class TopicSeriaizer(serializers.ModelSerializer):
     # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     # images = ImageSerializer(many=True,read_only=True)
-    poll_topic = GetTopicpollSerializers(many=True,read_only=True)
+    # poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
     favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
     author = UserProfileSerializer(read_only=True)
@@ -119,7 +130,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
     # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     pdfsecond = serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
-    topic_topic = TopicSpecializationSerializer(many=True)
+    # topic_topic = TopicSpecializationSerializer(many=True)
+    topic_subspec = TopicsubSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
     published = serializers.SerializerMethodField()
     externalurltype = serializers.SerializerMethodField()
@@ -157,7 +169,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
         return response
 
     def create(self, validated_data):
-        topic_spec_data = validated_data.pop('topic_topic')
+        topic_spec_data = validated_data.pop('topic_subspec')
         if 'email' in validated_data:
             email = validated_data['email']
             del validated_data['email']
@@ -166,7 +178,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
         else:
             topic = Topics.objects.create(**validated_data)
         for data in topic_spec_data:
-            topic_spec = TopicSpecialization.objects.create(topic_id = topic, **data)
+            topic_spec =TopicSubSpecialization.objects.create(topic_id = topic, **data)
         return topic
 
     def update(self, instance, validated_data):
@@ -248,10 +260,10 @@ class TopicSeriaizer(serializers.ModelSerializer):
         # # I don't know how to get the right InvoiceItem object, because in the validated
         # # data I get the items queryset, but without an id.
 
-        items = validated_data.get('topic_topic')
-        inv_item = TopicSpecialization.objects.filter(topic_id = instance).delete()
+        items = validated_data.get('topic_subspec')
+        inv_item = TopicSubSpecialization.objects.filter(topic_id = instance).delete()
         for item in items:
-            topic_spec = TopicSpecialization.objects.create(topic_id = instance, **item)
+            topic_spec = TopicSubSpecialization.objects.create(topic_id = instance, **item)
         return instance
 
 

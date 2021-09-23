@@ -6,7 +6,7 @@ from .serializers import (AccomplishmentImageSerializer, AccomplishmentSerialize
  LoginSerializer, LogoutSerializer,Signinserializer,AdminLoginSerializer,UserProfileSerializer,
  ProfileUpdateSerializer,UsernameChangeSerializer,ProfileSerializer,QualificationSerializer,
  VerifyPhoneSerializer)
-from .emails import send_email_from_app
+from .emails import send_email_from_app,send_email_from_app_otp
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Accomplishments, User,Profile,Qualifications
@@ -761,13 +761,14 @@ class getUserAccomplishementView(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+
 from django.http import JsonResponse
 
 
 
 def send_email_api(request):
-    send_email_from_app(to='ajith@metrictreelabs.com',link='https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fbc3-production-blobs-us-east-2.s3.us-east-2.amazonaws.com%2Faedf9176-1791-11ec-8937-8e17cd0352bb%3Fresponse-content-disposition%3Dinline%253B%2520filename%253D%2522Verify%2520email%2520text%2520.pptx%2522%253B%2520filename%252A%253DUTF-8%2527%2527Verify%252520email%252520text%252520.pptx%26response-content-type%3Dapplication%252Fvnd.openxmlformats-officedocument.presentationml.presentation%26X-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAS5PME4CT5QW2PJJU%252F20210921%252Fus-east-2%252Fs3%252Faws4_request%26X-Amz-Date%3D20210921T050830Z%26X-Amz-Expires%3D86400%26X-Amz-SignedHeaders%3Dhost%26X-Amz-Signature%3Ddbd0ce78f378503c7fa392c62161582cfc47efaef6a2de124a0e8480a5d79b26&wdOrigin=BROWSELINK')
-    data = {
+    send_email_from_app_otp(to='ajith@metrictreelabs.com',otp='1234')
+    data={
         'success': True,
         'message': 'api to send an email'
     }
