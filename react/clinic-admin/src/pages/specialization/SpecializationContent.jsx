@@ -97,7 +97,7 @@ const SpecializationContent = () => {
             <Icon>edit</Icon>
           </IconButton>
           <Popconfirm
-            title="Are you sure to delete this specialization?"
+            title="Topics are created under specialization , Are you sure to delete it?"
             onConfirm={() => confirmDelete(record.id)}
             onCancel={cancel}
             okText="Yes"

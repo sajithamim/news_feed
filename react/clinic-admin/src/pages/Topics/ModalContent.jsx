@@ -1,27 +1,31 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select,Spin } from "antd";
+import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect } from "antd";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList } from "../../actions/users";
-import { deleteImages, getSpecialization, getCategory , searchUsers} from "../../actions/topic";
+import { deleteImages, getSpecialization, getCategory, searchUsers } from "../../actions/topic";
 import moment from 'moment';
 import SelectBox from 'react-select';
+import DropdownTreeSelect from 'react-dropdown-tree-select'
+import 'react-dropdown-tree-select/dist/styles.css'
 import "./ModalContent.css";
 
 const { Option } = Select;
+const { SHOW_PARENT } = TreeSelect;
 
 const ModalContent = (props) => {
   const { TextArea } = Input;
-  const [lastFetchId , setLastFetchId]=useState(0);
-  const [fetching , setFetching]=useState(0);
+  const [lastFetchId, setLastFetchId] = useState(0);
+  const [fetching, setFetching] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
-  const [crntDateTime , setCrntDateTime] = useState('');
+  const [crntDateTime, setCrntDateTime] = useState('');
   const [state, setState] = useState({});
-  const { specList, catList , userList} = useSelector(state => state.topic);
+  const { specList, catList, userList } = useSelector(state => state.topic);
   const [errors, setErrors] = useState({});
-  const [value , setValue] = useState("");
-  const [data , setData] = useState([]);
+  const [value, setValue] = useState("");
+  const [data, setData] = useState([]);
+  const [topic_subspec, setTopic_Subspec] = useState('');
 
   useEffect(() => {
     setErrors({});
@@ -36,12 +40,15 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
 
-  const specialization = [];
+  const treeData = [];
   specList && specList.data && specList.data.map(item => {
-    return specialization.push(
-      { value: item.id, label: item.name }
-    );
-  })
+    const children = [];
+    item.specialization_id.map(items => {
+      children.push({ title: items.name, value: items.id, key: items.name })
+    })
+    treeData.push({ title: item.name, value: item.id, key: item.name, children })
+  });
+
 
   const category = [];
   catList && catList.data && catList.data.map(item => {
@@ -59,14 +66,6 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
-  };
-
-  const handleSpecChange = (value) => {
-    let topic = [];
-    value && value.map(item => {
-      topic.push({ spec_id: item.value })
-    })
-    setState({ ...state, spec_data: value, topic_topic: topic })
   };
 
   const handleCategoryChange = (value) => {
@@ -202,10 +201,6 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (!fields["topic_topic"]) {
-      formIsValid = false;
-      errors["topic_topic"] = "Specialization cannot be empty";
-    }
     if (!fields["category_id"]) {
       formIsValid = false;
       errors["category_id"] = "Category cannot be empty";
@@ -298,6 +293,7 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
+    console.log("setTopic_Subspec", topic_subspec);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -346,7 +342,7 @@ const ModalContent = (props) => {
       } else if (newData.format === '2') {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
-        newData['external_url'] = newData['external_url2'] 
+        newData['external_url'] = newData['external_url2']
         newData['deliveryType'] = newData['deliveryType'];
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
@@ -371,6 +367,13 @@ const ModalContent = (props) => {
     message.error('Cancelled');
   }
 
+  const onAction = (node, action) => {
+    console.log('onAction::', action, node)
+  }
+  const onNodeToggle = currentNode => {
+    console.log('onNodeToggle::', currentNode)
+  }
+
   const deleteImage = (id, image) => {
     if (id !== null) {
       const oldImages = state.old_image;
@@ -387,32 +390,58 @@ const ModalContent = (props) => {
   const handleSearch = value => {
     if (value) {
       dispatch(searchUsers(value))
-      .then((res) => {
-        if(res.data) 
-          setData(res.data.data);
-      })
+        .then((res) => {
+          if (res.data)
+            setData(res.data.data);
+        })
     } else {
       setData([]);
     }
   };
   const handleSearchChange = value => {
-    setState({ ...state, email: value});
+    setState({ ...state, email: value });
   };
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
+
+  const onSpecChange = (value) => {
+    let topic = [];
+    value && value.map(item => {
+      console.log("topic_subspec", topic);
+      topic.push({ subspec_id: item })
+    })
+    setTopic_Subspec(topic);
+  }
+  const tProps = {
+    treeData,
+    value: state.topic_subspec,
+    treeCheckable: true,
+    showCheckedStrategy: SHOW_PARENT,
+    placeholder: 'Please select',
+    style: {
+      width: '100%',
+    },
+  };
+
   return (
     <div>
       <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
           <Form.Item label="Specializations">
+            <TreeSelect
+              name="topic_subspec"
+              onChange={onSpecChange} {...tProps}
+            />
+          </Form.Item>
+          {/* <Form.Item label="Specializations">
             <SelectBox
               isMulti={true}
               value={state.spec_data || ''}
-              onChange={handleSpecChange}
+              onChange="{handleSpecChange}"
               options={specialization}
             />
             <div className="errorMsg">{errors && errors.errors && errors.errors.topic_topic}</div>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="Category">
             <SelectBox
               isMulti={false}

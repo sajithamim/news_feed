@@ -66,6 +66,8 @@ export const deleteUser = (id) => async (dispatch) => {
 }
 
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
+    console.log("state" , state) 
+    console.log("state" , otherQualification) 
     try {
         const res = await Users.postUserProfile(state);
         if (otherQualification.name !== null)

@@ -4,6 +4,7 @@ import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 import { getTopic , deleteTopic, postTopic, updateTopic  } from "../../actions/topic";
 
 const TopicsContent = (props) => {
@@ -12,12 +13,16 @@ const TopicsContent = (props) => {
   const [expended, setExpended] = useState()
   const [data , setData] = useState({});
   const { topicList, success, error, page} = useSelector(state => state.topic);
-  console.log("topicList" , topicList);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(30);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
+  const accessToken = localStorage.getItem("accessToken");
+  let history = useHistory();
   useEffect(() => {
+    if (accessToken === 'null' && accessToken === ' undefined'){
+      history.push("/");
+    }
     dispatch(getTopic(page))
     onClose();
   }, [success])
@@ -57,12 +62,13 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
+    console.log("submit " , newData);
     onClose();
-    if(drawerType == 'edit') {
-      dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
-    } else {
-      dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
-    }
+    // if(drawerType == 'edit') {
+    //   dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
+    // } else {
+    //   dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
+    // }
   }
 
   const topicGenerator = () => {
