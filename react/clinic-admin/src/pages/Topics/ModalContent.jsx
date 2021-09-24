@@ -39,17 +39,58 @@ const ModalContent = (props) => {
   }, [props.editData])
 
   const treeData = [];
-  specList && specList.data && specList.data.map((specitem,specKey)=> {
-    //console.log("Item" , item);
+  specList && specList.data && specList.data.map((specitem,index)=> {
     const children = [];
     if(specitem.specialization_id){
-      specitem.specialization_id.map((subspecItem, subspecKey) => {
-        children.push({ title: subspecItem.name, value: subspecItem.id, key: `${subspecItem.name}_${subspecKey}` })
+      specitem.specialization_id.map((subspecItem, index) => {
+        children.push({ title: subspecItem.name,  value: subspecItem.id , key: index })
+        // key: `${subspecItem.name}_${subspecKey}${subspecItem.id}`
       })
     }
-    treeData.push({ title: specitem.name, value: specitem.id, key: `${specitem.name}_${specKey}`, children })
+    treeData.push({ title: specitem.name,  value: specitem.id, key: index ,children })
+    // key: `${specitem.name}_${specKey}${specitem.id}`
   });
-  console.log("TreeSelect", treeData);
+  const treeData1 = [
+    {
+      title: 'Node1',
+      value: '0-0',
+      key: '0-0',
+      children: [
+        {
+          title: 'Child Node1',
+          value: '0-0-0',
+          key: '0-0-0',
+        },
+        {
+          title: 'Child Node1',
+          value: '0-0-1',
+          key: '0-0-1',
+        },
+      ],
+    },
+    {
+      title: 'Node2',
+      value: '0-1',
+      key: '0-1',
+      children: [
+        {
+          title: 'Child Node3',
+          value: '0-1-0',
+          key: '0-1-0',
+        },
+        {
+          title: 'Child Node4',
+          value: '0-1-1',
+          key: '0-1-1',
+        },
+        {
+          title: 'Child Node5',
+          value: '0-1-2',
+          key: '0-1-2',
+        },
+      ],
+    },
+  ];
 
   const category = [];
   catList && catList.data && catList.data.map(item => {
@@ -431,7 +472,6 @@ const ModalContent = (props) => {
         <div className="modalStyle">
           <Form.Item label="Specializations">
             <TreeSelect
-              //treeData
               value={state.topic_val}
               onChange={onSpecChange} {...tProps}
             />
