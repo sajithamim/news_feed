@@ -99,7 +99,7 @@ const CategoriesContent = () => {
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this category?"
+            title="Topics are created under categories , are you sure you want to delete this category?"
             onConfirm={() => onConfirm(record.id)}
             onCancel={cancel}
             okText="Yes"

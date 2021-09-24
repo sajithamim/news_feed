@@ -325,9 +325,6 @@ const UserDetails = () => {
         errors["media"] = "Enter a valid URL";
       }
     }
-    // if (fields["current"].checked === false) {
-    //   formIsValid = false;
-    // }
     setErrors({ errors });
     return formIsValid;
   }
@@ -336,6 +333,7 @@ const UserDetails = () => {
   }
   const handleUserProfileSubmit = () => {
     if (handleValidation()) {
+      console.log("handleValidation" , state)
       let newData = state;
       delete newData["empolyment_value"];
       delete newData["id"];
