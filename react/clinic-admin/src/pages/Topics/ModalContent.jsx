@@ -6,8 +6,6 @@ import { getUsersList } from "../../actions/users";
 import { deleteImages, getSpecialization, getCategory, searchUsers } from "../../actions/topic";
 import moment from 'moment';
 import SelectBox from 'react-select';
-import DropdownTreeSelect from 'react-dropdown-tree-select'
-import 'react-dropdown-tree-select/dist/styles.css'
 import "./ModalContent.css";
 
 const { Option } = Select;
@@ -293,7 +291,6 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    console.log("setTopic_Subspec", topic_subspec);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -331,6 +328,7 @@ const ModalContent = (props) => {
       delete newData["pdf"];
       delete newData["category_data"];
       delete newData["username"];
+      delete newData["topic_val"];
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -355,6 +353,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
+      console.log("setTopic_Subspec", newData);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
@@ -410,11 +409,12 @@ const ModalContent = (props) => {
       console.log("topic_subspec", topic);
       topic.push({ subspec_id: item })
     })
-    setTopic_Subspec(topic);
+    setState({ ...state, topic_subspec: topic, topic_val: value });
+    //setTopic_Subspec(topic);
   }
   const tProps = {
     treeData,
-    value: state.topic_subspec,
+    value: state.topic_val,
     treeCheckable: true,
     showCheckedStrategy: SHOW_PARENT,
     placeholder: 'Please select',

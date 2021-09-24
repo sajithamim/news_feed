@@ -62,13 +62,12 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
-    console.log("submit " , newData);
     onClose();
-    // if(drawerType == 'edit') {
-    //   dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
-    // } else {
-    //   dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
-    // }
+    if(drawerType == 'edit') {
+      dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
+    } else {
+      dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
+    }
   }
 
   const topicGenerator = () => {
