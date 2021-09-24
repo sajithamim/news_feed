@@ -27,7 +27,7 @@ import AuthRoute from "./Layouts/AuthRoute";
 import ClinicRoute from './Layouts/ClinicRoute';
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "./actions/auth.js"
-
+import { useHistory } from "react-router-dom";
 function App() {
 
   const { user } = useSelector(state => {
@@ -40,6 +40,7 @@ function App() {
   let logoutTimeout;
   const accessToken = localStorage.getItem("accessToken");
   const dispatch = useDispatch();
+  let history = useHistory();
   
   const warn = () => {
     alert("You are idle for several minutes");
@@ -63,6 +64,15 @@ function App() {
   };
 
   useEffect(() => {
+    if (accessToken === 'null' && accessToken === ' undefined'){
+      history.push("/");
+    }
+    
+  // if (window.navigator.onLine == true) {
+  //   if (accessToken && accessToken !== undefined) {
+  //     history.push("/data");
+  //   }
+  // }
 
     const events = [
       'load',
