@@ -20,6 +20,7 @@ import UserDetails from './pages/Users/UserDetails';
 import SpecialityAdsList from './pages/SpecialityAds/SpecialityAdsList';
 import GenAdvertisementContent from './pages/GeneralAdvertisements/GenAdvertisementContent';
 import SpecialityAds from './pages/SpecialityAds/AddSpecialityAds';
+import QuizContent from './pages/Quiz/QuizContent';
 import Configuration from './pages/Configuration/Configuration';
 import Verify from "./pages/Verification/Verify";
 import AdminRoute from "./Layouts/AdminRoute";
@@ -117,6 +118,7 @@ function App() {
           <AdminRoute path="/terms" exact component={Terms} />
           <AdminRoute path="/new_add/" exact component={SpecialityAds} />
           <AdminRoute path="/configuration/" exact component={Configuration} />
+          <AdminRoute path="/quiz" exact component={QuizContent} />
           <AdminRoute path="/advisory_board/:specId" exact component={AdvisoryBoardContent} />
           <AdminRoute path="/edit_add/:adsId" exact component={SpecialityAds} />
           <AdminRoute path="/userdetails/:emailId" exact component={UserDetails} />
