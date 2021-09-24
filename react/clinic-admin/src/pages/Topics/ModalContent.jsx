@@ -39,15 +39,15 @@ const ModalContent = (props) => {
   }, [props.editData])
 
   const treeData = [];
-  specList && specList.data && specList.data.map((item,key)=> {
-    console.log("Item" , item);
+  specList && specList.data && specList.data.map((specitem,specKey)=> {
+    //console.log("Item" , item);
     const children = [];
-    if(item.specialization_id){
-    item.specialization_id.map((items,key) => {
-      children.push({ title: items.name, value: items.id, key: items.name })
-    })
-  }
-    treeData.push({ title: item.name, value: item.id, key: item.name, children })
+    if(specitem.specialization_id){
+      specitem.specialization_id.map((subspecItem, subspecKey) => {
+        children.push({ title: subspecItem.name, value: subspecItem.id, key: `${subspecItem.name}_${subspecKey}` })
+      })
+    }
+    treeData.push({ title: specitem.name, value: specitem.id, key: `${specitem.name}_${specKey}`, children })
   });
   console.log("TreeSelect", treeData);
 
@@ -407,10 +407,12 @@ const ModalContent = (props) => {
   const onSpecChange = (value) => {
     console.log("Value" , value);
     let topic = [];
+    let topicVal = [];
     value && value.map(item => {
       topic.push({ subspec_id: item })
+      topicVal.push(item)
     })
-    setState({ ...state, topic_subspec: topic, topic_val: value });
+    setState({ ...state, topic_subspec: topic, topic_val: topicVal });
     //setTopic_Subspec(topic);
   }
   const tProps = {
@@ -429,8 +431,8 @@ const ModalContent = (props) => {
         <div className="modalStyle">
           <Form.Item label="Specializations">
             <TreeSelect
-              treeData
-              value={ state.topic_val}
+              //treeData
+              value={state.topic_val}
               onChange={onSpecChange} {...tProps}
             />
           </Form.Item>
