@@ -38,7 +38,7 @@ const UserDetails = () => {
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
-  const [otherQualification, setOtherQualification] = useState({ name: '' });
+  const [otherQualification, setOtherQualification] = useState({ name: ''});
   const [activeInput, setActiveInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
