@@ -4,16 +4,17 @@ const initialState = {
     updateData: false
 };
 
+
 export default (state = initialState, action) => {
+    console.log("Acton" , action.payload);
     switch (action.type) {
         case 'GET_QUIZ':
-            console.log("quizList");
-            return { ...state, quizList:action.payload, addData: false, updateData: false, page: action.page };
+            return { ...state, quizList: action.payload, addData: false, updateData: false };
         case 'POST_QUIZ':
-            console.log("addData");
-            return {...state, addData: true, quizList: Object.assign({}, state.quizList, {results: [...state.quizList.results, action.payload , ]})};
-
+            return { ...state, addData: true, quizList: Object.assign({}, state.quizList, { results: [...state.quizList.results, action.payload,] }) };
         default:
-            return state;
+            return state
     }
 }
+
+
