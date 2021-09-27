@@ -13,10 +13,11 @@ const QuizContent = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const addData = useSelector(state => state.quiz);
+  const { quizList , addData } = useSelector(state => state.Quiz);
+  console.log("quizList", quizList);
   useEffect(() => {
     dispatch(getQuiz())
-  }, addData)
+  }, [addData])
 
 
   const onClose = () => {

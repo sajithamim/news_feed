@@ -62,12 +62,13 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
+    console.log("newdatat",newData);
     onClose();
-    if(drawerType == 'edit') {
-      dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
-    } else {
-      dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
-    }
+    // if(drawerType == 'edit') {
+    //   dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
+    // } else {
+    //   dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
+    // }
   }
 
   const topicGenerator = () => {
@@ -77,6 +78,7 @@ const TopicsContent = (props) => {
       serialNo++;
       const topics = [];
       const specData = [];
+      const subspec = [];
       const images = [];
         item.topic_topic && item.topic_topic.map(item => {
           topics.push({spec_id: item.spec_id.id});
@@ -86,7 +88,11 @@ const TopicsContent = (props) => {
         item.topic_image && item.topic_image.map(item => {
           images.push({id: item.id, image: item.image});
         })
-       
+        
+        item.topic_subspec && item.topic_subspec.map(item =>{
+          subspec.push({ title: item.subspec_id.name , value: item.subspec_id.id , key: item.subspec_id.id   });
+        })
+
       items.push({
         sl_no: serialNo,
         id: item.id,
@@ -107,6 +113,7 @@ const TopicsContent = (props) => {
         publishingtime: item.publishingtime,
         publishtype: "later",
         deliverytype:item.deliverytype,
+        topic_val:  subspec,
         P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,

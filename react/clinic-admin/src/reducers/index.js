@@ -10,6 +10,7 @@ import settings from "./settings.js";
 import ads from "./ads.js";
 import genAds from "./genAds.js";
 import Config from "./Config.js";
+import Quiz from "./Quiz.js";
 
 export default combineReducers({
     spec,
@@ -22,5 +23,6 @@ export default combineReducers({
     settings,
     ads,
     Config,
-    genAds
+    genAds,
+    Quiz
 });

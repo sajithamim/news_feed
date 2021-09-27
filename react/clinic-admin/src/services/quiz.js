@@ -2,7 +2,6 @@ import { http } from "../http-common";
 
 
 const getAllQuiz = () => {
-    console.log("get a new qui");
     return http.get("spec/quiz/");
   };
 

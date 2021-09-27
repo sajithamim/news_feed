@@ -21,7 +21,7 @@ const ModalContent = (props) => {
   const [state, setState] = useState({});
   const { specList, catList, userList } = useSelector(state => state.topic);
   const [errors, setErrors] = useState({});
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
   const [data, setData] = useState([]);
   const [topic_subspec, setTopic_Subspec] = useState('');
 
@@ -39,14 +39,58 @@ const ModalContent = (props) => {
   }, [props.editData])
 
   const treeData = [];
-  specList && specList.data && specList.data.map(item => {
+  specList && specList.data && specList.data.map((specitem,index)=> {
     const children = [];
-    item.specialization_id.map(items => {
-      children.push({ title: items.name, value: items.id, key: items.name })
-    })
-    treeData.push({ title: item.name, value: item.id, key: item.name, children })
+    if(specitem.specialization_id){
+      specitem.specialization_id.map((subspecItem, index) => {
+        children.push({ title: subspecItem.name,  value: subspecItem.id , key: index })
+        // key: `${subspecItem.name}_${subspecKey}${subspecItem.id}`
+      })
+    }
+    treeData.push({ title: specitem.name,  value: specitem.id, key: index ,children })
+    // key: `${specitem.name}_${specKey}${specitem.id}`
   });
-
+  const treeData1 = [
+    {
+      title: 'Node1',
+      value: '0-0',
+      key: '0-0',
+      children: [
+        {
+          title: 'Child Node1',
+          value: '0-0-0',
+          key: '0-0-0',
+        },
+        {
+          title: 'Child Node1',
+          value: '0-0-1',
+          key: '0-0-1',
+        },
+      ],
+    },
+    {
+      title: 'Node2',
+      value: '0-1',
+      key: '0-1',
+      children: [
+        {
+          title: 'Child Node3',
+          value: '0-1-0',
+          key: '0-1-0',
+        },
+        {
+          title: 'Child Node4',
+          value: '0-1-1',
+          key: '0-1-1',
+        },
+        {
+          title: 'Child Node5',
+          value: '0-1-2',
+          key: '0-1-2',
+        },
+      ],
+    },
+  ];
 
   const category = [];
   catList && catList.data && catList.data.map(item => {
@@ -323,7 +367,6 @@ const ModalContent = (props) => {
       delete newData["sl_no"];
       delete newData["category_title"];
       delete newData["id"];
-      delete newData["spec_data"];
       delete newData["topic_image"];
       delete newData["pdf"];
       delete newData["category_data"];
@@ -353,7 +396,6 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log("setTopic_Subspec", newData);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
@@ -404,17 +446,18 @@ const ModalContent = (props) => {
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
   const onSpecChange = (value) => {
+    console.log("Value" , value);
     let topic = [];
+    let topicVal = [];
     value && value.map(item => {
-      console.log("topic_subspec", topic);
       topic.push({ subspec_id: item })
+      topicVal.push(item)
     })
-    setState({ ...state, topic_subspec: topic, topic_val: value });
+    setState({ ...state, topic_subspec: topic, topic_val: topicVal });
     //setTopic_Subspec(topic);
   }
   const tProps = {
     treeData,
-    value: state.topic_val,
     treeCheckable: true,
     showCheckedStrategy: SHOW_PARENT,
     placeholder: 'Please select',
@@ -429,19 +472,10 @@ const ModalContent = (props) => {
         <div className="modalStyle">
           <Form.Item label="Specializations">
             <TreeSelect
-              name="topic_subspec"
+              value={state.topic_val}
               onChange={onSpecChange} {...tProps}
             />
           </Form.Item>
-          {/* <Form.Item label="Specializations">
-            <SelectBox
-              isMulti={true}
-              value={state.spec_data || ''}
-              onChange="{handleSpecChange}"
-              options={specialization}
-            />
-            <div className="errorMsg">{errors && errors.errors && errors.errors.topic_topic}</div>
-          </Form.Item> */}
           <Form.Item label="Category">
             <SelectBox
               isMulti={false}
