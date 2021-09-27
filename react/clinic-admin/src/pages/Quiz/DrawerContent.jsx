@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Radio} from "antd";
+import { Form, Input, Button, Radio, message } from "antd";
+import { useDispatch } from "react-redux";
+import { postQuiz } from "../../actions/quiz";
+import "./Quiz.css";
 
 const DrawerContent = (props) => {
     const [state, setState] = useState(props.editData);
     const [errors, setErrors] = useState({ name: '' });
-    
+    const dispatch = useDispatch();
+
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     };
@@ -42,12 +46,19 @@ const DrawerContent = (props) => {
     }
 
     const handleSubmit = (e) => {
-        console.log("On submit", state);
         const id = state.id
+        state.sub_spec_id = 27
         if (formValidation()) {
-
+            setErrors({});
+            console.log("On submit", state, state.sub_spec_id);
+            if (props.drawerType === 'add')  {
+                dispatch(postQuiz(state))
+                  .then((res) => {
+                    setState({});
+                   message.success('Quiz added successfully') 
+                  });
+              }
         }
-
     }
 
     return (
