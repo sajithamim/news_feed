@@ -23,7 +23,8 @@ const ModalContent = (props) => {
   const [errors, setErrors] = useState({});
   // const [value, setValue] = useState("");
   const [data, setData] = useState([]);
-  const [topic_subspec, setTopic_Subspec] = useState('');
+  const [topic_subspec, setTopicSubSpec] = useState([]);
+
 
   useEffect(() => {
     setErrors({});
@@ -38,59 +39,23 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
 
+  const keyGenerator = () => {
+    return Math.floor(100000 + Math.random() * 900000);
+  }
+
   const treeData = [];
-  specList && specList.data && specList.data.map((specitem,index)=> {
+  specList && specList.data && specList.data.map((specitem, index) => {
     const children = [];
-    if(specitem.specialization_id){
+    if (specitem.specialization_id) {
       specitem.specialization_id.map((subspecItem, index) => {
-        children.push({ title: subspecItem.name,  value: subspecItem.id , key: index })
+        children.push({ title: subspecItem.name, value: `${subspecItem.name}_${subspecItem.id}`, key: `${subspecItem.name}_${subspecItem.id}` })
         // key: `${subspecItem.name}_${subspecKey}${subspecItem.id}`
       })
     }
-    treeData.push({ title: specitem.name,  value: specitem.id, key: index ,children })
+    treeData.push({ title: specitem.name, value: `${specitem.name}_${specitem.id}`, key: `${specitem.name}_${specitem.id}`, children })
     // key: `${specitem.name}_${specKey}${specitem.id}`
   });
-  const treeData1 = [
-    {
-      title: 'Node1',
-      value: '0-0',
-      key: '0-0',
-      children: [
-        {
-          title: 'Child Node1',
-          value: '0-0-0',
-          key: '0-0-0',
-        },
-        {
-          title: 'Child Node1',
-          value: '0-0-1',
-          key: '0-0-1',
-        },
-      ],
-    },
-    {
-      title: 'Node2',
-      value: '0-1',
-      key: '0-1',
-      children: [
-        {
-          title: 'Child Node3',
-          value: '0-1-0',
-          key: '0-1-0',
-        },
-        {
-          title: 'Child Node4',
-          value: '0-1-1',
-          key: '0-1-1',
-        },
-        {
-          title: 'Child Node5',
-          value: '0-1-2',
-          key: '0-1-2',
-        },
-      ],
-    },
-  ];
+
 
   const category = [];
   catList && catList.data && catList.data.map(item => {
@@ -372,6 +337,7 @@ const ModalContent = (props) => {
       delete newData["category_data"];
       delete newData["username"];
       delete newData["topic_val"];
+      newData['topic_subspec'] = topic_subspec;
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -396,6 +362,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
+      console.log("newdata" , newData);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
@@ -445,17 +412,41 @@ const ModalContent = (props) => {
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
-  const onSpecChange = (value) => {
-    console.log("Value" , value);
+  const specSelection = (value, children, extra) => {
+    console.log("value", value);
+    console.log("children", children);
+    console.log("extra", extra);
     let topic = [];
     let topicVal = [];
-    value && value.map(item => {
-      topic.push({ subspec_id: item })
-      topicVal.push(item)
-    })
-    setState({ ...state, topic_subspec: topic, topic_val: topicVal });
-    //setTopic_Subspec(topic);
+    let str;
+    if (children.children) {
+      console.log("if condition");
+      children && children.children && children.children.map(item => {
+        str = item.value.split("_", 2);
+        topic.push({ subspec_id: str[1] })
+      })
+      setTopicSubSpec([...topic_subspec , topic]);
+    } else {
+      console.log("else condition");
+      str = value.split("_", 2);
+      // topic = { subspec_id: str[1] };
+      setTopicSubSpec([...topic_subspec , { subspec_id: str[1]}]);
+    }
   }
+  // const onSpecChange = (value) => {
+  //   console.log("coming");
+  //   let topic = [];
+  //   let topicVal = [];
+  //   value && value.map(item => {
+  //     let str;
+  //     str = item.split("_", 2);
+  //     console.log("str", str[1]);
+  //     topic.push({ subspec_id: str[1] })
+  //     // topicVal.push(item)
+  //   })
+  //   console.log("topic", topic);
+  //   setState({ ...state, topic_subspec: topic });
+  // }
   const tProps = {
     treeData,
     treeCheckable: true,
@@ -473,7 +464,9 @@ const ModalContent = (props) => {
           <Form.Item label="Specializations">
             <TreeSelect
               value={state.topic_val}
-              onChange={onSpecChange} {...tProps}
+              // onChange={onSpecChange}
+              onSelect={specSelection}
+              {...tProps}
             />
           </Form.Item>
           <Form.Item label="Category">
