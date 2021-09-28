@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Radio, message } from "antd";
 import { useDispatch } from "react-redux";
-import { postQuiz } from "../../actions/quiz";
+import { postQuiz, updateQuiz } from "../../actions/quiz";
 import "./Quiz.css";
 
 const DrawerContent = (props) => {
     const [state, setState] = useState(props.editData);
     const [errors, setErrors] = useState({ name: '' });
     const dispatch = useDispatch();
+    useEffect(() => {
+        setState(props.editData);
+        setErrors({});
+      }, [props.editData])
 
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
@@ -46,18 +50,29 @@ const DrawerContent = (props) => {
     }
 
     const handleSubmit = (e) => {
+        let newData = state;
         const id = state.id
+        let form_data = null;
         state.sub_spec_id = 27
         if (formValidation()) {
             setErrors({});
             console.log("On submit", state, state.sub_spec_id);
-            if (props.drawerType === 'add')  {
-                dispatch(postQuiz(state))
-                  .then((res) => {
-                    setState({});
-                   message.success('Quiz added successfully') 
-                  });
-              }
+            if (props.drawerType === 'edit') {
+                delete newData["sl_no"];
+                delete newData["id"];
+                dispatch(updateQuiz(id, newData, form_data))
+                    .then((res) => {
+                        setState({});
+                        (message.success('Quiz edited successfully'))
+                    });
+            }
+            else {
+                dispatch(postQuiz(state, form_data))
+                    .then((res) => {
+                        setState({});
+                        message.success('Quiz added successfully')
+                    });
+            }
         }
     }
 

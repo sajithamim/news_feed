@@ -4,20 +4,23 @@ import "antd/dist/antd.css";
 import { useDispatch, useSelector } from "react-redux";
 import DrawerContent from "./DrawerContent";
 import { Icon, IconButton } from "@material-ui/core";
-import { getQuiz } from "../../actions/quiz";
+import { getQuiz, deleteQuiz } from "../../actions/quiz";
 import "./Quiz.css";
 
 
 const QuizContent = () => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { quizList , addData } = useSelector(state => state.Quiz);
+  const { quizList , addData, updateData } = useSelector(state => state.Quiz);
   console.log("quizList", quizList);
   useEffect(() => {
     dispatch(getQuiz())
-  }, [addData])
+  }, [addData, updateData])
 
 
   const onClose = () => {
@@ -35,27 +38,43 @@ const QuizContent = () => {
     setDrawerType("edit");
   };
 
-  // const quizGenerator = () => {
-  //   const items = [];
-  //   console.log("quizGenerator", quizGenerator);
-  //   quizList && quizList.results && quizList.results.map((item, key) => {
-  //     key++;
-  //     return items.push({
-  //       sl_no: key,
-  //       id: item.id,
-  //       title: item.title,
-  //     })
-  //   })
-  //   return items;
-  // }
+  const quizGenerator = () => {
+    let serialNo = pageSize * slNo;
+    const items = [];
+    quizList && quizList.results && quizList.results.map((item, key) => {
+      serialNo++;
+      return items.push({
+        sl_no: serialNo,
+        id: item.id,
+        title: item.title,
+      })
+    })
+    return items;
+  }
 
-  const pagination = () => {
+  const handleChange = (page, size, sorter) => {
+    setCurrent(page)
+    setSlNo(page - 1)
+    dispatch(getQuiz(page));
+  }
 
+  const pagination = {
+    current,
+    pageSize,
+    onChange: (page, pageSize) => { handleChange(page, pageSize) },
+    total: quizList.count
   }
 
   const cancel = (e) => {
     message.error('Cancelled');
   }
+
+  const onConfirm = (id) => {
+    dispatch(deleteQuiz(id))
+      .then((res) => {
+       message.success("Category is deleted successfully")
+      })
+  };
 
 
   const columns = [
@@ -80,7 +99,7 @@ const QuizContent = () => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this topic?"
-            onConfirm=""
+            onConfirm={() => onConfirm(record.id)}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -101,7 +120,7 @@ const QuizContent = () => {
             <Icon>add</Icon>
           </IconButton>
         }>
-        <Table columns={columns} pagination={pagination} dataSource="" />
+        <Table columns={columns} pagination={pagination} dataSource={quizGenerator()} />
       </Card>
       <Drawer
         title={
@@ -111,8 +130,15 @@ const QuizContent = () => {
               ? "Add Quiz"
               : ""
         }
-        placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerContent drawerType={drawerType} type="quiz" editData={(drawerType === 'edit') ? editData : {}} />
+        placement="right"
+        width={750}
+        closable={true}
+        onClose={onClose}
+        visible={showDrawer}
+        key="drawer"
+      >
+        
+        <DrawerContent drawerType={drawerType} type="Qui" editData={(drawerType === 'edit') ? editData : {}} />
       </Drawer>
     </div>
   );
