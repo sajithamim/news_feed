@@ -23,8 +23,8 @@ const ModalContent = (props) => {
   const [errors, setErrors] = useState({});
   // const [value, setValue] = useState("");
   const [data, setData] = useState([]);
-  const[topic, setTopic] = useState([]);
-  
+  const [topic_subspec, setTopicSubSpec] = useState([]);
+
 
   useEffect(() => {
     setErrors({});
@@ -300,7 +300,6 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    console.log("state sssstopic" ,state.topic_subspec);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -338,6 +337,7 @@ const ModalContent = (props) => {
       delete newData["category_data"];
       delete newData["username"];
       delete newData["topic_val"];
+      newData['topic_subspec'] = topic_subspec;
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -362,6 +362,7 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
+      console.log("newdata" , newData);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
@@ -418,34 +419,34 @@ const ModalContent = (props) => {
     let topic = [];
     let topicVal = [];
     let str;
-    if(children.children){
+    if (children.children) {
+      console.log("if condition");
       children && children.children && children.children.map(item => {
         str = item.value.split("_", 2);
         topic.push({ subspec_id: str[1] })
       })
-    } else{
-      let obj = {};
-      obj = value.split("_", 2);
-      topic.push({ subspec_id: JSON.parse(JSON.stringify(obj[1]))})
+      setTopicSubSpec([...topic_subspec , topic]);
+    } else {
+      console.log("else condition");
+      str = value.split("_", 2);
+      // topic = { subspec_id: str[1] };
+      setTopicSubSpec([...topic_subspec , { subspec_id: str[1]}]);
     }
-    console.log("topic", topic);
-    setState({...state,  topic_subspec: topic});
-    // setTopic(topic);
   }
-  const onSpecChange = (value) => {
-    console.log("coming");
-    let topic = [];
-    let topicVal = [];
-    value && value.map(item => {
-      let str;
-      str = item.split("_", 2);
-      console.log("str", str[1]);
-      topic.push({ subspec_id: str[1] })
-      // topicVal.push(item)
-    })
-    console.log("topic" , topic);
-    setState({...state,  topic_subspec: topic});
-  }
+  // const onSpecChange = (value) => {
+  //   console.log("coming");
+  //   let topic = [];
+  //   let topicVal = [];
+  //   value && value.map(item => {
+  //     let str;
+  //     str = item.split("_", 2);
+  //     console.log("str", str[1]);
+  //     topic.push({ subspec_id: str[1] })
+  //     // topicVal.push(item)
+  //   })
+  //   console.log("topic", topic);
+  //   setState({ ...state, topic_subspec: topic });
+  // }
   const tProps = {
     treeData,
     treeCheckable: true,
