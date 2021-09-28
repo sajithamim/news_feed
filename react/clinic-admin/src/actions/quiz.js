@@ -56,3 +56,28 @@ export const updateQuiz = (id, state) => async (dispatch) => {
         console.log(err);
     }
 }
+
+export const getSpecialization = () => async (dispatch) => {
+    try {
+        const res = await quiz.getSpecialization();
+        dispatch({
+            type: 'GET_SPECIALIZATION',
+            payload: res.data,
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const getSubSpecialisation = (id) => async (dispatch) => {
+    console.log("id" , id);
+    try {
+        const res = await quiz.getAllSubSpec(id);
+        console.log("res",res);
+        dispatch({
+            type: 'RETREIVE_SUB_SPECIALIZATION',
+            payload: res.data,
+        });
+    } catch (err) {
+    }
+}
