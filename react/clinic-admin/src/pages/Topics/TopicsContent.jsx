@@ -88,10 +88,10 @@ const TopicsContent = (props) => {
           images.push({id: item.id, image: item.image});
         })
        
-        item.topic_subspec && item.topic_subspec && item.topic_subspec.map(item =>{
-          subspec.push({ title: item.subspec_id.name , value:  `${item.subspec_id.name}_${item.subspec_id.id}` , key: `${item.subspec_id.name}_${item.subspec_id.id}`               });
+        item.topic_subspec  && item.topic_subspec.map(item =>{
+          subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
         })
-
+        console.log('subspec', subspec)
       items.push({
         sl_no: serialNo,
         id: item.id,

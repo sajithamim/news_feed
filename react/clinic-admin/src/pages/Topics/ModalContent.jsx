@@ -31,6 +31,7 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
+    console.log('savitha', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -301,12 +302,6 @@ const ModalContent = (props) => {
 
   const handleSubmit = (e) => {
     if (handleValidation() && formSubmit) {
-      let topicList = [];
-      topic_subspec && topic_subspec.map(item => {
-        item.map(subItem => {
-          topicList.push(subItem);
-        })
-      })
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -343,7 +338,6 @@ const ModalContent = (props) => {
       delete newData["category_data"];
       delete newData["username"];
       delete newData["topic_val"];
-      newData['topic_subspec'] = topicList;
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -418,27 +412,14 @@ const ModalContent = (props) => {
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
-  let topic = [];
-  const specSelection = (value, children, extra) => {
-    let str;
-    if (children.children) {
-      console.log("if condition");
-      children && children.children && children.children.map(item => {
-        str = item.value.split("_", 2);
-        topic.push({ subspec_id: str[1] })
-      })
-    } else {
-      console.log("else condition");
-      str = value.split("_", 2);
-      topic.push({ subspec_id: str[1] });
-    }
-    setTopicSubSpec([...topic_subspec, topic]);
-    //setState({ ...state, topic_val: value });
-  }
-
   const onSpecChange = (value) => {
-    console.log("value",value);
-    //setState({ ...state, topic_val: value });
+    const topic = [];
+    value && value.map(item => {
+      let str;
+      str = item.split("_", 2);
+      topic.push({ subspec_id: str[1] })
+    })
+    setState({...state , topic_subspec: topic , topic_val: value })
   }
 
   const tProps = {
@@ -449,6 +430,7 @@ const ModalContent = (props) => {
     style: {
       width: '100%',
     },
+    showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
 
   return (
@@ -459,7 +441,8 @@ const ModalContent = (props) => {
             <TreeSelect
               value={state.topic_val}
               onChange={onSpecChange}
-              onSelect={specSelection}
+              // onSelect={specSelection}
+              autoClearSearchValue = {true}
               {...tProps}
             />
           </Form.Item>
