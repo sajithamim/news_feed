@@ -58,8 +58,10 @@ export const updateQuiz = (id, state) => async (dispatch) => {
 }
 
 export const getSpecialization = () => async (dispatch) => {
+    console.log("coming spec");
     try {
         const res = await quiz.getSpecialization();
+        console.log("resghghghg",res);
         dispatch({
             type: 'GET_SPECIALIZATION',
             payload: res.data,
@@ -70,10 +72,8 @@ export const getSpecialization = () => async (dispatch) => {
 }
 
 export const getSubSpecialisation = (id) => async (dispatch) => {
-    console.log("id" , id);
     try {
         const res = await quiz.getAllSubSpec(id);
-        console.log("res",res);
         dispatch({
             type: 'RETREIVE_SUB_SPECIALIZATION',
             payload: res.data,

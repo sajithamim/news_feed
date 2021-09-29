@@ -8,17 +8,21 @@ import "./Quiz.css";
 
 
 const DrawerContent = (props) => {
-    const [state, setState] = useState(props.editData);
+    const [state, setState] = useState({});
     const [errors, setErrors] = useState({ name: '' });
     const { specList, subspecialization } = useSelector(state => state.Quiz);
-    // const { sub_spec_id} = useParams();
     const [specId, setSpecId] = useState("");
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getSpecialization());
-        setState(props.editData);
-        setErrors({});
-    }, [props.editData])
+        if (props.editData !== null) {
+            setState(props.editData);
+          }
+          else {
+            setState({});
+          }
+        }, [props.editData])
+      
 
     const spec = [];
     specList && specList.data && specList.data.map(item => {
@@ -86,7 +90,7 @@ const DrawerContent = (props) => {
     }
 
     const handleSubmit = (e) => {
-        console.log("sub_spec_id" , state);
+        console.log("on Submi" , state);
         let newData = state;
         const id = state.id
         let form_data = null;
@@ -95,6 +99,9 @@ const DrawerContent = (props) => {
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];
                 delete newData["id"];
+                delete newData["spec_data"];
+                delete newData["spec_title"];
+                delete newData["spec_id"];
                 delete newData["sub_spec_data"];
                 delete newData["sub_spec_title"];
                 dispatch(updateQuiz(id, newData, form_data))
@@ -103,13 +110,13 @@ const DrawerContent = (props) => {
                         (message.success('Quiz edited successfully'))
                     });
             }
-            else {
-                dispatch(postQuiz(state, form_data))
-                    .then((res) => {
-                        setState({});
-                        message.success('Quiz added successfully')
-                    });
-            }
+            // else {
+            //     dispatch(postQuiz(state, form_data))
+            //         .then((res) => {
+            //             setState({});
+            //             message.success('Quiz added successfully')
+            //         });
+            // }
         }
     }
 
@@ -127,7 +134,7 @@ const DrawerContent = (props) => {
                         <SelectBox
                             isMulti={false}
                             isSearchable={true}
-                            value={state.spec_data || ""}
+                            value={state.spec_data}
                             onChange={handleSpecChange}
                             options={spec}
                         />

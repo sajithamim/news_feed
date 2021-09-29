@@ -47,12 +47,13 @@ const QuizContent = () => {
         sl_no: serialNo,
         id: item.id,
         title: item.title,
-        sub_spec_title:item.sub_spec_title,
-        sub_spec_title: item.sub_spec_id.title,
-        sub_spec_data: {value: item. sub_spec_id.id, label: item. sub_spec_id.title},
-        sub_spec_id: item. sub_spec_id.id,
+        sub_spec_title: item.sub_spec_id.name,
+        // sub_spec_data: {value: item. sub_spec_id.id, label: item. sub_spec_id.name},
+        url: item.url,
+        active: item.active,
       })
     })
+    console.log("quizGenerator", items);
     return items;
   }
 
