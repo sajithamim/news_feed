@@ -20,14 +20,15 @@ const TopicsContent = (props) => {
   const accessToken = localStorage.getItem("accessToken");
   let history = useHistory();
   useEffect(() => {
+    dispatch(getTopic(page))
+    console.log("calling useseffect")
+    onClose();
+  }, [success ,error])
+
+  useEffect(() => {
     if (accessToken === 'null' && accessToken === ' undefined'){
       history.push("/");
     }
-    dispatch(getTopic(page))
-    onClose();
-  }, [success])
-
-  useEffect(() => {
     if(success)
     message.success(success);
     else if(error) 
@@ -91,7 +92,7 @@ const TopicsContent = (props) => {
         item.topic_subspec  && item.topic_subspec.map(item =>{
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
         })
-        console.log('subspec', subspec)
+
       items.push({
         sl_no: serialNo,
         id: item.id,
