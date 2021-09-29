@@ -31,6 +31,7 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
+    console.log('savitha', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -39,9 +40,9 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
 
-  const keyGenerator = () => {
-    return Math.floor(100000 + Math.random() * 900000);
-  }
+  // const keyGenerator = () => {
+  //   return Math.floor(100000 + Math.random() * 900000);
+  // }
 
   const treeData = [];
   specList && specList.data && specList.data.map((specitem, index) => {
@@ -208,6 +209,10 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
+    if (!fields["topic_subspec"]) {
+      formIsValid = false;
+      errors["topic_subspec"] = "Specialization cannot be empty";
+    }
     if (!fields["category_id"]) {
       formIsValid = false;
       errors["category_id"] = "Category cannot be empty";
@@ -301,12 +306,6 @@ const ModalContent = (props) => {
 
   const handleSubmit = (e) => {
     if (handleValidation() && formSubmit) {
-      let topicList = [];
-      topic_subspec && topic_subspec.map(item => {
-        item.map(subItem => {
-          topicList.push(subItem);
-        })
-      })
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
         form_data = new FormData();
@@ -343,7 +342,6 @@ const ModalContent = (props) => {
       delete newData["category_data"];
       delete newData["username"];
       delete newData["topic_val"];
-      newData['topic_subspec'] = topicList;
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
         newData['video_url'] && delete newData['video_url'];
@@ -368,7 +366,6 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log("newdata", newData);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
@@ -381,12 +378,12 @@ const ModalContent = (props) => {
     message.error('Cancelled');
   }
 
-  const onAction = (node, action) => {
-    console.log('onAction::', action, node)
-  }
-  const onNodeToggle = currentNode => {
-    console.log('onNodeToggle::', currentNode)
-  }
+  // const onAction = (node, action) => {
+  //   console.log('onAction::', action, node)
+  // }
+  // const onNodeToggle = currentNode => {
+  //   console.log('onNodeToggle::', currentNode)
+  // }
 
   const deleteImage = (id, image) => {
     if (id !== null) {
@@ -418,27 +415,14 @@ const ModalContent = (props) => {
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
-  let topic = [];
-  const specSelection = (value, children, extra) => {
-    let str;
-    if (children.children) {
-      console.log("if condition");
-      children && children.children && children.children.map(item => {
-        str = item.value.split("_", 2);
-        topic.push({ subspec_id: str[1] })
-      })
-    } else {
-      console.log("else condition");
-      str = value.split("_", 2);
-      topic.push({ subspec_id: str[1] });
-    }
-    setTopicSubSpec([...topic_subspec, topic]);
-    //setState({ ...state, topic_val: value });
-  }
-
   const onSpecChange = (value) => {
-    console.log("value",value);
-    //setState({ ...state, topic_val: value });
+    const topic = [];
+    value && value.map(item => {
+      let str;
+      str = item.split("_", 2);
+      topic.push({ subspec_id: str[1] })
+    })
+    setState({...state , topic_subspec: topic , topic_val: value })
   }
 
   const tProps = {
@@ -449,6 +433,7 @@ const ModalContent = (props) => {
     style: {
       width: '100%',
     },
+    showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
 
   return (
@@ -459,9 +444,10 @@ const ModalContent = (props) => {
             <TreeSelect
               value={state.topic_val}
               onChange={onSpecChange}
-              onSelect={specSelection}
+              autoClearSearchValue = {true}
               {...tProps}
             />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.topic_subspec}</div>
           </Form.Item>
           <Form.Item label="Category">
             <SelectBox
