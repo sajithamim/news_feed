@@ -40,9 +40,9 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
 
-  const keyGenerator = () => {
-    return Math.floor(100000 + Math.random() * 900000);
-  }
+  // const keyGenerator = () => {
+  //   return Math.floor(100000 + Math.random() * 900000);
+  // }
 
   const treeData = [];
   specList && specList.data && specList.data.map((specitem, index) => {
@@ -209,6 +209,10 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
+    if (!fields["topic_subspec"]) {
+      formIsValid = false;
+      errors["topic_subspec"] = "Specialization cannot be empty";
+    }
     if (!fields["category_id"]) {
       formIsValid = false;
       errors["category_id"] = "Category cannot be empty";
@@ -362,7 +366,6 @@ const ModalContent = (props) => {
         newData['title3'] && delete newData['title3']
         newData['description3'] && delete newData['description3']
       }
-      console.log("newdata", newData);
       setState({});
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
@@ -375,12 +378,12 @@ const ModalContent = (props) => {
     message.error('Cancelled');
   }
 
-  const onAction = (node, action) => {
-    console.log('onAction::', action, node)
-  }
-  const onNodeToggle = currentNode => {
-    console.log('onNodeToggle::', currentNode)
-  }
+  // const onAction = (node, action) => {
+  //   console.log('onAction::', action, node)
+  // }
+  // const onNodeToggle = currentNode => {
+  //   console.log('onNodeToggle::', currentNode)
+  // }
 
   const deleteImage = (id, image) => {
     if (id !== null) {
@@ -441,10 +444,10 @@ const ModalContent = (props) => {
             <TreeSelect
               value={state.topic_val}
               onChange={onSpecChange}
-              // onSelect={specSelection}
               autoClearSearchValue = {true}
               {...tProps}
             />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.topic_subspec}</div>
           </Form.Item>
           <Form.Item label="Category">
             <SelectBox
