@@ -73,7 +73,7 @@ const DrawerContent = (props) => {
   }
 
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value })
+    setState({ ...state, [e.target.name]: e.target.value.replace(/[^a-zA-Z]/ig,'')});
   };
 
   const handleFileChange = (info) => {
