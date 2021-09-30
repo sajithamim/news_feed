@@ -8,6 +8,7 @@ import "./Quiz.css";
 
 
 const DrawerContent = (props) => {
+    console.log("props", props);
     const [state, setState] = useState({});
     const [errors, setErrors] = useState({ name: '' });
     const { specList, subspecialization } = useSelector(state => state.Quiz);
@@ -45,11 +46,12 @@ const DrawerContent = (props) => {
         setState({ ...state, active: e.target.value })
     }
     const handleSpecChange = (value) => {
+        console.log("value" , value);
         setState({ ...state, spec_data: value, spec_id: value.value });
         dispatch(getSubSpecialisation(value.value));
     };
     const handleSubChange = (value) => {
-        console.log("sub_spec_id", value);
+        
        setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
     };
     const formValidation = () => {
@@ -90,7 +92,6 @@ const DrawerContent = (props) => {
     }
 
     const handleSubmit = (e) => {
-        console.log("on Submi" , state);
         let newData = state;
         const id = state.id
         let form_data = null;
@@ -101,7 +102,6 @@ const DrawerContent = (props) => {
                 delete newData["id"];
                 delete newData["spec_data"];
                 delete newData["spec_title"];
-                delete newData["spec_id"];
                 delete newData["sub_spec_data"];
                 delete newData["sub_spec_title"];
                 dispatch(updateQuiz(id, newData, form_data))
@@ -110,13 +110,13 @@ const DrawerContent = (props) => {
                         (message.success('Quiz edited successfully'))
                     });
             }
-            // else {
-            //     dispatch(postQuiz(state, form_data))
-            //         .then((res) => {
-            //             setState({});
-            //             message.success('Quiz added successfully')
-            //         });
-            // }
+            else {
+                dispatch(postQuiz(state, form_data))
+                    .then((res) => {
+                        setState({});
+                        message.success('Quiz added successfully')
+                    });
+            }
         }
     }
 
