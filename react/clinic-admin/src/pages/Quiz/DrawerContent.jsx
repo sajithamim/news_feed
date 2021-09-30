@@ -1,17 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Radio, message } from "antd";
-import { useDispatch } from "react-redux";
-import { postQuiz, updateQuiz } from "../../actions/quiz";
+import { useDispatch, useSelector } from "react-redux";
+import { postQuiz, updateQuiz, getSpecialization, getSubSpecialisation } from "../../actions/quiz";
+import SelectBox from 'react-select';
+import { useParams } from "react-router-dom";
 import "./Quiz.css";
 
+
 const DrawerContent = (props) => {
-    const [state, setState] = useState(props.editData);
+    const [state, setState] = useState({});
     const [errors, setErrors] = useState({ name: '' });
+    const { specList, subspecialization } = useSelector(state => state.Quiz);
+    const [specId, setSpecId] = useState("");
     const dispatch = useDispatch();
     useEffect(() => {
-        setState(props.editData);
-        setErrors({});
-      }, [props.editData])
+        dispatch(getSpecialization());
+        if (props.editData !== null) {
+            setState(props.editData);
+          }
+          else {
+            setState({});
+          }
+        }, [props.editData])
+      
+
+    const spec = [];
+    specList && specList.data && specList.data.map(item => {
+        return spec.push(
+            { value: item.id, label: item.name }
+        );
+    })
+
+    const sub_spec = [];
+    subspecialization.map((item, key) => {
+        return sub_spec.push(
+            { value: item.id, label: item.name }
+        );
+    })
 
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
@@ -19,7 +44,14 @@ const DrawerContent = (props) => {
     const radioOnChange = (val, e) => {
         setState({ ...state, active: e.target.value })
     }
-
+    const handleSpecChange = (value) => {
+        setState({ ...state, spec_data: value, spec_id: value.value });
+        dispatch(getSubSpecialisation(value.value));
+    };
+    const handleSubChange = (value) => {
+        console.log("sub_spec_id", value);
+       setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
+    };
     const formValidation = () => {
         let fields = state;
         let errors = {};
@@ -39,6 +71,14 @@ const DrawerContent = (props) => {
                 errors["url"] = "Enter a valid URL";
             }
         }
+        if (!fields["spec_id"]) {
+            formIsValid = false;
+            errors["spec_id"] = "Specialization cannot be empty";
+        }
+        if (!fields["sub_spec_id"]) {
+            formIsValid = false;
+            errors["sub_spec_id"] = "Sub specialization cannot be empty";
+        }
         if (fields.active === undefined) {
             formIsValid = false;
             errors["status"] = "Status is required"
@@ -50,42 +90,66 @@ const DrawerContent = (props) => {
     }
 
     const handleSubmit = (e) => {
+        console.log("on Submi" , state);
         let newData = state;
         const id = state.id
         let form_data = null;
-        state.sub_spec_id = 27
         if (formValidation()) {
             setErrors({});
-            console.log("On submit", state, state.sub_spec_id);
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];
                 delete newData["id"];
+                delete newData["spec_data"];
+                delete newData["spec_title"];
+                delete newData["spec_id"];
+                delete newData["sub_spec_data"];
+                delete newData["sub_spec_title"];
                 dispatch(updateQuiz(id, newData, form_data))
                     .then((res) => {
                         setState({});
                         (message.success('Quiz edited successfully'))
                     });
             }
-            else {
-                dispatch(postQuiz(state, form_data))
-                    .then((res) => {
-                        setState({});
-                        message.success('Quiz added successfully')
-                    });
-            }
+            // else {
+            //     dispatch(postQuiz(state, form_data))
+            //         .then((res) => {
+            //             setState({});
+            //             message.success('Quiz added successfully')
+            //         });
+            // }
         }
     }
 
     return (
         <Form name="basic"
             labelCol={{
-                span: 6,
+                span: 8,
             }}
             wrapperCol={{
                 span: 10,
             }} onFinish={handleSubmit}>
             <div>
                 <div className="modalStyle">
+                    <Form.Item label="Specialization" wrapperCol={{ offset: 2, span: 10 }} >
+                        <SelectBox
+                            isMulti={false}
+                            isSearchable={true}
+                            value={state.spec_data}
+                            onChange={handleSpecChange}
+                            options={spec}
+                        />
+                        <div className="errorMsg">{errors && errors.errors && errors.errors.spec_id}</div>
+                    </Form.Item>
+                    <Form.Item label="Sub specialization" wrapperCol={{ offset: 2, span: 10 }}>
+                        <SelectBox
+                            isMulti={false}
+                            isSearchable={true}
+                            value={state.sub_spec_data}
+                            onChange={handleSubChange}
+                            options={sub_spec}
+                        />
+                        <div className="errorMsg">{errors && errors.errors && errors.errors.sub_spec_id}</div>
+                    </Form.Item>
                     <Form.Item label="Title">
                         <Input id="title" name="title" onChange={handleChange} value={state.title} />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>

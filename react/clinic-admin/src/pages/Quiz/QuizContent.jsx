@@ -16,7 +16,7 @@ const QuizContent = () => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { quizList , addData, updateData } = useSelector(state => state.Quiz);
+  const { quizList , addData, updateData, page } = useSelector(state => state.Quiz);
   console.log("quizList", quizList);
   useEffect(() => {
     dispatch(getQuiz())
@@ -47,8 +47,13 @@ const QuizContent = () => {
         sl_no: serialNo,
         id: item.id,
         title: item.title,
+        sub_spec_title: item.sub_spec_id.name,
+        // sub_spec_data: {value: item. sub_spec_id.id, label: item. sub_spec_id.name},
+        url: item.url,
+        active: item.active,
       })
     })
+    console.log("quizGenerator", items);
     return items;
   }
 
@@ -89,6 +94,11 @@ const QuizContent = () => {
       key: "title",
     },
     {
+      title: "Sub specialization",
+      dataIndex: "sub_spec_title",
+      key: "sub_spec_title",
+    },
+    {
       title: "Action",
       key: "id",
       align: "center",
@@ -120,7 +130,8 @@ const QuizContent = () => {
             <Icon>add</Icon>
           </IconButton>
         }>
-        <Table columns={columns} pagination={pagination} dataSource={quizGenerator()} />
+        {quizList && quizList.results  &&  page == current ?
+          (<Table  columns={columns} pagination={pagination} dataSource={quizGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={
@@ -137,8 +148,7 @@ const QuizContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        
-        <DrawerContent drawerType={drawerType} type="Qui" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerContent drawerType={drawerType} type="Qui" editData={(drawerType === 'edit') ? editData : null} />
       </Drawer>
     </div>
   );
