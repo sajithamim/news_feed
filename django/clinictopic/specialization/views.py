@@ -335,4 +335,4 @@ class GetAdvisoryUser(APIView):
 class QuizView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all().order_by('title')
     serializer_class = QuizSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
