@@ -192,5 +192,5 @@ class QuizSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['sub_spec_id'] = GetSpecializationseriallizer(instance.sub_spec_id).data
+        response['sub_spec_id'] = GetSubspecializationSerializer(instance.sub_spec_id).data
         return response
