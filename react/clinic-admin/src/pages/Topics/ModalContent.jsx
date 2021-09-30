@@ -31,7 +31,6 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    console.log('savitha', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
     }
