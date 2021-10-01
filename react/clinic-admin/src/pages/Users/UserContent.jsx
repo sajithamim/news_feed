@@ -7,15 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
 
 const UserContent = () => {
-  const { userList , page} = useSelector(state => state.users);
-  console.log("user" , userList);
+  const { userList , addUser , updateUser, page} = useSelector(state => state.users);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUsersList())
-  }, [])
+  }, [ addUser,  updateUser])
 
   const confirmDelete = (id) => {
     dispatch(deleteUser(id));

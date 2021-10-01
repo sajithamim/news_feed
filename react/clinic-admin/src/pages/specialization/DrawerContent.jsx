@@ -103,8 +103,16 @@ const DrawerContent = (props) => {
       newErrorsState.name = 'Name cannot be empty';
       setErrors(newErrorsState);
       return false;
+    } else {
+      var myName = entities.name;
+            var res = myName.match(/^[a-zA-Z]+$/);
+            if (res === null) {
+              newErrorsState.name = "Please enter only alphabets";
+              setErrors(newErrorsState);
+              return false;
+            }
     }
-  return true;
+    return true;
   }
   return (
     <Form name="basic"

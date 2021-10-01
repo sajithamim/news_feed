@@ -8,7 +8,6 @@ import "./Quiz.css";
 
 
 const DrawerContent = (props) => {
-    console.log("props", props);
     const [state, setState] = useState({});
     const [errors, setErrors] = useState({ name: '' });
     const { specList, subspecialization } = useSelector(state => state.Quiz);

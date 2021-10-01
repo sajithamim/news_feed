@@ -12,6 +12,7 @@ import DrawerContent from "./DrawerContent";
 import moment from 'moment';
 import "./Users.css";
 import axios from 'axios';
+import { postPublicationDetails, updatePublicationDetails } from "../../actions/users";
 
 const columns = [
   {
@@ -34,7 +35,9 @@ const UserDetails = () => {
   const [state, setState] = useState({current:false});
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
-  const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData } = useSelector(state => state.users);
+  const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData, success, error } = useSelector(state => state.users);
+  console.log("publicationList" , success);
+  console.log("publicationList 123" , publicationList);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -43,7 +46,7 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
-  const [editData, setEditData] = useState({});
+  const [data, setData] = useState({});
   const [imageUrl, setImageUrl] = useState();
   const [defaultFileList, setDefaultFileList] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -66,6 +69,7 @@ const UserDetails = () => {
         dispatch(getUserSpecialization(emailId))
         if (res && res.data && res.data.data) {
           dispatch(getPublicationList(res.data && res.data.data && res.data.data.id))
+          console.log("addpub;ica",addPublicationData);
           onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
@@ -106,7 +110,7 @@ const UserDetails = () => {
     )
   })
   const onEdit = (record) => {
-    setEditData(record);
+    setData(record);
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -396,6 +400,39 @@ const UserDetails = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch({type: 'RESET_DATA'})
+    }
+    else if(error) {
+      message.error(error);
+    }
+   
+  }, [success, error])
+
+  const publicationSubmit = (newData, form_data) => {
+    onClose();
+    console.log('savitha 123', newData)
+    if(drawerType == 'edit') {
+      delete newData["image"];
+      delete newData["sl_no"];
+      // delete newData["id"];
+      dispatch(updatePublicationDetails(data.id, newData, form_data))
+      // .then(() => {
+      //     message.success("Publication Details edited succesfully"); 
+      // })
+    } else {
+      dispatch(postPublicationDetails(newData, form_data))
+      // .then((res) => {
+      //     setState({});
+      //     message.success("Publication Details added succesfully");
+      // })
+      //dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
+    }
+  }
+
   return (
     <div className="main-content">
       <Container fluid>
@@ -535,13 +572,7 @@ const UserDetails = () => {
               </Card>
             </TabPane>
             <TabPane
-              tab={
-                <span>
-                  Publications
-                </span>
-              }
-              key="4"
-            >
+              tab={<span>Publications</span>} key="4">
               <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }}>
                 <Card
                   title="Publications"
@@ -569,7 +600,7 @@ const UserDetails = () => {
                   visible={showDrawer}
                   key="drawer"
                 >
-                  <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? editData : {}} />
+                  <DrawerContent drawerType={drawerType} user_id={userDetails && userDetails.data && userDetails.data.id} type="public" editData={(drawerType === 'edit') ? data : {}} onFormSubmit={publicationSubmit} />
                 </Drawer>
 
               </Form>

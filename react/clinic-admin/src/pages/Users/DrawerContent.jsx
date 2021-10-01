@@ -26,6 +26,7 @@ const DrawerContent = (props) => {
     const dispatch = useDispatch();
 
     const [state, setState] = useState(props.editData);
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
     const [image, setImage] = useState("");
@@ -34,7 +35,7 @@ const DrawerContent = (props) => {
     const [formSubmit, setFormSubmit] = useState(false);
     
     useEffect(() => {
-        console.log("props" , props);
+        setLoading(false);
         setState(props.editData);
         setErrors({});
         if (props.editData.image && props.editData.image.startsWith("/media"))
@@ -126,23 +127,8 @@ const DrawerContent = (props) => {
                 form_data = new FormData();
                 form_data.append('image', image, image.name);
             }
-            if (props.drawerType === 'add') {
-                dispatch(postPublicationDetails(state, form_data))
-                    .then((res) => {
-                        setState({});
-                        message.success("Publication Details added succesfully");
-                    })
-            }
-            else {
-                const newData = state;
-                delete newData["image"];
-                delete newData["sl_no"];
-                delete newData["id"];
-                dispatch(updatePublicationDetails(pub_id, state, form_data))
-                    .then(() => {
-                        message.success("Publication Details edited succesfully"); 
-                    })
-            }
+            setLoading(true);
+            props.onFormSubmit(state, form_data);
         }
     }
 
@@ -185,7 +171,7 @@ const DrawerContent = (props) => {
                 <div className="errorMsg">{errors && errors.errors && errors.errors.description}</div>
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
-                <Button type="primary" htmlType="submit" >Save</Button>
+                <Button type="primary" htmlType="submit" disabled={loading} >Save</Button>
             </Form.Item>
         </Form>
     );

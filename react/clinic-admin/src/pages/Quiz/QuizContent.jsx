@@ -16,7 +16,8 @@ const QuizContent = () => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { quizList, addData, updateData, page } = useSelector(state => state.Quiz)
+  const { quizList , addData, updateData ,page} = useSelector(state => state.Quiz);
+
   useEffect(() => {
     dispatch(getQuiz())
   }, [addData, updateData])
@@ -41,7 +42,6 @@ const QuizContent = () => {
     let serialNo = pageSize * slNo;
     const items = [];
     quizList && quizList.results && quizList.results.map((item, key) => {
-      console.log("quizList", item);
       serialNo++;
       const quiz = [];
       const specData = [];

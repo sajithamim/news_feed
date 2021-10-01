@@ -153,14 +153,21 @@ export const getPublicationList = (id) => async (dispatch) => {
 export const postPublicationDetails = (state, image) => async (dispatch) => {
     try {
         const res = await Users.postPublicationDetails(state);
-        if (res && image) {
-            const res1 = await Users.putpublicationImage(res.data.id, image)
+        if(res.status == 200) {
+            if (res && image) {
+                const res1 = await Users.putpublicationImage(res.data.id, image)
+            }
+            dispatch({
+                type: 'POST_PUBLICATION_LIST',
+                message: 'Publication added successfully.',
+                data: res.data
+            })
+        } else {
+            dispatch({
+                type: 'HANDLE_ERROR',
+                message: 'Some errors occured.',
+            })
         }
-        dispatch({
-            type: 'POST_PUBLICATION_LIST',
-            payload: res,
-        })
-        return res;
     } catch (err) {
 
     }
@@ -168,14 +175,24 @@ export const postPublicationDetails = (state, image) => async (dispatch) => {
 export const updatePublicationDetails = (id, state, image) => async (dispatch) => {
     try {
         const res = await Users.updatePublicationDetails(id, state);
-        if (res && image) {
-            const res1 = await Users.putpublicationImage(res.data.id, image)
+        if(res.status == 200) {
+           
+            if (res && image) {
+                const res1 = await Users.putpublicationImage(res.data.id, image)
+            }
+            
+            dispatch({
+                type: 'UPDATE_PUBLICATION_LIST',
+                message: 'Publication updated successfully.',
+                data: res.data
+            })
+        } else {
+            dispatch({
+                type: 'HANDLE_ERROR',
+                message: 'Some errors occured.',
+            })
         }
-        dispatch({
-            type: 'UPDATE_PUBLICATION_LIST',
-            payload: res.data,
-        })
-        return res;
+        //return res;
     } catch (err) {
 
     }
