@@ -195,3 +195,4 @@ class TOSapiView(generics.ListCreateAPIView):
     @csrf_exempt
     def get_queryset(self):
         return Settings.objects.filter()
+        
