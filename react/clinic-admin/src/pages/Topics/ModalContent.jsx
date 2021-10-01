@@ -21,7 +21,6 @@ const ModalContent = (props) => {
   const [state, setState] = useState({});
   const { specList, catList, userList } = useSelector(state => state.topic);
   const [errors, setErrors] = useState({});
-  // const [value, setValue] = useState("");
   const [data, setData] = useState([]);
   const [topic_subspec, setTopicSubSpec] = useState([]);
 

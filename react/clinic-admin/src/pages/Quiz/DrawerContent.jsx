@@ -5,6 +5,7 @@ import { postQuiz, updateQuiz } from "../../actions/quiz";
 import "./Quiz.css";
 
 const DrawerContent = (props) => {
+    console.log("props, " , props)
     const [state, setState] = useState(props.editData);
     const [errors, setErrors] = useState({ name: '' });
     const dispatch = useDispatch();

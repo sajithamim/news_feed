@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Form, Button, Input, Modal, message } from "antd";
 import { useDispatch } from "react-redux";
 import "./Drawer.css";
 import { postCategory, updateCategory } from "../../actions/category";
 
 const DrawerContent = (props) => {
+  const ref = useRef();
   const dispatch = useDispatch();
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
@@ -19,11 +20,11 @@ const DrawerContent = (props) => {
       setImgData(props.editData.image);
     }
     else {
+      setState({});
       setImgData("");
       setImage("");
     }
   }, [props.editData, props.editData.image])
-
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -71,6 +72,7 @@ const DrawerContent = (props) => {
   }
 
   const handleSubmit = (e) => {
+    console.log("ref",ref);
     if (formValidation()) {
       setErrors({});
       let newData = state;
@@ -90,6 +92,7 @@ const DrawerContent = (props) => {
         delete newData["sl_no"];
         delete newData["id"];
         delete newData["image"];
+        ref.current.props.name = "";
         dispatch(updateCategory(id, newData, form_data))
           .then((res) => {
             setState({});
@@ -116,7 +119,7 @@ const DrawerContent = (props) => {
 
           <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
-            <Input type="file" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} />
+            <Input type="file" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} ref={ref} />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
         </div>
