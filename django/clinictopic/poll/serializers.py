@@ -67,15 +67,18 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
 class SettingsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False,allow_null=True)
+    #print("id: ",id)
     class Meta:
         model = Settings
         fields = '__all__'
         
     def create(self, validated_data):
-        if 'id' in validated_data:
-            obj, created = Settings.objects.update_or_create(id=validated_data['id'],defaults=validated_data)
+        count=Settings.objects.filter().count()
+        print("Count:  ",count)
+        if  count >=1:
+            obj = Settings.objects.update(**validated_data)
             return obj
-        settings, created = Settings.objects.update_or_create(**validated_data)
+        settings = Settings.objects.create(**validated_data)
         return settings
 
 class ContactusSerializer(serializers.ModelSerializer):
@@ -105,3 +108,63 @@ class AddSettingSerializer(serializers.ModelSerializer):
             add = AddSetting.objects.all().delete()
             addsetting=AddSetting.objects.create(**validated_data)
             return addsetting
+
+class Aboutusserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        fields =['about_us']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.about_us = validated_data['about_us']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
+class ContactSerilizer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        fields =['contact_us']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.contact_us = validated_data['contact_us']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
+class Privacypolicyserializer(serializers.ModelSerializer):
+    class Meta:
+        model=Settings
+        fields=['privacy_policy']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.privacy_policy = validated_data['privacy_policy']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
+class TOSserializer(serializers.ModelSerializer):
+    class Meta:
+        model=Settings
+        fields=['tos']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.tos = validated_data['tos']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
