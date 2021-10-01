@@ -260,6 +260,10 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
+      if (!fields["external_url2"]) {
+        formIsValid = false;
+        errors["external_url2"] = " External url cannot be empty";
+      }
       if (fields["external_url2"]) {
         var myUrl = fields.external_url2;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -278,13 +282,21 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description3"] = " Description cannot be empty";
       }
+      if (!fields["video_url"]) {
+        formIsValid = false;
+        errors["video_url"] = " Video url cannot be empty";
+      }
       if (fields["video_url"]) {
         var myUrl = fields.video_url;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         if (res === null) {
           formIsValid = false;
-          errors["video_url"] = "Enter a valid URL";
+          errors["video_url"] = "Video url a valid URL";
         }
+      }
+      if (!fields["external_url3"]) {
+        formIsValid = false;
+        errors["external_url3"] = " External url cannot be empty";
       }
       if (fields["external_url3"]) {
         var myUrl = fields.external_url3;
