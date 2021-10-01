@@ -73,7 +73,7 @@ const DrawerContent = (props) => {
   }
 
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value })
+    setState({ ...state, [e.target.name]: e.target.value.replace(/[^a-zA-Z]/ig,'')});
   };
 
   const handleFileChange = (info) => {
@@ -103,10 +103,18 @@ const DrawerContent = (props) => {
       newErrorsState.name = 'Name cannot be empty';
       setErrors(newErrorsState);
       return false;
-    }
-    return true;
+    }else{
+      var myName = entities.name;
+            var res = myName.match(/^[a-zA-Z]+$/);
+            if (res === null) {
+              newErrorsState.name = "Please enter only alphabets";
+              setErrors(newErrorsState);
+              return false;
+            }
+    
   }
-
+  return true;
+  }
   return (
     <Form name="basic"
       labelCol={{

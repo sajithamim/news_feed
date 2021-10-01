@@ -16,7 +16,7 @@ const QuizContent = () => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { quizList , addData, updateData } = useSelector(state => state.Quiz);
+  const { quizList , addData, updateData ,page} = useSelector(state => state.Quiz);
   useEffect(() => {
     dispatch(getQuiz())
   }, [addData, updateData])
@@ -43,10 +43,19 @@ const QuizContent = () => {
     quizList && quizList.results && quizList.results.map((item, key) => {
       console.log("quizGenerator",item);
       serialNo++;
+      const quiz = [];
+      const specData = [];
+
       return items.push({
         sl_no: serialNo,
         id: item.id,
         title: item.title,
+        // spec_data: {value:item.sub_spec_id.spec_id,
+        sub_spec_title: item.sub_spec_id.name,
+        sub_spec_data: {value: item.sub_spec_id.id, label: item.sub_spec_id.name},
+        spec_data: {value: item.sub_spec_id.spec_id.id, label: item.sub_spec_id.spec_id.name},
+        url: item.url,
+        active: item.active,
       })
     })
     return items;
@@ -72,7 +81,7 @@ const QuizContent = () => {
   const onConfirm = (id) => {
     dispatch(deleteQuiz(id))
       .then((res) => {
-       message.success("Category is deleted successfully")
+        message.success("Category is deleted successfully")
       })
   };
 
@@ -87,6 +96,11 @@ const QuizContent = () => {
       title: "Quiz",
       dataIndex: "title",
       key: "title",
+    },
+    {
+      title: "Sub specialization",
+      dataIndex: "sub_spec_title",
+      key: "sub_spec_title",
     },
     {
       title: "Action",
@@ -120,7 +134,8 @@ const QuizContent = () => {
             <Icon>add</Icon>
           </IconButton>
         }>
-        <Table columns={columns} pagination={pagination} dataSource={quizGenerator()} />
+        {quizList && quizList.results && page == current ?
+          (<Table columns={columns} pagination={pagination} dataSource={quizGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
       <Drawer
         title={
@@ -137,8 +152,7 @@ const QuizContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        
-        <DrawerContent drawerType={drawerType} type="Qui" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerContent drawerType={drawerType} type="Qui" editData={(drawerType === 'edit') ? editData : null} />
       </Drawer>
     </div>
   );
