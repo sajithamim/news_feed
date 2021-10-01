@@ -185,7 +185,7 @@ class TOSapiView(generics.ListCreateAPIView):
         #   tos=request.tos
         #if not Settings.objects.filter().exists():
         serializer.save()
-        print("Doneeeeeeeee")
+        # print("Doneeeeeeeee")
         #serializer.update()
     @csrf_exempt
     def get_queryset(self):
