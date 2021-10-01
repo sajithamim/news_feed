@@ -34,6 +34,14 @@ class GetSubspecializationSerializer(serializers.ModelSerializer):
     class Meta: 
         model = SubSpecialization
         fields = '__all__'
+        level =1
+        depth=1
+
+
+    # def to_representation(self, instance):
+
+    #     response = super().to_representation(instance)
+    #     response['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
 
 
 class GetSpecialization(serializers.ModelSerializer):
@@ -131,7 +139,7 @@ class UserSubSpecializationSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['sub_spec_id'] = GetSpecializationseriallizer(instance.sub_spec_id).data
+        response['sub_spec_id'] = GetSubspecializationSerializer(instance.sub_spec_id).data
         return response
 
 
@@ -192,5 +200,5 @@ class QuizSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['sub_spec_id'] = GetSpecializationseriallizer(instance.sub_spec_id).data
+        response['sub_spec_id'] = GetSubspecializationSerializer(instance.sub_spec_id).data
         return response

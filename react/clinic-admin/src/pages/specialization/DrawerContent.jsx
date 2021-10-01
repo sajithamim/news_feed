@@ -103,6 +103,7 @@ const DrawerContent = (props) => {
       newErrorsState.name = 'Name cannot be empty';
       setErrors(newErrorsState);
       return false;
+<<<<<<< HEAD
     }else{
       var myName = entities.name;
             var res = myName.match(/^[a-zA-Z]+$/);
@@ -113,6 +114,9 @@ const DrawerContent = (props) => {
             }
     
   }
+=======
+    }
+>>>>>>> 8a1db08e9788eff42eca10807e235535ca1c46f0
   return true;
   }
   return (

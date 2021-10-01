@@ -16,7 +16,11 @@ const QuizContent = () => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
+<<<<<<< HEAD
   const { quizList , addData, updateData ,page} = useSelector(state => state.Quiz);
+=======
+  const { quizList, addData, updateData, page } = useSelector(state => state.Quiz)
+>>>>>>> 8a1db08e9788eff42eca10807e235535ca1c46f0
   useEffect(() => {
     dispatch(getQuiz())
   }, [addData, updateData])
@@ -41,7 +45,11 @@ const QuizContent = () => {
     let serialNo = pageSize * slNo;
     const items = [];
     quizList && quizList.results && quizList.results.map((item, key) => {
+<<<<<<< HEAD
       console.log("quizGenerator",item);
+=======
+      console.log("quizList", item);
+>>>>>>> 8a1db08e9788eff42eca10807e235535ca1c46f0
       serialNo++;
       const quiz = [];
       const specData = [];
