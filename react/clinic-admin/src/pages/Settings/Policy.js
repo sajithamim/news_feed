@@ -1,38 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, message, Card , Spin } from "antd";
+import { Form, Button, message, Card, Spin } from "antd";
 import { useDispatch } from "react-redux";
-import { getSettings , postSettings} from "../../actions/settings";
+import { getPrivacy, postPrivacy } from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw, convertFromRaw} from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { Scrollbars } from 'react-custom-scrollbars';
+import "./Settings.css";
 
 const Policy = () => {
     const dispatch = useDispatch();
     const [id, setId] = useState(EditorState.createEmpty())
     useEffect(() => {
-        dispatch(getSettings())
-        .then(res => {       
-            if(res.data[0]) {
-                setId(res.data[0].id);
-                setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
-            } 
-        })
+        dispatch(getPrivacy())
+            .then(res => {
+                if (res.data[0]) {
+                    setId(res.data[0].id);
+                    setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
+                }
+            })
     }, [])
 
-    const [ contentState , setContentState] = useState();
+    const [contentState, setContentState] = useState();
 
     const handleSubmit = () => {
         let newData = {}
         newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
-        // newData.id = id;
-        dispatch(postSettings(newData))
-        .then(() => {
-            message.success('Policy added successfully')
-        });  
+        dispatch(postPrivacy(newData))
+            .then(() => {
+                message.success('Policy added successfully')
+            });
     }
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty())
- 
+
     const onEditorStateChange = (editorState) => {
         const contentState = editorState.getCurrentContent();
         setContentState(contentState);
@@ -40,22 +41,23 @@ const Policy = () => {
     }
 
     return (
-        <div style={{ margin: "10px" }}>
-        <Card title="Policy" style={{ width: "100%", height: '500px' }}>
-            <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
-                {editorState ? 
-                (<Editor
-                editorState={editorState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
-                onEditorStateChange={onEditorStateChange}
-                /> ): (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>) }
-                <Form.Item wrapperCol={{offset: 8, span: 16 }}>
-                    <Button type="primary" htmlType="submit"> Save </Button>
-                </Form.Item>
-            </Form>
-        </Card>
+        <div class="privacy" style={{ margin: "10px" }}>
+            <Card title="Policy" style={{ width: "100%", height: '500px' }}>
+                <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
+                    {editorState ?
+                        (<Editor
+                            editorState={editorState}
+                            toolbarClassName="toolbarClassName"
+                            wrapperClassName="wrapperClassName"
+                            editorClassName="editorClassName"
+                            onEditorStateChange={onEditorStateChange}
+                        />
+                        ) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" htmlType="submit"> Save </Button>
+                    </Form.Item>
+                </Form>
+            </Card>
         </div>
     )
 }

@@ -18,6 +18,7 @@ const Login = () => {
   const signin = (e) => {
     setLoading(true);
     dispatch(login(email, password))
+    console.log("accessToken",accessToken);
   };
 
   if (window.navigator.onLine == true) {
