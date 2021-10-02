@@ -1,4 +1,5 @@
 import  Settings from "../services/Settings";
+import DataService from "../services/data.service";
 
 export const getPrivacy = () => async(dispatch) => {
     try{
@@ -34,8 +35,28 @@ export const getTerms = () => async(dispatch) => {
 
 export const getContact = () => async(dispatch) => {
     try{
-        const res = await Settings.getContact();
-        console.log("response get", res);
+        const url = '/poll/contactus/'
+        const res = await DataService.getContact(url);
+        dispatch({
+            type: 'GET_CONTACT',
+            payload:res.data,
+        })
+        return res;
+    }
+    catch (err) {
+
+    }
+}
+
+export const deleteContactMessage = (id) => async(dispatch) => {
+    try{
+        const url = `/poll/contactus/${id}`
+        const res = await DataService.deleteContactMessage(url);
+        console.log("response deleytee get", res);
+        dispatch({
+            type: 'DELETE_CONTACT',
+            payload:res.data,
+        })
         return res;
     }
     catch (err) {
@@ -71,10 +92,12 @@ export const postAbout = (state) => async(dispatch) => {
 
 export const postContact = (state) => async(dispatch) => { 
     try{
-        const res = await Settings.postContact(state);
+        const url = '/poll/contactus/';
+        const res = await DataService.postContact(url, state);
         console.log("res" , res);
         dispatch({
             type: 'POST_CONTACT',
+            message: 'Contact details added successfully',
             payload: res.data,
         })
      }

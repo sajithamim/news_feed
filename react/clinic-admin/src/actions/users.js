@@ -154,7 +154,7 @@ export const postPublicationDetails = (state, image) => async (dispatch) => {
     try {
         const res = await Users.postPublicationDetails(state);
         if(res.status == 200) {
-            if (res && image) {
+            if (image) {
                 const res1 = await Users.putpublicationImage(res.data.id, image)
             }
             dispatch({

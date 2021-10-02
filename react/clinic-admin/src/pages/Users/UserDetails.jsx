@@ -408,28 +408,19 @@ const UserDetails = () => {
     }
     else if(error) {
       message.error(error);
+      dispatch({type: 'RESET_DATA'})
     }
    
   }, [success, error])
 
   const publicationSubmit = (newData, form_data) => {
     onClose();
-    console.log('savitha 123', newData)
     if(drawerType == 'edit') {
       delete newData["image"];
       delete newData["sl_no"];
-      // delete newData["id"];
       dispatch(updatePublicationDetails(data.id, newData, form_data))
-      // .then(() => {
-      //     message.success("Publication Details edited succesfully"); 
-      // })
     } else {
       dispatch(postPublicationDetails(newData, form_data))
-      // .then((res) => {
-      //     setState({});
-      //     message.success("Publication Details added succesfully");
-      // })
-      //dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
     }
   }
 

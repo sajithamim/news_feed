@@ -1,60 +1,93 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, message, Card } from "antd";
+import { Space, Table, Card, Input, Popconfirm, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getContact, postContact } from "../../actions/settings";
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { getContact, deleteContactMessage } from "../../actions/settings";
 
 const Contact = () => {
+    const { TextArea } = Input;
     const dispatch = useDispatch();
-    const [id, setId] = useState(EditorState.createEmpty())
+    const [state, setState] = useState("");
+    const { contactList } = useSelector(state => state.settings);
+    console.log("contactList",contactList);
+
     useEffect(() => {
         dispatch(getContact())
-            .then(res => {
-                if(res.data[0]) { 
-                    setId(res.data[0].id);
-                    setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].contact_us))));
-                }
-            })
     }, [])
 
-    const [contentState, setContentState] = useState();
+    const conatctGenerator = () => {
+        const contacts=[];
+        console.log("contacts", contacts);
+        contactList &&  contactList.results && contactList.results.map((item,key) => {
+            contacts.push({
+                id:item.id,
+                sl_no: key+1,
+                name: item.name,
+                phone: item.phone, 
+                message:item.message,
 
-    const handleSubmit = () => {
-        let newData = {}
-        newData.contact_us = JSON.stringify(convertToRaw(contentState));
-        newData.id = id;
-        dispatch(postContact(newData))
-        .then(() => {
-            message.success('Contact Us added successfully')
-        });  
+            })
+        })
+        return contacts;
     }
+    
+    const cancel = (e) => {
+    };
 
-    const [editorState, setEditorState] = useState(EditorState.createEmpty())
-
-    const onEditorStateChange = (editorState) => {
-        const contentState = editorState.getCurrentContent();
-        setContentState(contentState);
-        setEditorState(editorState)
+    const onConfirm = (id) => {
+        console.log("id",id);
+        dispatch(deleteContactMessage(id));
     }
+    const layout = {
+        labelCol: { span: 8 },
+        wrapperCol: { span: 16 },
+    };
+    const columns = [
+        {
+            title: "Sl No:",
+            dataIndex: "sl_no",
+            key: "sl_no",
+        },
+        {
+            title: "Name",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "Phone number",
+            dataIndex: "phone",
+            key: "phone",
+        },
+        {
+            title: "Message",
+            dataIndex: "message",
+            key: "message",
+        },
+        {
+            title: "Action",
+            key: "id",
+            align: "center",
+            render: (text, record) => (
+              <Space size="middle">
+                <Popconfirm
+                  title="Are you sure you want to delete this Message?"
+                  onConfirm={() => onConfirm(record.id)}
+                  onCancel={cancel}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="link">Delete</Button>
+                </Popconfirm>
+              </Space>
+            ),
+          },
+    ]
 
+   
     return (
         <div style={{ margin: "10px" }}>
-        <Card title="Contact Us" style={{ width: "100%", height: '500px' }}>
-            <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
-            <Editor
-                editorState={editorState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
-                onEditorStateChange={onEditorStateChange}
-                />
-                <Form.Item wrapperCol={{offset: 8, span: 16 }}>
-                    <Button type="primary" htmlType="submit"> Save </Button>
-                </Form.Item>
-            </Form>
-        </Card>
+            <Card title="Contact Us" style={{ width: "100%", height: '500px' }}>
+                <Table columns={columns} dataSource={conatctGenerator()} />
+            </Card>
         </div>
     )
 }
