@@ -6,6 +6,7 @@ const postGenAds = (state) => {
 }
 
 const putAdsImage = (id, imageData) => {
+    console.log("putAdsImage " ,id, imageData);
     let accessToken = localStorage.getItem("accessToken");
     let url = `${process.env.REACT_APP_API_URL}add/alluseradd/${id}/image/`;
     axios.put(url, imageData, {

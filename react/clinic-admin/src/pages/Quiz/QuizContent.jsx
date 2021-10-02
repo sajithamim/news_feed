@@ -16,10 +16,11 @@ const QuizContent = () => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { quizList , addData, updateData ,page} = useSelector(state => state.Quiz);
+  const { quizList, addData, updateData, page } = useSelector(state => state.Quiz);
 
   useEffect(() => {
-    dispatch(getQuiz())
+    dispatch(getQuiz(page))
+    onClose();
   }, [addData, updateData])
 
 
@@ -52,8 +53,8 @@ const QuizContent = () => {
         title: item.title,
         // spec_data: {value:item.sub_spec_id.spec_id,
         sub_spec_title: item.sub_spec_id.name,
-        sub_spec_data: {value: item.sub_spec_id.id, label: item.sub_spec_id.name},
-        spec_data: {value: item.sub_spec_id.spec_id.id, label: item.sub_spec_id.spec_id.name},
+        sub_spec_data: { value: item.sub_spec_id.id, label: item.sub_spec_id.name },
+        spec_data: { value: item.sub_spec_id.spec_id.id, label: item.sub_spec_id.spec_id.name },
         url: item.url,
         active: item.active,
       })
