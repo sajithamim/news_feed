@@ -336,3 +336,19 @@ class QuizView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all().order_by('title')
     serializer_class = QuizSerializer
     permission_classes = (IsAuthenticated,)
+
+class QuizSubView(APIView):
+    @csrf_exempt
+    def get(self,request,pk):
+        quiz= Quiz.objects.filter(sub_spec_id=pk).order_by('sub_spec_id')
+        serializers=QuizSerializer(quiz,many=True)
+        status_code = status.HTTP_200_OK
+        response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'Quiz user details based on ID',
+            'data':serializers.data
+            }
+        return Response(response,status=status.HTTP_200_OK)
+
+    

@@ -29,8 +29,8 @@ SECRET_KEY = '@6p-h7#oy4unyb4+(@i&3eq(knbkvjkeyv&@*8+a%f45b@mfm1'
 DEBUG = True
 
 #ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ')
-CORS_ORIGIN_ALLOW_ALL = True
+#ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ')
+#CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
