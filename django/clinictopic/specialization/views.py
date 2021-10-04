@@ -340,7 +340,7 @@ class QuizView(viewsets.ModelViewSet):
 class QuizSubView(APIView):
     @csrf_exempt
     def get(self,request,pk):
-        quiz= Quiz.objects.filter(sub_spec_id=pk).order_by('sub_spec_id')
+        quiz= Quiz.objects.filter(id=pk).order_by('id').reverse()
         serializers=QuizSerializer(quiz,many=True)
         status_code = status.HTTP_200_OK
         response = {
