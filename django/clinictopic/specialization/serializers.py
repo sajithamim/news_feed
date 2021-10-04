@@ -30,6 +30,15 @@ class GetSpecializationseriallizer(serializers.ModelSerializer):
         model = Specialization
         fields = '__all__'
 
+class PostSubspecializationSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = SubSpecialization
+        fields = '__all__'
+    # def to_representation(self, instance):
+
+    #     response = super().to_representation(instance)
+    #     response['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
+
 class GetSubspecializationSerializer(serializers.ModelSerializer):
     class Meta: 
         model = SubSpecialization
@@ -46,7 +55,7 @@ class GetSubspecializationSerializer(serializers.ModelSerializer):
 
 class GetSpecialization(serializers.ModelSerializer):
     id =  serializers.ReadOnlyField()
-    specialization_id = GetSubspecializationSerializer(many=True)
+    specialization_id = PostSubspecializationSerializer(many=True)
     created_at =  serializers.ReadOnlyField()
     updated_at =  serializers.ReadOnlyField()
     # speccount = serializers.SerializerMethodField()
