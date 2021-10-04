@@ -3,7 +3,8 @@ import DataService from "../services/data.service";
 
 export const getPrivacy = () => async(dispatch) => {
     try{
-        const res = await Settings.getPrivacy();
+        const url = '/poll/privacypolicy/'
+        const res = await DataService.getData(url);
         return res;
     }
     catch (err) {
@@ -11,9 +12,24 @@ export const getPrivacy = () => async(dispatch) => {
     }
 }
 
+export const postPrivacy = (state) => async(dispatch) => { 
+    try{
+        const url = '/poll/privacypolicy/';
+        const res = await DataService.addData(url , state);
+        dispatch({
+            type: 'POST_PRIVACY',
+            payload: res.data,
+        })
+     }
+    catch (err) {
+
+    }
+}
+
 export const getAbout = () => async(dispatch) => {
     try{
-        const res = await Settings.getAbout();
+        const url = '/poll/aboutus/';
+        const res = await DataService.getData(url);
         console.log("response get", res);
         return res;
     }
@@ -24,8 +40,8 @@ export const getAbout = () => async(dispatch) => {
 
 export const getTerms = () => async(dispatch) => {
     try{
-        const res = await Settings.getTerms();
-        console.log("response get", res);
+        const url = '/poll/tos/'
+        const res = await DataService.getData(url);
         return res;
     }
     catch (err) {
@@ -36,12 +52,11 @@ export const getTerms = () => async(dispatch) => {
 export const getContact = () => async(dispatch) => {
     try{
         const url = '/poll/contactus/'
-        const res = await DataService.getContact(url);
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_CONTACT',
             payload:res.data,
         })
-        return res;
     }
     catch (err) {
 
@@ -51,35 +66,21 @@ export const getContact = () => async(dispatch) => {
 export const deleteContactMessage = (id) => async(dispatch) => {
     try{
         const url = `/poll/contactus/${id}`
-        const res = await DataService.deleteContactMessage(url);
-        console.log("response deleytee get", res);
+        const res = await DataService.deleteData(url);
         dispatch({
             type: 'DELETE_CONTACT',
-            payload:res.data,
+            payload: id,
         })
-        return res;
     }
     catch (err) {
 
     }
 }
-export const postPrivacy = (state) => async(dispatch) => { 
-    try{
-        const res = await Settings.postPrivacy(state);
-        console.log("res" , res);
-        dispatch({
-            type: 'POST_PRIVACY',
-            payload: res.data,
-        })
-     }
-    catch (err) {
 
-    }
-}
 export const postAbout = (state) => async(dispatch) => { 
     try{
-        const res = await Settings.postAbout(state);
-        console.log("res" , res);
+        const url = '/poll/aboutus/';
+        const res = await DataService.addData(url , state);
         dispatch({
             type: 'POST_ABOUT',
             payload: res.data,
@@ -108,8 +109,8 @@ export const postContact = (state) => async(dispatch) => {
 
 export const postTerms = (state) => async(dispatch) => { 
     try{
-        const res = await Settings.postTerms(state);
-        console.log("res" , res);
+        const url = '/poll/tos/';
+        const res = await DataService.addData(url , state);
         dispatch({
             type: 'POST_TERMS',
             payload: res.data,

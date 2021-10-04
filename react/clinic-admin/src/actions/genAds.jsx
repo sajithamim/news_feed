@@ -1,10 +1,10 @@
-import  genAds from "../services/genAds"
 import DataService from "../services/data.service";
 
 export const getGeneralAdvertisment = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try{
-        const res = await genAds.getGenAds(page);
+        const url = `add/alluseradd?page=${page}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_GEN_ADS',
             payload: res.data,
@@ -21,7 +21,7 @@ export const postGeneralAdvertisement = (state , imgData) => async (dispatch) =>
         if(res.status == 201){
             if (imgData){
                 let url = `${process.env.REACT_APP_API_URL}add/alluseradd/${res.data.id}/image/`;
-                await genAds.putAdsImage(res.data.id, imgData);
+                await DataService.postImage(url, imgData);
             }
             dispatch({
                 type: 'POST_GEN_ADS',
@@ -37,7 +37,8 @@ export const postGeneralAdvertisement = (state , imgData) => async (dispatch) =>
 }
 export const deleteGenAds = (id) => async(dispatch) => {
     try{
-        const res = await genAds.deleteGenAds(id);
+        const url = `add/alluseradd/${id}`;
+        const res = await DataService.deleteData(url);
         dispatch({
             type: 'DELETE_GEN_ADS',
             payload: id,
@@ -52,8 +53,9 @@ export const updateGeneralAdvertisment = (id, newData, form_data) => async(dispa
         const url = `add/alluseradd/${id}`;
         const res = await DataService.updateData(url, newData);
         if(res.status == 200){
-            if (form_data){
-                await genAds.putAdsImage(res.data.id, form_data);
+            if (form_data && res.data.id){
+                const imageUrl = `${process.env.REACT_APP_API_URL}add/alluseradd/${res.data.id}/image/`;
+                await DataService.postImage(imageUrl, form_data);
             }
             dispatch({
                 type: 'UPDATE_GEN_ADS',

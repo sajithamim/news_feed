@@ -1,46 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Space, Table, Card, Input, Popconfirm, Button } from "antd";
+import React, { useEffect } from "react";
+import { Space, Table, Card, Popconfirm, Button, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getContact, deleteContactMessage } from "../../actions/settings";
 
 const Contact = () => {
-    const { TextArea } = Input;
     const dispatch = useDispatch();
-    const [state, setState] = useState("");
     const { contactList } = useSelector(state => state.settings);
-    console.log("contactList",contactList);
 
     useEffect(() => {
         dispatch(getContact())
+        .then(() => {
+            message.success("Contact deleted successfully");
+        })
     }, [])
 
     const conatctGenerator = () => {
-        const contacts=[];
-        console.log("contacts", contacts);
-        contactList &&  contactList.results && contactList.results.map((item,key) => {
+        const contacts = [];
+        contactList && contactList.results && contactList.results.map((item, key) => {
             contacts.push({
-                id:item.id,
+                id: item.id,
                 sl_no: key+1,
                 name: item.name,
-                phone: item.phone, 
-                message:item.message,
-
+                phone: item.phone,
+                message: item.message
             })
         })
         return contacts;
     }
-    
+
     const cancel = (e) => {
     };
 
     const onConfirm = (id) => {
-        console.log("id",id);
         dispatch(deleteContactMessage(id));
     }
-    const layout = {
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
-    };
+
     const columns = [
         {
             title: "Sl No:",
@@ -67,22 +61,21 @@ const Contact = () => {
             key: "id",
             align: "center",
             render: (text, record) => (
-              <Space size="middle">
-                <Popconfirm
-                  title="Are you sure you want to delete this Message?"
-                  onConfirm={() => onConfirm(record.id)}
-                  onCancel={cancel}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button type="link">Delete</Button>
-                </Popconfirm>
-              </Space>
+                <Space size="middle">
+                    <Popconfirm
+                        title="Are you sure you want to delete this Message?"
+                        onConfirm={() => onConfirm(record.id)}
+                        onCancel={cancel}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button type="link">Delete</Button>
+                    </Popconfirm>
+                </Space>
             ),
-          },
+        },
     ]
 
-   
     return (
         <div style={{ margin: "10px" }}>
             <Card title="Contact Us" style={{ width: "100%", height: '500px' }}>

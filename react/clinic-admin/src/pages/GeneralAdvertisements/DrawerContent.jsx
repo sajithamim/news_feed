@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-  const [state, setState] = useState(props.editData);
+  const [state, setState] = useState({active: true});
   const [errors, setErrors] = useState({ name: '' });
   const [image, setImage] = useState();
   const [imgData, setImgData] = useState(props.editData.image);
@@ -12,7 +12,9 @@ const DrawerContent = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setState(props.editData)
+    if(Object.keys(props.editData).length !== 0) 
+      setState(props.editData)
+      
     setErrors({});
     if (props.editData.image && props.editData.image) {
       setImgData(props.editData.image);
@@ -62,10 +64,6 @@ const DrawerContent = (props) => {
       formIsValid = false;
       errors["image"] = "Image is required"
     }
-    if (fields.active === undefined) {
-      formIsValid = false;
-      errors["status"] = "Status is required"
-    }
     setErrors({ errors });
     return formIsValid;
   }
@@ -85,7 +83,7 @@ const DrawerContent = (props) => {
     <Form name="basic" labelCol={{ span: 6 }} wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
-          <Form.Item label="Name">
+          <Form.Item label="Title">
             <Input id="title" name="title" onChange={handleChange} value={state.title} />
             <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
           </Form.Item>
@@ -99,10 +97,10 @@ const DrawerContent = (props) => {
               id="image"
               name="image"
               accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
-            <div className="errorMsg"   >{errors && errors.errors && errors.errors.image}</div>
+            <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
-          <Form.Item label="Status" wrapperCol={{ offset: 2, span: 14 }}>
-            <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active}>
+          <Form.Item label="Status" wrapperCol={{ offset: 2}}>
+            <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active} style={{marginLeft: '-6px'}}>
               <Radio value={true}>
                 Enable
               </Radio>
@@ -110,7 +108,6 @@ const DrawerContent = (props) => {
                 Disable
               </Radio>
             </Radio.Group>
-            <div className="errorMsg">{errors && errors.errors && errors.errors.status}</div>
           </Form.Item>
         </div>
       </div>
