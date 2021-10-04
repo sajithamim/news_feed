@@ -204,6 +204,7 @@ const ModalContent = (props) => {
   }
 
   const handleValidation = () => {
+    console.log("newImageList" , state.topic_image);
     let fields = state;
     let errors = {};
     let formIsValid = true;

@@ -33,3 +33,7 @@
   #btn{
     margin-left: 21px;
   }
+
+  .errorMsg {
+    margin-left: 50px !important;
+  }

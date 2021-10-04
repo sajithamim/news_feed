@@ -16,7 +16,7 @@ const SpecializationContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const { specList, updateData, addData, page } = useSelector(state => state.spec);
-  console.log("specList" , specList);
+  
   useEffect(() => {
     dispatch(getSpecialization(page))
     onClose();
