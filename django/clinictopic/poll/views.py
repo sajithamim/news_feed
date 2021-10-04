@@ -98,30 +98,6 @@ class Feedbackview(generics.ListCreateAPIView):
 
 
 class SettingsViewSet(generics.ListCreateAPIView):
-#@renderer_classes(JSONRenderer)    
-#@csrf_exempt
-    # @api_view(['GET', 'POST', ])
-    # def get_serializer(self, *args, **kwargs):
-    #     print("hihihihi")
-    #     """ if an array is passed, set serializer to many """
-    #     if isinstance(kwargs.get('data', {}), list):
-    #         kwargs['many'] = True
-    #     if self.request.method == 'GET':
-    #         queryset = Settings.objects.all().order_by('id')
-    #         serializer_class = SettingsSerializer(queryset,many='True')
-    #         # pagination_class = None
-    #         # permission_classes = (IsAuthenticated,)
-    #         return Response(serializer_class.data)
-    #     if self.request.method =='POST':
-    #         data = JSONParser().parse(self.request)
-    #         print(data)
-    #         serializer = SettingsSerializer(data=data)
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-    #         return JsonResponse(serializer.errors, status=400)
-    # def get_queryset(self):
-    #     return Settings.objects.all().order_by('-id')
     serializer_class=SettingsSerializer
     pagination_class=None
     @csrf_exempt

@@ -4,7 +4,7 @@ from .models import (Advisory, Audience, Specialization,UserSpecialization,SubSp
 from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
 GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
-GetSpecializationandsub,AdvisorySerializer,QuizSerializer)
+GetSpecializationandsub,AdvisorySerializer,QuizSerializer,PostSubspecializationSerializer)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -184,8 +184,8 @@ class SpecializationView(viewsets.ModelViewSet):
 
 class SubSpecializationView(viewsets.ModelViewSet):
     queryset = SubSpecialization.objects.all().order_by('name')
-    serializer_class = GetSubspecializationSerializer
-    permission_classes = (IsAuthenticated,)
+    serializer_class = PostSubspecializationSerializer
+    # permission_classes = (IsAuthenticated,)
     def create(self, request):
         name = request.data['name']
         spec_id = request.data['spec_id']
@@ -197,7 +197,7 @@ class SubSpecializationView(viewsets.ModelViewSet):
                 'message': 'subspecialization already exists with this name'
                 }
             return Response(response, status=status_code)
-        serializer = GetSubspecializationSerializer(data=request.data)
+        serializer = PostSubspecializationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -336,3 +336,20 @@ class QuizView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all().order_by('title')
     serializer_class = QuizSerializer
     permission_classes = (IsAuthenticated,)
+
+class QuizSubView(APIView):
+    permission_classes = (IsAuthenticated,)
+    @csrf_exempt
+    def get(self,request,pk):
+        quiz= Quiz.objects.filter(id=pk).order_by('id').reverse()
+        serializers=QuizSerializer(quiz,many=True)
+        status_code = status.HTTP_200_OK
+        response = {
+            'success' : 'True',
+            'status code' : status_code,
+            'message': 'Quiz user details based on ID',
+            'data':serializers.data
+            }
+        return Response(response,status=status.HTTP_200_OK)
+
+    

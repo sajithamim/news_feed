@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (GetSpecializations,GetAudienceView,UserTypeView,
+from .views import (GetSpecializations,GetAudienceView, QuizSubView,UserTypeView,
 UserSpecializationApiView,SpecializationView,SubSpecializationView,GetUserSpecializationsApiview,AdvisoryView,
 GetAdvisoryUser,GetUserAdvisoryUser,QuizView)
 from django.conf.urls import url, include
@@ -23,6 +23,7 @@ urlpatterns = [
         path('getuserspecialization/<str:pk>/',GetUserSpecializationsApiview.as_view()),
         path('advisoryuser/<int:pk>/',GetAdvisoryUser.as_view()),
         path('useradvisory/<int:pk>/',GetUserAdvisoryUser.as_view()),
+        path('quizview/<int:pk>/',QuizSubView.as_view()),
         # path('getsubspecialization/',SubspecializationApiview.as_view()),
         url(r'^', include(router.urls)),
 

@@ -67,7 +67,6 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
 class SettingsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False,allow_null=True)
-    #print("id: ",id)
     class Meta:
         model = Settings
         fields = '__all__'
