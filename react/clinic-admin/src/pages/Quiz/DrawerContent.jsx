@@ -3,7 +3,6 @@ import { Form, Input, Button, Radio, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { postQuiz, updateQuiz, getSpecialization, getSubSpecialisation } from "../../actions/quiz";
 import SelectBox from 'react-select';
-import { useParams } from "react-router-dom";
 import "./Quiz.css";
 
 
@@ -45,7 +44,6 @@ const DrawerContent = (props) => {
         setState({ ...state, active: e.target.value })
     }
     const handleSpecChange = (value) => {
-        console.log("value" , value);
         setState({ ...state, spec_data: value, spec_id: value.value });
         dispatch(getSubSpecialisation(value.value));
     };
@@ -133,7 +131,7 @@ const DrawerContent = (props) => {
                         <SelectBox
                             isMulti={false}
                             isSearchable={true}
-                            value={state.spec_data}
+                            value={state.spec_data || ''}
                             onChange={handleSpecChange}
                             options={spec}
                         />
@@ -143,7 +141,7 @@ const DrawerContent = (props) => {
                         <SelectBox
                             isMulti={false}
                             isSearchable={true}
-                            value={state.sub_spec_data}
+                            value={state.sub_spec_data || ''}
                             onChange={handleSubChange}
                             options={sub_spec}
                         />

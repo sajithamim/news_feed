@@ -51,7 +51,6 @@ const QuizContent = () => {
         sl_no: serialNo,
         id: item.id,
         title: item.title,
-        // spec_data: {value:item.sub_spec_id.spec_id,
         sub_spec_title: item.sub_spec_id.name,
         sub_spec_data: { value: item.sub_spec_id.id, label: item.sub_spec_id.name },
         spec_data: { value: item.sub_spec_id.spec_id.id, label: item.sub_spec_id.spec_id.name },
