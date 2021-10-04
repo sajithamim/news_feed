@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Space, Table, Card, Popconfirm, Button, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getContact, deleteContactMessage } from "../../actions/settings";
@@ -6,20 +6,23 @@ import { getContact, deleteContactMessage } from "../../actions/settings";
 const Contact = () => {
     const dispatch = useDispatch();
     const { contactList } = useSelector(state => state.settings);
+    const [current, setCurrent] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [slNo, setSlNo] = useState(0);
+    const { page } = useSelector(state => state.settings);
 
     useEffect(() => {
         dispatch(getContact())
-        .then(() => {
-            message.success("Contact deleted successfully");
-        })
     }, [])
 
     const conatctGenerator = () => {
+        let serialNo = pageSize * slNo;
         const contacts = [];
         contactList && contactList.results && contactList.results.map((item, key) => {
-            contacts.push({
+            serialNo++;
+           return contacts.push({
                 id: item.id,
-                sl_no: key+1,
+                sl_no: serialNo,
                 name: item.name,
                 phone: item.phone,
                 message: item.message
@@ -29,10 +32,27 @@ const Contact = () => {
     }
 
     const cancel = (e) => {
+        message.error('Cancelled');
     };
 
     const onConfirm = (id) => {
-        dispatch(deleteContactMessage(id));
+        dispatch(deleteContactMessage(id))
+        .then((res) => {
+            message.success("Contact deleted successfully");
+        })
+    }
+    const handleChange = (page, size, sorter) => {
+        setCurrent(page)
+        setSlNo(page - 1)
+        dispatch(getContact(page));
+    }
+
+    const pagination = {
+        current,
+        pageSize,
+        showSizeChanger: false,
+        onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
+        total: contactList.count
     }
 
     const columns = [
@@ -78,8 +98,9 @@ const Contact = () => {
 
     return (
         <div style={{ margin: "10px" }}>
-            <Card title="Contact Us" style={{ width: "100%", height: '500px' }}>
-                <Table columns={columns} dataSource={conatctGenerator()} />
+            <Card title="Contact Us">
+                {contactList && contactList.results && page == current ?
+                    (<Table columns={columns} pagination={pagination} dataSource={conatctGenerator()} />) : (<div className="spinner"></div>)}
             </Card>
         </div>
     )
