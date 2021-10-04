@@ -122,6 +122,8 @@ class AddSettingView(viewsets.ModelViewSet):
 class AboutusApiview(generics.ListCreateAPIView):
     serializer_class = Aboutusserializer
     pagination_class = None
+    permission_classes = (IsAuthenticated,)
+
     # permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self, serializer): 
@@ -136,6 +138,7 @@ class AboutusApiview(generics.ListCreateAPIView):
 class ContactusApiView(generics.ListCreateAPIView):
     serializer_class =ContactSerilizer
     pagination_class=None
+    permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self,serializer):
          serializer.save()
@@ -146,6 +149,7 @@ class ContactusApiView(generics.ListCreateAPIView):
 class PrivacyPolicyApiView(generics.ListCreateAPIView):
     serializer_class=Privacypolicyserializer
     pagination_class=None
+    permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self,serializer):
         serializer.save()
@@ -156,13 +160,15 @@ class PrivacyPolicyApiView(generics.ListCreateAPIView):
 class TOSapiView(generics.ListCreateAPIView):
     serializer_class=TOSserializer
     pagination_class=None
+    permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self,serializer):
         #   tos=request.tos
         #if not Settings.objects.filter().exists():
         serializer.save()
-        print("Doneeeeeeeee")
+        # print("Doneeeeeeeee")
         #serializer.update()
     @csrf_exempt
     def get_queryset(self):
         return Settings.objects.filter()
+        

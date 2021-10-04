@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, message, Card } from "antd";
 import { useDispatch } from "react-redux";
-import { getSettings , postSettings} from "../../actions/settings";
+import { getTerms , postTerms} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, convertFromRaw} from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -10,7 +10,7 @@ const Terms = () => {
     const dispatch = useDispatch();
     const [id, setId] = useState(EditorState.createEmpty())
     useEffect(() => {
-        dispatch(getSettings())
+        dispatch(getTerms())
         .then(res => {   
             if(res.data[0]) {   
                 setId(res.data[0].id);
@@ -25,7 +25,7 @@ const Terms = () => {
         let newData = {}
         newData.tos = JSON.stringify(convertToRaw(contentState));
         newData.id = id;
-        dispatch(postSettings(newData))
+        dispatch(postTerms(newData))
         .then(() => {
             message.success('Terms and Conditions added successfully')
         });  

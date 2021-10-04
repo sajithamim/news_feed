@@ -113,16 +113,57 @@ class Aboutusserializer(serializers.ModelSerializer):
         model = Settings
         fields =['about_us']
 
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.about_us = validated_data['about_us']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
 class ContactSerilizer(serializers.ModelSerializer):
     class Meta:
         model = Settings
         fields =['contact_us']
 
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.contact_us = validated_data['contact_us']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
 class Privacypolicyserializer(serializers.ModelSerializer):
     class Meta:
         model=Settings
         fields=['privacy_policy']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.privacy_policy = validated_data['privacy_policy']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
 class TOSserializer(serializers.ModelSerializer):
     class Meta:
         model=Settings
         fields=['tos']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.tos = validated_data['tos']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings

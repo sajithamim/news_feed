@@ -67,7 +67,7 @@ const CategoriesContent = () => {
     const items = [];
     catlist && catlist.results && catlist.results.map((item, key) => {
       serialNo++;
-      return items.push({
+      items.push({
         sl_no: serialNo,
         id: item.id,
         title: item.title,

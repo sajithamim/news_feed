@@ -5,29 +5,30 @@ import "antd/dist/antd.css";
 import { Icon, IconButton } from "@material-ui/core";
 import { getGeneralAdvertisment , deleteGenAds} from "../../actions/genAds";
 import DrawerContent from "./DrawerContent"
+import { postGeneralAdvertisement, updateGeneralAdvertisment } from "../../actions/genAds";
 
 const GenAdvertisementContent = () => {
   
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
-  const [editData, setEditData] = useState({});
+  const [data, setData] = useState({});
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
 
-  const { genAdsList , addGenAdd , updateGenAdd, page} = useSelector(state => state.genAds);
+  const { genAdsList, page, success, error} = useSelector(state => state.genAds);
+
   useEffect(() => {
     dispatch(getGeneralAdvertisment(page))
-    onClose();
-  }, [ addGenAdd, updateGenAdd ])
+  }, [])
 
   const onClose = () => {
     setShowDrawer(false);
   };
 
   const onEdit = (record) => {
-    setEditData(record);
+    setData(record);
     setShowDrawer(true);
     setDrawerType("edit");
   };
@@ -53,7 +54,6 @@ const GenAdvertisementContent = () => {
     let serialNo = pageSize * slNo;
     const items = [];
     genAdsList && genAdsList.results && genAdsList.results.map((item) => {
-      console.log("url", item);
       serialNo++;
       return items.push({
         sl_no: serialNo,
@@ -68,7 +68,6 @@ const GenAdvertisementContent = () => {
     }
 
   const handleChange = (page, size, sorter) => {
-    console.log("page", page);
     setCurrent(page)
     setSlNo(page-1)
     dispatch(getGeneralAdvertisment(page))
@@ -79,6 +78,29 @@ const GenAdvertisementContent = () => {
     pageSize,
     onChange: (page, pageSize, sorter) => { handleChange(page, pageSize, sorter) },
     total: genAdsList.count
+  } 
+
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch({type: 'RESET_DATA'})
+    }
+    else if(error) {
+      message.error(error);
+      dispatch({type: 'RESET_DATA'})
+    }
+  }, [success, error])
+
+  const saveData = (newData, form_data) => {
+    onClose();
+    if(drawerType == 'edit') {
+      delete newData["image"];
+      delete newData["sl_no"];
+      delete newData["id"];
+      dispatch(updateGeneralAdvertisment(data.id, newData, form_data))
+    } else {
+      dispatch(postGeneralAdvertisement(newData, form_data))
+    }
   }
 
   const columns = [
@@ -119,8 +141,7 @@ const GenAdvertisementContent = () => {
 
   return (
     <div style={{ margin: "10px" }}>
-      <Card
-        title="General Advertisements"
+      <Card title="General Advertisements"
         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
@@ -140,7 +161,7 @@ const GenAdvertisementContent = () => {
               : ""
         }
         placement="right" width={750} closable={true} onClose={onClose} visible={showDrawer} key="drawer">
-        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerContent drawerType={drawerType} type="spec" editData={(drawerType === 'edit') ? data : {}} onFormSubmit={saveData} />
       </Drawer>
     </div>
   );
