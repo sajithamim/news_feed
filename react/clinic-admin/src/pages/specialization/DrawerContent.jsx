@@ -35,6 +35,7 @@ const DrawerContent = (props) => {
       setErrors({});
       let newData = state;
       const id = state.id;
+      console.log("formValidationformValidation", newData)
       if (props.drawerType === "edit") {
         delete newData["id"];
         delete newData["icon"];
@@ -73,7 +74,7 @@ const DrawerContent = (props) => {
   }
 
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value.replace(/[^a-zA-Z]/ig,'')});
+    setState({ ...state, [e.target.name]: e.target.value});
   };
 
   const handleFileChange = (info) => {
@@ -105,7 +106,7 @@ const DrawerContent = (props) => {
       return false;
     } else {
       var myName = entities.name;
-            var res = myName.match(/^[a-zA-Z]+$/);
+            var res = myName.match(/^[a-zA-Z\s]*$/);
             if (res === null) {
               newErrorsState.name = "Please enter only alphabets";
               setErrors(newErrorsState);
@@ -125,7 +126,7 @@ const DrawerContent = (props) => {
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
-            <Input id="spec_name" name="name" onChange={handleChange} value={state.name} />
+            <Input type="text" id="spec_name" name="name" onChange={handleChange} value={state.name} />
             <div className="errorMsg">{errors.name}</div>
           </Form.Item>
 
