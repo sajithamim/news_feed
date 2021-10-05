@@ -45,10 +45,10 @@ export const deleteQuiz = (id) => async (dispatch) => {
     }
 }
 
-export const updateQuiz = (id, newData, form_data) => async (dispatch) => {
+export const updateQuiz = (id, state, form_data) => async (dispatch) => {
     try {
         const url = `spec/quiz/${id}/`;
-        const res = await DataService.updateData(url, newData, form_data);
+        const res = await DataService.updateData(url, state, form_data);
         dispatch({
             type: 'EDIT_QUIZ',
             payload: res.data,
