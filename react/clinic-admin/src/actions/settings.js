@@ -49,13 +49,15 @@ export const getTerms = () => async(dispatch) => {
     }
 }
 
-export const getContact = () => async(dispatch) => {
+export const getContact = (page) => async(dispatch) => {
+    page = page != undefined ? page : 1;
     try{
         const url = '/poll/contactus/'
         const res = await DataService.getData(url);
         dispatch({
             type: 'GET_CONTACT',
             payload:res.data,
+            page: page
         })
     }
     catch (err) {
