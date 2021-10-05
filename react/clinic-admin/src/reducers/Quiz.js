@@ -3,6 +3,7 @@ const initialState = {
     subspecialization:[],
     addData: false,
     success: false,
+    error: false,
     specList: {},
     updateData: false
 };

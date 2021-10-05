@@ -23,7 +23,6 @@ const QuizContent = () => {
     onClose();
   }, [addData, updateData])
 
-
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -38,6 +37,18 @@ const QuizContent = () => {
     setShowDrawer(true);
     setDrawerType("edit");
   };
+
+  const cancel = (e) => {
+    message.error('Cancelled');
+  }
+
+  const onConfirm = (id) => {
+    dispatch(deleteQuiz(id))
+    .then((res) => {
+      res.status === 204 ? message.success("Quiz is deleted successfully") : message.error("Quiz is not exist")
+    })
+  };
+
 
   const quizGenerator = () => {
     let serialNo = pageSize * slNo;
@@ -70,21 +81,10 @@ const QuizContent = () => {
   const pagination = {
     current,
     pageSize,
+    showSizeChanger: false,
     onChange: (page, pageSize) => { handleChange(page, pageSize) },
     total: quizList.count
   }
-
-  const cancel = (e) => {
-    message.error('Cancelled');
-  }
-
-  const onConfirm = (id) => {
-    dispatch(deleteQuiz(id))
-      .then((res) => {
-        message.success("Category is deleted successfully")
-      })
-  };
-
 
   const columns = [
     {
@@ -112,7 +112,7 @@ const QuizContent = () => {
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this topic?"
+            title="Are you sure to delete this Quiz ?"
             onConfirm={() => onConfirm(record.id)}
             onCancel={cancel}
             okText="Yes"
@@ -128,12 +128,11 @@ const QuizContent = () => {
     <div style={{ margin: "10px" }}>
       <Card
         title="Quiz"
-        className="quizCard"
-        extra={
+         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
           </IconButton>
-        }>
+        } style={{ width: "100%" }}>
         {quizList && quizList.results && page == current ?
           (<Table columns={columns} pagination={pagination} dataSource={quizGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
