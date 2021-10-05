@@ -2,8 +2,6 @@ const initialState = {
     quizList: [],
     subspecialization:[],
     addData: false,
-    success: false,
-    error: false,
     specList: {},
     updateData: false
 };

@@ -25,7 +25,8 @@ const Contact = () => {
                 sl_no: serialNo,
                 name: item.name,
                 phone: item.phone,
-                message: item.message
+                message: item.message,
+                email: item.email
             })
         })
         return contacts;
@@ -70,6 +71,12 @@ const Contact = () => {
             title: "Phone number",
             dataIndex: "phone",
             key: "phone",
+        },
+
+        {
+            title: "Email id",
+            dataIndex: "email",
+            key: "email",
         },
         {
             title: "Message",

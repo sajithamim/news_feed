@@ -70,13 +70,13 @@ const DrawerContent = (props) => {
                 errors["url"] = "Enter a valid URL";
             }
         }
-        if (!fields["spec_id"]) {
+        if (!fields["spec_data"]) {
             formIsValid = false;
-            errors["spec_id"] = "Specialization cannot be empty";
+            errors["spec_data"] = "Specialization cannot be empty";
         }
-        if (!fields["sub_spec_id"]) {
+        if (!fields["sub_spec_data"]) {
             formIsValid = false;
-            errors["sub_spec_id"] = "Sub specialization cannot be empty";
+            errors["sub_spec_data"] = "Sub specialization cannot be empty";
         }
         if (fields.active === undefined) {
             formIsValid = false;
@@ -89,10 +89,10 @@ const DrawerContent = (props) => {
     }
 
     const handleSubmit = (e) => {
-        console.log("handle submit", state)
         let newData = state;
         const id = state.id
         if (formValidation()) {
+            console.log("handle submit", newData)
             setErrors({});
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];
@@ -100,13 +100,18 @@ const DrawerContent = (props) => {
                 delete newData["spec_title"];
                 delete newData["spec_data"];
                 delete newData["sub_spec_data"];
-                dispatch(updateQuiz(id, newData))
+                if (props.type === "Qui"){
+                    dispatch(updateQuiz(id, newData))
                     .then((res) => {
                         setState({});
                         res != undefined ? (message.success('Quiz edited successfully')) : (message.error("Quiz already exists with this name"));
                     });
+                }
+                
             }
             else {
+                if (props.type === "Qui")
+                    console.log("postQuiz", newData)
                 dispatch(postQuiz(newData))
                     .then((res) => {
                         setState({});
@@ -120,11 +125,11 @@ const DrawerContent = (props) => {
         <Form name="basic"
             labelCol={{
                 span: 8,
-                
+
             }}
             wrapperCol={{
                 span: 10,
-                offset:1
+                offset: 1
             }}
             onFinish={handleSubmit}>
             <div>
@@ -155,11 +160,11 @@ const DrawerContent = (props) => {
                         <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
                     </Form.Item>
                     <Form.Item label="URL">
-                    <div className="inputStyle">
+                        <div className="inputStyle">
                             <Input id="url" name="url" onChange={handleChange} value={state.url} /></div>
                         <div className="errorMsg">{errors && errors.errors && errors.errors.url}</div>
                     </Form.Item>
-                    <Form.Item label="Status" wrapperCol={{ span: 14,  offset:1}}>
+                    <Form.Item label="Status" wrapperCol={{ span: 14, offset: 1 }}>
                         <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active}>
                             <Radio value={true}>
                                 Enable
@@ -173,10 +178,10 @@ const DrawerContent = (props) => {
                 </div>
             </div>
             <Form.Item wrapperCol={{ offset: 10, span: 3 }}>
-        <Button type="primary" htmlType="submit">
-          Save
-        </Button>
-      </Form.Item>
+                <Button type="primary" htmlType="submit">
+                    Save
+                </Button>
+            </Form.Item>
         </Form>
     );
 };

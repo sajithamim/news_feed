@@ -6,7 +6,7 @@ import { AiFillDatabase, AiOutlineRead,  AiFillCopy, AiFillContainer, AiTwotoneL
 
 export const routes = [
   {
-    title: 'Data',
+    title: 'Home',
     path: '/data',
     key: "data",
     icon: <IoIcons.IoIosPaper />

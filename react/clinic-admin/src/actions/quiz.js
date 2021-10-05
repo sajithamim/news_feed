@@ -3,7 +3,7 @@ import DataService from "../services/data.service";
 export const postQuiz = (state) => async (dispatch) => {
     try {
         console.log("response" , state);
-        const url = "spec/quiz/"
+        const url = "/spec/quiz/"
         const res = await DataService.addData(url , state);
             dispatch({
                 type: 'POST_QUIZ',
@@ -45,10 +45,10 @@ export const deleteQuiz = (id) => async (dispatch) => {
     }
 }
 
-export const updateQuiz = (id, state, form_data) => async (dispatch) => {
+export const updateQuiz = (id, newData) => async (dispatch) => {
     try {
         const url = `spec/quiz/${id}/`;
-        const res = await DataService.updateData(url, state, form_data);
+        const res = await DataService.editData(url, newData);
         dispatch({
             type: 'EDIT_QUIZ',
             payload: res.data,
