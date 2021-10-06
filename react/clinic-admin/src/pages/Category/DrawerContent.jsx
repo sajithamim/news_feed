@@ -72,7 +72,6 @@ const DrawerContent = (props) => {
   }
 
   const handleSubmit = (e) => {
-    console.log("ref",ref);
     if (formValidation()) {
       setErrors({});
       let newData = state;
@@ -92,7 +91,7 @@ const DrawerContent = (props) => {
         delete newData["sl_no"];
         delete newData["id"];
         delete newData["image"];
-        ref.current.props.name = "";
+        // ref.current.props.name = "";
         dispatch(updateCategory(id, newData, form_data))
           .then((res) => {
             setState({});

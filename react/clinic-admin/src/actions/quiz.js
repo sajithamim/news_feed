@@ -2,12 +2,12 @@ import DataService from "../services/data.service";
 
 export const postQuiz = (state) => async (dispatch) => {
     try {
-        console.log("response" , state);
         const url = "/spec/quiz/"
         const res = await DataService.addData(url , state);
             dispatch({
                 type: 'POST_QUIZ',
                 payload: res.data,
+                message: 'Quiz added successfully.',
             });
             return res;
     } 
@@ -25,7 +25,7 @@ export const getQuiz = (page) => async (dispatch) => {
             page: page
         })
     } catch (err) {
-        console.log(err);
+
     }
 }
 
@@ -52,25 +52,24 @@ export const updateQuiz = (id, newData) => async (dispatch) => {
         dispatch({
             type: 'EDIT_QUIZ',
             payload: res.data,
+            message: 'Quiz edited successfully.',
         })
         return res;
     } catch (err) {
-        console.log(err);
+        
     }
 }
 
 export const getSpecialization = () => async (dispatch) => {
-    console.log("coming spec");
     try {
         const url = "spec/getspec/"
         const res = await DataService.getData(url);
-        console.log("resghghghg",res);
         dispatch({
             type: 'GET_SPECIALIZATION',
             payload: res.data,
         })
     } catch (err) {
-        console.log(err);
+
     }
 }
 

@@ -6,13 +6,13 @@ import { getContact, deleteContactMessage } from "../../actions/settings";
 const Contact = () => {
     const dispatch = useDispatch();
     const { contactList } = useSelector(state => state.settings);
-    const [current, setCurrent] = useState(1);
+    const [current, setCurrent] = useState(1);;
     const [pageSize, setPageSize] = useState(10);
     const [slNo, setSlNo] = useState(0);
-    const { page } = useSelector(state => state.settings);
+    const  {page}  = useSelector(state => state.settings);
 
     useEffect(() => {
-        dispatch(getContact())
+        dispatch(getContact( page))
     }, [])
 
     const conatctGenerator = () => {
@@ -20,6 +20,7 @@ const Contact = () => {
         const contacts = [];
         contactList && contactList.results && contactList.results.map((item, key) => {
             serialNo++;
+            key++
            return contacts.push({
                 id: item.id,
                 sl_no: serialNo,
