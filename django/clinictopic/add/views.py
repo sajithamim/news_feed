@@ -114,7 +114,6 @@ class SelectedBannerView(APIView,PageNumberPagination):
         queryset=AddUser.objects.filter(user_id=request.user).order_by('created_at')
         results=self.paginate_queryset(queryset,request,view=self)
         serializer=SelectedBannerSerializer(results,many=True)
-        print(serializer.data)
         return self.get_paginated_response(serializer.data)
 
 
