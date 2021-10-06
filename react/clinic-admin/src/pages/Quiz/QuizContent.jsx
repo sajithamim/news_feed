@@ -23,7 +23,6 @@ const QuizContent = () => {
     onClose();
   }, [addData, updateData])
 
-
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -39,6 +38,18 @@ const QuizContent = () => {
     setDrawerType("edit");
   };
 
+  const cancel = (e) => {
+    message.error('Cancelled');
+  }
+
+  const onConfirm = (id) => {
+    dispatch(deleteQuiz(id))
+    .then((res) => {
+      res.status === 204 ? message.success("Quiz is deleted successfully") : message.error("Quiz is not exist")
+    })
+  };
+
+
   const quizGenerator = () => {
     let serialNo = pageSize * slNo;
     const items = [];
@@ -51,7 +62,6 @@ const QuizContent = () => {
         sl_no: serialNo,
         id: item.id,
         title: item.title,
-        // spec_data: {value:item.sub_spec_id.spec_id,
         sub_spec_title: item.sub_spec_id.name,
         sub_spec_data: { value: item.sub_spec_id.id, label: item.sub_spec_id.name },
         spec_data: { value: item.sub_spec_id.spec_id.id, label: item.sub_spec_id.spec_id.name },
@@ -71,21 +81,10 @@ const QuizContent = () => {
   const pagination = {
     current,
     pageSize,
+    showSizeChanger: false,
     onChange: (page, pageSize) => { handleChange(page, pageSize) },
     total: quizList.count
   }
-
-  const cancel = (e) => {
-    message.error('Cancelled');
-  }
-
-  const onConfirm = (id) => {
-    dispatch(deleteQuiz(id))
-      .then((res) => {
-        message.success("Category is deleted successfully")
-      })
-  };
-
 
   const columns = [
     {
@@ -113,7 +112,7 @@ const QuizContent = () => {
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this topic?"
+            title="Are you sure to delete this Quiz ?"
             onConfirm={() => onConfirm(record.id)}
             onCancel={cancel}
             okText="Yes"
@@ -129,12 +128,11 @@ const QuizContent = () => {
     <div style={{ margin: "10px" }}>
       <Card
         title="Quiz"
-        className="quizCard"
-        extra={
+         extra={
           <IconButton onClick={onAdd}>
             <Icon>add</Icon>
           </IconButton>
-        }>
+        } style={{ width: "100%" }}>
         {quizList && quizList.results && page == current ?
           (<Table columns={columns} pagination={pagination} dataSource={quizGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
