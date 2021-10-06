@@ -204,6 +204,7 @@ const ModalContent = (props) => {
   }
 
   const handleValidation = () => {
+    console.log("state pdf", state);
     let fields = state;
     let errors = {};
     let formIsValid = true;
@@ -260,11 +261,15 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
-      if (!fields["external_url2"]) {
+      if (state.deliverytype === 'external' && !fields["external_url2"]) {
         formIsValid = false;
         errors["external_url2"] = " External url cannot be empty";
       }
-      if (fields["external_url2"]) {
+      if (fields["pdfUrlSecond"] === undefined) {
+        formIsValid = false;
+        errors["pdf2"] = " PDF  cannot be empty";
+      }
+      if (state.deliverytype === 'external' && fields["external_url2"]) {
         var myUrl = fields.external_url2;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         if (res === null) {
@@ -294,13 +299,18 @@ const ModalContent = (props) => {
           errors["video_url"] = "Video url a valid URL";
         }
       }
-      if (!fields["external_url3"]) {
+      if (state.deliverytype === 'external' && !fields["external_url3"]) {
         formIsValid = false;
         errors["external_url3"] = " External url cannot be empty";
       }
-      if (fields["external_url3"]) {
+      if (fields["pdfUrlThird"] === undefined) {
+        formIsValid = false;
+        errors["pdf3"] = " PDF cannot be empty";
+      }
+      if (state.deliverytype === 'external'  && fields["external_url3"]) {
         var myUrl = fields.external_url3;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        console.log("res",res);
         if (res === null) {
           formIsValid = false;
           errors["external_url3"] = "Enter a valid URL";
@@ -425,7 +435,7 @@ const ModalContent = (props) => {
       str = item.split("_", 2);
       topic.push({ subspec_id: str[1] })
     })
-    setState({...state , topic_subspec: topic , topic_val: value })
+    setState({ ...state, topic_subspec: topic, topic_val: value })
   }
 
   const tProps = {
@@ -447,7 +457,7 @@ const ModalContent = (props) => {
             <TreeSelect
               value={state.topic_val}
               onChange={onSpecChange}
-              autoClearSearchValue = {true}
+              autoClearSearchValue={true}
               {...tProps}
             />
             <div className="errorMsg">{errors && errors.errors && errors.errors.topic_subspec}</div>
