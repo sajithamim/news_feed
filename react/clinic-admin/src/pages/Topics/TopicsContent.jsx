@@ -121,6 +121,8 @@ const TopicsContent = (props) => {
         pdfBack: item.pdfsecond,
         pdfSecond: item.pdf,
         pdfThird:item.pdf,
+        pdfUrlSecond:item.pdf,
+        pdfUrlThird:item.pdf,
         format: item.format,
         external_url:item.external_url,
         external_url2: item.external_url,
