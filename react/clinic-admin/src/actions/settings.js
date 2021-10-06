@@ -30,7 +30,6 @@ export const getAbout = () => async(dispatch) => {
     try{
         const url = '/poll/aboutus/';
         const res = await DataService.getData(url);
-        console.log("response get", res);
         return res;
     }
     catch (err) {
@@ -52,7 +51,7 @@ export const getTerms = () => async(dispatch) => {
 export const getContact = (page) => async(dispatch) => {
     page = page != undefined ? page : 1;
     try{
-        const url = '/poll/contactus/'
+        const url = `poll/contactus?page=${page}`
         const res = await DataService.getData(url);
         dispatch({
             type: 'GET_CONTACT',
@@ -97,7 +96,6 @@ export const postContact = (state) => async(dispatch) => {
     try{
         const url = '/poll/contactus/';
         const res = await DataService.postContact(url, state);
-        console.log("res" , res);
         dispatch({
             type: 'POST_CONTACT',
             message: 'Contact details added successfully',

@@ -21,7 +21,6 @@ const TopicsContent = (props) => {
   let history = useHistory();
   useEffect(() => {
     dispatch(getTopic(page))
-    console.log("calling useseffect")
     onClose();
   }, [success ,error])
 

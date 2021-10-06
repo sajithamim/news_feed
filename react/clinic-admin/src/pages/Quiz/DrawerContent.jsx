@@ -9,6 +9,7 @@ import "./Quiz.css";
 const DrawerContent = (props) => {
     const [state, setState] = useState({});
     const [errors, setErrors] = useState({});
+    const [formSubmit, setFormSubmit] = useState(true);
     const { specList, subspecialization } = useSelector(state => state.Quiz);
     const [specId, setSpecId] = useState("");
     const dispatch = useDispatch();
@@ -91,33 +92,34 @@ const DrawerContent = (props) => {
     const handleSubmit = (e) => {
         let newData = state;
         const id = state.id
-        if (formValidation()) {
-            console.log("handle submit", newData)
-            setErrors({});
+        if (formValidation() && formSubmit) {
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];
                 delete newData["id"];
                 delete newData["spec_title"];
                 delete newData["spec_data"];
                 delete newData["sub_spec_data"];
-                if (props.type === "Qui"){
-                    dispatch(updateQuiz(id, newData))
-                    .then((res) => {
-                        setState({});
-                        res != undefined ? (message.success('Quiz edited successfully')) : (message.error("Quiz already exists with this name"));
-                    });
-                }
-                
+                // if (props.type === "Qui") {
+                //     dispatch(updateQuiz(id, newData))
+                //         .then((res) => {
+                //             setState({});
+                //             res != undefined ? (message.success('Quiz edited successfully')) : (message.error("Quiz already exists with this name"));
+                //         });
+                // }
+
             }
-            else {
-                if (props.type === "Qui")
-                    console.log("postQuiz", newData)
-                dispatch(postQuiz(newData))
-                    .then((res) => {
-                        setState({});
-                        res != undefined ? (message.success('Quiz added successfully')) : (message.error("Quiz already exists with this name"));
-                    });
-            }
+            // else {
+            //     if (props.type === "Qui")
+            //         console.log("postQuiz", newData)
+            //     dispatch(postQuiz(newData))
+            //         .then((res) => {
+            //             setState({});
+            //             res != undefined ? (message.success('Quiz added successfully')) : (message.error("Quiz already exists with this name"));
+            //         });
+            // }
+
+            setState({});
+            props.onFormSubmit(newData)
         }
     }
 

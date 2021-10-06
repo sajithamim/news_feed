@@ -204,7 +204,6 @@ const ModalContent = (props) => {
   }
 
   const handleValidation = () => {
-    console.log("newImageList" , state.topic_image);
     let fields = state;
     let errors = {};
     let formIsValid = true;
@@ -388,13 +387,6 @@ const ModalContent = (props) => {
   const cancel = (e) => {
     message.error('Cancelled');
   }
-
-  // const onAction = (node, action) => {
-  //   console.log('onAction::', action, node)
-  // }
-  // const onNodeToggle = currentNode => {
-  //   console.log('onNodeToggle::', currentNode)
-  // }
 
   const deleteImage = (id, image) => {
     if (id !== null) {
