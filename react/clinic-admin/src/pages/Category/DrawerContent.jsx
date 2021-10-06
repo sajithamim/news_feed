@@ -107,6 +107,7 @@ const DrawerContent = (props) => {
       }
     }
   }
+ 
   return (
     <Form labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
       <div>
@@ -118,13 +119,13 @@ const DrawerContent = (props) => {
 
           <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
-            <Input type="file" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} ref={ref} />
+            <Input type="file" name="image" accept="image/png, image/jpeg" ref={ref} onChange={handleFileChange}  />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
         </div>
       </div>
       <Form.Item wrapperCol={{ offset: 10, span: 3 }}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" >
           Save
         </Button>
       </Form.Item>

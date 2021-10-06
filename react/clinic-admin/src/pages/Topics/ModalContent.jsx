@@ -312,7 +312,6 @@ const ModalContent = (props) => {
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         console.log("res",res);
         if (res === null) {
-          
           formIsValid = false;
           errors["external_url3"] = "Enter a valid URL";
         }
