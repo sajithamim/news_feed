@@ -11,8 +11,9 @@ from rest_framework import parsers
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
+from rest_framework.pagination import PageNumberPagination
 from .serializers import(AddSerializer,AddImageSerializer,AddUserSerializer,
-AddUserSelectedSerializer,AllUserAddSerializer,AllUseraddImage)
+AddUserSelectedSerializer,AllUserAddSerializer,AllUseraddImage, SelectedBannerSerializer)
 from .models import AddUser, Ads,AllUserAdd
 
 class AdsViewset(viewsets.ModelViewSet):
@@ -106,3 +107,13 @@ class AllUserAdsViewset(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
+
+class SelectedBannerView(APIView,PageNumberPagination):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        queryset=AddUser.objects.filter(user_id=request.user).order_by('created_at')
+        results=self.paginate_queryset(queryset,request,view=self)
+        serializer=SelectedBannerSerializer(results,many=True)
+        return self.get_paginated_response(serializer.data)
+
+
