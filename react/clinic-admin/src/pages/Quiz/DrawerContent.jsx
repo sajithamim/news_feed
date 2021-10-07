@@ -3,13 +3,13 @@ import { Form, Input, Button, Radio, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { postQuiz, updateQuiz, getSpecialization, getSubSpecialisation } from "../../actions/quiz";
 import SelectBox from 'react-select';
-import { useParams } from "react-router-dom";
 import "./Quiz.css";
 
 
 const DrawerContent = (props) => {
     const [state, setState] = useState({});
-    const [errors, setErrors] = useState({ name: '' });
+    const [errors, setErrors] = useState({});
+    const [formSubmit, setFormSubmit] = useState(true);
     const { specList, subspecialization } = useSelector(state => state.Quiz);
     const [specId, setSpecId] = useState("");
     const dispatch = useDispatch();
@@ -17,12 +17,12 @@ const DrawerContent = (props) => {
         dispatch(getSpecialization());
         if (props.editData !== null) {
             setState(props.editData);
-          }
-          else {
+        }
+        else {
             setState({});
-          }
-        }, [props.editData])
-      
+        }
+    }, [props.editData])
+
 
     const spec = [];
     specList && specList.data && specList.data.map(item => {
@@ -45,13 +45,12 @@ const DrawerContent = (props) => {
         setState({ ...state, active: e.target.value })
     }
     const handleSpecChange = (value) => {
-        console.log("value" , value);
         setState({ ...state, spec_data: value, spec_id: value.value });
         dispatch(getSubSpecialisation(value.value));
     };
     const handleSubChange = (value) => {
-        
-       setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
+
+        setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
     };
     const formValidation = () => {
         let fields = state;
@@ -72,13 +71,13 @@ const DrawerContent = (props) => {
                 errors["url"] = "Enter a valid URL";
             }
         }
-        if (!fields["spec_id"]) {
+        if (!fields["spec_data"]) {
             formIsValid = false;
-            errors["spec_id"] = "Specialization cannot be empty";
+            errors["spec_data"] = "Specialization cannot be empty";
         }
-        if (!fields["sub_spec_id"]) {
+        if (!fields["sub_spec_data"]) {
             formIsValid = false;
-            errors["sub_spec_id"] = "Sub specialization cannot be empty";
+            errors["sub_spec_data"] = "Sub specialization cannot be empty";
         }
         if (fields.active === undefined) {
             formIsValid = false;
@@ -93,29 +92,34 @@ const DrawerContent = (props) => {
     const handleSubmit = (e) => {
         let newData = state;
         const id = state.id
-        let form_data = null;
-        if (formValidation()) {
-            setErrors({});
+        if (formValidation() && formSubmit) {
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];
                 delete newData["id"];
-                delete newData["spec_data"];
                 delete newData["spec_title"];
+                delete newData["spec_data"];
                 delete newData["sub_spec_data"];
-                delete newData["sub_spec_title"];
-                dispatch(updateQuiz(id, newData, form_data))
-                    .then((res) => {
-                        setState({});
-                        (message.success('Quiz edited successfully'))
-                    });
+                // if (props.type === "Qui") {
+                //     dispatch(updateQuiz(id, newData))
+                //         .then((res) => {
+                //             setState({});
+                //             res != undefined ? (message.success('Quiz edited successfully')) : (message.error("Quiz already exists with this name"));
+                //         });
+                // }
+
             }
-            else {
-                dispatch(postQuiz(state, form_data))
-                    .then((res) => {
-                        setState({});
-                        message.success('Quiz added successfully')
-                    });
-            }
+            // else {
+            //     if (props.type === "Qui")
+            //         console.log("postQuiz", newData)
+            //     dispatch(postQuiz(newData))
+            //         .then((res) => {
+            //             setState({});
+            //             res != undefined ? (message.success('Quiz added successfully')) : (message.error("Quiz already exists with this name"));
+            //         });
+            // }
+
+            setState({});
+            props.onFormSubmit(newData)
         }
     }
 
@@ -123,41 +127,46 @@ const DrawerContent = (props) => {
         <Form name="basic"
             labelCol={{
                 span: 8,
+
             }}
             wrapperCol={{
                 span: 10,
-            }} onFinish={handleSubmit}>
+                offset: 1
+            }}
+            onFinish={handleSubmit}>
             <div>
                 <div className="modalStyle">
-                    <Form.Item label="Specialization" wrapperCol={{ offset: 2, span: 10 }} >
+                    <Form.Item label="Specialization" >
                         <SelectBox
                             isMulti={false}
                             isSearchable={true}
-                            value={state.spec_data}
+                            value={state.spec_data || ''}
                             onChange={handleSpecChange}
                             options={spec}
                         />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.spec_id}</div>
                     </Form.Item>
-                    <Form.Item label="Sub specialization" wrapperCol={{ offset: 2, span: 10 }}>
+                    <Form.Item label="Sub specialization">
                         <SelectBox
                             isMulti={false}
                             isSearchable={true}
-                            value={state.sub_spec_data}
+                            value={state.sub_spec_data || ''}
                             onChange={handleSubChange}
                             options={sub_spec}
                         />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.sub_spec_id}</div>
                     </Form.Item>
                     <Form.Item label="Title">
-                        <Input id="title" name="title" onChange={handleChange} value={state.title} />
+                        <div className="inputStyle">
+                            <Input id="title" name="title" onChange={handleChange} value={state.title} /></div>
                         <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
                     </Form.Item>
                     <Form.Item label="URL">
-                        <Input id="url" name="url" onChange={handleChange} value={state.url} />
+                        <div className="inputStyle">
+                            <Input id="url" name="url" onChange={handleChange} value={state.url} /></div>
                         <div className="errorMsg">{errors && errors.errors && errors.errors.url}</div>
                     </Form.Item>
-                    <Form.Item label="Status" wrapperCol={{ offset: 2, span: 14 }}>
+                    <Form.Item label="Status" wrapperCol={{ span: 14, offset: 1 }}>
                         <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active}>
                             <Radio value={true}>
                                 Enable
@@ -170,12 +179,8 @@ const DrawerContent = (props) => {
                     </Form.Item>
                 </div>
             </div>
-            <Form.Item
-                wrapperCol={{
-                    offset: 7
-                }}
-            >
-                <Button id="btn" type="primary" htmlType="submit" >
+            <Form.Item wrapperCol={{ offset: 10, span: 3 }}>
+                <Button type="primary" htmlType="submit">
                     Save
                 </Button>
             </Form.Item>

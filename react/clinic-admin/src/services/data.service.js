@@ -31,12 +31,17 @@ const updateData = (url, newData) => {
     return http.put(url, newData);
 }
 
+const editData = (url, newData) => {
+    return http.patch(url, newData);
+}
+
 const genAds = {
     addData,
     updateData,
     getData,
     postImage,
-    deleteData
+    deleteData,
+    editData
 }
 
 

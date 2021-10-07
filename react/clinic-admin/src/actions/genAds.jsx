@@ -44,13 +44,13 @@ export const deleteGenAds = (id) => async(dispatch) => {
             payload: id,
         })
     }catch(err){
-        console.log("error");
+
     }
 }
 
 export const updateGeneralAdvertisment = (id, newData, form_data) => async(dispatch) => {
     try{
-        const url = `add/alluseradd/${id}`;
+        const url = `add/alluseradd/${id}/`;
         const res = await DataService.updateData(url, newData);
         if(res.status == 200){
             if (form_data && res.data.id){
@@ -69,6 +69,6 @@ export const updateGeneralAdvertisment = (id, newData, form_data) => async(dispa
             })
         }
     } catch(err) {
-        console.log("error");
+     
     }
 }

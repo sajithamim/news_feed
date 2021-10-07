@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-  const [state, setState] = useState({active: true});
+  const [state, setState] = useState({});
   const [errors, setErrors] = useState({ name: '' });
   const [image, setImage] = useState();
   const [imgData, setImgData] = useState(props.editData.image);

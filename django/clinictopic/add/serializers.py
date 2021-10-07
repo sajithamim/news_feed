@@ -1,4 +1,4 @@
-from os import write
+from os import read, write
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -87,3 +87,12 @@ class AddUserSelectedSerializer(serializers.ModelSerializer):
     class Meta:
         model = AddUser
         fields = ['user_id']
+
+class SelectedBannerSerializer(serializers.ModelSerializer):
+    banner=AddSerializer(many=True,read_only=True)
+    #banner=serializers.StringRelatedField(many=True,read_only=True)
+    class Meta:
+        model=AddUser
+        fields=['adsid','banner']
+        depth=1
+        level=1
