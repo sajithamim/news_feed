@@ -86,12 +86,12 @@ const ModalContent = (props) => {
 
   const handleMultipleFile = (e) => {
     var numFiles = e.target.files.length;
-    const newErrorsState = { ...errors };
+    const errors = {};
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
       var file = e.target.files[i];
       if (!file.name.match(/\.(jpg|jpeg|png|gif|jfif|tiff|raw|bmp)$/)) {
-        newErrorsState.multi_image = 'Please select valid image.';
-        setErrors(newErrorsState);
+        errors["multi_image"] = "Please select valid image.";
+        setErrors({errors});
         setFormSubmit(false);
       } else {
         const reader = new FileReader();
@@ -267,11 +267,11 @@ const ModalContent = (props) => {
       }
       if (state.deliverytype === 'external' && !fields["external_url2"]) {
         formIsValid = false;
-        errors["external_url2"] = " External url cannot be empty";
+        errors["external_url2"] = "External url cannot be empty";
       }
-      if (fields["pdfUrlSecond"] === undefined) {
+      if (state.deliverytype === 'pdf' && fields["pdfUrlSecond"] === undefined) {
         formIsValid = false;
-        errors["pdf2"] = " PDF  cannot be empty";
+        errors["pdf2"] = "PDF cannot be empty";
       }
       if (state.deliverytype === 'external' && fields["external_url2"]) {
         var myUrl = fields.external_url2;
@@ -303,7 +303,7 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["external_url3"] = " External url cannot be empty";
       }
-      if (fields["pdfUrlThird"] === undefined) {
+      if (state.deliverytype === 'pdf' && fields["pdfUrlThird"] === undefined) {
         formIsValid = false;
         errors["pdf3"] = " PDF cannot be empty";
       }
@@ -317,7 +317,7 @@ const ModalContent = (props) => {
         }
       }
     }
-    state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
+    //state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
     //setState({ ...state, publishingtime: crntDateTime })
     setErrors({ errors });
     return formIsValid;
@@ -325,6 +325,7 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
+    console.log('err', errors)
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -387,7 +388,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      console.log('newData n21', image_data)
+      console.log('newData n21', newData)
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -450,7 +451,7 @@ const ModalContent = (props) => {
     },
     showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
-
+  console.log('errorserrors', errors)
   return (
     <div>
       <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
