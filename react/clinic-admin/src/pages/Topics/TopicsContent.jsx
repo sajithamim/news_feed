@@ -64,6 +64,7 @@ const TopicsContent = (props) => {
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
     onClose();
     if(drawerType == 'edit') {
+      console.log('data.id',newData)
       dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
     } else {
       dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
@@ -78,6 +79,7 @@ const TopicsContent = (props) => {
       const topics = [];
       const specData = [];
       const subspec = [];
+      const topicSubspec = [];
       const images = [];
         item.topic_topic && item.topic_topic.map(item => {
           topics.push({spec_id: item.spec_id.id});
@@ -90,8 +92,9 @@ const TopicsContent = (props) => {
        
         item.topic_subspec  && item.topic_subspec.map(item =>{
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
+          topicSubspec.push({ subspec_id: item.subspec_id.id})
         })
-
+       console.log('itemmm123', item)
       items.push({
         sl_no: serialNo,
         id: item.id,
@@ -112,7 +115,8 @@ const TopicsContent = (props) => {
         publishingtime: item.publishingtime,
         publishtype: "later",
         deliverytype:item.deliverytype,
-        topic_val:  subspec,
+        topic_val: subspec,
+        topic_subspec: topicSubspec,
         P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
@@ -127,7 +131,8 @@ const TopicsContent = (props) => {
         external_url:item.external_url,
         external_url2: item.external_url,
         external_url3: item.external_url,
-        email: item.author && item.author.username,
+        email: item.author && item.author.email,
+        username: item.author && item.author.username,
         published_status: item.published
       }) 
       

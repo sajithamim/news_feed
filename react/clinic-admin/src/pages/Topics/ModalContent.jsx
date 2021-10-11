@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect } from "antd";
 import { useState } from "react";
+import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList } from "../../actions/users";
 import { deleteImages, getSpecialization, getCategory, searchUsers } from "../../actions/topic";
 import moment from 'moment';
 import SelectBox from 'react-select';
-import "./ModalContent.css";
+
 
 const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
@@ -30,6 +31,7 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
+    console.log('topic123', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -94,6 +96,7 @@ const ModalContent = (props) => {
       } else {
         const reader = new FileReader();
         reader.addEventListener("load", () => {
+          file.url = reader.result;
           if (!state.topic_image) {
             setState({ ...state, topic_image: [reader.result] });
             if (!state.imageFormData) {
@@ -180,9 +183,10 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
+    console.log('e.target.value', e.target.value)
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
-      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
+      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "testtt", published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
@@ -287,10 +291,6 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description3"] = " Description cannot be empty";
       }
-      if (!fields["video_url"]) {
-        formIsValid = false;
-        errors["video_url"] = " Video url cannot be empty";
-      }
       if (fields["video_url"]) {
         var myUrl = fields.video_url;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -318,7 +318,7 @@ const ModalContent = (props) => {
       }
     }
     state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
-    setState({ ...state, publishingtime: crntDateTime })
+    //setState({ ...state, publishingtime: crntDateTime })
     setErrors({ errors });
     return formIsValid;
   }
@@ -387,6 +387,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
+      console.log('newData n21', image_data)
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -406,10 +407,11 @@ const ModalContent = (props) => {
       setState({ ...state, old_image: oldImageList });
     } else {
       const newImages = state.topic_image;
+      const imageFormData = state.imageFormData;
       const newImageList = newImages.filter(item => { return item !== image });
-      setState({ ...state, topic_image: newImageList });
+      const imageFormDataList = imageFormData.filter(item => { return item.url !== image });
+      setState({ ...state, topic_image: newImageList, imageFormData: imageFormDataList });
     }
-
   }
   const handleSearch = value => {
     if (value) {
@@ -423,7 +425,7 @@ const ModalContent = (props) => {
     }
   };
   const handleSearchChange = value => {
-    setState({ ...state, email: value });
+    setState({ ...state, email: value, username: value });
   };
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
@@ -451,7 +453,7 @@ const ModalContent = (props) => {
 
   return (
     <div>
-      <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
+      <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
         <div className="modalStyle">
           <Form.Item label="Specializations">
             <TreeSelect
@@ -475,7 +477,7 @@ const ModalContent = (props) => {
           <Form.Item label="Author">
             <Select
               showSearch
-              value={state.email || null}
+              value={state.username || null}
               placeholder="Search users"
               style={{ width: '100%' }}
               defaultActiveFirstOption={false}
