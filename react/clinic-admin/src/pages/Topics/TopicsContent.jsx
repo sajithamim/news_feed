@@ -14,7 +14,7 @@ const TopicsContent = (props) => {
   const [data , setData] = useState({});
   const { topicList, success, error, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(30);
+  const [pageSize , setPageSize] = useState(4);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem("accessToken");
