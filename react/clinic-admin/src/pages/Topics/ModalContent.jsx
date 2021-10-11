@@ -36,7 +36,7 @@ const ModalContent = (props) => {
       setState(props.editData);
     }
     else {
-      setState({publishtype: "now"});
+      setState({});
     }
   }, [props.editData])
 
