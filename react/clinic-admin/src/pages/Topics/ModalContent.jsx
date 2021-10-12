@@ -33,6 +33,7 @@ const ModalContent = (props) => {
     dispatch(getUsersList())
     //console.log('topic123', props.editData)
     if (props.editData !== null) {
+      //console.log('topic12345', props.editData)
       setState(props.editData);
     }
     else {
@@ -289,6 +290,10 @@ const ModalContent = (props) => {
       if (!fields["description3"]) {
         formIsValid = false;
         errors["description3"] = " Description cannot be empty";
+      }
+      if (!fields["video_url"]) {
+        formIsValid = false;
+        errors["video_url"] = "Video url cannot be empty";
       }
       if (fields["video_url"]) {
         var myUrl = fields.video_url;

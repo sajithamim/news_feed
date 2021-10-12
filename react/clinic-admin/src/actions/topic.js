@@ -92,8 +92,11 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
             }
             if(res.data.id && image_data) {
                 image_data.append('topic_id', res.data.id);
-                await Topic.putImagedata(image_data); 
+                const imageRes = await Topic.putImagedata(image_data); 
+                console.log('action', imageRes)
             }
+            
+            console.log('action res', res.data)
             dispatch({
                 type: 'POST_TOPIC',
                 message: 'Topic added successfully.',
