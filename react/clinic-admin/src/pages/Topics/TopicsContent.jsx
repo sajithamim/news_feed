@@ -14,25 +14,32 @@ const TopicsContent = (props) => {
   const [data , setData] = useState({});
   const { topicList, success, error, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(30);
+  const [pageSize , setPageSize] = useState(4);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem("accessToken");
   let history = useHistory();
+  
   useEffect(() => {
     dispatch(getTopic(page))
-    onClose();
-  }, [success ,error])
+  }, [])
+
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch({type: 'RESET_DATA'})
+    }
+    else if(error) {
+      message.error(error);
+      dispatch({type: 'RESET_DATA'})
+    }
+  }, [success, error])
 
   useEffect(() => {
     if (accessToken === 'null' && accessToken === ' undefined'){
       history.push("/");
     }
-    if(success)
-    message.success(success);
-    else if(error) 
-    message.error(error);
-  }, [success, error])
+  }, [])
 
 
   const onClose = () => {
@@ -50,13 +57,6 @@ const TopicsContent = (props) => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (id) => {
-    dispatch(deleteTopic(id))
-    .then((res) => {
-      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    })
-  }
-  
   const cancel = (e) => {
     message.error('Cancelled');
   }
@@ -64,7 +64,6 @@ const TopicsContent = (props) => {
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
     onClose();
     if(drawerType == 'edit') {
-      console.log('data.id',newData)
       dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
     } else {
       dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
@@ -181,7 +180,7 @@ const TopicsContent = (props) => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this topic?"
-            onConfirm={() => confirmDelete(record.id)}
+            onConfirm={() => dispatch(deleteTopic(record.id, current))}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"

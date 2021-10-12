@@ -21,7 +21,7 @@ const ModalContent = (props) => {
   const [crntDateTime, setCrntDateTime] = useState('');
   const [state, setState] = useState({});
   const { specList, catList, userList } = useSelector(state => state.topic);
-  const [errors, setErrors] = useState({});
+  const [err, setErrors] = useState({});
   const [data, setData] = useState([]);
   const [topic_subspec, setTopicSubSpec] = useState([]);
 
@@ -31,7 +31,7 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    console.log('topic123', props.editData)
+    //console.log('topic123', props.editData)
     if (props.editData !== null) {
       setState(props.editData);
     }
@@ -86,12 +86,12 @@ const ModalContent = (props) => {
 
   const handleMultipleFile = (e) => {
     var numFiles = e.target.files.length;
-    const newErrorsState = { ...errors };
+    const errors = {...err};
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
       var file = e.target.files[i];
       if (!file.name.match(/\.(jpg|jpeg|png|gif|jfif|tiff|raw|bmp)$/)) {
-        newErrorsState.multi_image = 'Please select valid image.';
-        setErrors(newErrorsState);
+        errors["multi_image"] = "Please select valid image.";
+        setErrors({errors});
         setFormSubmit(false);
       } else {
         const reader = new FileReader();
@@ -121,7 +121,7 @@ const ModalContent = (props) => {
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
-    let errors = {};
+    let errors = {...err};
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
       setErrors({ errors });
@@ -137,7 +137,7 @@ const ModalContent = (props) => {
   const handleFileChangeBack = (e) => {
     setState({ ...state, pdfUrlBack: e.target.files[0] });
     const pdfBackFile = e.target.files[0];
-    let errors = {};
+    let errors = {...err};
     if (pdfBackFile.name.match(/\.(pdf)$/) == null) {
       errors["pdfsecond"] = "Please select valid pdf";
       setErrors({ errors });
@@ -152,7 +152,7 @@ const ModalContent = (props) => {
   const handleFileChangeSecond = (e) => {
     setState({ ...state, pdfUrlSecond: e.target.files[0] });
     const pdfSecondFile = e.target.files[0];
-    let errors = {};
+    let errors = {...err};
     if (pdfSecondFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf2"] = "Please select valid pdf";
       setErrors({ errors });
@@ -167,7 +167,7 @@ const ModalContent = (props) => {
   const handleFileChangeThird = (e) => {
     setState({ ...state, pdfUrlThird: e.target.files[0] });
     const pdfThirdFile = e.target.files[0];
-    let errors = {};
+    let errors = {...err};
     if (pdfThirdFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf3"] = "Please select valid pdf";
       setErrors({ errors });
@@ -186,7 +186,7 @@ const ModalContent = (props) => {
     console.log('e.target.value', e.target.value)
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
-      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "testtt", published: (e.target.value === 'now') ? '1' : '0' })
+      setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
       setState({ ...state, deliverytype: e.target.value })
     } else if (val === 'media') {
@@ -220,10 +220,9 @@ const ModalContent = (props) => {
       formIsValid = false;
       errors["category_id"] = "Category cannot be empty";
     }
-
     if (!fields["publishtype"]) {
       formIsValid = false;
-      errors["publishingtime"] = "Publish time cannot be empty";
+      errors["publishtype"] = "Publish time cannot be empty";
     }
 
     if (state.format === '1') {
@@ -267,11 +266,11 @@ const ModalContent = (props) => {
       }
       if (state.deliverytype === 'external' && !fields["external_url2"]) {
         formIsValid = false;
-        errors["external_url2"] = " External url cannot be empty";
+        errors["external_url2"] = "External url cannot be empty";
       }
-      if (fields["pdfUrlSecond"] === undefined) {
+      if (state.deliverytype === 'pdf' && fields["pdfUrlSecond"] === undefined) {
         formIsValid = false;
-        errors["pdf2"] = " PDF  cannot be empty";
+        errors["pdf2"] = "PDF cannot be empty";
       }
       if (state.deliverytype === 'external' && fields["external_url2"]) {
         var myUrl = fields.external_url2;
@@ -303,7 +302,7 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["external_url3"] = " External url cannot be empty";
       }
-      if (fields["pdfUrlThird"] === undefined) {
+      if (state.deliverytype === 'pdf' && fields["pdfUrlThird"] === undefined) {
         formIsValid = false;
         errors["pdf3"] = " PDF cannot be empty";
       }
@@ -317,7 +316,7 @@ const ModalContent = (props) => {
         }
       }
     }
-    state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
+    //state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
     //setState({ ...state, publishingtime: crntDateTime })
     setErrors({ errors });
     return formIsValid;
@@ -325,6 +324,7 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
+    console.log('err', err)
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -387,7 +387,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      console.log('newData n21', image_data)
+      console.log('newData n21', newData)
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -450,7 +450,7 @@ const ModalContent = (props) => {
     },
     showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
-
+  console.log('errorserrors', err)
   return (
     <div>
       <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
@@ -462,7 +462,7 @@ const ModalContent = (props) => {
               autoClearSearchValue={true}
               {...tProps}
             />
-            <div className="errorMsg">{errors && errors.errors && errors.errors.topic_subspec}</div>
+            <div className="errorMsg">{err && err.errors && err.errors.topic_subspec}</div>
           </Form.Item>
           <Form.Item label="Category">
             <SelectBox
@@ -472,7 +472,7 @@ const ModalContent = (props) => {
               onChange={handleCategoryChange}
               options={category}
             />
-            <div className="errorMsg">{errors && errors.errors && errors.errors.category_id}</div>
+            <div className="errorMsg">{err && err.errors && err.errors.category_id}</div>
           </Form.Item>
           <Form.Item label="Author">
             <Select
@@ -507,23 +507,23 @@ const ModalContent = (props) => {
             (<><Form.Item label="Title">
               <div className="inputStyle">
                 <Input name="title1" type="text" onChange={handleChange} value={state.title1} /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.title1}</div>
+              <div className="errorMsg">{err && err.errors && err.errors.title1}</div>
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.description1}</div>
+                <div className="errorMsg">{err && err.errors && err.errors.description1}</div>
               </Form.Item></>) : null}
           {(state.format === '2') ?
             (<><Form.Item label="Title">
               <div className="inputStyle">
                 <Input name="title2" type="text" onChange={handleChange} value={state.title2} /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.title2}</div>
+              <div className="errorMsg">{err && err.errors && err.errors.title2}</div>
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description2" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.description2}</div>
+                <div className="errorMsg">{err && err.errors && err.errors.description2}</div>
               </Form.Item>
             </>) : null
           }
@@ -531,12 +531,12 @@ const ModalContent = (props) => {
             (<><Form.Item label="Title">
               <div className="inputStyle">
                 <Input name="title3" type="text" onChange={handleChange} value={state.title3} /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.title3}</div>
+              <div className="errorMsg">{err && err.errors && err.errors.title3}</div>
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description3" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.description3}</div>
+                <div className="errorMsg">{err && err.errors && err.errors.description3}</div>
               </Form.Item></>) : null
           }
           {state.format === '2' ?
@@ -549,11 +549,11 @@ const ModalContent = (props) => {
             </section>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.multi_image}</div>
+              <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.video_url}</div></Form.Item>) : null}
+              <div className="errorMsg">{err && err.errors && err.errors.video_url}</div></Form.Item>) : null}
           {/* {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
             (state.deliverytype === 'pdf' ?
               (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
@@ -576,12 +576,12 @@ const ModalContent = (props) => {
                   <Form.Item label="Pdf">
                     <div className="inputStyle">
                       <Input type="file" name="pdf2" accept="image/pdf" onChange={handleFileChangeSecond} /></div>
-                    <div className="errorMsg">{errors && errors.errors && errors.errors.pdf2}</div></Form.Item></>) : null}
+                    <div className="errorMsg">{err && err.errors && err.errors.pdf2}</div></Form.Item></>) : null}
               {state.deliverytype === 'external' ?
                 (<><Form.Item label="External URL">
                   <div className="inputStyle">
                     <Input type="text" name="external_url2" onChange={handleChange} value={state.external_url2} /></div>
-                  <div className="errorMsg">{errors && errors.errors && errors.errors.external_url2}</div></Form.Item></>) : null}
+                  <div className="errorMsg">{err && err.errors && err.errors.external_url2}</div></Form.Item></>) : null}
             </>)
             : null}
           {state.format === '3' ?
@@ -603,12 +603,12 @@ const ModalContent = (props) => {
                   <Form.Item label="Pdf">
                     <div className="inputStyle">
                       <Input type="file" name="pdf3" accept="image/pdf" onChange={handleFileChangeThird} /></div>
-                    <div className="errorMsg">{errors && errors.errors && errors.errors.pdf3}</div></Form.Item></>) : null}
+                    <div className="errorMsg">{err && err.errors && err.errors.pdf3}</div></Form.Item></>) : null}
               {state.deliverytype === 'external' ?
                 (<><Form.Item label="External URL">
                   <div className="inputStyle">
                     <Input type="text" name="external_url3" onChange={handleChange} value={state.external_url3} /></div>
-                  <div className="errorMsg">{errors && errors.errors && errors.errors.external_url3}</div></Form.Item></>) : null}
+                  <div className="errorMsg">{err && err.errors && err.errors.external_url3}</div></Form.Item></>) : null}
             </>)
             : null}
           {state.format === '1' ?
@@ -617,29 +617,26 @@ const ModalContent = (props) => {
               <Form.Item label="Pdf Front">
                 <div className="inputStyle">
                   <Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.pdf}</div></Form.Item>
+                <div className="errorMsg">{err && err.errors && err.errors.pdf}</div></Form.Item>
               {state.pdfBack ? <a href={state.pdfBack} target="_blank" className="pdfStyle" >PDF Back</a> : null}
               <Form.Item label=" Pdf Back">
                 <div className="inputStyle">
                   <Input type="file" name="pdfsecond" accept="image/pdf" onChange={handleFileChangeBack} /></div>
-                <div className="errorMsg">{errors && errors.errors && errors.errors.pdfsecond}</div></Form.Item>
+                <div className="errorMsg">{err && err.errors && err.errors.pdfsecond}</div></Form.Item>
             </>)
             : null}
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span className="publishedStatus">Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
               <Radio.Group onChange={(e) => radioOnChange('publishtype', e)} value={state.publishtype}>
-                <Radio value="now">
-                  Publish Now
-                </Radio>
-                <Radio value="later">
-                  Later
-                </Radio>
+                <Radio value="now">Publish Now</Radio>
+                <Radio value="later">Later</Radio>
               </Radio.Group>
-              <div className="errorMsg">{errors && errors.errors && errors.errors.publishtype}</div>
+              <div className="errorMsg">{err && err.errors && err.errors.publishtype}</div>
             </Form.Item>
-
               {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
-                <Space><DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date(), 'YYYY-MM-DD HH:mm:ss')} /></Space>
+                <Space>
+                  <DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : '2015/01/01', 'YYYY/MM/DD')} />
+                </Space>
               </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>
             <Button type="primary" htmlType="submit">Save</Button>

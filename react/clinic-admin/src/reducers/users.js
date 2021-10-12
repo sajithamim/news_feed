@@ -16,6 +16,7 @@ const initialState = {
 };
 
 const users = (state = initialState, action) => {
+    console.log('action', action)
     switch (action.type) {
         case 'GET_USER':
             return { ...state, userList: action.payload, addUser: false , updateUser: false, page: action.page }
@@ -25,8 +26,8 @@ const users = (state = initialState, action) => {
             return { ...state, userSpec: action.payload }
         case 'GET_USER_DETAILS':
             return { ...state, userDetails: action.payload }
-        case 'DELETE USER':
-            return { ...state, updateUser: true, userList: Object.assign({}, state.userList, { data: state.userList && state.userList.results && state.userList.results.filter(item => item.id !== action.payload) }) }
+        case 'DELETE_USER':
+            return {...state, success: action.message, userList: action.payload, page: action.page}
         case 'POST_USER_PROFILE':
             return { ...state, userProfile: action.payload }
         case 'GET_USER_PROFILE':
@@ -49,7 +50,7 @@ const users = (state = initialState, action) => {
             return { ...state, success: action.message }
         }
         case 'HANDLE_ERROR':
-            return { ...state , error: action.message}
+            return { ...state, error: action.message}
         case 'RESET_DATA':
             return { ...state , success: '', error: ''}
         case 'DELETE_USER_PUBLICATION':
