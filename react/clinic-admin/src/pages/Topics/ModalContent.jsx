@@ -208,7 +208,7 @@ const ModalContent = (props) => {
   }
 
   const handleValidation = () => {
-    //console.log("state pdf", state);
+    console.log("state pdf", state);
     let fields = state;
     let errors = {};
     let formIsValid = true;
@@ -220,10 +220,9 @@ const ModalContent = (props) => {
       formIsValid = false;
       errors["category_id"] = "Category cannot be empty";
     }
-
     if (!fields["publishtype"]) {
       formIsValid = false;
-      errors["publishingtime"] = "Publish time cannot be empty";
+      errors["publishtype"] = "Publish time cannot be empty";
     }
 
     if (state.format === '1') {
@@ -629,12 +628,8 @@ const ModalContent = (props) => {
           {(state.published_status && state.published_status === 1) ? (<><Form.Item label="Status" wrapperCol={{ offset: 0, span: 10 }}><span className="publishedStatus">Published</span></Form.Item></>) :
             (<><Form.Item label="When to Publish">
               <Radio.Group onChange={(e) => radioOnChange('publishtype', e)} value={state.publishtype}>
-                <Radio value="now">
-                  Publish Now
-                </Radio>
-                <Radio value="later">
-                  Later
-                </Radio>
+                <Radio value="now">Publish Now</Radio>
+                <Radio value="later">Later</Radio>
               </Radio.Group>
               <div className="errorMsg">{err && err.errors && err.errors.publishtype}</div>
             </Form.Item>

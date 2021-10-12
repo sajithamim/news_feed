@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
 
 const UserContent = () => {
-  const { userList , addUser , updateUser, page} = useSelector(state => state.users);
+  const { userList , addUser , updateUser, page, success, error} = useSelector(state => state.users);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
@@ -16,9 +16,16 @@ const UserContent = () => {
     dispatch(getUsersList())
   }, [ addUser,  updateUser])
 
-  const confirmDelete = (id) => {
-    dispatch(deleteUser(id));
-  };
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch({type: 'RESET_DATA'})
+    }
+    else if(error) {
+      message.error(error);
+      dispatch({type: 'RESET_DATA'})
+    }
+  }, [success, error])
 
   const pagination = {
     current,
@@ -87,7 +94,7 @@ const UserContent = () => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this user?"
-            onConfirm={() => confirmDelete(record.id)}
+            onConfirm={() =>dispatch(deleteUser(record.id, current))}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
