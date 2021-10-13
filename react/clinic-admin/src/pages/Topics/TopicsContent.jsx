@@ -133,7 +133,8 @@ const TopicsContent = (props) => {
         external_url3: item.external_url,
         email: item.author && item.author.email,
         username: item.author && item.author.username,
-        published_status: item.published
+        published_status: item.published,
+        imageFormData: []
       }) 
       
     });
