@@ -23,7 +23,6 @@ const ModalContent = (props) => {
   const { specList, catList, userList } = useSelector(state => state.topic);
   const [err, setErrors] = useState({});
   const [data, setData] = useState([]);
-  const [topic_subspec, setTopicSubSpec] = useState([]);
 
 
   useEffect(() => {
@@ -33,10 +32,11 @@ const ModalContent = (props) => {
     dispatch(getUsersList())
     //console.log('topic123', props.editData)
     if (props.editData !== null) {
+      //console.log('topic12345', props.editData)
       setState(props.editData);
     }
     else {
-      setState({});
+      setState({topic_subspec: []});
     }
   }, [props.editData])
 
@@ -80,10 +80,6 @@ const ModalContent = (props) => {
     setState({ ...state, category_data: value, category_id: value.value });
   };
 
-  const handleUserChange = (item) => {
-    setState({ ...state, username: item, email: item.value, author: { name: item.label } });
-  };
-
   const handleMultipleFile = (e) => {
     var numFiles = e.target.files.length;
     const errors = {...err};
@@ -94,6 +90,7 @@ const ModalContent = (props) => {
         setErrors({errors});
         setFormSubmit(false);
       } else {
+        setFormSubmit(true);
         const reader = new FileReader();
         reader.addEventListener("load", () => {
           file.url = reader.result;
@@ -143,6 +140,7 @@ const ModalContent = (props) => {
       setErrors({ errors });
       setFormSubmit(false);
     } else {
+      setFormSubmit(true);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
       });
@@ -158,6 +156,7 @@ const ModalContent = (props) => {
       setErrors({ errors });
       setFormSubmit(false);
     } else {
+      setFormSubmit(true);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
       });
@@ -173,6 +172,7 @@ const ModalContent = (props) => {
       setErrors({ errors });
       setFormSubmit(false);
     } else {
+      setFormSubmit(true);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
       });
@@ -183,7 +183,7 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
-    console.log('e.target.value', e.target.value)
+    //console.log('e.target.value', e.target.value)
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
@@ -208,11 +208,10 @@ const ModalContent = (props) => {
   }
 
   const handleValidation = () => {
-    console.log("state pdf", state);
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    if (!fields["topic_subspec"]) {
+    if (fields["topic_subspec"].length <= 0) {
       formIsValid = false;
       errors["topic_subspec"] = "Specialization cannot be empty";
     }
@@ -264,6 +263,10 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
+      if (!fields["deliverytype"]) {
+        formIsValid = false;
+        errors["deliverytype"] = "Detail page cannot be empty";
+      }
       if (state.deliverytype === 'external' && !fields["external_url2"]) {
         formIsValid = false;
         errors["external_url2"] = "External url cannot be empty";
@@ -290,6 +293,10 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description3"] = " Description cannot be empty";
       }
+      if (!fields["video_url"]) {
+        formIsValid = false;
+        errors["video_url"] = "Video url cannot be empty";
+      }
       if (fields["video_url"]) {
         var myUrl = fields.video_url;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -309,7 +316,7 @@ const ModalContent = (props) => {
       if (state.deliverytype === 'external'  && fields["external_url3"]) {
         var myUrl = fields.external_url3;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-        console.log("res",res);
+        //console.log("res",res);
         if (res === null) {
           formIsValid = false;
           errors["external_url3"] = "Enter a valid URL";
@@ -324,7 +331,7 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    console.log('err', err)
+    //console.log('err', err)
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -387,7 +394,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      console.log('newData n21', newData)
+      //console.log('newData n21', newData)
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -450,7 +457,7 @@ const ModalContent = (props) => {
     },
     showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
-  console.log('errorserrors', err)
+  //console.log('errorserrors', state)
   return (
     <div>
       <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
@@ -568,6 +575,7 @@ const ModalContent = (props) => {
                   External URL
                 </Radio>
               </Radio.Group>
+              <div className="errorMsg">{err && err.errors && err.errors.deliverytype}</div>
             </Form.Item>) : null}
           {state.format === '2' ?
             (<>
@@ -599,7 +607,7 @@ const ModalContent = (props) => {
             (<>
               {state.deliverytype === 'pdf' ?
                 (<>
-                  {state.pdfSecond ? <a href={state.pdfFront} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null}
+                  {state.pdfThird ? <a href={state.pdfThird} target="_blank" className="pdfStyle">Click here to see the PDF</a> : null}
                   <Form.Item label="Pdf">
                     <div className="inputStyle">
                       <Input type="file" name="pdf3" accept="image/pdf" onChange={handleFileChangeThird} /></div>

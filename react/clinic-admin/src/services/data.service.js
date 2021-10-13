@@ -1,4 +1,4 @@
-import { http } from "../http-common";
+import { http, instance } from "../http-common";
 import axios from 'axios';
 
 const addData = (url, state) => {
@@ -17,6 +17,14 @@ const postImage = (url, imageData) => {
         return res
     })
     .catch(err => err)
+}
+
+const imageUpload = (url, imageData) => {
+    return instance.post(url, imageData);
+}
+
+const uploadDoc = (url, imageData) => {
+    return instance.put(url, imageData);
 }
 
 const getData = (url) => {
@@ -41,7 +49,9 @@ const genAds = {
     getData,
     postImage,
     deleteData,
-    editData
+    editData,
+    imageUpload,
+    uploadDoc
 }
 
 

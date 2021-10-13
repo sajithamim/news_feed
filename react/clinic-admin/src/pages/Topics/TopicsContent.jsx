@@ -74,6 +74,7 @@ const TopicsContent = (props) => {
     let serialNo = pageSize * slNo;
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
+      //console.log('topics oitem', item)
       serialNo++;
       const topics = [];
       const specData = [];
@@ -93,7 +94,7 @@ const TopicsContent = (props) => {
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
           topicSubspec.push({ subspec_id: item.subspec_id.id})
         })
-       console.log('itemmm123', item)
+       // console.log('item', item)
       items.push({
         sl_no: serialNo,
         id: item.id,
