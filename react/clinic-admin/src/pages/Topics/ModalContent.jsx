@@ -32,11 +32,10 @@ const ModalContent = (props) => {
     dispatch(getUsersList())
     //console.log('topic123', props.editData)
     if (props.editData !== null) {
-      //console.log('topic12345', props.editData)
-      setState(props.editData);
+      setState(props.editData)
     }
     else {
-      setState({topic_subspec: []});
+      setState({topic_subspec: [], imageFormData: []});
     }
   }, [props.editData])
 
@@ -211,6 +210,7 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
+    console.log('imageData', state.imageFormData)
     if (fields["topic_subspec"].length <= 0) {
       formIsValid = false;
       errors["topic_subspec"] = "Specialization cannot be empty";
@@ -259,7 +259,11 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description2"] = " Description cannot be empty";
       }
-      if (props.drawerType === 'add' && state.imageFormData === undefined) {
+      if (props.drawerType === 'add' && fields["imageFormData"].length <= 0) {
+        formIsValid = false;
+        errors["multi_image"] = "Image cannot be empty";
+      }
+      if(props.drawerType === 'edit' && fields["old_image"].length <= 0 && fields["imageFormData"].length <= 0) {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
@@ -302,7 +306,7 @@ const ModalContent = (props) => {
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         if (res === null) {
           formIsValid = false;
-          errors["video_url"] = "Video url a valid URL";
+          errors["video_url"] = "Enter a valid URL";
         }
       }
       if (state.deliverytype === 'external' && !fields["external_url3"]) {
