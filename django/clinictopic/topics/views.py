@@ -157,7 +157,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         # try:
             obj = self.get_object()
             serializer = self.serializer_class(obj, data=request.data,
-                                            partial=True)
+                                            partial=True,context={"request": request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -214,7 +214,7 @@ class TopicViewSet(viewsets.ModelViewSet):
     def pdf(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
+                                           partial=True,context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -224,7 +224,7 @@ class TopicViewSet(viewsets.ModelViewSet):
     def secondpdf(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
+                                           partial=True,context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

@@ -300,16 +300,25 @@ class userCategorySerializer(serializers.ModelSerializer):
 
 
 class Categorypicserializer(serializers.ModelSerializer):
+    # image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = Categoeries
         fields =['image']
 
+    # def get_image(self, obj):
+    #     request = self.context.get('request')
+    #     photo_url = obj.image.url
+    #     print(request.build_absolute_uri(photo_url))
+    #     return request.build_absolute_uri(photo_url)
+
 class Topicpdfserializer(serializers.ModelSerializer):
+    # pdf = serializers.FileField()
     class Meta:
         model =Topics
         fields = ['pdf']
 
 class TopicSecondpdfserializer(serializers.ModelSerializer):
+    # pdfsecond = serializers.FileField()
     class Meta:
         model =Topics
         fields = ['pdfsecond']
