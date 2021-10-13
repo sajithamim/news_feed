@@ -48,39 +48,25 @@ const putPdfdata2 =(id, pdfData2) => {
   console.log("pdfData", pdfData2);
   let accessToken = localStorage.getItem("accessToken");
   let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/secondpdf/`;
-  axios.put(url, pdfData2, {
+  return axios.put(url, pdfData2, {
     headers: {
       'content-type': 'multipart/form-data',
       'authorization': `Bearer ${accessToken}`
     }
-  })
-  .then(res => {
-  return res
-  })
-  .catch(err => err)
+  });
 }
 
-const putImagedata =(imageData) => {
-  let accessToken = localStorage.getItem("accessToken");
-  let url = `${process.env.REACT_APP_API_URL}topic/topicimages/`;
-  axios.post(url, imageData, {
-    headers: {
-      'content-type': 'multipart/form-data',
-      'authorization': `Bearer ${accessToken}`
-    }
-  })
-  .then(res => {
-  return res
-  })
-  .catch(err => err)
-}
+// const putImagedata =(imageData) => {
+//   let url = `topic/topicimages/`;
+//   return instance.post(url, imageData);
+// }
 
 const Topic = {
   getTopic,
   deleteTopic,
   postTopic,
   putPdfdata,
-  putImagedata,
+  //putImagedata,
   deleteImage,
   updateTopic,
   putPdfdata2,

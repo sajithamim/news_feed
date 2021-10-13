@@ -94,7 +94,7 @@ const TopicsContent = (props) => {
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
           topicSubspec.push({ subspec_id: item.subspec_id.id})
         })
-
+       // console.log('item', item)
       items.push({
         sl_no: serialNo,
         id: item.id,
