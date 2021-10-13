@@ -14,25 +14,32 @@ const TopicsContent = (props) => {
   const [data , setData] = useState({});
   const { topicList, success, error, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState(30);
+  const [pageSize , setPageSize] = useState(4);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem("accessToken");
   let history = useHistory();
+  
   useEffect(() => {
     dispatch(getTopic(page))
-    onClose();
-  }, [success ,error])
+  }, [])
+
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch({type: 'RESET_DATA'})
+    }
+    else if(error) {
+      message.error(error);
+      dispatch({type: 'RESET_DATA'})
+    }
+  }, [success, error])
 
   useEffect(() => {
     if (accessToken === 'null' && accessToken === ' undefined'){
       history.push("/");
     }
-    if(success)
-    message.success(success);
-    else if(error) 
-    message.error(error);
-  }, [success, error])
+  }, [])
 
 
   const onClose = () => {
@@ -50,13 +57,6 @@ const TopicsContent = (props) => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (id) => {
-    dispatch(deleteTopic(id))
-    .then((res) => {
-      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    })
-  }
-  
   const cancel = (e) => {
     message.error('Cancelled');
   }
@@ -74,10 +74,12 @@ const TopicsContent = (props) => {
     let serialNo = pageSize * slNo;
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
+      //console.log('topics oitem', item)
       serialNo++;
       const topics = [];
       const specData = [];
       const subspec = [];
+      const topicSubspec = [];
       const images = [];
         item.topic_topic && item.topic_topic.map(item => {
           topics.push({spec_id: item.spec_id.id});
@@ -90,8 +92,9 @@ const TopicsContent = (props) => {
        
         item.topic_subspec  && item.topic_subspec.map(item =>{
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
+          topicSubspec.push({ subspec_id: item.subspec_id.id})
         })
-
+       // console.log('item', item)
       items.push({
         sl_no: serialNo,
         id: item.id,
@@ -112,7 +115,8 @@ const TopicsContent = (props) => {
         publishingtime: item.publishingtime,
         publishtype: "later",
         deliverytype:item.deliverytype,
-        topic_val:  subspec,
+        topic_val: subspec,
+        topic_subspec: topicSubspec,
         P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
@@ -127,8 +131,10 @@ const TopicsContent = (props) => {
         external_url:item.external_url,
         external_url2: item.external_url,
         external_url3: item.external_url,
-        email: item.author && item.author.username,
-        published_status: item.published
+        email: item.author && item.author.email,
+        username: item.author && item.author.username,
+        published_status: item.published,
+        imageFormData: []
       }) 
       
     });
@@ -176,7 +182,7 @@ const TopicsContent = (props) => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this topic?"
-            onConfirm={() => confirmDelete(record.id)}
+            onConfirm={() => dispatch(deleteTopic(record.id, current))}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"

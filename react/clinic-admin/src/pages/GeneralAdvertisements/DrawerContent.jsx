@@ -14,6 +14,8 @@ const DrawerContent = (props) => {
   useEffect(() => {
     if(Object.keys(props.editData).length !== 0) 
       setState(props.editData)
+    else 
+    setState({active: true})
       
     setErrors({});
     if (props.editData.image && props.editData.image) {

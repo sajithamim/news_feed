@@ -8,9 +8,10 @@ import { getUsersList } from "../../actions/users"
 import "./Drawer.css";
 
 const DrawerAdvisory = (props) => {
-    const [state, setState] = useState(props.editData);
+    //const [state, setState] = useState(props.editData);
     const [oldAdvisoryData, setOldAdvisoryData] = useState([]);
     const [newAdvisoryData, setNewAdvisoryData] = useState([]);
+    const [state, setState] = useState([]);
     const [errors, setErrors] = useState("");
     const { userList } = useSelector(state => state.users);
     const { specId } = useParams();
@@ -23,11 +24,12 @@ const DrawerAdvisory = (props) => {
             advisoryData.push({ spec_id: specId, user_id: item.user_id.id })
         })
         setOldAdvisoryData(advisoryData);
+        setState([]);
+        //setNewAdvisoryData([]);
     }, []);
 
     const list = []
     userList && userList.results && userList.results.map(item => {
-        console.log('test', item)
         return list.push(
             { value: item.id, label: <div><div><b>{item.username}</b><p className="advisoryPara">{item.qualifications}</p></div><div><img className="advisoryImg" src={`${process.env.REACT_APP_API_BASE_URL}${item.profilepic}`} /></div></div> }
         )
@@ -52,6 +54,7 @@ const DrawerAdvisory = (props) => {
             selectedAdvisoryMemberList.push({ spec_id: specId, user_id: item.value })
         })
         setNewAdvisoryData(selectedAdvisoryMemberList);
+        setState(item);
     };
 
     const handleSubmit = () => {
@@ -61,6 +64,8 @@ const DrawerAdvisory = (props) => {
             dispatch(postAdvisoryMembersList(data))
                 .then(() => {
                     message.success("Advisory Members added successfully")
+                    setState([]);
+                    //setNewAdvisoryData([]);
                 })
         }
     }
@@ -74,6 +79,7 @@ const DrawerAdvisory = (props) => {
                     isSearchable={true}
                     onChange={handleChange}
                     options={list}
+                    value={state}
                 />
             </Form.Item>
             <div className="errorMsg">{errors && errors.errors && errors.errors.user_id}</div>

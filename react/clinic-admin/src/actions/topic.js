@@ -1,16 +1,21 @@
 import Topic from "../services/Topic";
+import DataService from "../services/data.service";
 
 export const getTopic = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try {
-        const res = await Topic.getTopic(page);
+        const url = `topic/topic/?page=${page}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_TOPIC',
             payload: res.data,
             page: page
         })
     } catch (err) {
-        console.log(err);
+        dispatch({
+            type: 'HANDLE_ERROR',
+            message: 'Some errors occured.',
+        })
     }
 }
 
@@ -38,19 +43,23 @@ export const getCategory = () => async (dispatch) => {
     }
 }
 
-export const deleteTopic = (id) => async (dispatch) => {
+export const deleteTopic = (id, page) => async (dispatch) => {
     try {
-        const res = await Topic.deleteTopic(id)
-        if(res.data && res.data.id){
-            await Topic.deleteImage(id);
-        }
+        const deleteUrl = `topic/topic/${id}`;
+        const deleteRes = await DataService.deleteData(deleteUrl);
+        const getUrl = `topic/topic/?page=${page}`;
+        const dataRes = await DataService.getData(getUrl);
         dispatch({
             type: 'DELETE_TOPIC',
-            payload: id,
+            payload: dataRes.data,
+            page: page,
+            message: 'Topic deleted successfully.',
         })
-        return res;
     } catch (err) {
-        console.log(err);
+        dispatch({
+            type: 'HANDLE_ERROR',
+            message: 'Some errors occured.',
+        })
     }
 }
 
@@ -66,24 +75,36 @@ export const deleteImages = (id) => async (dispatch) => {
 export const postTopic = (state, form_data, form_data_back , form_data2, form_data3, image_data) => async (dispatch) => {
     state.topic_audience = "doctor";
     try {
-        const res = await Topic.postTopic(state);
+        const url = `topic/topic/`;
+        const res = await DataService.addData(url, state);
         if(res.status == 201){
             if (res.data.id && form_data) {
-                await Topic.putPdfdata(res.data.id, form_data);
+                let pdfUrl = `topic/topic/${res.data.id}/pdf/`;
+                const frontPdfRes = await  DataService.uploadDoc(pdfUrl, form_data);
+                res.data.pdf = frontPdfRes.data.pdf;
             }
             if(res.data.id && form_data_back) {
-                await Topic.putPdfdata2(res.data.id, form_data_back);
+                let backPdfUrl = `topic/topic/${res.data.id}/secondpdf/`;
+                const backPdfRes = await  DataService.uploadDoc(backPdfUrl, form_data_back);
+                res.data.pdfsecond = backPdfRes.data.pdfsecond;
             }
             if(res.data.id && form_data2) {
-                await Topic.putPdfdata(res.data.id, form_data2);
+                let pdfUrl = `topic/topic/${res.data.id}/pdf/`;
+                const pdfSecondRes = await  DataService.uploadDoc(pdfUrl, form_data2);
+                res.data.pdf = pdfSecondRes.data.pdf;
             }
             if(res.data.id && form_data3) {
-                await Topic.putPdfdata(res.data.id, form_data3);
+                let thirdPdfUrl = `topic/topic/${res.data.id}/pdf/`;
+                const pdfThirdRes = await  DataService.uploadDoc(thirdPdfUrl, form_data3);
+                res.data.pdf = pdfThirdRes.data.pdf;
             }
             if(res.data.id && image_data) {
                 image_data.append('topic_id', res.data.id);
-                await Topic.putImagedata(image_data); 
+                const imageUrl = `topic/topicimages/`;
+                const imageRes = await DataService.imageUpload(imageUrl, image_data); 
+                res.data.topic_image = imageRes.data;
             }
+            
             dispatch({
                 type: 'POST_TOPIC',
                 message: 'Topic added successfully.',
@@ -96,27 +117,49 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
             })
         }
     } catch (err) {
-        console.log(err);
+        dispatch({
+            type: 'HANDLE_ERROR',
+            message: 'Some errors occured.',
+        })
     }
 }
 
-export const updateTopic = (id, state, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
-    state.topic_audience = "doctor";
+export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
+    newData.topic_audience = "doctor";
     try {
-        const res = await Topic.updateTopic(id, state);
+        const url = `topic/topic/${id}/`;
+        const res = await DataService.updateData(url, newData);
+        console.log('res data old respo', res.data.topic_image)
         if(res.status == 200) {
-            if (form_data !== null)
+            if (form_data !== null) {
                 await Topic.putPdfdata(id, form_data);
-            if(form_data_back)
-                await Topic.putPdfdata2(id, form_data_back);
-            if(form_data2)
-                await Topic.putPdfdata2(id, form_data2);
-            if(form_data3)
-                await Topic.putPdfdata2(id, form_data3);
+                let pdfUrl = `topic/topic/${id}/pdf/`;
+                const frontPdfRes = await  DataService.uploadDoc(pdfUrl, form_data);
+                res.data.pdf = frontPdfRes.data.pdf;
+            } 
+            if(form_data_back) {
+                let backPdfUrl = `topic/topic/${id}/secondpdf/`;
+                const backPdfRes = await  DataService.uploadDoc(backPdfUrl, form_data_back);
+                res.data.pdfsecond = backPdfRes.data.pdfsecond;
+            }
+            if(form_data2) {
+                let pdfUrl = `topic/topic/${id}/pdf/`;
+                const pdfSecondRes = await  DataService.uploadDoc(pdfUrl, form_data2);
+                res.data.pdf = pdfSecondRes.data.pdf;
+            }
+            if(form_data3) {
+                let thirdPdfUrl = `topic/topic/${id}/pdf/`;
+                const pdfThirdRes = await  DataService.uploadDoc(thirdPdfUrl, form_data3);
+                res.data.pdf = pdfThirdRes.data.pdf;
+            }
             if(image_data !== null) {
                 image_data.append('topic_id', id);
-                await Topic.putImagedata(image_data);
+                const imageUrl = `topic/topicimages/`;
+                const imageRes = await DataService.imageUpload(imageUrl, image_data);
+                const newImageRes = [...res.data.topic_image, ...imageRes.data];
+                res.data.topic_image = newImageRes;
             }
+           
             dispatch({
                 type: 'UPDATE_TOPIC',
                 message: 'Topic updated successfully.',
@@ -125,11 +168,14 @@ export const updateTopic = (id, state, form_data,form_data_back, form_data2, for
         } else {
             dispatch({
                 type: 'HANDLE_ERROR',
-                message: 'Some errors occured.',
+                message: 'Some errors are occured.',
             })
         }
     } catch (err) {
-        console.log(err);
+        dispatch({
+            type: 'HANDLE_ERROR',
+            message: 'Some errors are occured.',
+        })
     }
 }
 

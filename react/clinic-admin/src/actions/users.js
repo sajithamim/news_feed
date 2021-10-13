@@ -1,4 +1,5 @@
 import Users from "../services/Users";
+import DataService from "../services/data.service";
 
 
 export const getUsersList = (page) => async (dispatch) => {
@@ -52,16 +53,24 @@ export const getUserDetails = (emailId) => async (dispatch) => {
     }
 }
 
-export const deleteUser = (id) => async (dispatch) => {
+export const deleteUser = (id, page) => async (dispatch) => {
     try {
-        const res = await Users.deleteUser(id);
+        const deleteUrl = `auth/deleteuser/${id}`;
+        const deleteRes = await DataService.deleteData(deleteUrl);
+        const getUrl = `auth/userlist/?page=${page}`;
+        const dataRes = await DataService.getData(getUrl);
 
         dispatch({
-            type: 'DELETE USER',
-            payload: id,
+            type: 'DELETE_USER',
+            payload: dataRes.data,
+            page: page,
+            message: 'User deleted successfully.',
         })
     } catch (err) {
-
+        dispatch({
+            type: 'HANDLE_ERROR',
+            message: 'Some errors are occured.',
+        })
     }
 }
 

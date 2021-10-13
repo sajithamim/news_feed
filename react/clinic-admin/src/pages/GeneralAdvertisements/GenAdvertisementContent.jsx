@@ -38,19 +38,13 @@ const GenAdvertisementContent = () => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (id) => {
-    dispatch(deleteGenAds(id))
-    .then(() => {
-      message.success("Advertisement deleted successfully");
-    })
-  };
-
   const cancel = (e) => {
     message.error("Cancelled");
   };
 
 
   const genAdsGenerator = () => {
+    console.log('enter', genAdsList)
     let serialNo = pageSize * slNo;
     const items = [];
     genAdsList && genAdsList.results && genAdsList.results.map((item) => {
@@ -125,7 +119,7 @@ const GenAdvertisementContent = () => {
           </IconButton>
           <Popconfirm
             title="Are you sure to delete this Advertisement?"
-            onConfirm={() => confirmDelete(record.id)}
+            onConfirm={() => dispatch(deleteGenAds(record.id, current))}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
