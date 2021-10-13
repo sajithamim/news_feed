@@ -30,19 +30,19 @@ class Categoeries(models.Model):
     image = models.ImageField(blank=True,null=True,upload_to=get_image_path)
     def save(self, *args, **kwargs):
       if self.image:
-        filename = "%s.jpg" % self.image.name.split('.')[0]
+        filename = "%s.png" % self.image.name.split('.')[0]
 
         im = ImagePil.open(self.image)
         new_width  = 250
         new_height = 210
         image = im.resize((new_width, new_height), ImagePil.ANTIALIAS)
          # for PNG images discarding the alpha channel and fill it with some color
-        if image.mode in ('RGBA', 'LA'):
-            background = ImagePil.new(image.mode[:-1], image.size, '#fff')
-            background.paste(image, image.split()[-1])
-            image = background
+        # if image.mode in ('RGBA', 'LA'):
+        #     background = ImagePil.new(image.mode[:-1], image.size, '#fff')
+        #     background.paste(image, image.split()[-1])
+        #     image = background
         image_io = BytesIO()
-        image.save(image_io, format='JPEG', quality=100)
+        image.save(image_io, format='PNG', quality=100)
 
          # change the image field value to be the newly modified image value
         self.image.save(filename, ContentFile(image_io.getvalue()), save=False)
