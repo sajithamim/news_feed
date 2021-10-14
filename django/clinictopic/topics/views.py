@@ -373,7 +373,7 @@ class TopicImageView(APIView):
         for img_name in images:
             modified_data = modify_input_for_multiple_files(topic_id,
                                                             img_name)
-            file_serializer = TopicImageSerializer(data=modified_data)
+            file_serializer = TopicImageSerializer(data=modified_data,context={"request": request})
             if file_serializer.is_valid():
                 file_serializer.save()
                 arr.append(file_serializer.data)
