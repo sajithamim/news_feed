@@ -341,13 +341,13 @@ class QuizSubView(APIView):
     permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def get(self,request,pk):
-        quiz= Quiz.objects.filter(id=pk).order_by('id').reverse()
+        quiz= Quiz.objects.filter(sub_spec_id=pk).order_by('id').reverse()
         serializers=QuizSerializer(quiz,many=True)
         status_code = status.HTTP_200_OK
         response = {
             'success' : 'True',
             'status code' : status_code,
-            'message': 'Quiz user details based on ID',
+            'message': 'Quiz list',
             'data':serializers.data
             }
         return Response(response,status=status_code)
