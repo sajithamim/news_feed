@@ -4,7 +4,8 @@ from .models import (Advisory, Audience, Specialization,UserSpecialization,SubSp
 from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
 GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
-GetSpecializationandsub,AdvisorySerializer,QuizSerializer,PostSubspecializationSerializer)
+GetSpecializationandsub,AdvisorySerializer,QuizSerializer,PostSubspecializationSerializer,QuizgetSerializer,
+GetSpecializationquiz)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -338,11 +339,14 @@ class QuizView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 class QuizSubView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     @csrf_exempt
-    def get(self,request,pk):
-        quiz= Quiz.objects.filter(sub_spec_id=pk).order_by('id').reverse()
-        serializers=QuizSerializer(quiz,many=True)
+    def get(self,request):
+        # quiz= Specialization.objects.filter(specialization_id__quiz_subspec_id__active=True).exclude(specialization_id__quiz_subspec_id__sub_spec_id__id__isnull=False).distinct()
+        quiz= Specialization.objects.filter(specialization_id__quiz_subspec_id__sub_spec_id__id__isnull=False,specialization_id__quiz_subspec_id__active=True).distinct()
+        print(quiz.query)
+        # print(quiz)
+        serializers=GetSpecializationquiz(quiz,many=True)
         status_code = status.HTTP_200_OK
         response = {
             'success' : 'True',

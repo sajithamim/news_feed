@@ -23,7 +23,7 @@ urlpatterns = [
         path('getuserspecialization/<str:pk>/',GetUserSpecializationsApiview.as_view()),
         path('advisoryuser/<int:pk>/',GetAdvisoryUser.as_view()),
         path('useradvisory/<int:pk>/',GetUserAdvisoryUser.as_view()),
-        path('quizview/<int:pk>/',QuizSubView.as_view()),
+        path('quizview/',QuizSubView.as_view()),
         # path('getsubspecialization/',SubspecializationApiview.as_view()),
         url(r'^', include(router.urls)),
 
