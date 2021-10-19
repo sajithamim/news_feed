@@ -211,3 +211,33 @@ class QuizSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['sub_spec_id'] = GetSubspecializationSerializer(instance.sub_spec_id).data
         return response
+
+
+class QuizgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ['id','title','url','active']
+
+
+class GetSubspecializationquiz(serializers.ModelSerializer):
+    quiz_subspec_id = QuizgetSerializer(many=True)
+    class Meta: 
+        model = SubSpecialization
+        fields = ['id','name','icon','quiz_subspec_id']
+
+    # def to_representation(self, instance):
+        
+    #     data = super().to_representation(instance)
+    #     return {k: v for k, v in data.items() if v is not None}
+
+class GetSpecializationquiz(serializers.ModelSerializer):
+    id =  serializers.ReadOnlyField()
+    specialization_id = GetSubspecializationquiz(many=True)
+    class Meta:
+        model = Specialization
+        fields = ['id','name','icon','specialization_id']
+
+# class QuizgetSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Quiz
+#         fields = '__all__'
