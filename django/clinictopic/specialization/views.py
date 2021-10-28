@@ -15,7 +15,9 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework import parsers
 from authentication.models import User
-from topics.models import UserCategory
+from topics.models import UserCategory,TopicSubSpecialization
+from django.http import Http404
+
 
 # Create your views here.
 
@@ -187,6 +189,16 @@ class SubSpecializationView(viewsets.ModelViewSet):
     queryset = SubSpecialization.objects.all().order_by('name')
     serializer_class = PostSubspecializationSerializer
     # permission_classes = (IsAuthenticated,)
+    # def destroy(self, request, pk=None):
+    #     try:
+    #         sub=SubSpecialization.objects.get(id=pk).delete()
+    #         print(sub)
+    #         if TopicSubSpecialization.objects.filter(subspec_id__id=pk).exists():
+    #             count = 
+    #         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    #     except SubSpecialization.DoesNotExist:
+    #         raise Http404()
     def create(self, request):
         name = request.data['name']
         spec_id = request.data['spec_id']

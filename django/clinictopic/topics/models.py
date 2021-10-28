@@ -1,6 +1,5 @@
 from django.db import models
 import uuid
-
 from django.db.models.deletion import CASCADE
 from authentication.models import User
 from django.dispatch import receiver
