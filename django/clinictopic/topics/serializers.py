@@ -135,10 +135,12 @@ class TopicSeriaizer(serializers.ModelSerializer):
     # favourite = serializers.SerializerMethodField()
     published = serializers.SerializerMethodField()
     externalurltype = serializers.SerializerMethodField()
+    isadd = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
-
+    def get_isadd(self,obj):
+        return False
     def get_externalurltype(self,obj):
         etype = ""
         formattype = obj.format

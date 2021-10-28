@@ -6,6 +6,7 @@ userCategorySerializer,Categorypicserializer,Topicpdfserializer,TopicImageSerial
 userFavouriteSerializer,CheckedCategorySerializer,GetTopicSeriaizer,UpdateTopicSpecializationSerializer,
 TopicSecondpdfserializer,categoryTopicSerializer)
 from rest_framework.parsers import FileUploadParser
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import viewsets, filters
@@ -27,11 +28,21 @@ from datetime import datetime, tzinfo
 import pytz
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import pagination
+from poll.models import AddSetting
+from add.models import AllUserAdd
+from rest_framework.pagination import LimitOffsetPagination
 
 
 
-class TwentyPagination(pagination.PageNumberPagination):       
-       page_size = 4
+
+class TwentyPagination(pagination.PageNumberPagination): 
+    # add = AddSetting.objects.latest('id')
+    page_size = 4
+    # print()
+    # page_size_query_param = 'page_size'
+    # max_page_size = 5
+    # page_query_param = 'p'
+       # print(page_size)
 
 class UpdateTopicSpecialization(APIView):
     serializer_class = UpdateTopicSpecializationSerializer
@@ -220,6 +231,40 @@ class TopicViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
+    # @action(detail=False,methods=['POST'],serializer_class=TopicSeriaizer)
+    # def feed(self, request):
+    #     # user_type = self.request.user.is_superuser
+    #     # print(user_type)
+    #     # queryset = self.queryset
+    #     # print(queryset.query)
+    #     # query_set = queryset.filter()
+    #     # if not user_type:
+    #         # now = datetime.utcnow()
+    #         # userCategory = UserCategory.objects.filter(user_id=self.request.user)
+    #         # idscat = list(userCategory.category_id.id for userCategory in userCategory)
+    #         # userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
+    #         # idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
+    #         # query_set = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+    #     queryset = Topics.objects.all().order_by('-publishingtime').distinct()
+           
+    #     page = self.paginate_queryset(queryset)
+    #     # self.pagination_class = LimitOffsetPagination
+    #     if page is not None:
+    #         # add = AddSetting.objects.latest('id')
+    #         # self.pagination_class.page_size = add.addaftertopic
+    #         serializer = self.get_serializer(page, many=True)
+    #         data = {}
+    #         data['pagesize'] = 2
+    #         # print(self.add.addaftertopic)
+    #         data['feeds'] = serializer.data
+    #         data['feeds'].append({"id":"djfkh"})
+    #         # data['feeds'][2]={"id":"fgfdjkghjk"} 
+    #         return self.get_paginated_response(data)
+
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     # serializer.data["page_size"]=add.addaftertopic
+    #     return Response(serializer.data) # print(query_set.query)
+    #     # return query_set
     @action(detail=True,methods=['PUT'],serializer_class=TopicSecondpdfserializer,parser_classes=[MultiPartParser],)
     def secondpdf(self, request, pk):
         obj = self.get_object()
@@ -447,5 +492,132 @@ class Authortest(APIView):
             return Response(serializer.errors,
                                     status.HTTP_400_BAD_REQUEST)
 
+# class CustomPagination(pagination.LimitOffsetPagination):
+#     default_limit = 2
+#     limit_query_param = 'l'
+#     offset_query_param = 'o'
+#     max_limit = 10
 
+class FooFilter(DjangoFilterBackend):#django filter for pagination
+
+    def filter_queryset(self, request, queryset, view):
+        filter_class = self.get_filter_class(view, queryset)
+
+        if filter_class:
+            return filter_class(request.query_params, queryset=queryset, request=request).qs
+        return queryset
+
+
+class Modelpagination(pagination.PageNumberPagination): 
+    # add = AddSetting.objects.latest('id')
+    page_size = 1
+    def __init__(self, page_size):
+        self.page_size = page_size
+class FeedView(APIView):
+    queryset = Topics.objects.all().order_by('-created_at')
+    serializer_class = TopicSeriaizer
+    permission_class =(IsAuthenticated,)
+    # page_size = 3
+    pagination_class  = TwentyPagination
+    def post(self,request):
+                # print(self.pagination_class)
+                # add = AddSetting.objects.latest('id')
+                # pagination_class  = Modelpagination(add.addaftertopic)
+
+                # a = self.pagination_class(add.addaftertopic)
+                # a.page_size = 2
+                # print(a.page_size)
+                if  request.data['addid']:
+                    addid = request.data['addid']
+                else :
+                    addid = 0
+
+                userCategory = UserCategory.objects.filter(user_id=self.request.user)
+                idscat = list(userCategory.category_id.id for userCategory in userCategory)
+                userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
+                idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
+                # query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+                queryset = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+
+                # queryset = Topics.objects.filter().order_by('id')
+                        # print(instance.query)
+                        # print(queryset)
+                ff = FooFilter()
+                filtered_queryset = ff.filter_queryset(request, queryset, self)
+                if filtered_queryset.exists():
+                    page = self.paginate_queryset(filtered_queryset)
+                            # print(page)
+                    if page is not None:
+                        serializer = self.serializer_class(page, many=True,context = {'request':self.request})
+                                # print("gd")
+                        data = {}
+
+                        # print(self.add.addaftertopic)
+                        data['feeds'] = serializer.data
+
+
+                        try :
+                            add = AllUserAdd.objects.filter(active=True).order_by('-id')[addid]
+                            addid= addid+1                         # print(add)
+                            adddata={
+                            'title':add.title,
+                            'addimage':str(add.addimage),
+                            'url':add.url
+                            }
+                        except Exception as e:
+                            addcount = AllUserAdd.objects.filter(active=True).count()
+                            if addcount>0:
+                                add = AllUserAdd.objects.filter(active=True).order_by('-id')[0]
+                                addid = 0                         # print(add)
+                                adddata={
+                                'title':add.title,
+                                'addimage':str(add.addimage),
+                                'url':add.url,
+                                'isadd':True
+                                }
+                            else:
+                                adddata ={}
+                                addid=0
+                        data['feeds'].append(adddata)
+                        # data['feeds'][2]={"id":"fgfdjkghjk"} 
+                        data['addid'] = addid
+                        return self.get_paginated_response(data)
+                        # return self.get_paginated_response(serializer.data)
+                return Response({},status=status.HTTP_200_OK)
+            # except Exception as e:
+            #     status_code = status.HTTP_400_BAD_REQUEST
+            #     response = {
+            #         'success': 'false',
+            #         'status code': status.HTTP_400_BAD_REQUEST,
+            #         'message': 'error',
+            #         'error': str(e)
+            #         }
+            #     return Response(response, status=status_code)
+
+    @property
+    def paginator(self):
+            """
+            The paginator instance associated with the view, or `None`.
+            """
+            if not hasattr(self, '_paginator'):
+                if self.pagination_class is None:
+                    self._paginator = None
+                else:
+                    self._paginator = self.pagination_class()
+            return self._paginator
+
+    def paginate_queryset(self, queryset):
+            """
+            Return a single page of results, or `None` if pagination is disabled.
+            """
+            if self.paginator is None:
+                return None
+            return self.paginator.paginate_queryset(queryset, self.request, view=self)
+
+    def get_paginated_response(self, data):
+            """
+            Return a paginated style `Response` object for the given output data.
+            """
+            assert self.paginator is not None
+            return self.paginator.get_paginated_response(data)
 
