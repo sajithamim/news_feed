@@ -38,6 +38,15 @@ from rest_framework.pagination import LimitOffsetPagination
 class TwentyPagination(pagination.PageNumberPagination): 
     # add = AddSetting.objects.latest('id')
     page_size = 4
+    def funA(self,x):
+        TwentyPagination.page_size = x
+    # @classmethod
+    # def update(cls, value):
+    #     cls.page_size = value
+
+    # def __init__(self,value):
+    #     self.value = value
+    #     self.update(value)
     # print()
     # page_size_query_param = 'page_size'
     # max_page_size = 5
@@ -521,25 +530,29 @@ class FeedView(APIView):
     pagination_class  = TwentyPagination
     def post(self,request):
                 # print(self.pagination_class)
-                # add = AddSetting.objects.latest('id')
+                add = AddSetting.objects.latest('id')
                 # pagination_class  = Modelpagination(add.addaftertopic)
 
                 # a = self.pagination_class(add.addaftertopic)
                 # a.page_size = 2
                 # print(a.page_size)
+                ob1 = TwentyPagination()
+                ob1.funA(add.addaftertopic)
+                # print(add.addaftertopic)
+                # a = TwentyPagination(value=1)
                 if  request.data['addid']:
                     addid = request.data['addid']
                 else :
                     addid = 0
 
-                userCategory = UserCategory.objects.filter(user_id=self.request.user)
-                idscat = list(userCategory.category_id.id for userCategory in userCategory)
-                userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
-                idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
-                # query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
-                queryset = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+                # userCategory = UserCategory.objects.filter(user_id=self.request.user)
+                # idscat = list(userCategory.category_id.id for userCategory in userCategory)
+                # userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
+                # idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
+                # # query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+                # queryset = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
 
-                # queryset = Topics.objects.filter().order_by('id')
+                queryset = Topics.objects.filter().order_by('id')
                         # print(instance.query)
                         # print(queryset)
                 ff = FooFilter()
@@ -554,7 +567,7 @@ class FeedView(APIView):
 
                         # print(self.add.addaftertopic)
                         data['feeds'] = serializer.data
-                        data['page_size'] = 4
+                        data['page_size'] = add.addaftertopic
 
 
                         try :
