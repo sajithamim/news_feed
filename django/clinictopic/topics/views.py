@@ -554,6 +554,7 @@ class FeedView(APIView):
 
                         # print(self.add.addaftertopic)
                         data['feeds'] = serializer.data
+                        data['page_size'] = 4
 
 
                         try :
