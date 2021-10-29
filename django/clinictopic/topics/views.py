@@ -545,14 +545,14 @@ class FeedView(APIView):
                 else :
                     addid = 0
 
-                # userCategory = UserCategory.objects.filter(user_id=self.request.user)
-                # idscat = list(userCategory.category_id.id for userCategory in userCategory)
-                # userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
-                # idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
-                # # query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
-                # queryset = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+                userCategory = UserCategory.objects.filter(user_id=self.request.user)
+                idscat = list(userCategory.category_id.id for userCategory in userCategory)
+                userspec = UserSubSpecialization.objects.filter(user_spec_id__user_id=self.request.user)
+                idsspec = list(userspec.sub_spec_id.id for userspec in userspec)
+                # query_set = Topics.objects.filter(topic_topic__spec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
+                queryset = Topics.objects.filter(topic_subspec__subspec_id__id__in=idsspec).filter(category_id__id__in=idscat,publishingtime__lt=datetime.now()).order_by('-publishingtime').distinct()
 
-                queryset = Topics.objects.filter().order_by('id')
+                # queryset = Topics.objects.filter().order_by('id')
                         # print(instance.query)
                         # print(queryset)
                 ff = FooFilter()
