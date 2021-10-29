@@ -576,7 +576,8 @@ class FeedView(APIView):
                             adddata={
                             'title':add.title,
                             'addimage':str(add.addimage),
-                            'url':add.url
+                            'url':add.url,
+                            'isadd':True
                             }
                             data['feeds'].append(adddata)
                         except Exception as e:
