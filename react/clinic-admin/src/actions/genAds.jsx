@@ -1,7 +1,6 @@
 import DataService from "../services/data.service";
 
 export const getGeneralAdvertisment = (page) => async (dispatch) => {
-    console.log('page', page)
     page = page != undefined ? page : 1;
     try{
         const url = `add/alluseradd?page=${page}`;
@@ -65,7 +64,8 @@ export const updateGeneralAdvertisment = (id, newData, form_data) => async(dispa
         if(res.status == 200){
             if (form_data && res.data.id){
                 const imageUrl = `${process.env.REACT_APP_API_URL}add/alluseradd/${res.data.id}/image/`;
-                await DataService.postImage(imageUrl, form_data);
+                const imageRes = await DataService.postImage(imageUrl, form_data);
+                res.data.addimage = imageRes.data.addimage;
             }
             dispatch({
                 type: 'UPDATE_GEN_ADS',

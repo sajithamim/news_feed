@@ -6,17 +6,18 @@ const addData = (url, state) => {
 }
 
 const postImage = (url, imageData) => {
-    let accessToken = localStorage.getItem("accessToken");
-    axios.put(url, imageData, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'authorization': `Bearer ${accessToken}`
-      }
-    })
-    .then(res => {
-        return res
-    })
-    .catch(err => err)
+    // let accessToken = localStorage.getItem("accessToken");
+    // axios.put(url, imageData, {
+    //   headers: {
+    //     'content-type': 'multipart/form-data',
+    //     'authorization': `Bearer ${accessToken}`
+    //   }
+    // })
+    // .then(res => {
+    //     return res
+    // })
+    // .catch(err => err)
+    return instance.put(url, imageData);
 }
 
 const imageUpload = (url, imageData) => {
