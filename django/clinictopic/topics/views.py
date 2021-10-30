@@ -31,8 +31,7 @@ from rest_framework import pagination
 from poll.models import AddSetting
 from add.models import AllUserAdd
 from rest_framework.pagination import LimitOffsetPagination
-
-
+from django.contrib.sites.shortcuts import get_current_site
 
 
 class TwentyPagination(pagination.PageNumberPagination): 
@@ -529,6 +528,8 @@ class FeedView(APIView):
     # page_size = 3
     pagination_class  = TwentyPagination
     def post(self,request):
+                # print(Site.objects.get_current().domain)
+                print(get_current_site(request).domain)
                 # print(self.pagination_class)
                 add = AddSetting.objects.latest('id')
                 # pagination_class  = Modelpagination(add.addaftertopic)
@@ -575,7 +576,7 @@ class FeedView(APIView):
                             addid= addid+1                         # print(add)
                             adddata={
                             'title':add.title,
-                            'addimage':str(add.addimage),
+                            'addimage':str(get_current_site(request).domain)+"/media/"+str(add.addimage),
                             'url':add.url,
                             'isadd':True
                             }
@@ -587,7 +588,7 @@ class FeedView(APIView):
                                 addid = 0                         # print(add)
                                 adddata={
                                 'title':add.title,
-                                'addimage':str(add.addimage),
+                                'addimage':str(get_current_site(request).domain)+"/media/"+str(add.addimage),
                                 'url':add.url,
                                 'isadd':True
                                 }
