@@ -97,6 +97,7 @@ class Feedbackview(generics.ListCreateAPIView):
         return Feedback.objects.all().order_by('-id')
 
 
+
 class SettingsViewSet(generics.ListCreateAPIView):
     serializer_class=SettingsSerializer
     pagination_class=None
