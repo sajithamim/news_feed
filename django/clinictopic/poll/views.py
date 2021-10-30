@@ -97,9 +97,10 @@ class Feedbackview(generics.ListCreateAPIView):
         return Feedback.objects.all().order_by('-id')
 
 
+
 class SettingsViewSet(generics.ListCreateAPIView):
     serializer_class=SettingsSerializer
-    pagination_class=Non
+    pagination_class=None
     permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self,serializer):
