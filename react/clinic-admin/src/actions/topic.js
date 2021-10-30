@@ -129,7 +129,6 @@ export const updateTopic = (id, newData, form_data,form_data_back, form_data2, f
     try {
         const url = `topic/topic/${id}/`;
         const res = await DataService.updateData(url, newData);
-        console.log('res data old respo', res.data.topic_image)
         if(res.status == 200) {
             if (form_data !== null) {
                 await Topic.putPdfdata(id, form_data);
