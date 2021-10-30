@@ -529,7 +529,7 @@ class FeedView(APIView):
     pagination_class  = TwentyPagination
     def post(self,request):
                 # print(Site.objects.get_current().domain)
-                print(get_current_site(request).domain)
+                # print(get_current_site(request).domain)
                 # print(self.pagination_class)
                 add = AddSetting.objects.latest('id')
                 # pagination_class  = Modelpagination(add.addaftertopic)
