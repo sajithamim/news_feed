@@ -576,7 +576,7 @@ class FeedView(APIView):
                             addid= addid+1                         # print(add)
                             adddata={
                             'title':add.title,
-                            'addimage':str(get_current_site(request).domain)+"/media/"+str(add.addimage),
+                            'addimage':"https://"+str(get_current_site(request).domain)+"/media/"+str(add.addimage),
                             'url':add.url,
                             'isadd':True
                             }
@@ -588,7 +588,7 @@ class FeedView(APIView):
                                 addid = 0                         # print(add)
                                 adddata={
                                 'title':add.title,
-                                'addimage':str(get_current_site(request).domain)+"/media/"+str(add.addimage),
+                                'addimage':"https://"+str(get_current_site(request).domain)+"/media/"+str(add.addimage),
                                 'url':add.url,
                                 'isadd':True
                                 }
