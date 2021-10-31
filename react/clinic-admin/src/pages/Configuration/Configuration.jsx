@@ -8,14 +8,19 @@ import { getConfiguration, postConfiguration, updateConfiguration } from "../../
 const Configuration = () => {
   const dispatch = useDispatch();
   const [state, setState] = useState("");
-  const [show, setShow] = useState(1);
+  // const [show, setShow] = useState(1);
   const [errors, setErrors] = useState({ name: '' });
   const { configData, getConfigData, addConfigData } = useSelector(state => state.Config);
-  console.log("configData", configData);
+  
+  
+  useEffect(() => {
+  if(configData){
+    setState({ ...state, addaftertopic: configData.addaftertopic})
+  }
+}, [configData])
 
   useEffect(() => {
     dispatch(getConfiguration())
-    // setState({ ...state, [addaftertopic]: configData.addaftertopic})
   }, [getConfigData, addConfigData])
 
   const formValidation = () => {
@@ -35,7 +40,6 @@ const Configuration = () => {
 
   const handleSubmit = (e) => {
     if (formValidation()) {
-      console.log("state" , state);
       dispatch(postConfiguration(state)) 
       .then((res) => {
          message.success('Configuration added succesfully');
@@ -49,10 +53,7 @@ const Configuration = () => {
         <div className="modalStyle">
           <div className="configStyle">
             <Form.Item label="Ads showing interval">
-              {configData.addaftertopic ? 
-              (<Input type="number" name="addaftertopic" onChange={handleChange} value={configData.addaftertopic}/>): null
-            }
-              {/* <Input type="number" name="addaftertopic" onChange={handleChange} value={configData.addaftertopic}/> */}
+              <Input type="number" name="addaftertopic" onChange={handleChange} value={state.addaftertopic}/>
               <div className="errorMsg">{errors.addaftertopic}</div>
             </Form.Item>
           </div>
