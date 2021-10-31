@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./Configuration.css";
-import { Form, Button, Input, Modal, message } from "antd";
+import { Form, Button, Input, Modal, message, Drawer } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getConfiguration, postConfiguration, updateConfiguration } from "../../actions/Config";
-import { getContrastRatio } from "@material-ui/core";
+
 
 const Configuration = () => {
   const dispatch = useDispatch();
   const [state, setState] = useState("");
+  const [show, setShow] = useState(1);
   const [errors, setErrors] = useState({ name: '' });
   const { configData, getConfigData, addConfigData } = useSelector(state => state.Config);
-  console.log("getConfigDataList", configData);
+  console.log("configData", configData);
 
   useEffect(() => {
     dispatch(getConfiguration())
+    // setState({ ...state, [addaftertopic]: configData.addaftertopic})
   }, [getConfigData, addConfigData])
-  
+
   const formValidation = () => {
     let entities = state;
     const newErrorsState = { ...errors };
@@ -31,31 +33,6 @@ const Configuration = () => {
     setState({ ...state, [e.target.name]: e.target.value })
   };
 
-  const configGenerator = () => {
-    const items = [];
-    configData && configData.results && configData.results.map((item, key) => {
-      return items.push({
-        id: item.id,
-        name: item.addaftertopic,
-      })
-      
-    })
-   
-    return items;
-  }
-  
-  // const handleSubmit = (name) => {
-    // if (formValidation()) {
-      // console.log("name", name);
-      // setErrors({});
-      // dispatch(postConfiguration(name))
-      //   .then((res) => {
-      //     setState({});
-      //   message.success('Configuration added succesfully');
-      //   })
-    // }
-  // }
-  
   const handleSubmit = (e) => {
     if (formValidation()) {
       console.log("state" , state);
@@ -72,7 +49,10 @@ const Configuration = () => {
         <div className="modalStyle">
           <div className="configStyle">
             <Form.Item label="Ads showing interval">
-              <Input type="number" name="addaftertopic" onChange={handleChange} value={state.addaftertopic} />
+              {configData.addaftertopic ? 
+              (<Input type="number" name="addaftertopic" onChange={handleChange} value={configData.addaftertopic}/>): null
+            }
+              {/* <Input type="number" name="addaftertopic" onChange={handleChange} value={configData.addaftertopic}/> */}
               <div className="errorMsg">{errors.addaftertopic}</div>
             </Form.Item>
           </div>
@@ -84,7 +64,6 @@ const Configuration = () => {
             Save
           </Button>
         </div>
-          <Form dataSource={configGenerator()} />
       </Form.Item>
     </Form>
   );

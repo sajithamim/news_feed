@@ -17,9 +17,10 @@ export const postConfiguration = (state) => async (dispatch) => {
 export const getConfiguration = () => async (dispatch) => {
     try {
         const res = await Config.getConfiguration();
+        console.log("respones", res);
         dispatch({
             type: 'RETRIEVE_CONFIGURATION',
-            payload: res.data.results,
+            payload: res.data,
         });
     } catch (err) {
     }
