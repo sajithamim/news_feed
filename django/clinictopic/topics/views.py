@@ -600,7 +600,7 @@ class FeedView(APIView):
                         data['addid'] = addid
                         return self.get_paginated_response(data)
                         # return self.get_paginated_response(serializer.data)
-                return Response({},status=status.HTTP_200_OK)
+                return Response({"results":{"feeds":[]}},status=status.HTTP_200_OK)
             # except Exception as e:
             #     status_code = status.HTTP_400_BAD_REQUEST
             #     response = {
