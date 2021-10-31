@@ -44,12 +44,12 @@ const GenAdvertisementContent = () => {
 
 
   const genAdsGenerator = () => {
-    console.log('enter', genAdsList)
     let serialNo = pageSize * slNo;
     const items = [];
     genAdsList && genAdsList.results && genAdsList.results.map((item) => {
       serialNo++;
       return items.push({
+        key: item.id,
         sl_no: serialNo,
         id: item.id,
         title: item.title,
@@ -90,7 +90,6 @@ const GenAdvertisementContent = () => {
     if(drawerType == 'edit') {
       delete newData["image"];
       delete newData["sl_no"];
-      delete newData["id"];
       dispatch(updateGeneralAdvertisment(data.id, newData, form_data))
     } else {
       dispatch(postGeneralAdvertisement(newData, form_data))

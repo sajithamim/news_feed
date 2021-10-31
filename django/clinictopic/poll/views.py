@@ -97,9 +97,11 @@ class Feedbackview(generics.ListCreateAPIView):
         return Feedback.objects.all().order_by('-id')
 
 
+
 class SettingsViewSet(generics.ListCreateAPIView):
     serializer_class=SettingsSerializer
     pagination_class=None
+    permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def perform_create(self,serializer):
         serializer.save()
@@ -118,6 +120,19 @@ class AddSettingView(viewsets.ModelViewSet):
     queryset = AddSetting.objects.all().order_by('id')
     serializer_class = AddSettingSerializer
     permission_classes = (IsAuthenticated,)
+    def create(self, request):
+        adds = AddSetting.objects.filter().delete()
+        tutorial_data = JSONParser().parse(request)
+        tutorial_serializer = AddSettingSerializer(data=tutorial_data)
+        if tutorial_serializer.is_valid():
+            tutorial_serializer.save()
+            return Response(tutorial_serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(tutorial_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request):
+        queryset = AddSetting.objects.filter().order_by('-id')[0]
+        serializer = AddSettingSerializer(queryset)
+        return Response(serializer.data)
 
 class AboutusApiview(generics.ListCreateAPIView):
     serializer_class = Aboutusserializer

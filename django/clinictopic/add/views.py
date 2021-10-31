@@ -96,12 +96,17 @@ class SelectedUserlistView(APIView):
 class AllUserAdsViewset(viewsets.ModelViewSet):
     queryset = AllUserAdd.objects.all().order_by('-created_at')
     serializer_class = AllUserAddSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    def get_serializer_context(self):
+        context = super(AllUserAdsViewset, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
     # permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=AllUseraddImage,parser_classes=[parsers.MultiPartParser],)
     def image(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
+                                           partial=True,context = {'request':request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

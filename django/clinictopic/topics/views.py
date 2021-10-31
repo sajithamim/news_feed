@@ -31,13 +31,21 @@ from rest_framework import pagination
 from poll.models import AddSetting
 from add.models import AllUserAdd
 from rest_framework.pagination import LimitOffsetPagination
-
-
+from django.contrib.sites.shortcuts import get_current_site
 
 
 class TwentyPagination(pagination.PageNumberPagination): 
     # add = AddSetting.objects.latest('id')
     page_size = 4
+    def funA(self,x):
+        TwentyPagination.page_size = x
+    # @classmethod
+    # def update(cls, value):
+    #     cls.page_size = value
+
+    # def __init__(self,value):
+    #     self.value = value
+    #     self.update(value)
     # print()
     # page_size_query_param = 'page_size'
     # max_page_size = 5
@@ -520,13 +528,19 @@ class FeedView(APIView):
     # page_size = 3
     pagination_class  = TwentyPagination
     def post(self,request):
+                # print(Site.objects.get_current().domain)
+                # print(get_current_site(request).domain)
                 # print(self.pagination_class)
-                # add = AddSetting.objects.latest('id')
+                add = AddSetting.objects.latest('id')
                 # pagination_class  = Modelpagination(add.addaftertopic)
 
                 # a = self.pagination_class(add.addaftertopic)
                 # a.page_size = 2
                 # print(a.page_size)
+                ob1 = TwentyPagination()
+                ob1.funA(add.addaftertopic)
+                # print(add.addaftertopic)
+                # a = TwentyPagination(value=1)
                 if  request.data['addid']:
                     addid = request.data['addid']
                 else :
@@ -554,7 +568,7 @@ class FeedView(APIView):
 
                         # print(self.add.addaftertopic)
                         data['feeds'] = serializer.data
-                        data['page_size'] = 4
+                        data['page_size'] = add.addaftertopic
 
 
                         try :
@@ -562,8 +576,9 @@ class FeedView(APIView):
                             addid= addid+1                         # print(add)
                             adddata={
                             'title':add.title,
-                            'addimage':str(add.addimage),
-                            'url':add.url
+                            'addimage':"https://"+str(get_current_site(request).domain)+"/media/"+str(add.addimage),
+                            'url':add.url,
+                            'isadd':True
                             }
                             data['feeds'].append(adddata)
                         except Exception as e:
@@ -573,7 +588,7 @@ class FeedView(APIView):
                                 addid = 0                         # print(add)
                                 adddata={
                                 'title':add.title,
-                                'addimage':str(add.addimage),
+                                'addimage':"https://"+str(get_current_site(request).domain)+"/media/"+str(add.addimage),
                                 'url':add.url,
                                 'isadd':True
                                 }
@@ -585,7 +600,7 @@ class FeedView(APIView):
                         data['addid'] = addid
                         return self.get_paginated_response(data)
                         # return self.get_paginated_response(serializer.data)
-                return Response({},status=status.HTTP_200_OK)
+                return Response({"results":{"feeds":[]}},status=status.HTTP_200_OK)
             # except Exception as e:
             #     status_code = status.HTTP_400_BAD_REQUEST
             #     response = {

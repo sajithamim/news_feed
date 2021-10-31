@@ -485,7 +485,7 @@ const ModalContent = (props) => {
             />
             <div className="errorMsg">{err && err.errors && err.errors.category_id}</div>
           </Form.Item>
-          <Form.Item label="Author">
+          {/* <Form.Item label="Author">
             <Select
               showSearch
               value={state.username || null}
@@ -500,7 +500,7 @@ const ModalContent = (props) => {
             >
               {options}
             </Select>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
               <Radio value="1">

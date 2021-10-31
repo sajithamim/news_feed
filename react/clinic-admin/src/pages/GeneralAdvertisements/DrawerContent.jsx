@@ -73,6 +73,8 @@ const DrawerContent = (props) => {
   const handleSubmit = (e) => {
     if (formValidation()) {
       let form_data = null;
+      console.log("image", image);
+      console.log("image", image.name);
       if (image && image.name) {
         form_data = new FormData();
         form_data.append('addimage', image, image.name);
