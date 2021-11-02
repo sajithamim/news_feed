@@ -16,6 +16,8 @@ const AdvisoryBoardContent = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const { specList, advisoryMemberList  , addAdvisoryData} = useSelector(state => state.spec);
+  
+
   const { specId } = useParams();
 
   useEffect(() => {

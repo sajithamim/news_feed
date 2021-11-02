@@ -58,13 +58,12 @@ const DrawerAdvisory = (props) => {
     };
 
     const handleSubmit = () => {
-        console.log("errors", errors);
         if (handleValidation()) {
             const data = oldAdvisoryData.length > 0 ? newAdvisoryData.concat(oldAdvisoryData) : newAdvisoryData
             dispatch(postAdvisoryMembersList(data))
                 .then(() => {
                     message.success("Advisory Members added successfully")
-                    setState([]);
+                    //setState([]);
                     //setNewAdvisoryData([]);
                 })
         }
