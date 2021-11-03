@@ -3,6 +3,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   POST_EMAIL,
+  POST_EMAIL_ERROR
 } from "./type";
 
 import AuthService from "../services/auth.service";
@@ -39,13 +40,18 @@ export const logout = () => (dispatch) => {
 export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
-      console.log("response" , res);
-      dispatch({
+      if(res){
+        dispatch({
           type: POST_EMAIL,
           payload: res.data,
       })
+      }else{
+        dispatch({
+          type: POST_EMAIL_ERROR,
+      })
+      }
   } catch (err) {
-      console.log(err);
+    
   }
 }
 
