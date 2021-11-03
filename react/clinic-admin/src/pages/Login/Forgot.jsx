@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Alert, message } from "antd";
-import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { postRequestEmail } from "../../actions/auth.js"
 import "./Login.css";
-import { SelectionState } from "draft-js";
+// import { SelectionState } from "draft-js";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
@@ -18,10 +17,16 @@ const Forgot = () => {
   const [errors, setErrors] = useState({ name: '' });
 
   const dispatch = useDispatch();
-  const { error } = useSelector(state => state.auth);
+  const { error, success } = useSelector(state => state.auth);
+
+  useEffect(() => {
+    if (success) {
+      message.success(success);
+    }
+  }, [success])
 
   const onChange = (e) => {
-     setState({ ...state, email: e.target.value, redirect_url: `${process.env.REACT_APP_API_BASE_URL}/reset_password` })
+    setState({ ...state, email: e.target.value, redirect_url: `${process.env.REACT_APP_API_BASE_URL}/reset_password` })
     // setState({ ...state, email: e.target.value, redirect_url: `http://localhost:3000/reset_password/?token_valid=True&message=Credentials%20Valid&uidb64=MjA&token=ar4dcq-c5ef869aa3b81071cf6e8e9767d136f0` })
   };
 
@@ -32,21 +37,21 @@ const Forgot = () => {
     },
   };
 
-  
+
   const sendEmail = () => {
     setLoading(true);
     dispatch(postRequestEmail(state))
-    .then((res) => {
-      (res.request.status === 'undefined') ? message.error({content: "User doesn't exist"}) : message.success({content: 'We have sent you a link to reset your password',
-        className: 'custom-class',
-        style: {
-          marginLeft: '25vh',
-          marginTop: '55vh',
-        },
-      });
-    })
+    // .then((res) => {
+    //   (res.status === 200) ? message.success({content: 'We have sent you a link to reset your password',
+    //   className: 'custom-class',
+    //   style: {
+    //     marginLeft: '25vh',
+    //     marginTop: '55vh',
+    //   },
+    // }) : message.error({content: "User doesn't exist"}) ;
+    // })
   };
- 
+
 
   return (
     <>

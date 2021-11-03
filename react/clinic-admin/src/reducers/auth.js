@@ -4,6 +4,7 @@ import {
   LOGOUT,
   POST_EMAIL,
   PASSWORD_RESET,
+  POST_EMAIL_ERROR
 } from "../actions/type";
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
 
 
 export default function (state = initialState, action) {
+  console.log("success", action);
   const { type, payload } = action;
   switch (type) {
     case LOGIN_SUCCESS:
@@ -35,7 +37,9 @@ export default function (state = initialState, action) {
         error: action.payload,
       };
     case POST_EMAIL:
-      return { ...state, requestEmail: action.payload };
+      return { ...state,  success: action.payload.success};
+    case POST_EMAIL_ERROR:
+      return { ...state,  error: action.error};
     case PASSWORD_RESET:
       return { ...state, passwordSet: action.payload };
     case LOGOUT:

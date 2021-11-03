@@ -68,13 +68,6 @@ function App() {
     if (accessToken === 'null' && accessToken === ' undefined'){
       history.push("/");
     }
-    
-  // if (window.navigator.onLine == true) {
-  //   if (accessToken && accessToken !== undefined) {
-  //     history.push("/data");
-  //   }
-  // }
-
     const events = [
       'load',
       'mousemove',
