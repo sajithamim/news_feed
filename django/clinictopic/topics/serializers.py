@@ -258,6 +258,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
             instance.pdf=''
         instance.save()
 
+
         # # up till here everything is updating, however the problem appears here.
         # # I don't know how to get the right InvoiceItem object, because in the validated
         # # data I get the items queryset, but without an id.
