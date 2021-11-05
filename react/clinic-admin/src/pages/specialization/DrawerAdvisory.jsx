@@ -19,7 +19,6 @@ const DrawerAdvisory = (props) => {
     useEffect(() => {
         dispatch(getUsersList())
         const advisoryData = [];
-        console.log("advisoryData", advisoryMemberList);
         advisoryMemberList.data && advisoryMemberList.data.map(item => {
             advisoryData.push({ spec_id: specId, user_id: item.user_id.id })
         })
@@ -65,7 +64,6 @@ const DrawerAdvisory = (props) => {
 
     const handleSubmit = () => {
         if (handleValidation()) {
-            // console.log("newAdvisoryData", newAdvisoryData);
             // const data = oldAdvisoryData.length > 0 ? newAdvisoryData.concat(oldAdvisoryData) : newAdvisoryData
             dispatch(postAdvisoryMembersList(newAdvisoryData))
                 .then(() => {

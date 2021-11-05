@@ -1,4 +1,5 @@
 import Category from "../services/Category";
+import DataService from "../services/data.service";
 
 export const getCategory = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
@@ -19,12 +20,13 @@ export const postCategory = (state, imageData) => async (dispatch) => {
     try {
         const res = await Category.postCategory(state);
         if (res.data.id && imageData) {
-            console.log('imageData', imageData)
-            await Category.updateImageCat(res.data.id, imageData);
+            let imgUrl = `topic/category/${res.data.id}/icon/`;
+            const imgRes = await DataService.postImage(imgUrl, imageData);
+            res.data.image = imgRes.data.image
             dispatch({
                 type: 'ADD_CATEGORY',
                 payload: res.data,
-            });return res;
+            });
         } else {
             dispatch({
                 type: 'ADD_CATEGORY',
@@ -33,14 +35,13 @@ export const postCategory = (state, imageData) => async (dispatch) => {
         }
     }
     catch (err) {
-        console.log("error");
+        console.log("error", err);
     }
 }
 
 export const deleteCategory = (id) => async (dispatch) => {
     try {
         const res = await Category.deleteCategory(id);
-        console.log("res cat delete" , res);
         dispatch({
             type: 'DELETE_SUCCESS',
             payload: id,
@@ -57,7 +58,9 @@ export const updateCategory = (id, state, imageData) => async (dispatch) => {
     try {
         const res = await Category.updateCat(id, state);
         if (res && imageData) {
-            await Category.updateImageCat(id, imageData);
+            let imgUrl = `topic/category/${id}/icon/`;
+            const imgRes = await DataService.postImage(imgUrl, imageData);
+            res.data.image = imgRes.data.image
         }
         dispatch({
             type: 'EDIT_CATEGORY',

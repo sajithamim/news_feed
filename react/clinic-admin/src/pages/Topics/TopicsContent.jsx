@@ -47,7 +47,6 @@ const TopicsContent = (props) => {
   };
 
   const onEdit = (record) => {
-    console.log("record", record);
     setData(record)
     setShowDrawer(true);
     setDrawerType("edit");
@@ -63,12 +62,6 @@ const TopicsContent = (props) => {
   }
 
   const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
-    console.log("data", newData);
-    console.log("form_data", form_data);
-    console.log("form_data_back", form_data_back);
-    console.log("form_data2", form_data2);
-    console.log("form_data3", form_data3);
-    console.log("image_data", image_data);
     onClose();
     if(drawerType == 'edit') {
       dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
@@ -81,7 +74,6 @@ const TopicsContent = (props) => {
     let serialNo = pageSize * slNo;
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
-      //console.log('topics oitem', item)
       serialNo++;
       const topics = [];
       const specData = [];
@@ -101,7 +93,7 @@ const TopicsContent = (props) => {
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
           topicSubspec.push({ subspec_id: item.subspec_id.id})
         })
-        console.log('item', item)
+    
       items.push({
         sl_no: serialNo,
         key:item.id,

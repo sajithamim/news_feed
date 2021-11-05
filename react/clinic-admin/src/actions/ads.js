@@ -25,7 +25,6 @@ export const deleteAdd = (id) => async (dispatch) => {
 export const getSpecUsers = (id) => async (dispatch) => {
     try {
         const res = await Ads.getSpecUsers(id);
-        console.log("spec users" ,res.data.count )
         dispatch({
             type: 'GET_SPEC_USERS',
             payload: res.data,
@@ -37,21 +36,16 @@ export const getSpecUsers = (id) => async (dispatch) => {
 }
 
 export const postAdds = (newData, userList , adsId , imgData) => async (dispatch) => {  
-    console.log('newData', newData)  
-    console.log('newData', userList)
-    console.log('newData', adsId)
     try {
         if (adsId === null) {
             const res = await Ads.postAdds(newData);
             if (res && res.data && res.data.id) {
-                console.log("coming to if");
                 const userData = []
                 userList.map(item => {
                     userData.push({ adsid: res.data.id, spec_id: item.spec_id, user_id: item.user_id })
                 })
                 if (imgData)
                     await Ads.postAdsImage(res.data.id, imgData)
-                console.log("userData" , userData);
                 await Ads.postAddsVisibility(userData)
             dispatch({
                 type: 'POST_ADD',
@@ -61,7 +55,6 @@ export const postAdds = (newData, userList , adsId , imgData) => async (dispatch
             return res;
         }
         else {
-            console.log("coming to else");
             const res = await Ads.putAdds(newData, adsId);
             if (userList && res && res.data && adsId) {
                 const userData = []
@@ -112,7 +105,6 @@ export const getEditAdsDetails = (id) => async (dispatch) => {
 export const getAdsSelectedUser = (adsId, specid) => async (dispatch) => {
     try {
         const res = await Ads.getAdsSelectedUser(adsId, specid);
-        console.log("response" , res);
         dispatch({
             type: 'GET_ADS_USER_DETAILS',
             payload: res.data,

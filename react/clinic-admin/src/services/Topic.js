@@ -45,7 +45,6 @@ const putPdfdata =(id, pdfData) => {
 }
 
 const putPdfdata2 =(id, pdfData2) => {
-  console.log("pdfData", pdfData2);
   let accessToken = localStorage.getItem("accessToken");
   let url = `${process.env.REACT_APP_API_URL}topic/topic/${id}/secondpdf/`;
   return axios.put(url, pdfData2, {

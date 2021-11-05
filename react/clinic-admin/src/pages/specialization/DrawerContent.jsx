@@ -35,13 +35,11 @@ const DrawerContent = (props) => {
       setErrors({});
       let newData = state;
       const id = state.id;
-      console.log("formValidationformValidation", newData)
       if (props.drawerType === "edit") {
         delete newData["id"];
         delete newData["icon"];
         delete newData["updated_at"];
         delete newData["created_at"];
-        console.log("new data", newData);
         if (props.type === "spec") {
           dispatch(updateSpecialization(id, newData))
             .then((res) => {

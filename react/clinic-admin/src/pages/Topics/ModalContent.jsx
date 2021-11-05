@@ -13,7 +13,6 @@ const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
 
 const ModalContent = (props) => {
-  console.log("props", props);
   const { TextArea } = Input;
   const [lastFetchId, setLastFetchId] = useState(0);
   const [fetching, setFetching] = useState(0);
@@ -31,7 +30,6 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    //console.log('topic123', props.editData)
     if (props.editData !== null) {
       setState(props.editData)
     }
@@ -183,7 +181,6 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
-    //console.log('e.target.value', e.target.value)
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
@@ -211,7 +208,6 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    console.log('imageData', state.imageFormData)
     if (fields["topic_subspec"].length <= 0) {
       formIsValid = false;
       errors["topic_subspec"] = "Specialization cannot be empty";
@@ -321,7 +317,6 @@ const ModalContent = (props) => {
       if (state.deliverytype === 'external'  && fields["external_url3"]) {
         var myUrl = fields.external_url3;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-        //console.log("res",res);
         if (res === null) {
           formIsValid = false;
           errors["external_url3"] = "Enter a valid URL";
@@ -336,7 +331,6 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    //console.log('err', err)
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -399,7 +393,6 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      //console.log('newData n21', newData)
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -462,7 +455,7 @@ const ModalContent = (props) => {
     },
     showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
-  //console.log('errorserrors', state)
+  
   return (
     <div>
       <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
