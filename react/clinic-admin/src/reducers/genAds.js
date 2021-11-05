@@ -18,7 +18,6 @@ const updateData = (state, action) => {
             return { ...state, success: action.message }
 }
 export default (state = initialState, action) => {
-    console.log("action", action);
     switch (action.type) {
         case 'POST_GEN_ADS': {
             if(action.data) {

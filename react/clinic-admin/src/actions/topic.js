@@ -125,6 +125,7 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
 }
 
 export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
+    console.log("nesdata action", newData);
     newData.topic_audience = "doctor";
     try {
         const url = `topic/topic/${id}/`;

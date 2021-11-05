@@ -13,6 +13,7 @@ const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
 
 const ModalContent = (props) => {
+  console.log("props", props);
   const { TextArea } = Input;
   const [lastFetchId, setLastFetchId] = useState(0);
   const [fetching, setFetching] = useState(0);
@@ -552,10 +553,10 @@ const ModalContent = (props) => {
           }
           {state.format === '2' ?
             (<Form.Item label="Images"><section className="clearfix">{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
-              <span class="close">
+              <span className="close">
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
-                <span class="close">
+                <span className="close">
                   <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section>
               <div className="inputStyle">

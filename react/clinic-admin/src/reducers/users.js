@@ -16,7 +16,6 @@ const initialState = {
 };
 
 const users = (state = initialState, action) => {
-    console.log('action', action)
     switch (action.type) {
         case 'GET_USER':
             return { ...state, userList: action.payload, addUser: false , updateUser: false, page: action.page }

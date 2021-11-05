@@ -8,7 +8,6 @@ import { getUsersList } from "../../actions/users"
 import "./Drawer.css";
 
 const DrawerAdvisory = (props) => {
-    //const [state, setState] = useState(props.editData);
     const [oldAdvisoryData, setOldAdvisoryData] = useState([]);
     const [newAdvisoryData, setNewAdvisoryData] = useState([]);
     const [state, setState] = useState([]);
@@ -20,13 +19,20 @@ const DrawerAdvisory = (props) => {
     useEffect(() => {
         dispatch(getUsersList())
         const advisoryData = [];
+        console.log("advisoryData", advisoryMemberList);
         advisoryMemberList.data && advisoryMemberList.data.map(item => {
             advisoryData.push({ spec_id: specId, user_id: item.user_id.id })
         })
         setOldAdvisoryData(advisoryData);
-        setState([]);
-        //setNewAdvisoryData([]);
-    }, []);
+
+
+        const oldList = [];
+        advisoryMemberList.data && advisoryMemberList.data.map(item => {
+            oldList.push({ value: item.user_id.id, label: <div><div><b>{item.user_id.username}</b><p className="advisoryPara">{item.user_id.qualifications}</p></div><div><img className="advisoryImg" src={`${process.env.REACT_APP_API_BASE_URL}${item.user_id.profilepic}`} /></div></div> })
+        })
+        setState(oldList);
+        setNewAdvisoryData([]);
+    }, [advisoryMemberList]);
 
     const list = []
     userList && userList.results && userList.results.map(item => {
@@ -59,8 +65,9 @@ const DrawerAdvisory = (props) => {
 
     const handleSubmit = () => {
         if (handleValidation()) {
-            const data = oldAdvisoryData.length > 0 ? newAdvisoryData.concat(oldAdvisoryData) : newAdvisoryData
-            dispatch(postAdvisoryMembersList(data))
+            // console.log("newAdvisoryData", newAdvisoryData);
+            // const data = oldAdvisoryData.length > 0 ? newAdvisoryData.concat(oldAdvisoryData) : newAdvisoryData
+            dispatch(postAdvisoryMembersList(newAdvisoryData))
                 .then(() => {
                     message.success("Advisory Members added successfully")
                     //setState([]);
