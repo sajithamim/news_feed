@@ -224,7 +224,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
             # if 'email' in validated_data:
             #     author = User.objects.get(email=validated_data['email'])
             #     instance.author = author
-            instance.deliverytype='external'
+            # instance.deliverytype='external'
             instance.media_type ='image'
             instance.video_url=''
             instance.pdf=''
@@ -251,7 +251,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
             # if 'email' in validated_data:
             #     author = User.objects.get(email=validated_data['email'])
             #     instance.author = author
-            instance.deliverytype='external'
+            # instance.deliverytype='external'
             instance.media_type ='video'
             instance.pdfsecond=''
             # instance.video_url=''
