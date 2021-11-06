@@ -47,6 +47,7 @@ const TopicsContent = (props) => {
   };
 
   const onEdit = (record) => {
+    console.log("record", record);
     setData(record)
     setShowDrawer(true);
     setDrawerType("edit");
@@ -113,7 +114,7 @@ const TopicsContent = (props) => {
         spec_data: specData,
         topic_topic: topics,
         publishingtime: item.publishingtime,
-        publishtype: "later",
+        publishtype: item.publishingtime > new Date() ? "later" : "now",
         deliverytype:item.deliverytype,
         topic_val: subspec,
         topic_subspec: topicSubspec,

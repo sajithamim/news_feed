@@ -38,9 +38,6 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
 
-  // const keyGenerator = () => {
-  //   return Math.floor(100000 + Math.random() * 900000);
-  // }
 
   const treeData = [];
   specList && specList.data && specList.data.map((specitem, index) => {
@@ -182,6 +179,7 @@ const ModalContent = (props) => {
 
   const radioOnChange = (val, e) => {
     if (val === 'publishtype') {
+      console.log("e.target", e.target.value);
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
@@ -195,6 +193,9 @@ const ModalContent = (props) => {
     else if (val === 'deliverytype') {
       setState({ ...state, deliverytype: e.target.value })
     }
+    console.log("publishtype",state.publishtype);
+    console.log("publishingtime",state.publishingtime);
+    console.log("published",state.published);
   };
 
   const { RangePicker } = DatePicker;
@@ -324,13 +325,14 @@ const ModalContent = (props) => {
       }
     }
     //state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
-    //setState({ ...state, publishingtime: crntDateTime })
+    // setState({ ...state, publishingtime: crntDateTime })
     setErrors({ errors });
     return formIsValid;
   }
 
 
   const handleSubmit = (e) => {
+    console.log("state",state);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -418,20 +420,20 @@ const ModalContent = (props) => {
       setState({ ...state, topic_image: newImageList, imageFormData: imageFormDataList });
     }
   }
-  const handleSearch = value => {
-    if (value) {
-      dispatch(searchUsers(value))
-        .then((res) => {
-          if (res.data)
-            setData(res.data.data);
-        })
-    } else {
-      setData([]);
-    }
-  };
-  const handleSearchChange = value => {
-    setState({ ...state, email: value, username: value });
-  };
+  // const handleSearch = value => {
+  //   if (value) {
+  //     dispatch(searchUsers(value))
+  //       .then((res) => {
+  //         if (res.data)
+  //           setData(res.data.data);
+  //       })
+  //   } else {
+  //     setData([]);
+  //   }
+  // };
+  // const handleSearchChange = value => {
+  //   setState({ ...state, email: value, username: value });
+  // };
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
@@ -559,10 +561,6 @@ const ModalContent = (props) => {
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div>
               <div className="errorMsg">{err && err.errors && err.errors.video_url}</div></Form.Item>) : null}
-          {/* {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
-            (state.deliverytype === 'pdf' ?
-              (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
-            : null)} */}
           {state.format === '2' ?
             (<Form.Item label="Detail Page">
               <Radio.Group onChange={(e) => radioOnChange('deliverytype', e)} value={state.deliverytype}>
