@@ -27,6 +27,7 @@ const TopicsContent = (props) => {
   useEffect(() => {
     if(success) {
       message.success(success);
+      dispatch(getTopic(page))
       dispatch({type: 'RESET_DATA'})
     }
     else if(error) {

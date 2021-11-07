@@ -193,9 +193,6 @@ const ModalContent = (props) => {
     else if (val === 'deliverytype') {
       setState({ ...state, deliverytype: e.target.value })
     }
-    console.log("publishtype",state.publishtype);
-    console.log("publishingtime",state.publishingtime);
-    console.log("published",state.published);
   };
 
   const { RangePicker } = DatePicker;
@@ -407,8 +404,10 @@ const ModalContent = (props) => {
   }
 
   const deleteImage = (id, image) => {
+    console.log("id delete" , id);
     if (id !== null) {
       const oldImages = state.old_image;
+      console.log("oldImages", oldImages);
       const oldImageList = oldImages.filter(item => { return item.id !== id });
       dispatch(deleteImages(id));
       setState({ ...state, old_image: oldImageList });
@@ -552,7 +551,7 @@ const ModalContent = (props) => {
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span className="close">
-                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+                  <Popconfirm title="Are you sure to delete this imagee?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>

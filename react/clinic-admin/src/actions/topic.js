@@ -65,7 +65,8 @@ export const deleteTopic = (id, page) => async (dispatch) => {
 
 export const deleteImages = (id) => async (dispatch) => {
     try {
-        const res = await Topic.deleteImage(id);        
+        const res = await Topic.deleteImage(id);    
+        console.log("response", res);    
         return res;
     } catch (err) {
         console.log(err);
