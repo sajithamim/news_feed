@@ -227,7 +227,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
             # instance.deliverytype='external'
             instance.media_type ='image'
             instance.video_url=''
-            instance.pdf=''
+            # instance.pdf=''
             instance.pdfsecond=''
         if validated_data['format'] =='3':
             image =Image.objects.filter(topic_id=instance).delete()
@@ -255,7 +255,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
             instance.media_type ='video'
             instance.pdfsecond=''
             # instance.video_url=''
-            instance.pdf=''
+            # instance.pdf=''
         instance.save()
 
 
