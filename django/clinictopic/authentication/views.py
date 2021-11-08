@@ -690,6 +690,7 @@ class ProfileView(viewsets.ModelViewSet):
 class QualificationView(viewsets.ModelViewSet):
         queryset = Qualifications.objects.all()
         serializer_class = QualificationSerializer
+        pagination_class = None
         permission_classes = (permissions.IsAuthenticated,)
 
 
