@@ -1,9 +1,17 @@
 import axios from "axios";
 
+const  accessToken = localStorage.getItem("accessToken");
 export const http = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "Content-type": "application/json",
+  }
+});
+
+export const http1 = axios.create({
+  baseURL: process.env.REACT_APP_ECAPS_API,
+  headers: {
+    "Authorization": accessToken,
   }
 });
 

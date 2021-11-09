@@ -14,7 +14,8 @@ const initialState = {
   success: "",
   error: null,
   requestEmail: "",
-  passwordSet: ""
+  passwordSet: "",
+  success:'',
 }
 
 
@@ -40,13 +41,15 @@ export default function (state = initialState, action) {
     case POST_EMAIL_ERROR:
       return { ...state,  error: action.error};
     case PASSWORD_RESET:
-      return { ...state, passwordSet: action.payload };
+      return { ...state, passwordSet: action.payload, success: action.payload.message };
     case LOGOUT:
       return {
         ...state,
         isLoggedIn: false,
         user: null,
       };
+    case 'RESET_DATA':
+            return { ...state , success: ''}
     default:
       return state;
   }

@@ -3,7 +3,6 @@ import { Form, Input, Button, Alert, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { postRequestEmail } from "../../actions/auth.js"
 import "./Login.css";
-// import { SelectionState } from "draft-js";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
