@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { Offline, Online } from "react-detect-offline";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
@@ -11,7 +12,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+    <Offline>Check your Internet Connection</Offline>
+      <Online><App /></Online>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

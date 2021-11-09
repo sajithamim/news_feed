@@ -10,7 +10,6 @@ const deleteTopic = (id) => {
 };
 
 const deleteImage = (id) => {
-  console.log("id",id);
   return http.delete(`topic/deletetopicimage/${id}`);
 };
 

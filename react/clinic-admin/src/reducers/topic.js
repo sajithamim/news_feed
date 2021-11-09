@@ -5,7 +5,7 @@ const initialState= {
     pdf:{},
     userList:{},
     specList : {},
-    catList:{}
+    catList:{},
 };
 
 const updateData = (state, action) => {

@@ -179,7 +179,6 @@ const ModalContent = (props) => {
 
   const radioOnChange = (val, e) => {
     if (val === 'publishtype') {
-      console.log("e.target", e.target.value);
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
     } else if (val === 'delivery') {
@@ -329,7 +328,6 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
-    console.log("state",state);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -404,10 +402,8 @@ const ModalContent = (props) => {
   }
 
   const deleteImage = (id, image) => {
-    console.log("id delete" , id);
     if (id !== null) {
       const oldImages = state.old_image;
-      console.log("oldImages", oldImages);
       const oldImageList = oldImages.filter(item => { return item.id !== id });
       dispatch(deleteImages(id));
       setState({ ...state, old_image: oldImageList });
@@ -638,7 +634,7 @@ const ModalContent = (props) => {
             </Form.Item>
               {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
                 <Space>
-                  <DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : '2015/01/01', 'YYYY/MM/DD')} />
+                  <DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date())} />
                 </Space>
               </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>

@@ -17,7 +17,7 @@ const TopicsContent = (props) => {
   const [pageSize , setPageSize] = useState(4);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
-  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
   let history = useHistory();
   
   useEffect(() => {
@@ -36,11 +36,11 @@ const TopicsContent = (props) => {
     }
   }, [success, error])
 
-  useEffect(() => {
-    if (accessToken === 'null' && accessToken === ' undefined'){
-      history.push("/");
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (accessToken === null  || accessToken === undefined ){
+  //     history.push("/login");
+  //   }
+  // }, [status])
 
 
   const onClose = () => {
@@ -48,7 +48,6 @@ const TopicsContent = (props) => {
   };
 
   const onEdit = (record) => {
-    console.log("record", record);
     setData(record)
     setShowDrawer(true);
     setDrawerType("edit");

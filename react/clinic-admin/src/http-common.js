@@ -32,7 +32,7 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
     const serverCallUrl = new URL(
       originalRequest.url,
-      process.env.REACT_APP_CUSTOMER_API
+      process.env.REACT_APP_API_URL
     );
     const status = error.response.status;
     if (
@@ -50,12 +50,40 @@ instance.interceptors.response.use(
   }
 );
 
+http.interceptors.response.use(
+  async (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+    const serverCallUrl = new URL(
+      originalRequest.url,
+      process.env.REACT_APP_API_URL
+    );
+    
+    const status = error.response.status;
+    if (
+      (status === 401 || status === 404) &&
+      !originalRequest._retry &&
+      !serverCallUrl.pathname.includes("/auth")
+    ) {
+      let token = await refresh();
+      originalRequest._retry = true;
+      originalRequest.headers.authorization = `Bearer ${token.data.access}`;
+      localStorage.setItem("accessToken", token.data.access);
+      return instance(originalRequest);
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const refresh = async () => {
   let refreshToken = localStorage.getItem("refreshToken");
   let accessToken = localStorage.getItem("accessToken");
   if (refreshToken && accessToken) {
-    return axios.post(
-      "/user/refresh/",
+    let url = `${process.env.REACT_APP_API_URL}auth/token/refresh/`;
+    return axios.post(url,
+      // `${process.env.REACT_APP_API_URL}auth/token/refresh/`,
       { refresh: refreshToken },
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );

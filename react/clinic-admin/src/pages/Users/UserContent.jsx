@@ -52,6 +52,7 @@ const UserContent = () => {
       key++;
       serialNo++;
       return Items.push({
+        key: item.id,
         sl_no: serialNo,
         id: item.id,
         name: item.name,
