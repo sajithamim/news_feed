@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { getTopic , deleteTopic, postTopic, updateTopic  } from "../../actions/topic";
+import { logout } from "../../actions/auth.js"
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -13,11 +14,11 @@ const TopicsContent = (props) => {
   const [expended, setExpended] = useState()
   const [data , setData] = useState({});
   const { topicList, success, error, page} = useSelector(state => state.topic);
+  console.log("error", error);
   const [current, setCurrent] = useState(1);
   const [pageSize , setPageSize] = useState(4);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
-  const refreshToken = localStorage.getItem("refreshToken");
   const accessToken = localStorage.getItem("accessToken");
   let history = useHistory();
   
@@ -34,6 +35,9 @@ const TopicsContent = (props) => {
     else if(error) {
       message.error(error);
       dispatch({type: 'RESET_DATA'})
+      const clearToken = localStorage.clear();
+      dispatch(logout());
+      history.push("/login");
     }
   }, [success, error])
 

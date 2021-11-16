@@ -24,6 +24,7 @@ export const login = (email, password) => (dispatch) => {
     (error) => {
       dispatch({
         type: LOGIN_FAIL,
+        error: "Network Error",
         payload: error.response.data.detail
       });
     }

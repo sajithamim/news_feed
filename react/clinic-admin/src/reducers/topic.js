@@ -20,7 +20,6 @@ const addData = (state, action) => {
 }
 
 export default (state = initialState , action) => {
-    console.log("ACtion error", action);
     switch(action.type) {
         case 'GET_TOPIC':
             return {...state , topicList: action.payload,  page: action.page }
@@ -33,7 +32,7 @@ export default (state = initialState , action) => {
         case 'UPDATE_TOPIC':
             return updateData(state, action)
         case 'HANDLE_ERROR':
-        return { ...state , error: action.message, status: action.status}
+        return { ...state , error: action.error}
         case 'GET_SPECIALIZATION':
         return { ...state , specList: action.payload}
         case 'GET_CATEGORY':

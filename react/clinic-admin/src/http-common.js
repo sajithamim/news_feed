@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Redirect } from 'react-router-dom';
 
-const  accessToken = localStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 export const http = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
@@ -22,8 +22,8 @@ export const instance = axios.create({
 });
 
 http.interceptors.request.use(async (config) => {
-   let accessToken = localStorage.getItem("accessToken");
-   config.headers["authorization"] = `Bearer ${accessToken}`;
+  let accessToken = localStorage.getItem("accessToken");
+  config.headers["authorization"] = `Bearer ${accessToken}`;
   return config;
 });
 
@@ -69,7 +69,7 @@ http.interceptors.response.use(
       originalRequest.url,
       process.env.REACT_APP_API_URL
     );
-    
+
     const status = error.response.status;
     if (
       (status === 401 || status === 404) &&
@@ -77,8 +77,7 @@ http.interceptors.response.use(
       !serverCallUrl.pathname.includes("/auth")
     ) {
       let token = await refresh();
-      if(token === undefined)
-      {
+      if (token === undefined) {
         return token;
       }
       originalRequest._retry = true;
@@ -100,9 +99,9 @@ export const refresh = async () => {
       { refresh: refreshToken },
       { headers: { Authorization: `Bearer ${accessToken}` } }
     ).then((res) => {
-      console.log("resPonse",res);
+      console.log("resPonse", res);
     }).catch((err) => {
-      console.log("resPonse err",err);
+      console.log("resPonse err", err);
     });
   }
 };

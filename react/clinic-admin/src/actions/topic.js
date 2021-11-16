@@ -12,7 +12,6 @@ export const getTopic = (page) => async (dispatch) => {
             page: page
         })
     } catch (err) {
-        console.log("Error topic", err);
         dispatch({
             type: 'HANDLE_ERROR',
             error: 'Some errors occured.',
