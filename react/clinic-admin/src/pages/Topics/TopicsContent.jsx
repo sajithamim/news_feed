@@ -18,6 +18,7 @@ const TopicsContent = (props) => {
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
   let history = useHistory();
   
   useEffect(() => {
@@ -36,11 +37,11 @@ const TopicsContent = (props) => {
     }
   }, [success, error])
 
-  // useEffect(() => {
-  //   if (accessToken === null  || accessToken === undefined ){
-  //     history.push("/login");
-  //   }
-  // }, [status])
+  useEffect(() => {
+    if (accessToken === null  || accessToken === undefined ){
+      history.push("/login");
+    }
+  }, [])
 
 
   const onClose = () => {

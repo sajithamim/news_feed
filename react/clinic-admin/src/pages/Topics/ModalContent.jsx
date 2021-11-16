@@ -295,6 +295,10 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["video_url"] = "Video url cannot be empty";
       }
+      if (!fields["deliverytype"]) {
+        formIsValid = false;
+        errors["deliverytype"] = "Detail page cannot be empty";
+      }
       if (fields["video_url"]) {
         var myUrl = fields.video_url;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -547,7 +551,7 @@ const ModalContent = (props) => {
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
                 <span className="close">
-                  <Popconfirm title="Are you sure to delete this imagee?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
+                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
             </section>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
@@ -593,6 +597,7 @@ const ModalContent = (props) => {
                   External URL
                 </Radio>
               </Radio.Group>
+              <div className="errorMsg">{err && err.errors && err.errors.deliverytype}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
             (<>
