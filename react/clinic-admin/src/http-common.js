@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Redirect } from 'react-router-dom';
 
 const accessToken = localStorage.getItem("accessToken");
 export const http = axios.create({
@@ -77,9 +76,6 @@ http.interceptors.response.use(
       !serverCallUrl.pathname.includes("/auth")
     ) {
       let token = await refresh();
-      if (token === undefined) {
-        return token;
-      }
       originalRequest._retry = true;
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
@@ -94,15 +90,15 @@ export const refresh = async () => {
   let accessToken = localStorage.getItem("accessToken");
   if (refreshToken && accessToken) {
     let url = `${process.env.REACT_APP_API_URL}auth/token/refresh/`;
-    axios.post(url,
-      // `${process.env.REACT_APP_API_URL}auth/token/refresh/`,
+    return axios.post(url,
       { refresh: refreshToken },
       { headers: { Authorization: `Bearer ${accessToken}` } }
     ).then((res) => {
-      console.log("resPonse", res);
+      return res;
     }).catch((err) => {
-      console.log("resPonse err", err);
+      const clearToken = localStorage.clear();
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("accessToken");
     });
   }
 };
-

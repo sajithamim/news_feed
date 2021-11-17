@@ -20,7 +20,6 @@ const initialState = {
 
 
 export default function (state = initialState, action) {
-  console.log("reducer error", action);
   const { type, payload } = action;
   switch (type) {
     case LOGIN_SUCCESS:
@@ -35,7 +34,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isLoggedIn: false,
-        error: action.payload,
+        error: action.error,
       };
     case POST_EMAIL:
       return { ...state,  success: action.payload.success};

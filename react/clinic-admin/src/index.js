@@ -13,8 +13,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-    <Offline><NoInternet /></Offline>
-      <Online><App /></Online>
+    {/* <Offline><NoInternet /></Offline> */}
+      {/* <Online><App /></Online> */}
+      <App/>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

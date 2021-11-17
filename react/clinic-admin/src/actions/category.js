@@ -12,7 +12,6 @@ export const getCategory = (page) => async (dispatch) => {
         });
     }
     catch (err) {
-        console.log("error");
     }
 }
 

@@ -67,7 +67,7 @@ function App() {
 
   useEffect(() => {
     if (accessToken === 'null' && accessToken === ' undefined') {
-      history.push("/");
+      sessionlogout()
     }
     const events = [
       'load',
