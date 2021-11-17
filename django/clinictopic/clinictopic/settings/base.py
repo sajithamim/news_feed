@@ -159,7 +159,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=120),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=300),
     # 'REFRESH_TOKEN_LIFETIME': datetime.timedelta(seconds=360),
 
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
