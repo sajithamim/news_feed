@@ -61,6 +61,7 @@ const SpecializationContent = () => {
       serialNo++;
       return items.push({
         sl_no: serialNo,
+        key: item.id,
         id: item.id,
         name: item.name,
         icon: item.icon

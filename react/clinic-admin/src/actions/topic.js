@@ -50,7 +50,6 @@ export const deleteTopic = (id, page) => async (dispatch) => {
         const deleteRes = await DataService.deleteData(deleteUrl);
         const getUrl = `topic/topic/?page=${page}`;
         const dataRes = await DataService.getData(getUrl);
-        console.log("dataRes", dataRes);
         dispatch({
             type: 'DELETE_TOPIC',
             payload: dataRes.data,

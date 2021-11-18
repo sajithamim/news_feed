@@ -46,11 +46,15 @@ function App() {
   const warn = () => {
     alert("You are idle for several minutes");
   };
-  
+
   const sessionlogout = () => {
     const clearToken = localStorage.clear();
     dispatch(logout());
   }
+ 
+  window.onunload = function(){
+    alert("The window is closing now!");
+}
 
   const destroy = () => {
     console.log('Session destroyed');

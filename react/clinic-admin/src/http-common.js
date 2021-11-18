@@ -49,6 +49,9 @@ instance.interceptors.response.use(
       !serverCallUrl.pathname.includes("/auth")
     ) {
       let token = await refresh();
+      if (token === undefined){
+        sessionlogout();
+      }
       originalRequest._retry = true;
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
@@ -76,6 +79,9 @@ http.interceptors.response.use(
       !serverCallUrl.pathname.includes("/auth")
     ) {
       let token = await refresh();
+      if (token === undefined){
+        sessionlogout();
+      }
       originalRequest._retry = true;
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
@@ -93,7 +99,8 @@ export const refresh = async () => {
     return axios.post(url,
       { refresh: refreshToken },
       { headers: { Authorization: `Bearer ${accessToken}` } }
-    ).then((res) => {
+    )
+    .then((res) => {
       return res;
     }).catch((err) => {
       const clearToken = localStorage.clear();
@@ -102,3 +109,9 @@ export const refresh = async () => {
     });
   }
 };
+
+export const sessionlogout = () => {
+  const clearToken = localStorage.clear();
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("accessToken");
+}
