@@ -17,10 +17,11 @@ from topics.models import (UserCategory)
 from .utils import Util
 import requests
 import datetime
+import random
 from .emails import send_email_from_app_otp
 
 load_dotenv(BASE_DIR+str("/.env"))
-import random
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -153,14 +154,7 @@ class Signinserializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    # email = serializers.EmailField(max_length=255, min_length=3)
     phone = serializers.CharField(max_length=20,min_length=10)
-    # phone = serializers.CharField(max_length=100,min_length=3,required=False)
-
-    # password = serializers.CharField(
-    #     max_length=68, min_length=6, write_only=True)
-    # username = serializers.CharField(
-    #     max_length=255, min_length=3, read_only=True)
     otp = serializers.CharField(max_length=20)
     tokens = serializers.SerializerMethodField()
     speccount = serializers.SerializerMethodField()
@@ -196,17 +190,15 @@ class LoginSerializer(serializers.ModelSerializer):
         filtered_user_by_email = User.objects.filter(phone=phone)
         if not filtered_user_by_email:
             raise AuthenticationFailed('user not found!')
-        userobj = User.objects.get(phone = phone)
-        userobj.phone_verified = True
-        userobj.is_verified = True
-        userobj.save()
-
-        # print(filtered_user_by_email)
         for filtered_user_by_email in filtered_user_by_email:
             email  = filtered_user_by_email.email
             user_otp = filtered_user_by_email.otp
         if int(otp) != int(user_otp):
             raise AuthenticationFailed('Invalid otp, try again')
+        userobj = User.objects.get(phone = phone)
+        userobj.phone_verified = True
+        userobj.is_verified = True
+        userobj.save()
         # print(user_otp)
         # print(otp)
         user = auth.authenticate(email=email, password=password)

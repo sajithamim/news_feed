@@ -70,6 +70,17 @@ class GetSpecialization(serializers.ModelSerializer):
     #     # print(user_id)
     #     return UserSpecialization.objects.filter(user_id=user_id,spec_id=obj.id).count()
 
+class GetSpecializationandsubAdmin(serializers.ModelSerializer):
+    id =  serializers.ReadOnlyField()
+    specialization_id = GetSubspecializationArraySerializer(many=True)
+    created_at =  serializers.ReadOnlyField()
+    updated_at =  serializers.ReadOnlyField()
+    # speccount = serializers.SerializerMethodField()
+    # categorycount = serializers.SerializerMethodField()
+    class Meta:
+        model = Specialization
+        fields = ['id','name','icon','created_at','updated_at','specialization_id']
+
 
 class GetSpecializationandsub(serializers.ModelSerializer):
     id =  serializers.ReadOnlyField()

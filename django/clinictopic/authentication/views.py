@@ -228,12 +228,20 @@ class LoginAPIView(generics.GenericAPIView):
 
     def post(self, request):
         now = datetime.datetime.utcnow()
-        user = User.objects.get(phone=request.data['phone'])
+        try:
+            user = User.objects.get(phone=request.data['phone'])
+        except User.DoesNotExist:
+            response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'Phone does not exists!',
+                }
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
         otpvallid = user.optvalid   
         if now.strftime("%Y-%m-%d %H:%M:%S") > otpvallid.strftime("%Y-%m-%d %H:%M:%S"):
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
-                'success' : 'True',
+                'success' : 'False',
                 'status code' : status_code,
                 'message': 'otp expired!',
                 }

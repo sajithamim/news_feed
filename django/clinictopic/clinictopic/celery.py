@@ -12,7 +12,7 @@ app = Celery('clinictopic')
 app.conf.beat_schedule = {
     'backup-every-day': {
         'task': 'poll.tasks.db_backup',
-        'schedule': crontab(hour=21,minute=21),
+        'schedule': crontab(hour=11,minute=42),
     } 
 }
 

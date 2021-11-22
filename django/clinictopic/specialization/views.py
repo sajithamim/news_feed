@@ -5,7 +5,7 @@ from .serializers import (GetAudienceSerializer,userTypeSerializer,
 UserSpecializationSerializer,UserSubSpecialization,GetSpecializationseriallizer,
 GetSubspecializationSerializer,SpecializationpicSerializer,SubSpecializationpicSerializer,
 GetSpecializationandsub,AdvisorySerializer,QuizSerializer,PostSubspecializationSerializer,QuizgetSerializer,
-GetSpecializationquiz)
+GetSpecializationquiz,GetSpecializationandsubAdmin)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -17,7 +17,7 @@ from rest_framework import parsers
 from authentication.models import User
 from topics.models import UserCategory,TopicSubSpecialization
 from django.http import Http404
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -27,7 +27,8 @@ class GetSpecializations(APIView):
     @csrf_exempt
     def get(self,request):
         try:
-            spec = Specialization.objects.all().order_by('name')
+            user_type = self.request.user.is_superuser
+            spec = Specialization.objects.filter((~Q(specialization_id__id = None))).order_by('name')
             serializers = GetSpecializationandsub(spec,many=True,context = {'request':request})
             status_code = status.HTTP_200_OK
             categorycount = UserCategory.objects.filter(user_id=request.user).count()
