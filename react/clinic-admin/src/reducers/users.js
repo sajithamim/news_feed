@@ -14,8 +14,13 @@ const initialState = {
     success: '',
     error: '',
 };
-
+const sessionout = () => {
+  const clearToken = localStorage.clear();
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("accessToken");
+}
 const users = (state = initialState, action) => {
+    console.log("action,", action);
     switch (action.type) {
         case 'GET_USER':
             return { ...state, userList: action.payload, addUser: false , updateUser: false, page: action.page }
@@ -52,6 +57,8 @@ const users = (state = initialState, action) => {
             return { ...state, error: action.message}
         case 'RESET_DATA':
             return { ...state , success: '', error: ''}
+        case 'SESSION_OUT':
+            return sessionout(state, action)
         case 'DELETE_USER_PUBLICATION':
             return { ...state, publicationList: Object.assign({}, state.publicationList, { data: state.publicationList && state.publicationList.data && state.publicationList.data.filter(item => item.id !== action.payload) }) }
         default:

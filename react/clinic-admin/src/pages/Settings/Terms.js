@@ -12,6 +12,7 @@ const Terms = () => {
     useEffect(() => {
         dispatch(getTerms())
         .then(res => {   
+            console.log("res",res);
             if(res.data[0]) {   
                 setId(res.data[0].id);
                 setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].tos))));

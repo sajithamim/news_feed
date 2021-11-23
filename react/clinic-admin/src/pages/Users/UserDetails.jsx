@@ -4,7 +4,7 @@ import { Form, Input, Checkbox , Table, Col, Row, Card, Tabs, DatePicker, Button
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import { getUserCategory, getUserSpecialization, getUserDetails, postUserProfile, getUserProfile, getQualifications, putProfilePic, getPublicationList, deleteUserPublication } from "../../actions/users";
 import Select from 'react-select';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
@@ -73,19 +73,22 @@ const UserDetails = () => {
               if (res) {
                 // to get the qualification details of user
                 const getUserQualificationList = []
-                
+                console.log("getUserQualificationList", getUserQualificationList);
                 res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                   return getUserQualificationList.push(
                     { value: item, label: item }
                   )
                 })
                 let result = res.data.data;
-                setState({ ...state, id: result.user_id, media: result.media, qualification: getUserQualificationList, qualifications: result.qualifications, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, current: result.current, start_date: result.start_date, end_date: result.end_date })
+                setState({ ...state, id: result.user_id, media: result.media, qualification: getUserQualificationList, qualifications: result.qualifications, about: result.about, experience: result.experience, empolyment_value: { value: result.empolyment_type, label: result.empolyment_type }, company_name: result.company_name, location: result.location, industry: result.industry, description: result.description, current: result.current, start_date: result.start_date, end_date: result.end_date, user_id: result.user_id })
               } else {
                 setState({ ...state })
               }
             })
         }
+      }).catch((err) => {
+        console.log("error", error);
+        dispatch({type: 'HANDLE_ERROR'})
       })
     dispatch(getQualifications());
   }, [addPublicationData, updatePublicationData])
@@ -101,7 +104,7 @@ const UserDetails = () => {
   });
 
   const qualificationList = []
-  qualifications && qualifications.results && qualifications.results.map(item => {
+  qualifications && qualifications.map(item => {
     return qualificationList.push(
       { value: item.name, label: item.name }
     )
@@ -158,18 +161,6 @@ const UserDetails = () => {
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-  // const handleFileChange = (info) => {
-  //   if (info.file.status === 'uploading') {
-  //     setLoading(true);
-  //   }
-  //   if (info.file.status === 'done') {
-  //     // Get this url from response in real world.
-  //     getBase64(info.file.originFileObj, imageUrl => {
-  //       setImageUrl(imageUrl);
-  //       setLoading(false);
-  //     });
-  //   }
-  // };
 
   const handleChange = (e) => {
     const data = [];
@@ -186,9 +177,6 @@ const UserDetails = () => {
     const data = [];
     item.map(item => {
       data.push(item.label)
-      // if (item.label === "Other") {
-      //   setActiveInput(true);
-      // }
       item.label === "Other" ?  setActiveInput(true) : setActiveInput(false);
     })
     setState({ ...state, qualification: item, qualifications: data });
@@ -331,6 +319,7 @@ const UserDetails = () => {
     e.target.checked === true ? setState({...state ,current: true}) : setState({...state ,current: false})
   }
   const handleUserProfileSubmit = () => {
+    console.log("state", state);
     if (handleValidation()) {
       let newData = state;
       delete newData["empolyment_value"];

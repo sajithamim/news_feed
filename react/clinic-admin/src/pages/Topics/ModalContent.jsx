@@ -34,7 +34,7 @@ const ModalContent = (props) => {
       setState(props.editData)
     }
     else {
-      setState({topic_subspec: [], imageFormData: []});
+      setState({ topic_subspec: [], imageFormData: [] });
     }
   }, [props.editData])
 
@@ -77,12 +77,12 @@ const ModalContent = (props) => {
 
   const handleMultipleFile = (e) => {
     var numFiles = e.target.files.length;
-    const errors = {...err};
+    const errors = { ...err };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
       var file = e.target.files[i];
       if (!file.name.match(/\.(jpg|jpeg|png|gif|jfif|tiff|raw|bmp)$/)) {
         errors["multi_image"] = "Please select valid image.";
-        setErrors({errors});
+        setErrors({ errors });
         setFormSubmit(false);
       } else {
         setFormSubmit(true);
@@ -113,7 +113,7 @@ const ModalContent = (props) => {
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
-    let errors = {...err};
+    let errors = { ...err };
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
       setErrors({ errors });
@@ -129,7 +129,7 @@ const ModalContent = (props) => {
   const handleFileChangeBack = (e) => {
     setState({ ...state, pdfUrlBack: e.target.files[0] });
     const pdfBackFile = e.target.files[0];
-    let errors = {...err};
+    let errors = { ...err };
     if (pdfBackFile.name.match(/\.(pdf)$/) == null) {
       errors["pdfsecond"] = "Please select valid pdf";
       setErrors({ errors });
@@ -145,7 +145,7 @@ const ModalContent = (props) => {
   const handleFileChangeSecond = (e) => {
     setState({ ...state, pdfUrlSecond: e.target.files[0] });
     const pdfSecondFile = e.target.files[0];
-    let errors = {...err};
+    let errors = { ...err };
     if (pdfSecondFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf2"] = "Please select valid pdf";
       setErrors({ errors });
@@ -161,7 +161,7 @@ const ModalContent = (props) => {
   const handleFileChangeThird = (e) => {
     setState({ ...state, pdfUrlThird: e.target.files[0] });
     const pdfThirdFile = e.target.files[0];
-    let errors = {...err};
+    let errors = { ...err };
     if (pdfThirdFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf3"] = "Please select valid pdf";
       setErrors({ errors });
@@ -257,7 +257,7 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
-      if(props.drawerType === 'edit' && fields["old_image"].length <= 0 && fields["imageFormData"].length <= 0) {
+      if (props.drawerType === 'edit' && fields["old_image"].length <= 0 && fields["imageFormData"].length <= 0) {
         formIsValid = false;
         errors["multi_image"] = "Image cannot be empty";
       }
@@ -315,7 +315,7 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["pdf3"] = " PDF cannot be empty";
       }
-      if (state.deliverytype === 'external'  && fields["external_url3"]) {
+      if (state.deliverytype === 'external' && fields["external_url3"]) {
         var myUrl = fields.external_url3;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         if (res === null) {
@@ -456,7 +456,7 @@ const ModalContent = (props) => {
     },
     showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
-  
+
   return (
     <div>
       <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
@@ -546,13 +546,17 @@ const ModalContent = (props) => {
               </Form.Item></>) : null
           }
           {state.format === '2' ?
-            (<Form.Item label="Images"><section className="clearfix">{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
-              <span className="close">
-                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
-                <span className="close">
-                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-            </section>
+            (<Form.Item label="Images"><div>{state.old_image && state.old_image.map((item) => (<div className="img-wrap">
+              <img key={item} src={item.image} alt="" />
+              <div className="close">
+                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+            </div>))}
+              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
+                <img key={url} src={url} alt="" />
+                <div className="close">
+                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+              </div>))}
+            </div>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
