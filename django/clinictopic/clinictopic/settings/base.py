@@ -30,7 +30,7 @@ DEBUG = True
 
 #ALLOWED_HOSTS = ['*']
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ')
-CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
+    # 'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -99,7 +100,7 @@ ROOT_URLCONF = 'clinictopic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,7 +154,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
 }
 
@@ -204,6 +205,8 @@ AUTH_KEY ="362791AzG86a8K60cc822eP1"
 MEDIA_DIR = os.path.join(BASE_DIR,"media")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+APPLICATION_EMAIL = 'CLINICTOPICS<'+os.environ.get("EMAIL_HOST_USER")+'>'
+DEFAULT_FROM_EMAIL = 'CLINICTOPICS<'+os.environ.get("EMAIL_HOST_USER")+'>'
 
 #STATICFILES_DIRS = (
 #    "/var/www/static/",
@@ -220,3 +223,5 @@ DATABASES = {
         'PORT': os.environ.get("DB_PORT"),
     }
 }
+
+

@@ -1,37 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
-import { Form, Button, Input, Modal, message } from "antd";
-import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Form, Button, Input } from "antd";
 import "./Drawer.css";
-import { postCategory } from "../../actions/category";
-import { updateCategory } from "../../actions/category";
-
-
 
 const DrawerContent = (props) => {
-  const dispatch = useDispatch();
-
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-
+  const ref = useRef();
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
-
   const [state, setState] = useState(props.editData);
-  const [errors, setErrors] = useState({ title: '' });
-
-  useEffect(() => {
-    setState(props.editData)
-    if(props.editData.image && props.editData.image){
-      setImgData(props.editData.image);
-    }
-  }, [props.editData , props.editData.image])
-
-  const [previewTitle, setPreviewTitle] = useState("");
+  const [inputKey, setInputKey] = useState('');
+  const [errors, setErrors] = useState({});
   const [formSubmit, setFormSubmit] = useState(false);
 
-  const handleCancel = () => setPreviewVisible(false);
+  useEffect(() => {
+    setState(props.editData);
+    setErrors({});
+    if (props.drawerType === 'edit' && props.editData.image && props.editData.image) {
+      setImgData(props.editData.image);
+    }
+    else {
+      // document.getElementById('uploadFile').value = null;
+      setImgData("");
+      setImage("");
+    }
+  }, [props.editData, props.editData.image])
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -41,7 +32,7 @@ const DrawerContent = (props) => {
     setImage(info.target.files[0]);
     const imageFile = info.target.files[0];
     const newErrorsState = { ...errors };
-    if (!imageFile.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!imageFile.name.match(/\.(jpg|jpeg|png|gif|jfif|BMP|BAT|Exif)$/)) {
       newErrorsState.image = 'Please select valid image.';
       setErrors(newErrorsState);
       setFormSubmit(!formSubmit);
@@ -55,90 +46,78 @@ const DrawerContent = (props) => {
       newErrorsState.image = '';
       setErrors({});
       setFormSubmit(!formSubmit);
+      setInputKey(Date.now());
     }
   }
 
-    const handleSubmit = (e) => {
-      if (formValidation()) {
-        setErrors({});
-        let newData = state;
-        const id = state.id;
-        let form_data = null;
-        console.log('image.name', image.name)
-        if (image && image.name) {
-          form_data = new FormData();
-          form_data.append('image', image, image.name);
-        }
-        
-        if (props.drawerType === 'edit') {
-          delete newData["sl_no"];
-          delete newData["id"];
-          delete newData["image"];
-          
-          dispatch(updateCategory(id, newData, form_data))
-            .then(() => {
-              message.success('Category edited successfully')
-            });
-        }
-        else {
-          console.log("hghhg");
-          dispatch(postCategory(state, form_data))
-          .then(() => {
-            setState({});
-            message.success('Category added successfully')
-          });
-        }
-      }
+  const formValidation = () => {
+    let fields = state;
+    let errors = {};
+    let formIsValid = true;
+    if (!fields["title"]) {
+      formIsValid = false;
+      errors["title"] = "Title is required"
     }
-
-    const formValidation = () => {
-      let entities = state;
+    if (props.drawerType === 'add' && image.name === undefined) {
+      formIsValid = false;
+      errors["image"] = "Image is required"
+    }
+    if (props.drawerType === 'edit' && props.editData.image === undefined) {
+      formIsValid = false;
+      errors["image"] = "Image is required"
+    }
+    setErrors({ errors });
+    return formIsValid;
+  }
+  
+  const handleSubmit = (e) => {
+    if (formValidation()) {
+      setErrors({});
+      let newData = state;
+      const id = state.id;
+      let form_data = null;
       const newErrorsState = { ...errors };
-      if (!entities["title"]) {
-        newErrorsState.title = 'Name cannot be empty';
+      if (image && image.name) {
+        form_data = new FormData();
+        form_data.append('image', image, image.name);
+      }
+      else if (props.drawerType === 'add' && image.name === undefined) {
+        newErrorsState.image = 'Image cannot be empty';
         setErrors(newErrorsState);
         return false;
       }
-      setErrors({});
-      return true;
+        delete newData["sl_no"];
+        delete newData["id"];
+        delete newData["image"];
+        props.onFormSubmit(id, state, form_data);
     }
+  }
 
-    return (
-      <Form name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 10,
-        }} onFinish={handleSubmit}>
-        <div>
-          <div className="modalStyle">
-            <Form.Item label="Name">
-              <Input name="title" onChange={handleChange} value={state.title} />
-              <div className="errorMsg">{errors.title}</div>
-            </Form.Item>
-
-            <Form.Item label="Image">
-              {imgData ? (<img className="playerProfilePic_home_tile" width="128px" height="128px" alt={imgData} src={imgData} />) : null}
-              <Input type="file"
-                id="image"
-                accept="image/png, image/jpeg" onChange={handleFileChange} />
-              <div className="errorMsg">{errors.image}</div>
-            </Form.Item>
-          </div>
+ 
+ 
+  return (
+    <Form name="basic" className="categoryForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
+      <div>
+        <div className="modalStyle">
+          <Form.Item label="Name">
+            <Input name="title" onChange={handleChange} value={state.title} />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
+          </Form.Item>
+          <Form.Item label="Image">
+            {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
+            <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" key={inputKey} onChange={handleFileChange}  />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
+          </Form.Item>
         </div>
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
-          <Button type="primary" htmlType="submit" >
-            Save
-          </Button>
-        </Form.Item>
-      </Form>
-    );
-  };
+      </div>
+      <Form.Item wrapperCol={{ offset: 10, span: 3 }}>
+        <Button type="primary" htmlType="submit" >
+          Save
+        </Button>
+        
+      </Form.Item>
+    </Form>
+  );
+};
 
-  export default DrawerContent;
+export default DrawerContent;

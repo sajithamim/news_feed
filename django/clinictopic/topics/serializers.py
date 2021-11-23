@@ -1,14 +1,14 @@
 # from django.clinictopic.poll.models import UserPoll
+from sys import setswitchinterval
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite)
-from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization)
+from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Image,Favourite,TopicSubSpecialization)
+from specialization.serializers import (GetSpecializationseriallizer,GetSpecialization,GetSubspecializationSerializer)
 from authentication.models import User
 from authentication.serializers import UserProfileSerializer
 from poll.models import UserPoll
 from datetime import datetime, tzinfo
-
 # from poll.serializers import TopicPollSerializer
 # from poll.serializers import TopicPollSerializer
 from poll.models import TopicPoll,PollOption
@@ -68,6 +68,17 @@ class TopicSpecializationSerializer(serializers.ModelSerializer):
         response['spec_id'] = GetSpecialization(instance.spec_id).data
         return response
 
+class TopicsubSpecializationSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    class Meta:
+        model = TopicSubSpecialization
+        fields = ['id','subspec_id']
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['subspec_id'] = GetSubspecializationSerializer(instance.subspec_id).data
+        return response
+
 class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -89,18 +100,17 @@ class GetTopicFavouriteserializer(serializers.ModelSerializer):
         fields=['id']
 
 class GetTopicSeriaizer(serializers.ModelSerializer):
-    # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
-    # images = ImageSerializer(many=True,read_only=True)
-    # poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
-    # favourite_topic = GetTopicFavouriteserializer(many=True,read_only=True)
-    # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
-    # topic_topic = TopicSpecializationSerializer(many=True)
-    # favourite = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
+        
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['category_id'] = CategorySerializer(instance.category_id).data
+        return response
+
 
 class TopicFavouriteserializer(serializers.ModelSerializer):
     # favourite = serializers.SerializerMethodField()
@@ -112,46 +122,56 @@ class TopicFavouriteserializer(serializers.ModelSerializer):
 class TopicSeriaizer(serializers.ModelSerializer):
     # images = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     # images = ImageSerializer(many=True,read_only=True)
-    poll_topic = GetTopicpollSerializers(many=True,read_only=True)
+    # poll_topic = GetTopicpollSerializers(many=True,read_only=True)
     topic_image = ImageSerializer(many=True, read_only=True)
     favourite_topic = TopicFavouriteserializer(many=True,read_only=True)
-    author = UserProfileSerializer(read_only=True)
-    email = serializers.EmailField(required=False,allow_null=True,allow_blank=True,write_only=True)
+    # author = UserProfileSerializer(read_only=True)
+    # email = serializers.EmailField(required=False,allow_null=True,allow_blank=True,write_only=True)
     # favourite = serializers.SerializerMethodField()
     pdf =serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
     pdfsecond = serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
-    topic_topic = TopicSpecializationSerializer(many=True)
+    # topic_topic = TopicSpecializationSerializer(many=True)
+    topic_subspec = TopicsubSpecializationSerializer(many=True)
     # favourite = serializers.SerializerMethodField()
     published = serializers.SerializerMethodField()
+    externalurltype = serializers.SerializerMethodField()
+    isadd = serializers.SerializerMethodField()
     class Meta:
         model = Topics
         fields = '__all__'
+    def get_isadd(self,obj):
+        return False
+    def get_externalurltype(self,obj):
+        etype = ""
+        formattype = obj.format
+        url = obj.external_url
+        if formattype=='1':
+            etype='pdf'
+        else:
+            if  url=="":
+                etype=""
+            elif str(url)[-4:]=='.pdf':
+                etype="pdf"
+            else:
+                etype="external"
+        return etype
+
 
     def get_published(self, obj):
         now = datetime.utcnow()
-        # print("now",now)
         publishtime = obj.publishingtime
-        # print("p",publishtime)
-        # if publishtime>now:
-        #     print("sdf")
-        if publishtime.replace(tzinfo=None)<=now.replace(tzinfo=None):
+        if publishtime.strftime("%Y-%m-%d %H:%M:%S")<=now.strftime("%Y-%m-%d %H:%M:%S"):
             published = 1
         else:
             published = 0
         return published
-    # def get_car_types(self, instance):
-    #     # Filter using the Car model instance and the CarType's related_name
-    #     # (which in this case defaults to car_types_set)
-    #     ypes_instances = instance.favourite_set.filter(brand="Toyota")
-    #     return CarTypesSerializer(car_types_instances, many=True).data
-
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response['category_id'] = CategorySerializer(instance.category_id).data
         return response
 
     def create(self, validated_data):
-        topic_spec_data = validated_data.pop('topic_topic')
+        topic_spec_data = validated_data.pop('topic_subspec')
         if 'email' in validated_data:
             email = validated_data['email']
             del validated_data['email']
@@ -160,7 +180,7 @@ class TopicSeriaizer(serializers.ModelSerializer):
         else:
             topic = Topics.objects.create(**validated_data)
         for data in topic_spec_data:
-            topic_spec = TopicSpecialization.objects.create(topic_id = topic, **data)
+            topic_spec =TopicSubSpecialization.objects.create(topic_id = topic, **data)
         return topic
 
     def update(self, instance, validated_data):
@@ -176,9 +196,9 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
             if 'format' in validated_data:
                 instance.format = validated_data.get('format', instance.format)
-            if 'email' in validated_data:
-                author = User.objects.get(email=validated_data['email'])
-                instance.author = author
+            # if 'email' in validated_data:
+            #     author = User.objects.get(email=validated_data['email'])
+            #     instance.author = author
             instance.deliverytype='pdf'
             instance.source_url=''
             instance.external_url=''
@@ -201,13 +221,14 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.format = validated_data.get('format', instance.format)
             if 'source_url' in validated_data:
                 instance.source_url = validated_data.get('source_url', instance.source_url)
-            if 'email' in validated_data:
-                author = User.objects.get(email=validated_data['email'])
-                instance.author = author
+            # if 'email' in validated_data:
+            #     author = User.objects.get(email=validated_data['email'])
+            #     instance.author = author
             instance.deliverytype='external'
             instance.media_type ='image'
             instance.video_url=''
             instance.pdf=''
+            instance.pdfsecond=''
         if validated_data['format'] =='3':
             image =Image.objects.filter(topic_id=instance).delete()
             instance.source_url=''
@@ -227,11 +248,12 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.source_url = validated_data.get('source_url', instance.source_url)
             if 'video_url' in validated_data:
                 instance.video_url = validated_data.get('video_url', instance.video_url)
-            if 'email' in validated_data:
-                author = User.objects.get(email=validated_data['email'])
-                instance.author = author
+            # if 'email' in validated_data:
+            #     author = User.objects.get(email=validated_data['email'])
+            #     instance.author = author
             instance.deliverytype='external'
             instance.media_type ='video'
+            instance.pdfsecond=''
             # instance.video_url=''
             instance.pdf=''
         instance.save()
@@ -240,10 +262,10 @@ class TopicSeriaizer(serializers.ModelSerializer):
         # # I don't know how to get the right InvoiceItem object, because in the validated
         # # data I get the items queryset, but without an id.
 
-        items = validated_data.get('topic_topic')
-        inv_item = TopicSpecialization.objects.filter(topic_id = instance).delete()
+        items = validated_data.get('topic_subspec')
+        inv_item = TopicSubSpecialization.objects.filter(topic_id = instance).delete()
         for item in items:
-            topic_spec = TopicSpecialization.objects.create(topic_id = instance, **item)
+            topic_spec = TopicSubSpecialization.objects.create(topic_id = instance, **item)
         return instance
 
 
@@ -279,125 +301,26 @@ class userCategorySerializer(serializers.ModelSerializer):
         return UserCategory.objects.create(**validated_data)
 
 
-
-
-
-
-
-
-# class PostSerializer(serializers.ModelSerializer):
-#     images = ImageSerializer(many=True)
-#     pdf = serializers.FileField(max_length=None,use_url=True, allow_null=True, required=False)
-
-#     class Meta:
-#         model = Topics
-#         fields = '__all__'
-
-#     def to_representation(self, instance):
-#         response = super().to_representation(instance)
-#         response['category_id'] = CategorySerializer(instance.category_id).data
-#         return response
-
-#     def create(self, validated_data):
-#         """
-#         Handle writable nested serializer to create a new post.
-#         :param validated_data: validated data, by serializer class's validate method
-#         :return: updated Post model instance
-#         """
-#         # Handle the case to avoid new Post instance creation if Image model data have any errors
-#         data = validated_data.copy()
-#         data.pop('images')  # deleting 'images' list as it is not going to be used
-
-#         '''
-#         Fetching `images` list of image files explicitly from context.
-#         Because using default way, value of `images` received at serializers from viewset was an empty list.
-#         However value of `images` in viewset were OK.
-#         Hence applied this workaround.   
-#         '''
-#         images_data = self.context.get('request').data.pop('images')
-#         # print(image_data)
-#         try:
-#             topic = Topics.objects.create(**data)
-#         except TypeError:
-#             msg = (
-#                     'Got a `TypeError` when calling `Topics.objects.create()`.'
-#             )
-#             raise TypeError(msg)
-#         try:
-#             for image_data in images_data:
-#                 # Image.objects.create(post=post, **image_data)
-#                 image, created = Image.objects.get_or_create(image=image_data)
-#                 topic.images.add(image)
-
-#             return topic
-#         except TypeError:
-#             topic = Topics.objects.get(pk=topic.id)
-#             topic.delete()
-#             msg = (
-#                     'Got a `TypeError` when calling `Image.objects.get_or_create()`.'
-#             )
-#             raise TypeError(msg)
-
-#         return post
-
-#     def update(self, instance, validated_data):
-#         """
-#         Handle writable nested serializer to update the current post.
-#         :param instance: current Post model instance
-#         :param validated_data: validated data, by serializer class's validate method
-#         :return: updated Post model instance
-#         """
-#         # TODO: change the definition to make it work same as create()
-
-#         '''
-#         overwrite post instance fields with new data if not None, else assign the old value
-#         '''
-#         instance.topic_audience = validated_data.get('topic_audience', instance.topic_audience)
-#         instance.category_id = validated_data.get('category_id', instance.category_id)
-#         instance.title = validated_data.get('title', instance.title)
-#         instance.topic_audience = validated_data.get('topic_audience', instance.topic_audience)
-#         instance.description = validated_data.get('description', instance.description)
-#         instance.deliverytype = validated_data.get('deliverytype', instance.deliverytype)
-#         instance.external_url = validated_data.get('external_url', instance.external_url)
-#         instance.media_type = validated_data.get('media_type', instance.media_type)
-#         instance.video_url = validated_data.get('video_url', instance.video_url)
-#         instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
-#         # instance.updated_at = validated_data.get('updated_at', instance.updated_at)  # no need to update; auto_now;
-
-#         try:
-
-#             '''
-#             Fetching `images` list of image files explicitly from context.
-#             Because using default way, value of `images` received at serializers from viewset was an empty list.
-#             However value of `images` in viewset were OK.
-#             Hence applied this workaround.   
-#             '''
-#             images_data = self.context.get('request').data.pop('images')
-#         except:
-#             images_data = None
-
-#         if images_data is not None:
-#             image_instance_list = []
-#             for image_data in images_data:
-#                 image, created = Image.objects.get_or_create(image=image_data)
-#                 image_instance_list.append(image)
-
-#             instance.images.set(image_instance_list)
-
-#         instance.save()  # why? see base class code; need to save() to make auto_now work
-#         return instance
-
 class Categorypicserializer(serializers.ModelSerializer):
+    # image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = Categoeries
         fields =['image']
 
+    # def get_image(self, obj):
+    #     request = self.context.get('request')
+    #     photo_url = obj.image.url
+    #     print(request.build_absolute_uri(photo_url))
+    #     return request.build_absolute_uri(photo_url)
+
 class Topicpdfserializer(serializers.ModelSerializer):
+    # pdf = serializers.FileField()
     class Meta:
         model =Topics
         fields = ['pdf']
 
 class TopicSecondpdfserializer(serializers.ModelSerializer):
+    # pdfsecond = serializers.FileField()
     class Meta:
         model =Topics
         fields = ['pdfsecond']
@@ -434,17 +357,11 @@ class userFavouriteSerializer(serializers.ModelSerializer):
 
     def validate(self,attrs):
         user_id = attrs.get('user_id','')
-        # category_id = attrs.get('category_id','')
-        # print(category_id.id)
-        # user_
         user_data = User.objects.filter(email=user_id)
         if not user_data:
             raise serializers.ValidationError("invalid user!")
         return attrs
-
-    
     def create(self, validated_data):
-        # print (validated_data)
         return Favourite.objects.create(**validated_data)
 
 
@@ -453,17 +370,6 @@ class UpdateTopicSpecializationSerializer(serializers.ModelSerializer):
     class Meta:
         model = TopicSpecialization
         fields = ['id','spec_id','topic_id']
-
-    # def to_representation(self, instance):
-    #     response = super().to_representation(instance)
-    #     response['spec_id'] = GetSpecialization(instance.spec_id).data
-    #     return response
-
-    # def to_representation(self, instance):
-    #     response = super().to_representation(instance)
-    #     response['topic_id'] = GetTopicSeriaizer(instance.topic_id).data
-    #     return response
-
 
 class authorserializer(serializers.ModelSerializer):
         # user = UserSerializer(read_only=True)
@@ -477,3 +383,20 @@ class authorserializer(serializers.ModelSerializer):
             print(user)
             topic = Topics.objects.update(author=user)
             return topic
+
+
+class TopicSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topics
+        fields = ['id','title']
+    # def to_representation(self, instance):
+    #     response = super().to_representation(instance)
+    #     response['category_id'] = CategorySerializer(instance.category_id).data
+    #     return response
+#search topic suggestion
+class categoryTopicSerializer(serializers.ModelSerializer):
+    topic_category =TopicSearchSerializer(many=True)
+    class Meta:
+        model = Categoeries
+        fields = ['id','title','topic_category']
+

@@ -11,3 +11,13 @@
     text-align: right;
     margin-right: 15px;
   }
+
+  .errorMsg{
+    margin-left: 50px;
+  }
+  
+  .playerProfilePic_home_tile{
+    margin-left: 50px;
+    width: 128px;
+    height: 128px;
+  }

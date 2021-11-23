@@ -8,6 +8,7 @@ from clinictopic.settings.base import BASE_DIR
 from specialization.models import (UserSpecialization)
 from topics.models import (UserCategory)
 from rest_framework import status
+import datetime
 
 load_dotenv(BASE_DIR+str("/.env"))
 
@@ -46,14 +47,18 @@ def register_social_user(provider, user_id, email, name):
 
         else:
             raise AuthenticationFailed(
-                detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
+                # detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
+                detail = 'User with this email already exists!.Please continue your login using '+ filtered_user_by_email[0].auth_provider)
 
     else:
         user = {
             'username': generate_username(name), 'email': email,'phone':None,'otp':None,
-            'password': os.environ.get('SOCIAL_SECRET')}
+            'password': os.environ.get('SOCIAL_SECRET'),
+            'name':'',
+            'optvalid':datetime.datetime.now()}
         user = User.objects.create_user(**user)
         user.is_verified = True
+        user.email_verifield=True
         user.auth_provider = provider
         user.save()
         new_user = authenticate(

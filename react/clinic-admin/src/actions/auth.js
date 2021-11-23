@@ -3,13 +3,13 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   POST_EMAIL,
+  POST_EMAIL_ERROR
 } from "./type";
 
 import AuthService from "../services/auth.service";
 
 export const login = (email, password) => (dispatch) => {
   return AuthService.login(email, password).then(
-
     (res) => {
       localStorage.setItem("refreshToken", res.data.tokens.refresh);
       localStorage.setItem("accessToken", res.data.tokens.access);
@@ -24,6 +24,7 @@ export const login = (email, password) => (dispatch) => {
     (error) => {
       dispatch({
         type: LOGIN_FAIL,
+        error: "Network Error",
         payload: error.response.data.detail
       });
     }
@@ -40,12 +41,31 @@ export const logout = () => (dispatch) => {
 export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
-      console.log("response" , res);
-      dispatch({
+      if(res){
+        dispatch({
           type: POST_EMAIL,
           payload: res.data,
       })
+      }else{
+        dispatch({
+          type: POST_EMAIL_ERROR,
+      })
+      }
   } catch (err) {
-      console.log(err);
+    
+  }
+}
+
+export const passwordReset = (state) => async (dispatch) => {
+  try{
+    const res = await AuthService.passwordReset(state);
+    dispatch({
+      type: 'PASSWORD_RESET',
+      payload: res.data,
+    })
+    return res;
+  }catch(err) {
+    console.log("error" , err);
+    return err;
   }
 }

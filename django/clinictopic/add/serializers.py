@@ -1,8 +1,8 @@
-from os import write
+from os import read, write
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import AddSpecialization,Ads,AddUser
+from .models import AddSpecialization,Ads,AddUser,AllUserAdd
 from specialization.serializers import (GetSpecialization)
 from authentication.models import User
 from authentication.serializers import UserProfileSerializer
@@ -18,6 +18,19 @@ class AddSpecializationSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['spec_id'] = GetSpecialization(instance.spec_id).data
         return response
+
+class AllUserAddSerializer(serializers.ModelSerializer):
+    addimage = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    class Meta:
+        model=AllUserAdd
+        fields ='__all__'
+
+
+class AllUseraddImage(serializers.ModelSerializer):
+    class Meta:
+        model = AllUserAdd
+        fields = ['addimage']
+
 
 class AddSerializer(serializers.ModelSerializer):
     addimage = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
@@ -74,3 +87,12 @@ class AddUserSelectedSerializer(serializers.ModelSerializer):
     class Meta:
         model = AddUser
         fields = ['user_id']
+
+class SelectedBannerSerializer(serializers.ModelSerializer):
+    banner=AddSerializer(many=True,read_only=True)
+    #banner=serializers.StringRelatedField(many=True,read_only=True)
+    class Meta:
+        model=AddUser
+        fields=['adsid','banner']
+        depth=1
+        level=1

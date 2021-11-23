@@ -3,14 +3,14 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
-
 from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.postgres.fields import ArrayField
 
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, username, email,phone,otp,password=None):
+    def create_user(self, username,email,phone,otp,name,optvalid,password=None):
         if username is None:
             raise TypeError('Users should have a username')
         if email is None:
@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
         #     raise TypeError('Users should have a Phone number')
         # if otp is None:
         #     raise TypeError('Users should have a otp')
-        user = self.model(username=username, email=self.normalize_email(email),phone=phone,otp=otp)
+        user = self.model(username=username, email=self.normalize_email(email),phone=phone,otp=otp,name=name,optvalid=optvalid)
         user.set_password(password)
         user.save()
         return user
@@ -96,3 +96,48 @@ class User(AbstractBaseUser, PermissionsMixin):
             'access': str(refresh.access_token)
         }
 
+
+class Profile(models.Model):
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,related_name="profile_user")
+    about = models.CharField(max_length=10000,blank=True,null=True)
+    experience=models.CharField(max_length=1000,blank=True,null=True)
+    EMP_CHOICES = (
+        ('Full-time', 'Full-time'),
+        ('Part-time', 'Part-time'),
+        ('Self-employed', 'Self-employed'),
+        ('Freelance', 'Freelance'),
+        ('Internship', 'Internship'),
+        ('Trainee', 'Trainee')
+    )
+    empolyment_type = models.CharField(max_length=20,choices=EMP_CHOICES,blank=True,null=True)
+    company_name = models.CharField(max_length=1000,blank=True,null=True)
+    location = models.CharField(max_length=1000,blank=True,null=True)
+    start_date = models.DateField(blank=True,null=True)
+    end_date = models.DateField(blank=True,null=True)
+    current= models.BooleanField()
+    industry = models.CharField(max_length=1000,blank=True,null=True)
+    description = models.CharField(max_length=10000,blank=True,null=True)
+    media = ArrayField(models.CharField(max_length=200), blank=True,null=True)
+    website = models.CharField(max_length=2000,blank=True,null=True)
+    qualifications = ArrayField(models.CharField(max_length=200), blank=True,null=True)
+    class Meta:
+        db_table = 'Profile'
+
+
+class Qualifications(models.Model):
+    name = models.CharField(max_length=255)
+    class Meta:
+        db_table ="Qualifications"
+
+
+class Accomplishments(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,related_name="acc_user") 
+    title = models.CharField(max_length=255)
+    image = models.ImageField(blank=True,null=True,upload_to="accomplishment")
+    publisher = models.CharField(max_length=255,blank=True,null=True)
+    publicationdate = models.DateField(blank=True,null=True)
+    authors = ArrayField(models.CharField(max_length=200), blank=True,null=True)
+    publication_url = models.CharField(max_length=3000,blank=True,null=True)
+    description = models.TextField(blank=True,null=True)
+    class Meta:
+        db_table = "Accomplishments"

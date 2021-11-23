@@ -42,3 +42,9 @@ body {
 .errorMsg {
   color: red
 }
+input[type="file"] {
+  margin-left: 50px;
+}
+button[type="submit"] {
+  margin-left: -7px;
+}

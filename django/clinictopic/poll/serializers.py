@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings
+from .models import UserPoll,PollOption,TopicPoll,Feedback,Settings,ContactUs,AddSetting
 from authentication.models import User
 # from topics.serializers import TopicSeriaizer
 
@@ -29,7 +29,7 @@ class TopicPollSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-            print(validated_data)
+            # print(validated_data)
             polloption = validated_data.pop('poll_option')
             topicpoll = TopicPoll.objects.create(**validated_data)
             for polloption in polloption:
@@ -72,9 +72,98 @@ class SettingsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def create(self, validated_data):
-        if 'id' in validated_data:
-            obj, created = Settings.objects.update_or_create(id=validated_data['id'],defaults=validated_data)
+        count=Settings.objects.filter().count()
+        print("Count:  ",count)
+        if  count >=1:
+            obj = Settings.objects.update(**validated_data)
             return obj
-        settings, created = Settings.objects.update_or_create(**validated_data)
+        settings = Settings.objects.create(**validated_data)
         return settings
 
+class ContactusSerializer(serializers.ModelSerializer):
+
+    default_error_messages = {
+        'phone': 'The phone should only contain numeric characters'}
+    class Meta:
+        model = ContactUs
+        fields = '__all__'
+    def validate(self, attrs):
+        email = attrs.get('email', '')
+        name = attrs.get('name', '')
+        phone = attrs.get('phone', '')
+        message = attrs.get('message', '')
+        # print(name)
+        if phone:
+            if not phone.isnumeric():
+                raise serializers.ValidationError(
+                    self.default_error_messages)
+        return attrs
+
+class AddSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddSetting
+        fields = '__all__'
+    def create(self, validated_data):
+            add = AddSetting.objects.all().delete()
+            addsetting=AddSetting.objects.create(**validated_data)
+            return addsetting
+
+class Aboutusserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        fields =['about_us']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.about_us = validated_data['about_us']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
+class ContactSerilizer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        fields =['contact_us']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.contact_us = validated_data['contact_us']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
+class Privacypolicyserializer(serializers.ModelSerializer):
+    class Meta:
+        model=Settings
+        fields=['privacy_policy']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.privacy_policy = validated_data['privacy_policy']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings
+
+class TOSserializer(serializers.ModelSerializer):
+    class Meta:
+        model=Settings
+        fields=['tos']
+
+    def create(self, validated_data):
+        count=Settings.objects.all().count()
+        if  count==1:
+            ins = Settings.objects.all().first()
+            ins.tos = validated_data['tos']
+            ins.save()
+            return ins
+        settings = Settings.objects.create(**validated_data)
+        return settings

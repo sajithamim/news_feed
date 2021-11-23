@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import User
+from .models import Accomplishments, User,Profile,Qualifications
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -16,7 +16,8 @@ import os
 from topics.models import (UserCategory)
 from .utils import Util
 import requests
-
+import datetime
+from .emails import send_email_from_app_otp
 
 load_dotenv(BASE_DIR+str("/.env"))
 import random
@@ -30,20 +31,26 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password','phone','otp']
+        fields = ['email', 'username', 'password','phone','otp','name']
 
     def validate(self, attrs):
         email = attrs.get('email', '')
         username = attrs.get('username', '')
         phone = attrs.get('phone', '')
+        name = attrs.get('name', '')
+        # print(name)
+
         # if not phone.isnumeric():
         #     raise serializers.ValidationError(
         #         self.default_error_messages)
         return attrs
 
     def create(self, validated_data):
-        # print(str(**validated_data))
-        return User.objects.create_user(**validated_data)
+        now = datetime.datetime.now()
+        now_plus= now + datetime.timedelta(minutes = 5)
+        if User.objects.filter(phone=validated_data['phone'],phone_verified=False,auth_provider='email').exists():
+            userdel=User.objects.filter(phone=validated_data['phone'],phone_verified=False,auth_provider='email').delete()
+        return User.objects.create_user(**validated_data,optvalid=now_plus)
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):
@@ -74,31 +81,67 @@ class Signinserializer(serializers.ModelSerializer):
             phone_verify = User.objects.filter(phone=phone).first()
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
+            now = datetime.datetime.now()
+            now_plus= now + datetime.timedelta(minutes = 5)
+            phone_verify.optvalid=now_plus
             phone_verify.save()
             smsphone  = str(phone)
-            smsnumber = smsphone.replace("-","")
-            # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
+            if smsphone.split("-")[0]=='91':
+                smsnumber = smsphone.replace("-","")
+                api_key = os.environ.get('SMS_API_KEY')
+                sid = os.environ.get('SMS_SENDER_ID')
+                route = os.environ.get('SMS_ROUTE')
+                eid= os.environ.get('SMS_ENTITY_ID')
+                tid= os.environ.get('SMS_TEMPLATE_ID')
+                mno= smsnumber
+                msg=str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
+                url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
+                # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
+                r = requests.get(url)
+            else :
+                smsnumber = smsphone.replace("-","")
+                api_key =os.environ.get('INTERNATION_API_KEY')
+                sid = 'SMSHUB'
+                route = os.environ.get('SMS_ROUTE')
+                eid= os.environ.get('SMS_ENTITY_ID')
+                tid= os.environ.get('SMS_TEMPLATE_ID')
+                mno= smsnumber
+                # 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=yourapicode&senderid=SMSHUB&channel=INT&DCS=0&flashsms=0&number=12093158246&text=test message&route=16'
+                msg=str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
+                url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=INT&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route=16'
+                # print()
+                # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
+                r = requests.get(url)
+            # smsnumber = smsphone.replace("-","")
+            # # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
+            # # r = requests.get(url)
+            # api_key = os.environ.get('SMS_API_KEY')
+            # sid = os.environ.get('SMS_SENDER_ID')
+            # route = os.environ.get('SMS_ROUTE')
+            # eid= os.environ.get('SMS_ENTITY_ID')
+            # tid= os.environ.get('SMS_TEMPLATE_ID')
+            # mno= smsnumber
+            # msg=str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
+            # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
+            # # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
             # r = requests.get(url)
-            api_key = os.environ.get('SMS_API_KEY')
-            sid = os.environ.get('SMS_SENDER_ID')
-            route = os.environ.get('SMS_ROUTE')
-            eid= os.environ.get('SMS_ENTITY_ID')
-            tid= os.environ.get('SMS_TEMPLATE_ID')
-            mno= smsnumber
-            msg=str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
-            url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
-            # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
-            r = requests.get(url)
         if attrs.get('email',''):
             email = attrs.get('email', '')
             phone_verify = User.objects.filter(email=email).first()
+            if phone_verify.auth_provider !="email":
+                raise AuthenticationFailed(
+                    detail='Please continue your login using ' +phone_verify.auth_provider)
             otp = random.randrange(1000,9999)
             phone_verify.otp = otp
+            now = datetime.datetime.now()
+            now_plus= now + datetime.timedelta(minutes = 3)
+            phone_verify.optvalid=now_plus
             phone_verify.save()
             email_body = "Dear "+email+" , Your OTP is " +str(otp) + ". Use this Passcode to complete your Login into ClinicTopics. Thank you."
             data = {'email_body': email_body, 'to_email': email,
                     'email_subject': 'Login otp'}
-            Util.send_email(data)
+            # Util.send_email(data)
+            send_email_from_app_otp(to=email,otp=str(otp))
         # return attrs
         return {
             'email': phone_verify.email,
@@ -205,6 +248,12 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     class Meta:
         fields = ['email']
 
+class VerifyPhoneSerializer(serializers.Serializer):
+    otp = serializers.CharField(read_only =True,max_length = 10)
+    class Meta:
+        fields = ['otp']
+        # model = User
+
 
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(
@@ -304,23 +353,72 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         fields = ['profilepic']
 
 class PhoneUpdateSerializer(serializers.ModelSerializer):
+
+    default_error_messages = {
+        'phone': 'The phone should only contain numeric characters'}
+
     class Meta:
         model = User
         fields = ['phone']
+    def validate(self, attrs):
+        phone = attrs.get('phone', '')
+        # if not phone.isnumeric():
+        #     raise serializers.ValidationError(
+        #         self.default_error_messages)
+        return attrs
 
 class UsernameChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model =User
         fields = ['name']
-
+class Userqualifaicationserializer(serializers.ModelSerializer):
+    qualifications =serializers.ListField(child=serializers.CharField())
+    class Meta:
+        model =Profile
+        fields =['qualifications']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
     phone = serializers.ReadOnlyField()
+    qualifications = serializers.SerializerMethodField()
+    # qualifications = Userqualifaicationserializer()
     # profilepic = serializers.ReadOnlyField()
     profilepic = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = User
-        fields = ['id','username','email','phone','profilepic','name']
+        fields = ['id','username','email','phone','profilepic','name','email_verifield','phone_verified','qualifications']
+    def get_qualifications(self,obj):
+        try:
+            qual = Profile.objects.get(user_id__id= obj.id)
+            return qual.qualifications
+        except Profile.DoesNotExist:
+            return ""
+
+class ProfileSerializer(serializers.ModelSerializer):
+    media = serializers.ListField(child=serializers.CharField())
+    qualifications =serializers.ListField(child=serializers.CharField())
+    class Meta:
+        model = Profile
+        fields = '__all__'
+    def create(self, validated_data):
+        # print(str(**validated_data))
+        return Profile.objects.create(**validated_data)
+
+class AccomplishmentSerializer(serializers.ModelSerializer):
+    authors = serializers.ListField(child=serializers.CharField())
+    image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
+    class Meta:
+        model =Accomplishments
+        fields='__all__'
+class AccomplishmentImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accomplishments
+        fields =['image']
+
+class QualificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Qualifications
+        fields= '__all__'
+

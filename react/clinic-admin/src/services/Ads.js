@@ -1,10 +1,25 @@
 import { http } from "../http-common"
+import axios from 'axios';
 
 const  getAds = () => {
     return http.get("add/ads");
 }
 const  postAdds = (state) => {
     return http.post(`add/ads/`,state);
+}
+const postAdsImage =(id, imageData) => {
+    let accessToken = localStorage.getItem("accessToken");
+    let url = `${process.env.REACT_APP_API_URL}add/ads/${id}/image/`;
+    axios.put(url, imageData, {
+      headers: {
+        'content-type': 'multipart/form-data',
+        'authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(res => {
+    return res
+    })
+    .catch(err => err)
 }
 const  putAdds = (state , id) => {
     return http.put(`add/ads/${id}/`, state);
@@ -32,7 +47,8 @@ const Ads = {
     postAddsVisibility,
     getEditAdsDetails,
     getAdsSelectedUser,
-    putAdds
+    putAdds,
+    postAdsImage
 }
 
 export default Ads;

@@ -1,11 +1,15 @@
 from django.db import models
 import uuid
-
 from django.db.models.deletion import CASCADE
 from authentication.models import User
 from django.dispatch import receiver
 from clinictopic.settings.base import MEDIA_ROOT
-from specialization.models import (Specialization)
+from specialization.models import (Specialization,SubSpecialization)
+from PIL import Image as ImagePil
+from io import BytesIO
+from django.core.files import File
+from django.core.files.base import ContentFile
+
 # from django.core.files.storage import FileSystemStorage
 # fs = FileSystemStorage(location='/media/categories')
 
@@ -23,12 +27,33 @@ class Categoeries(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     image = models.ImageField(blank=True,null=True,upload_to=get_image_path)
+    def save(self, *args, **kwargs):
+      if self.image:
+        filename = "%s.png" % self.image.name.split('.')[0]
+
+        im = ImagePil.open(self.image)
+        new_width  = 250
+        new_height = 210
+        image = im.resize((new_width, new_height), ImagePil.ANTIALIAS)
+         # for PNG images discarding the alpha channel and fill it with some color
+        # if image.mode in ('RGBA', 'LA'):
+        #     background = ImagePil.new(image.mode[:-1], image.size, '#fff')
+        #     background.paste(image, image.split()[-1])
+        #     image = background
+        image_io = BytesIO()
+        image.save(image_io, format='PNG', quality=100)
+
+         # change the image field value to be the newly modified image value
+        self.image.save(filename, ContentFile(image_io.getvalue()), save=False)
+
+      super(Categoeries, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
     
     class Meta:
         db_table = 'Categories' 
+
 #delete update image on delete
 @receiver(models.signals.post_delete,sender=Categoeries)
 def auto_delete_file_on_delete(sender,instance,**kwargs):
@@ -86,7 +111,7 @@ class Topics(models.Model):
         ('2', '2'),
         ('3', '3')
     )
-    author = models.ForeignKey(User,on_delete=models.DO_NOTHING,blank=True,null=True,related_name="author_profile")
+    # author = models.ForeignKey(User,on_delete=models.SET_NULL,blank=True,null=True,related_name="author_profile")
     format = models.CharField(max_length=2,choices=FORMAT_CHOICES)
     category_id = models.ForeignKey(Categoeries,on_delete=models.CASCADE,related_name="topic_category")
     title = models.CharField(max_length=255)
@@ -124,6 +149,12 @@ class Image(models.Model):
     # image = models.CharField(blank=True, null=True, max_length=50)
     image = models.ImageField(blank=True, null=True, upload_to=get_image_path_topic)
 
+# @receiver(models.signals.post_delete,sender=Image)
+# def auto_delete_file_on_delete(sender,instance,**kwargs):
+#     if instance.image:
+#         if os.path.isfile(instance.image.path):
+#             os.remove(instance.image.path)
+
 class TopicSpecialization(models.Model):
     spec_id = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name="Topic_specialization")
     topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="topic_topic")
@@ -131,8 +162,11 @@ class TopicSpecialization(models.Model):
     class Meta:
         db_table = 'TopicSpecialization'
 
-
-
+class TopicSubSpecialization(models.Model):
+    topic_id = models.ForeignKey(Topics,on_delete=models.CASCADE,related_name="topic_subspec")
+    subspec_id = models.ForeignKey(SubSpecialization,on_delete=models.CASCADE,related_name="Topic_subspecialization")
+    class Meta:
+        db_table = 'TopicSubSpecialization'
 
 class Favourite(models.Model):
     user_id  = models.ForeignKey(User,on_delete=models.CASCADE,related_name="favourite_user")

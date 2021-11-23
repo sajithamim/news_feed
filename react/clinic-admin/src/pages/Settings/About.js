@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, message, Card } from "antd";
 import { useDispatch } from "react-redux";
-import { getSettings , postSettings} from "../../actions/settings";
+import { getAbout , postAbout} from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, convertFromRaw} from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -10,7 +10,7 @@ const About = () => {
     const dispatch = useDispatch();
     const [id, setId] = useState(EditorState.createEmpty())
     useEffect(() => {
-        dispatch(getSettings())
+        dispatch(getAbout())
         .then(res => { 
             if(res.data[0]) {      
                 setId(res.data[0].id);
@@ -25,9 +25,9 @@ const About = () => {
         let newData = {}
         newData.about_us = JSON.stringify(convertToRaw(contentState));
         newData.id = id;
-        dispatch(postSettings(newData))
+        dispatch(postAbout(newData))
         .then(() => {
-            message.success('About Us edit successfully')
+            message.success('About Us added successfully')
         });  
     }
 

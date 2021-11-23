@@ -5,6 +5,8 @@ const initialState = {
     adsUsersList:[],
     adsDetails:[],
     userDetails:[],
+    addsData: false,
+    updateAdds: false,
     adsUserDetails:[],
     selectedSpecid: null,
     newaddId: null
@@ -18,14 +20,15 @@ export default (state = initialState, action) => {
         case 'DELETE_ADS':
         return {...state , adsList:Object.assign({}, state.adsList, {results: state.adsList && state.adsList.results && state.adsList.results.filter(item => item.id !== action.payload)})};
         case 'GET_SPEC_USERS':
-        return {...state , specUsers: action.payload , specId:action.id }
+        return {...state, specUsers: action.payload, specId:action.id }
         case 'POST_ADD':
         return {...state , newaddId: action.payload}
         case 'GET_ADS_DETALS':
-        return {...state , adsDetails: action.payload, userDetails: action.userDetails, selectedSpecid: action.selectedSpecid, specUsers: action.specUsers , specId:action.selectedSpecid}
+        return {...state, adsDetails: action.payload}
         case 'GET_ADS_USER_DETAILS':
         return {...state , adsUserDetails: action.payload}
         default:
         return state
     }
   }
+  

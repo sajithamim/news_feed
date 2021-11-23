@@ -1,32 +1,97 @@
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,UserSubSpecialization)
+from .models import (Specialization,SubSpecialization,Audience,UserType,UserSpecialization,
+UserSubSpecialization,Advisory,Quiz)
 from rest_framework import  status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from authentication.models import User
+from authentication.serializers import UserProfileSerializer
 # import json
 from rest_framework import generics, status
 
-class GetSubspecializationSerializer(serializers.ModelSerializer):
 
+
+class GetSubspecializationArraySerializer(serializers.ModelSerializer):
+    subspeccount = serializers.SerializerMethodField()
     class Meta: 
         model = SubSpecialization
         fields = '__all__'
 
+    def get_subspeccount(self, obj):
+        # print(self.context)
+        user_id =self.context['request'].user
+        # print(user_id)
+        return UserSubSpecialization.objects.filter(user_spec_id__user_id=user_id,sub_spec_id=obj.id).count()
+
 class GetSpecializationseriallizer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = Specialization
         fields = '__all__'
 
+class PostSubspecializationSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = SubSpecialization
+        fields = '__all__'
+    # def to_representation(self, instance):
+
+    #     response = super().to_representation(instance)
+    #     response['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
+
+class GetSubspecializationSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = SubSpecialization
+        fields = '__all__'
+        level =1
+        depth=1
+
+
+    # def to_representation(self, instance):
+
+    #     response = super().to_representation(instance)
+    #     response['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
+
+
 class GetSpecialization(serializers.ModelSerializer):
     id =  serializers.ReadOnlyField()
-    specialization_id = GetSubspecializationSerializer(many=True)
+    specialization_id = PostSubspecializationSerializer(many=True)
     created_at =  serializers.ReadOnlyField()
     updated_at =  serializers.ReadOnlyField()
+    # speccount = serializers.SerializerMethodField()
+    # categorycount = serializers.SerializerMethodField()
     class Meta:
         model = Specialization
         fields = ['id','name','icon','created_at','updated_at','specialization_id']
+
+    # def get_speccount(self, obj):
+    #     print(self.context)
+    #     user_id =self.context['request'].user
+    #     # print(user_id)
+    #     return UserSpecialization.objects.filter(user_id=user_id,spec_id=obj.id).count()
+
+
+class GetSpecializationandsub(serializers.ModelSerializer):
+    id =  serializers.ReadOnlyField()
+    specialization_id = GetSubspecializationArraySerializer(many=True)
+    created_at =  serializers.ReadOnlyField()
+    updated_at =  serializers.ReadOnlyField()
+    speccount = serializers.SerializerMethodField()
+    # categorycount = serializers.SerializerMethodField()
+    class Meta:
+        model = Specialization
+        fields = ['id','name','icon','created_at','updated_at','specialization_id','speccount']
+
+    def get_speccount(self, obj):
+        # print(self.context)
+        user_id =self.context['request'].user
+        # print(user_id)
+        return UserSpecialization.objects.filter(user_id=user_id,spec_id=obj.id).count()
+    
+    # def get_categorycount(self,obj):
+    #     user_id =self.context['request'].user
+    #     # print(user_id)
+    #     return UserCategory.objects.filter(user_id=user_id).count()
 
 
 class GetAudienceSerializer(serializers.ModelSerializer):
@@ -83,7 +148,7 @@ class UserSubSpecializationSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['sub_spec_id'] = GetSpecializationseriallizer(instance.sub_spec_id).data
+        response['sub_spec_id'] = GetSubspecializationSerializer(instance.sub_spec_id).data
         return response
 
 
@@ -103,13 +168,17 @@ class UserSpecializationSerializer(serializers.ModelSerializer):
         response['spec_id'] = GetSpecializationseriallizer(instance.spec_id).data
         return response
     def create(self, validated_data):
-            subspec = validated_data.pop('sub_userspec_id')
+            sub = False
+            if 'sub_userspec_id' in  validated_data: 
+                sub =True    
+                subspec = validated_data.pop('sub_userspec_id')
             userspec = UserSpecialization.objects.create(**validated_data)
             usersubarray=[]
-            for subspec in subspec:
-                usersub=UserSubSpecialization.objects.create(user_spec_id=userspec, **subspec)
-            # print(usersubarray)
-            # spec_id = {}
+            if sub:
+                for subspec in subspec:
+                    usersub=UserSubSpecialization.objects.create(user_spec_id=userspec, **subspec)
+                # print(usersubarray)
+                # spec_id = {}
             return userspec
 
 
@@ -122,3 +191,53 @@ class SubSpecializationpicSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubSpecialization
         fields = ['icon']
+
+
+class AdvisorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advisory
+        fields = '__all__'
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user_id'] = UserProfileSerializer(instance.user_id).data
+        return response
+
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['sub_spec_id'] = GetSubspecializationSerializer(instance.sub_spec_id).data
+        return response
+
+
+class QuizgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ['id','title','url','active']
+
+
+class GetSubspecializationquiz(serializers.ModelSerializer):
+    quiz_subspec_id = QuizgetSerializer(many=True)
+    class Meta: 
+        model = SubSpecialization
+        fields = ['id','name','icon','quiz_subspec_id']
+
+    # def to_representation(self, instance):
+        
+    #     data = super().to_representation(instance)
+    #     return {k: v for k, v in data.items() if v is not None}
+
+class GetSpecializationquiz(serializers.ModelSerializer):
+    id =  serializers.ReadOnlyField()
+    specialization_id = GetSubspecializationquiz(many=True)
+    class Meta:
+        model = Specialization
+        fields = ['id','name','icon','specialization_id']
+
+# class QuizgetSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Quiz
+#         fields = '__all__'

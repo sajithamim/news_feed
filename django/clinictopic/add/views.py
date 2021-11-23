@@ -11,13 +11,15 @@ from rest_framework import parsers
 from rest_framework import mixins
 from rest_framework import generics, status, views, permissions
 from rest_framework import pagination
-from .serializers import AddSerializer,AddImageSerializer,AddUserSerializer,AddUserSelectedSerializer
-from .models import AddUser, Ads
+from rest_framework.pagination import PageNumberPagination
+from .serializers import(AddSerializer,AddImageSerializer,AddUserSerializer,
+AddUserSelectedSerializer,AllUserAddSerializer,AllUseraddImage, SelectedBannerSerializer)
+from .models import AddUser, Ads,AllUserAdd
 
 class AdsViewset(viewsets.ModelViewSet):
     queryset = Ads.objects.all().order_by('-created_at')
     serializer_class = AddSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     @action(detail=True,methods=['PUT'],serializer_class=AddImageSerializer,parser_classes=[parsers.MultiPartParser],)
     def image(self, request, pk):
         obj = self.get_object()
@@ -28,12 +30,31 @@ class AdsViewset(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors,
                                  status.HTTP_400_BAD_REQUEST)
-
+# class TopicSuggestionView(APIView,PageNumberPagination):
+#     # pagination_class = StandardResultsSetPagination
+#     permission_classes = (IsAuthenticated,)
+#     def get(self,request,pk):
+#         try:
+#             userCategory = UserCategory.objects.filter(user_id=request.user)
+#             idscat = list(userCategory.category_id.id for userCategory in userCategory)
+#             queryset = Categoeries.objects.filter(id__in=idscat).filter(topic_category__title__icontains=pk).distinct().order_by('title')
+#             # serializers = categoryTopicSerializer(category,many=True)
+#             results = self.paginate_queryset(queryset, request, view=self)
+#             serializer = categoryTopicSerializer(results, many=True)
+#             return self.get_paginated_response(serializer.data)
+#         except Exception as e:
+#             response={
+#                 "success":"False",
+#                 "message":"not found",
+#                 "status": status.HTTP_400_BAD_REQUEST,
+#                 "error":str(e)
+#             }
+#             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
 class AddUserView(generics.CreateAPIView):
     serializer_class = AddUserSerializer
     # pagination_class = None
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get_serializer(self, *args, **kwargs):
         """ if an array is passed, set serializer to many """
         if isinstance(kwargs.get('data', {}), list):
@@ -70,3 +91,34 @@ class SelectedUserlistView(APIView):
                 "error":str(e)
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+class AllUserAdsViewset(viewsets.ModelViewSet):
+    queryset = AllUserAdd.objects.all().order_by('-created_at')
+    serializer_class = AllUserAddSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    def get_serializer_context(self):
+        context = super(AllUserAdsViewset, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
+    # permission_classes = (IsAuthenticated,)
+    @action(detail=True,methods=['PUT'],serializer_class=AllUseraddImage,parser_classes=[parsers.MultiPartParser],)
+    def image(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True,context = {'request':request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
+
+class SelectedBannerView(APIView,PageNumberPagination):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        queryset=AddUser.objects.filter(user_id=request.user).order_by('created_at')
+        results=self.paginate_queryset(queryset,request,view=self)
+        serializer=SelectedBannerSerializer(results,many=True)
+        return self.get_paginated_response(serializer.data)
+
+

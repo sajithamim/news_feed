@@ -1,4 +1,4 @@
-import { http} from "../http-common";
+import { http1, instance} from "../http-common";
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -11,7 +11,6 @@ const login = (email, password) => {
       if (response.data.accessToken) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
-
       return response.data;
     });
 }
@@ -19,9 +18,19 @@ const login = (email, password) => {
 const postEmail = (state) => {
   let url = `${process.env.REACT_APP_API_URL}auth/request-reset-email/`;
   return axios
-    .post(url, { state })
+    .post(url, state)
     .then((response) => {
-      console.log("response" , response);
+      if (response.data)
+      return response
+    });
+}
+
+const passwordReset =(state) => {
+  let url = `${process.env.REACT_APP_API_URL}auth/password-reset-complete/`;
+  return axios
+    .patch(url, state)
+    .then((response) => {
+      if (response.data)
       return response
     });
 }
@@ -36,7 +45,8 @@ const logout = () => {
 const AuthService = {
   login,
   postEmail,
-  logout
+  logout,
+  passwordReset
 };
 
 export default AuthService;

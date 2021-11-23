@@ -1,26 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message , Spin, Form } from "antd";
 import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
-import { getTopic , deleteTopic, postTopic, updateTopic} from "../../actions/topic";
+import { useHistory } from "react-router-dom";
+import { getTopic , deleteTopic, postTopic, updateTopic  } from "../../actions/topic";
+import { logout } from "../../actions/auth.js"
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
-
   const [data , setData] = useState({});
-  const { topicList, addTopic, editTopic, successMsg } = useSelector(state => state.topic);
+  const { topicList, success, error, page} = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize , setPageSize] = useState();
+  const [pageSize , setPageSize] = useState(4);
+  const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
-  console.log("image_data" , editTopic);
+  const accessToken = localStorage.getItem("accessToken");
+  let history = useHistory();
+  
   useEffect(() => {
-    dispatch(getTopic())
-    onClose();
-  }, [addTopic, editTopic])
+    dispatch(getTopic(page))
+  }, [])
+
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch(getTopic(page))
+      dispatch({type: 'RESET_DATA'})
+    }
+    else if(error) {
+      message.error(error);
+      dispatch({type: 'RESET_DATA'})
+      const clearToken = localStorage.clear();
+      dispatch(logout());
+      history.push("/login");
+    }
+  }, [success, error])
+
+  useEffect(() => {
+    if (accessToken === null  || accessToken === undefined ){
+      history.push("/login");
+    }
+  }, [])
 
 
   const onClose = () => {
@@ -38,38 +62,28 @@ const TopicsContent = (props) => {
     setDrawerType("add");
   };
 
-  const confirmDelete = (id) => {
-    dispatch(deleteTopic(id))
-    .then((res) => {
-      res.status === 204 ? message.success("Topics is deleted successfully") : message.error("Topics is not exist")
-    })
-  }
-  
   const cancel = (e) => {
     message.error('Cancelled');
   }
 
-  const onFormSubmit = (newData, form_data, form_data2, image_data) => {
-    console.log('Topic Content')
+  const onFormSubmit = (newData, form_data, form_data_back , form_data2, form_data3, image_data) => {
+    onClose();
     if(drawerType == 'edit') {
-      dispatch(updateTopic(data.id, newData, form_data, form_data2, image_data))
-      .then(() => {
-        message.success('Topic edit successfully')
-      });
+      dispatch(updateTopic(data.id, newData, form_data, form_data_back ,form_data2,form_data3, image_data));
     } else {
-      dispatch(postTopic(newData, form_data, form_data2 , image_data))
-      .then(() => {
-        message.success('Topic add successfully')
-      });
+      dispatch(postTopic(newData, form_data, form_data_back , form_data2 ,form_data3 , image_data));
     }
   }
 
   const topicGenerator = () => {
+    let serialNo = pageSize * slNo;
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
-      key++;
+      serialNo++;
       const topics = [];
       const specData = [];
+      const subspec = [];
+      const topicSubspec = [];
       const images = [];
         item.topic_topic && item.topic_topic.map(item => {
           topics.push({spec_id: item.spec_id.id});
@@ -80,8 +94,14 @@ const TopicsContent = (props) => {
           images.push({id: item.id, image: item.image});
         })
        
+        item.topic_subspec  && item.topic_subspec.map(item =>{
+          subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
+          topicSubspec.push({ subspec_id: item.subspec_id.id})
+        })
+    
       items.push({
-        sl_no: key,
+        sl_no: serialNo,
+        key:item.id,
         id: item.id,
         title: item.title,
         title1: item.format === '1' ? item.title : null,
@@ -98,37 +118,54 @@ const TopicsContent = (props) => {
         spec_data: specData,
         topic_topic: topics,
         publishingtime: item.publishingtime,
-        publishtype: "later",
-        deliverytype: item.deliverytype,
+        publishtype: item.publishingtime > new Date() ? "later" : "now",
+        deliverytype:item.deliverytype,
+        topic_val: subspec,
+        topic_subspec: topicSubspec,
+        P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url:item.video_url,
-        pdf:item.pdf,
-        pdfsecond:item.pdfsecond,
+        pdfFront: item.pdf,
+        pdfBack: item.pdfsecond,
+        pdfSecond: item.pdf,
+        pdfThird:item.pdf,
+        pdfUrlSecond:item.pdf,
+        pdfUrlThird:item.pdf,
         format: item.format,
         external_url:item.external_url,
-        username: {value: item.author && item.author.name, label: item.author && item.author.name},
-        published_status: item.published
+        external_url2: item.external_url,
+        external_url3: item.external_url,
+        email: item.author && item.author.email,
+        username: item.author && item.author.username,
+        published_status: item.published,
+        imageFormData: []
       }) 
+      
     });
     return items;
   }
 
-  const topics = topicGenerator();
-
   const handleChange = (page, size, sorter) => {
     setCurrent(page)
+    setSlNo(page-1)
     dispatch(getTopic(page));
   }
 
   const pagination =  {
     current ,
     pageSize,
+    showSizeChanger: false,
     onChange: (page, pageSize, sorter) => {handleChange(page, pageSize, sorter)},
     total: topicList.count
   }
 
   const columns = [
+    {
+      title: "Sl No",
+      dataIndex: "sl_no",
+      key: "sl_no",
+    },
     {
       title: "Title",
       dataIndex: "title",
@@ -150,7 +187,7 @@ const TopicsContent = (props) => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this topic?"
-            onConfirm={() => confirmDelete(record.id)}
+            onConfirm={() => dispatch(deleteTopic(record.id, current))}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -171,8 +208,8 @@ const TopicsContent = (props) => {
             <Icon>add</Icon>
           </IconButton>
         } style={{ width: "100%" }} >
-        {topicList && topicList.results ?
-        (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topics} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
+        {topicList && topicList.results  &&  page == current ?
+        (<Table expandedRowKeys={[expended]} columns={columns} pagination={pagination} dataSource={topicGenerator()} />) : (<div className="spinner"><Spin tip="Loading..." style = {{align:"center"}}/></div>) }
       </Card>
       <Drawer
         title={drawerType === "edit" ? "Edit Topic" : drawerType === "add" ? "Add Topic" : "" }
@@ -183,7 +220,7 @@ const TopicsContent = (props) => {
         visible={showDrawer}
         key="drawer"
       >
-        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : {}} onFormSubmit={onFormSubmit}/>
+        <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : null} onFormSubmit={onFormSubmit}/>
       </Drawer>
     </div>
   );

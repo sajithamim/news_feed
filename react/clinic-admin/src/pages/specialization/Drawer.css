@@ -17,3 +17,38 @@
   margin-bottom: 20px;
   text-align: center;
 }
+#advisory {
+  margin-left: 21px;
+  margin-top: 30px;
+}
+.specStyle{
+  margin:10px;
+}
+
+.specCard{
+  width: 100%;
+}
+.specSaveBtn{
+  margin-left:29px;
+}
+
+.advisoryPhoto{
+  width: 70px;
+  height: 70px;
+}
+
+.advisorySaveBtn{
+  margin-left:-47px;
+}
+
+.advisoryPara{
+  color: grey;
+  font-size: 10px;
+}
+
+.advisoryImg{
+  width: 38px;
+  height: 38px;
+  margin-top: -23px;
+  margin-left:215px;
+}
