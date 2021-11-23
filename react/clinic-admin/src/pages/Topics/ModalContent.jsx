@@ -550,12 +550,12 @@ const ModalContent = (props) => {
               <img key={item} src={item.image} alt="" />
               <div className="close">
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
-            </div>))}
+              </div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
                 <img key={url} src={url} alt="" />
                 <div className="close">
                   <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
-              </div>))}
+                </div>))}
             </div>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
