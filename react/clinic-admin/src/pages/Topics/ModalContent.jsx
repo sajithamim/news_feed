@@ -546,13 +546,17 @@ const ModalContent = (props) => {
               </Form.Item></>) : null
           }
           {state.format === '2' ?
-            (<Form.Item label="Images"><section className="clearfix">{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
-              <span className="close">
-                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
-                <span className="close">
-                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-            </section>
+            (<Form.Item label="Images"><div>{state.old_image && state.old_image.map((item) => (<div className="img-wrap">
+              <img key={item} src={item.image} alt="" />
+              <div className="close">
+                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+              </div>))}
+              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
+                <img key={url} src={url} alt="" />
+                <div className="close">
+                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+                </div>))}
+            </div>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
