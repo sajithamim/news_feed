@@ -17,12 +17,15 @@ const Forgot = () => {
 
   const dispatch = useDispatch();
   const { error, success } = useSelector(state => state.auth);
-
+  console.log("error view", error);
   useEffect(() => {
     if (success) {
       message.success(success);
     }
-  }, [success])
+    if(error === undefined){
+      message.error("Please enter a valid email");
+    }
+  }, [success, error])
 
   const onChange = (e) => {
     setState({ ...state, email: e.target.value, redirect_url: `${process.env.REACT_APP_API_BASE_URL}/reset_password` })
@@ -40,15 +43,6 @@ const Forgot = () => {
   const sendEmail = () => {
     setLoading(true);
     dispatch(postRequestEmail(state))
-    // .then((res) => {
-    //   (res.status === 200) ? message.success({content: 'We have sent you a link to reset your password',
-    //   className: 'custom-class',
-    //   style: {
-    //     marginLeft: '25vh',
-    //     marginTop: '55vh',
-    //   },
-    // }) : message.error({content: "User doesn't exist"}) ;
-    // })
   };
 
 

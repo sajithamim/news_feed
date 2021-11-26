@@ -20,6 +20,7 @@ const initialState = {
 
 
 export default function (state = initialState, action) {
+  console.log("error", action);
   const { type, payload } = action;
   switch (type) {
     case LOGIN_SUCCESS:
@@ -39,7 +40,7 @@ export default function (state = initialState, action) {
     case POST_EMAIL:
       return { ...state,  success: action.payload.success};
     case POST_EMAIL_ERROR:
-      return { ...state,  error: action.error};
+      return { ...state,  error: action.payload};
     case PASSWORD_RESET:
       return { ...state, passwordSet: action.payload, success: action.payload.message };
     case LOGOUT:
