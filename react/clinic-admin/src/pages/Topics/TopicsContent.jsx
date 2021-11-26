@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Icon, IconButton } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { getTopic , deleteTopic, postTopic, updateTopic  } from "../../actions/topic";
+import { logout } from "../../actions/auth.js"
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -27,17 +28,21 @@ const TopicsContent = (props) => {
   useEffect(() => {
     if(success) {
       message.success(success);
+      dispatch(getTopic(page))
       dispatch({type: 'RESET_DATA'})
     }
     else if(error) {
       message.error(error);
       dispatch({type: 'RESET_DATA'})
+      const clearToken = localStorage.clear();
+      dispatch(logout());
+      history.push("/login");
     }
   }, [success, error])
 
   useEffect(() => {
-    if (accessToken === 'null' && accessToken === ' undefined'){
-      history.push("/");
+    if (accessToken === null  || accessToken === undefined ){
+      history.push("/login");
     }
   }, [])
 
@@ -74,7 +79,6 @@ const TopicsContent = (props) => {
     let serialNo = pageSize * slNo;
     const items = [];
     topicList && topicList.results && topicList.results.map((item , key) => {
-      //console.log('topics oitem', item)
       serialNo++;
       const topics = [];
       const specData = [];
@@ -94,9 +98,10 @@ const TopicsContent = (props) => {
           subspec.push({  value: `${item.subspec_id.name}_${item.subspec_id.id}`});
           topicSubspec.push({ subspec_id: item.subspec_id.id})
         })
-       // console.log('item', item)
+    
       items.push({
         sl_no: serialNo,
+        key:item.id,
         id: item.id,
         title: item.title,
         title1: item.format === '1' ? item.title : null,
@@ -113,7 +118,7 @@ const TopicsContent = (props) => {
         spec_data: specData,
         topic_topic: topics,
         publishingtime: item.publishingtime,
-        publishtype: "later",
+        publishtype: item.publishingtime > new Date() ? "later" : "now",
         deliverytype:item.deliverytype,
         topic_val: subspec,
         topic_subspec: topicSubspec,

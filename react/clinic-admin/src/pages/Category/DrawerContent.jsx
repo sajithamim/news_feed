@@ -1,15 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Form, Button, Input, Modal, message } from "antd";
-import { useDispatch } from "react-redux";
+import { Form, Button, Input } from "antd";
 import "./Drawer.css";
-import { postCategory, updateCategory } from "../../actions/category";
 
 const DrawerContent = (props) => {
   const ref = useRef();
-  const dispatch = useDispatch();
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
   const [state, setState] = useState(props.editData);
+  const [inputKey, setInputKey] = useState('');
   const [errors, setErrors] = useState({});
   const [formSubmit, setFormSubmit] = useState(false);
 
@@ -20,7 +18,7 @@ const DrawerContent = (props) => {
       setImgData(props.editData.image);
     }
     else {
-      setState({});
+      // document.getElementById('uploadFile').value = null;
       setImgData("");
       setImage("");
     }
@@ -48,6 +46,7 @@ const DrawerContent = (props) => {
       newErrorsState.image = '';
       setErrors({});
       setFormSubmit(!formSubmit);
+      setInputKey(Date.now());
     }
   }
 
@@ -70,7 +69,7 @@ const DrawerContent = (props) => {
     setErrors({ errors });
     return formIsValid;
   }
-
+  
   const handleSubmit = (e) => {
     if (formValidation()) {
       setErrors({});
@@ -87,39 +86,26 @@ const DrawerContent = (props) => {
         setErrors(newErrorsState);
         return false;
       }
-      if (props.drawerType === 'edit') {
         delete newData["sl_no"];
         delete newData["id"];
         delete newData["image"];
-        // ref.current.props.name = "";
-        dispatch(updateCategory(id, newData, form_data))
-          .then((res) => {
-            setState({});
-            res != undefined ? (message.success('Category edited successfully')) : (message.error("Category already exists with this name"));
-          });
-      }
-      else {
-        dispatch(postCategory(state, form_data))
-          .then((res) => {
-            setState({});
-            res != undefined ? (message.success('Category added successfully')) : (message.error("Category already exists with this name"));
-          });
-      }
+        props.onFormSubmit(id, state, form_data);
     }
   }
+
+ 
  
   return (
-    <Form labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
+    <Form name="basic" className="categoryForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
             <Input name="title" onChange={handleChange} value={state.title} />
             <div className="errorMsg">{errors && errors.errors && errors.errors.title}</div>
           </Form.Item>
-
           <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
-            <Input type="file" name="image" accept="image/png, image/jpeg" ref={ref} onChange={handleFileChange}  />
+            <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" key={inputKey} onChange={handleFileChange}  />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
         </div>
@@ -128,6 +114,7 @@ const DrawerContent = (props) => {
         <Button type="primary" htmlType="submit" >
           Save
         </Button>
+        
       </Form.Item>
     </Form>
   );

@@ -24,6 +24,7 @@ export const login = (email, password) => (dispatch) => {
     (error) => {
       dispatch({
         type: LOGIN_FAIL,
+        error: "Network Error",
         payload: error.response.data.detail
       });
     }
@@ -58,7 +59,6 @@ export const postRequestEmail = (state) => async (dispatch) => {
 export const passwordReset = (state) => async (dispatch) => {
   try{
     const res = await AuthService.passwordReset(state);
-    console.log("acttion res" , res);
     dispatch({
       type: 'PASSWORD_RESET',
       payload: res.data,

@@ -5,7 +5,7 @@ const initialState= {
     pdf:{},
     userList:{},
     specList : {},
-    catList:{}
+    catList:{},
 };
 
 const updateData = (state, action) => {
@@ -32,7 +32,7 @@ export default (state = initialState , action) => {
         case 'UPDATE_TOPIC':
             return updateData(state, action)
         case 'HANDLE_ERROR':
-        return { ...state , error: action.message}
+        return { ...state , error: action.error}
         case 'GET_SPECIALIZATION':
         return { ...state , specList: action.payload}
         case 'GET_CATEGORY':

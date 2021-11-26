@@ -1,4 +1,4 @@
-import { http, instance} from "../http-common";
+import { http1, instance} from "../http-common";
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -11,7 +11,6 @@ const login = (email, password) => {
       if (response.data.accessToken) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
-
       return response.data;
     });
 }
@@ -27,7 +26,13 @@ const postEmail = (state) => {
 }
 
 const passwordReset =(state) => {
-  return instance.patch(`auth/password-reset-complete/` , state);
+  let url = `${process.env.REACT_APP_API_URL}auth/password-reset-complete/`;
+  return axios
+    .patch(url, state)
+    .then((response) => {
+      if (response.data)
+      return response
+    });
 }
 
 

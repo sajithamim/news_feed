@@ -19,7 +19,7 @@ const SubSpecializationContent = () => {
   const { specId } = useParams();
 
   const { subspecialization, updateSubData, addSubData, page } = useSelector(state => state.spec);
-  console.log("subspecialization",subspecialization);
+ 
   
   useEffect(() => {
     dispatch(getSubSpecialisation(specId))

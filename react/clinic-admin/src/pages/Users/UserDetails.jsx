@@ -36,8 +36,6 @@ const UserDetails = () => {
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData, success, error } = useSelector(state => state.users);
-  console.log("publicationList" , success);
-  console.log("publicationList 123" , publicationList);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
@@ -69,7 +67,6 @@ const UserDetails = () => {
         dispatch(getUserSpecialization(emailId))
         if (res && res.data && res.data.data) {
           dispatch(getPublicationList(res.data && res.data.data && res.data.data.id))
-          console.log("addpub;ica",addPublicationData);
           onClose();
           dispatch(getUserProfile(res.data && res.data.data && res.data.data.id))
             .then((res) => {
@@ -264,9 +261,7 @@ const UserDetails = () => {
       );
 
       onSuccess("Ok");
-      console.log("server res: ", res);
     } catch (err) {
-      console.log("Eroor: ", err);
       const error = new Error("Some error");
       onError({ err });
     }
@@ -337,7 +332,6 @@ const UserDetails = () => {
   }
   const handleUserProfileSubmit = () => {
     if (handleValidation()) {
-      console.log("handleValidation" , state)
       let newData = state;
       delete newData["empolyment_value"];
       delete newData["id"];

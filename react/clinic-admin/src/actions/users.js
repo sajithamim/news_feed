@@ -75,11 +75,11 @@ export const deleteUser = (id, page) => async (dispatch) => {
 }
 
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
-    console.log("otherQualification", otherQualification);
     try {
         const res = await Users.postUserProfile(state);
-        if (otherQualification)
-            await Users.postOtherQualifications(otherQualification);
+        if (otherQualification){
+            const resQuali = await Users.postOtherQualifications(otherQualification);
+        }
         dispatch({
             type: 'POST_USER_PROFILE',
             payload: res.data,

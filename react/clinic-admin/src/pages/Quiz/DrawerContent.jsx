@@ -110,7 +110,6 @@ const DrawerContent = (props) => {
             }
             // else {
             //     if (props.type === "Qui")
-            //         console.log("postQuiz", newData)
             //     dispatch(postQuiz(newData))
             //         .then((res) => {
             //             setState({});

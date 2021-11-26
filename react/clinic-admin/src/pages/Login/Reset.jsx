@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
-import { Redirect, useLocation } from "react-router-dom";
+import {  useLocation } from "react-router-dom";
 import { passwordReset } from '../../actions/auth';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import "./Login.css";
@@ -12,6 +12,7 @@ const Reset = () => {
   const [state, setState] = useState("");
   const [errors, setErrors] = useState({ name: '' });
   const search = useLocation().search;
+  const { success } = useSelector(state => state.auth);
   const token = new URLSearchParams(search).get('token');
   const uidb64 = new URLSearchParams(search).get('uidb64');
 
@@ -21,6 +22,12 @@ const Reset = () => {
     setState({ ...state, [e.target.name]: e.target.value })
   }
 
+  useEffect(() => {
+    if(success) {
+      message.success(success);
+      dispatch({type: 'RESET_DATA'})
+    }
+  }, [success])
   const validate = () => {
     let input = state;
     let formIsValid = true;
@@ -51,22 +58,6 @@ const Reset = () => {
       newData["uidb64"] = uidb64;
       delete newData["confirm_password"];
       dispatch(passwordReset(state))
-        .then((err) => {
-          if(err) {
-            message.error({
-              content: 'Token Expired, Please try again',
-              className: 'custom-class',
-              style: {
-                marginLeft: '47vh',
-              },
-            });
-            setState({ ...state, password: "", confirm_password: "" })
-          }
-          else {
-            message.success("Password reset successfully");
-            history.push("/login");
-          }
-        });
     }
   }
 

@@ -30,7 +30,6 @@ const ModalContent = (props) => {
     dispatch(getSpecialization());
     dispatch(getCategory());
     dispatch(getUsersList())
-    //console.log('topic123', props.editData)
     if (props.editData !== null) {
       setState(props.editData)
     }
@@ -39,9 +38,6 @@ const ModalContent = (props) => {
     }
   }, [props.editData])
 
-  // const keyGenerator = () => {
-  //   return Math.floor(100000 + Math.random() * 900000);
-  // }
 
   const treeData = [];
   specList && specList.data && specList.data.map((specitem, index) => {
@@ -182,7 +178,6 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
-    //console.log('e.target.value', e.target.value)
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
@@ -210,7 +205,6 @@ const ModalContent = (props) => {
     let fields = state;
     let errors = {};
     let formIsValid = true;
-    console.log('imageData', state.imageFormData)
     if (fields["topic_subspec"].length <= 0) {
       formIsValid = false;
       errors["topic_subspec"] = "Specialization cannot be empty";
@@ -301,6 +295,10 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["video_url"] = "Video url cannot be empty";
       }
+      if (!fields["deliverytype"]) {
+        formIsValid = false;
+        errors["deliverytype"] = "Detail page cannot be empty";
+      }
       if (fields["video_url"]) {
         var myUrl = fields.video_url;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -320,7 +318,6 @@ const ModalContent = (props) => {
       if (state.deliverytype === 'external'  && fields["external_url3"]) {
         var myUrl = fields.external_url3;
         var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-        //console.log("res",res);
         if (res === null) {
           formIsValid = false;
           errors["external_url3"] = "Enter a valid URL";
@@ -328,14 +325,13 @@ const ModalContent = (props) => {
       }
     }
     //state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
-    //setState({ ...state, publishingtime: crntDateTime })
+    // setState({ ...state, publishingtime: crntDateTime })
     setErrors({ errors });
     return formIsValid;
   }
 
 
   const handleSubmit = (e) => {
-    //console.log('err', err)
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -398,7 +394,6 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      //console.log('newData n21', newData)
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -424,20 +419,20 @@ const ModalContent = (props) => {
       setState({ ...state, topic_image: newImageList, imageFormData: imageFormDataList });
     }
   }
-  const handleSearch = value => {
-    if (value) {
-      dispatch(searchUsers(value))
-        .then((res) => {
-          if (res.data)
-            setData(res.data.data);
-        })
-    } else {
-      setData([]);
-    }
-  };
-  const handleSearchChange = value => {
-    setState({ ...state, email: value, username: value });
-  };
+  // const handleSearch = value => {
+  //   if (value) {
+  //     dispatch(searchUsers(value))
+  //       .then((res) => {
+  //         if (res.data)
+  //           setData(res.data.data);
+  //       })
+  //   } else {
+  //     setData([]);
+  //   }
+  // };
+  // const handleSearchChange = value => {
+  //   setState({ ...state, email: value, username: value });
+  // };
 
   const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
@@ -461,7 +456,7 @@ const ModalContent = (props) => {
     },
     showCheckedStrategy: TreeSelect.SHOW_CHILD
   };
-  //console.log('errorserrors', state)
+  
   return (
     <div>
       <Form name="basic" className="topicForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
@@ -551,13 +546,17 @@ const ModalContent = (props) => {
               </Form.Item></>) : null
           }
           {state.format === '2' ?
-            (<Form.Item label="Images"><section className="clearfix">{state.old_image && state.old_image.map((item) => (<div className="img-wrap"><img key={item} src={item.image} alt="" />
-              <span class="close">
-                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap"><img key={url} src={url} alt="" />
-                <span class="close">
-                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></span></div>))}
-            </section>
+            (<Form.Item label="Images"><div>{state.old_image && state.old_image.map((item) => (<div className="img-wrap">
+              <img key={item} src={item.image} alt="" />
+              <div className="close">
+                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+              </div>))}
+              {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
+                <img key={url} src={url} alt="" />
+                <div className="close">
+                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+                </div>))}
+            </div>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
@@ -565,10 +564,6 @@ const ModalContent = (props) => {
           {state.format === '3' ?
             (<Form.Item label="Video Url"><div className="inputStyle"><Input name="video_url" type="text" onChange={handleChange} key="desc" value={state.video_url} /></div>
               <div className="errorMsg">{err && err.errors && err.errors.video_url}</div></Form.Item>) : null}
-          {/* {((state.format === '3' || state.format === '2') && state.deliverytype && state.deliverytype !== null ?
-            (state.deliverytype === 'pdf' ?
-              (<Form.Item wrapperCol={{ offset: 8, span: 10 }}><Input type="file" name="pdf" accept="image/pdf" onChange={handleFileChange} /></Form.Item>) : null)
-            : null)} */}
           {state.format === '2' ?
             (<Form.Item label="Detail Page">
               <Radio.Group onChange={(e) => radioOnChange('deliverytype', e)} value={state.deliverytype}>
@@ -606,6 +601,7 @@ const ModalContent = (props) => {
                   External URL
                 </Radio>
               </Radio.Group>
+              <div className="errorMsg">{err && err.errors && err.errors.deliverytype}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
             (<>
@@ -647,7 +643,7 @@ const ModalContent = (props) => {
             </Form.Item>
               {(state.publishtype && state.publishtype !== "now") ? (<Form.Item wrapperCol={{ offset: 8, span: 14 }}>
                 <Space>
-                  <DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : '2015/01/01', 'YYYY/MM/DD')} />
+                  <DatePicker showTime onChange={onChange} onOk={onOk} defaultValue={moment(state.publishingtime ? state.publishingtime : new Date())} />
                 </Space>
               </Form.Item>) : null} </>)}
           <Form.Item wrapperCol={{ offset: 8, span: 10 }}>

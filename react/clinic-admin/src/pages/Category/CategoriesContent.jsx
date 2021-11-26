@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import DrawerContent from "./DrawerContent";
 import { getCategory } from "../../actions/category";
 import { deleteCategory } from "../../actions/category";
+import { postCategory, updateCategory } from "../../actions/category";
 
 
-const CategoriesContent = () => {
+const CategoriesContent = (props) => {
   const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
   const [current, setCurrent] = useState(1);
@@ -16,17 +17,34 @@ const CategoriesContent = () => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist, updateData, addData, page } = useSelector(state => state.category);
-
+  const { catlist, updateData, addData, page, success } = useSelector(state => state.category);
+  
   useEffect(() => {
     dispatch(getCategory());
     onClose();
   }, [updateData, addData])
 
+  useEffect(() => {
+    if(success && addData){
+      message.success("Category added successfully");
+    }
+    if(success && updateData){
+      message.success("Category edited successfully");
+    }
+  }, [success, addData, updateData])
 
   const onClose = () => {
     setShowDrawer(false);
   };
+
+  const onFormSubmit = (id, state, form_data) => {
+    if (drawerType == 'edit') {
+       dispatch(updateCategory(id, state, form_data))
+    }
+    else {
+        dispatch(postCategory(state, form_data))
+    }
+  }
 
   const onEdit = (record) => {
     setEditData(record);
@@ -69,6 +87,7 @@ const CategoriesContent = () => {
       serialNo++;
       items.push({
         sl_no: serialNo,
+        key: item.id,
         id: item.id,
         title: item.title,
         image: item.image
@@ -140,7 +159,7 @@ const CategoriesContent = () => {
         visible={showDrawer}
         key="drawer"
       >
-        <DrawerContent drawerType={drawerType} type="cat" editData={(drawerType === 'edit') ? editData : {}} />
+        <DrawerContent drawerType={drawerType} type="cat" editData={(drawerType === 'edit') ? editData : {}} onFormSubmit={onFormSubmit} />
       </Drawer>
     </div>
   );

@@ -14,12 +14,12 @@ const initialState = {
   success: "",
   error: null,
   requestEmail: "",
-  passwordSet: ""
+  passwordSet: "",
+  success:'',
 }
 
 
 export default function (state = initialState, action) {
-  console.log("success", action);
   const { type, payload } = action;
   switch (type) {
     case LOGIN_SUCCESS:
@@ -34,20 +34,22 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isLoggedIn: false,
-        error: action.payload,
+        error: action.error,
       };
     case POST_EMAIL:
       return { ...state,  success: action.payload.success};
     case POST_EMAIL_ERROR:
       return { ...state,  error: action.error};
     case PASSWORD_RESET:
-      return { ...state, passwordSet: action.payload };
+      return { ...state, passwordSet: action.payload, success: action.payload.message };
     case LOGOUT:
       return {
         ...state,
         isLoggedIn: false,
         user: null,
       };
+    case 'RESET_DATA':
+            return { ...state , success: ''}
     default:
       return state;
   }

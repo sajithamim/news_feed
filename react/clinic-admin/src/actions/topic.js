@@ -5,7 +5,7 @@ export const getTopic = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try {
         const url = `topic/topic/?page=${page}`;
-        const res = await DataService.getData(url);
+        const res = await DataService.getData(url); 
         dispatch({
             type: 'GET_TOPIC',
             payload: res.data,
@@ -14,7 +14,8 @@ export const getTopic = (page) => async (dispatch) => {
     } catch (err) {
         dispatch({
             type: 'HANDLE_ERROR',
-            message: 'Some errors occured.',
+            error: 'Some errors occured.',
+            status: err,
         })
     }
 }
@@ -65,7 +66,7 @@ export const deleteTopic = (id, page) => async (dispatch) => {
 
 export const deleteImages = (id) => async (dispatch) => {
     try {
-        const res = await Topic.deleteImage(id);        
+        const res = await Topic.deleteImage(id);   
         return res;
     } catch (err) {
         console.log(err);
