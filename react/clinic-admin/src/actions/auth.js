@@ -42,17 +42,22 @@ export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
       if(res){
+        console.log("res", res);
         dispatch({
           type: POST_EMAIL,
           payload: res.data,
       })
       }else{
+        console.log("error");
         dispatch({
           type: POST_EMAIL_ERROR,
       })
       }
   } catch (err) {
-    
+    console.log("error", err);
+    dispatch({
+      type: POST_EMAIL_ERROR,
+  })
   }
 }
 
