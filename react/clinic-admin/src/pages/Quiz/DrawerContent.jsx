@@ -71,13 +71,13 @@ const DrawerContent = (props) => {
                 errors["url"] = "Enter a valid URL";
             }
         }
-        if (!fields["spec_data"]) {
+        if (!fields["spec_id"]) {
             formIsValid = false;
-            errors["spec_data"] = "Specialization cannot be empty";
+            errors["spec_id"] = "Specialization cannot be empty";
         }
-        if (!fields["sub_spec_data"]) {
+        if (!fields["sub_spec_id"]) {
             formIsValid = false;
-            errors["sub_spec_data"] = "Sub specialization cannot be empty";
+            errors["sub_spec_id"] = "Sub specialization cannot be empty";
         }
         if (fields.active === undefined) {
             formIsValid = false;
