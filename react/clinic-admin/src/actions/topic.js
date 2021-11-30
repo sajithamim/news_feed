@@ -22,7 +22,8 @@ export const getTopic = (page) => async (dispatch) => {
 
 export const getSpecialization = () => async (dispatch) => {
     try {
-        const res = await Topic.getSpecialization();
+        const url = `spec/getspec/`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_SPECIALIZATION',
             payload: res.data,
