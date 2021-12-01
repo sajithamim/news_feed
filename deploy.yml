@@ -1,0 +1,30 @@
+- name: deploy
+  hosts: contabo
+  vars:
+    bit_user: nineesh_met
+    bit_pass: 100thousand@
+  tasks:
+    - name: pull from git
+      git:
+        repo: https://{{bit_user|urlencode()}}:{{bit_pass|urlencode()}}@bitbucket.org/clinic-web/clinic-web.git
+        dest: /root/clinic/clinic-web/
+        update: yes
+        version: master
+    - name: deploy Docker Compose stack
+      docker_compose:
+        project_src: /root/clinic/
+        files:
+        - production-clinic.yml
+    - name: pull from git for testing
+      git:
+        repo: https://{{bit_user|urlencode()}}:{{bit_pass|urlencode()}}@bitbucket.org/clinic-web/clinic-web.git
+        dest: /root/testing/clinic/clinic-web/
+        update: yes
+        version: master
+    - name: deploy Docker Compose stack testing
+      docker_compose:
+        project_src: /root/testing/clinic/
+        files:
+        - production-clinic.yml
+        project_name:
+        - clinictest
