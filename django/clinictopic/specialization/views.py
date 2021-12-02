@@ -358,7 +358,7 @@ class QuizSubView(APIView):
         # quiz= Specialization.objects.filter(specialization_id__quiz_subspec_id__active=True).exclude(specialization_id__quiz_subspec_id__sub_spec_id__id__isnull=False).distinct()
         quiz= Specialization.objects.filter(specialization_id__quiz_subspec_id__sub_spec_id__id__isnull=False,specialization_id__quiz_subspec_id__active=True).distinct()
 
-        print(quiz.query)
+        # print(quiz.query)
         # print(quiz)
         serializers=GetSpecializationquiz(quiz,many=True)
         status_code = status.HTTP_200_OK
