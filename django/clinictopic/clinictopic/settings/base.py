@@ -55,7 +55,12 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'poll',
     'add',
+    'dbbackup',
+    'django_celery_results',
+    'django_celery_beat',
 ]
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': BASE_DIR+ '/backup'}
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
 
@@ -154,7 +159,9 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=300),
+    # 'REFRESH_TOKEN_LIFETIME': datetime.timedelta(seconds=360),
+
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
 }
 
@@ -224,4 +231,10 @@ DATABASES = {
     }
 }
 
-
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

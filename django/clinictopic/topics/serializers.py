@@ -224,10 +224,10 @@ class TopicSeriaizer(serializers.ModelSerializer):
             # if 'email' in validated_data:
             #     author = User.objects.get(email=validated_data['email'])
             #     instance.author = author
-            instance.deliverytype='external'
+            # instance.deliverytype='external'
             instance.media_type ='image'
             instance.video_url=''
-            instance.pdf=''
+            # instance.pdf=''
             instance.pdfsecond=''
         if validated_data['format'] =='3':
             image =Image.objects.filter(topic_id=instance).delete()
@@ -251,12 +251,13 @@ class TopicSeriaizer(serializers.ModelSerializer):
             # if 'email' in validated_data:
             #     author = User.objects.get(email=validated_data['email'])
             #     instance.author = author
-            instance.deliverytype='external'
+            # instance.deliverytype='external'
             instance.media_type ='video'
             instance.pdfsecond=''
             # instance.video_url=''
-            instance.pdf=''
+            # instance.pdf=''
         instance.save()
+
 
         # # up till here everything is updating, however the problem appears here.
         # # I don't know how to get the right InvoiceItem object, because in the validated

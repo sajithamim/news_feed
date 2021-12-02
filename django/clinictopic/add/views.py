@@ -122,3 +122,45 @@ class SelectedBannerView(APIView,PageNumberPagination):
         return self.get_paginated_response(serializer.data)
 
 
+from django.http import QueryDict
+import json
+from rest_framework import parsers
+
+class MultipartJsonParser(parsers.MultiPartParser):
+
+    def parse(self, stream, media_type=None, parser_context=None):
+        result = super().parse(
+            stream,
+            media_type=media_type,
+            parser_context=parser_context
+        )
+        data = {}
+        # find the data field and parse it
+        data = json.loads(result.data["data"])
+        qdict = QueryDict('', mutable=True)
+        qdict.update(data)
+        return parsers.DataAndFiles(qdict, result.files)
+
+from django.core.management import call_command
+import json
+class celery(APIView):
+    parser_classes= (parsers.MultiPartParser,)
+    def post(self,request):
+        try:
+            print(request.data)
+            data = json.loads(request.data['json'])
+            print(data)
+            f= request.FILES['file']
+            # print(request.file)
+            print(f)
+            # file_obj = request.data['media']
+            # ftype    = request.data['data']
+            # caption  = request.data['caption']
+            # print(file_obj)
+            # print(ftype)
+            return Response({"1":True},status=status.HTTP_200_OK)
+        except Exception as e:
+            print(str(e))
+            return Response({"1":False},status=status.HTTP_200_OK)
+
+        
