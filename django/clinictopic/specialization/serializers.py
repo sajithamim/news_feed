@@ -224,8 +224,15 @@ class QuizSerializer(serializers.ModelSerializer):
         return response
 
 
+class FilteredListSerializer(serializers.ListSerializer):
+
+    def to_representation(self, data):
+        data = data.filter(active=True)
+        return super(FilteredListSerializer, self).to_representation(data)
+
 class QuizgetSerializer(serializers.ModelSerializer):
     class Meta:
+        list_serializer_class = FilteredListSerializer
         model = Quiz
         fields = ['id','title','url','active']
 
