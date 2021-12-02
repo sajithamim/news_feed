@@ -20,6 +20,7 @@ import datetime
 import random
 from .emails import send_email_from_app_otp
 
+
 load_dotenv(BASE_DIR+str("/.env"))
 
 
