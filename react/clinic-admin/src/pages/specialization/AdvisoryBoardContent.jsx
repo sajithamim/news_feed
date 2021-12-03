@@ -37,6 +37,7 @@ const AdvisoryBoardContent = () => {
       key ++ ;
      items.push({
         sl_no : key,
+        key: item.id,
         id: item.id,
         photo: item.user_id.profilepic,
         name: item.user_id.name,

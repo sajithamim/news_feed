@@ -55,6 +55,7 @@ const SpecialityAdsList = () => {
       })
       return items.push({
         sl_no: key,
+        key: item.id,
         id: item.id,
         addimage: item.addimage,
         add_specialization: addSpecItems.toString(),

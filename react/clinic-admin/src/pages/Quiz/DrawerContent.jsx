@@ -7,7 +7,7 @@ import "./Quiz.css";
 
 
 const DrawerContent = (props) => {
-    const [state, setState] = useState({});
+    const [state, setState] = useState("");
     const [errors, setErrors] = useState({});
     const [formSubmit, setFormSubmit] = useState(true);
     const { specList, subspecialization } = useSelector(state => state.Quiz);
@@ -45,6 +45,9 @@ const DrawerContent = (props) => {
     const radioOnChange = (val, e) => {
         setState({ ...state, active: e.target.value })
     }
+    // const changeSelectOptionHandler = (event) => {
+    //     setSelected(event.target.value);
+    //   };
     const handleSpecChange = (value) => {
         console.log("value", value)
         setState({ ...state, spec_data: value, spec_id: value.value });
@@ -135,7 +138,7 @@ const DrawerContent = (props) => {
                             isMulti={false}
                             isSearchable={true}
                             value={state.sub_spec_data || ''}
-                            onChange={(e) => handleSubChange(e)}
+                            onChange={handleSubChange}
                             options={sub_spec}
                         />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.sub_spec_id}</div>
