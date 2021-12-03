@@ -14,7 +14,10 @@
       docker_compose:
         project_src: /root/clinic/
         files:
-        - production-clinic.yml
+          - production-clinic.yml
+        build: yes
+        state: present
+        debug: yes
     - name: pull from git for testing
       git:
         repo: https://{{bit_user|urlencode()}}:{{bit_pass|urlencode()}}@bitbucket.org/clinic-web/clinic-web.git
@@ -25,6 +28,9 @@
       docker_compose:
         project_src: /root/testing/clinic/
         files:
-        - production-clinic.yml
+          - production-clinic.yml
+        build: yes
+        state: present
+        debug: yes
         project_name:
         - clinictest
