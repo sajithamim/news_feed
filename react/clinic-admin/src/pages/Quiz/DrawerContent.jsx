@@ -14,6 +14,7 @@ const DrawerContent = (props) => {
     const [specId, setSpecId] = useState("");
     const dispatch = useDispatch();
     useEffect(() => {
+        setErrors({});
         dispatch(getSpecialization());
         if (props.editData !== null) {
             setState(props.editData);
@@ -45,14 +46,17 @@ const DrawerContent = (props) => {
         setState({ ...state, active: e.target.value })
     }
     const handleSpecChange = (value) => {
+        console.log("value", value)
         setState({ ...state, spec_data: value, spec_id: value.value });
+
         dispatch(getSubSpecialisation(value.value));
     };
     const handleSubChange = (value) => {
-
+        console.log("value", value)
         setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
     };
     const formValidation = () => {
+        console.log("state validate", state)
         let fields = state;
         let errors = {};
         let formIsValid = true;
@@ -71,13 +75,13 @@ const DrawerContent = (props) => {
                 errors["url"] = "Enter a valid URL";
             }
         }
-        if (!fields["spec_id"]) {
+        if (props.drawerType === 'add' && !fields["spec_id"]) {
             formIsValid = false;
-            errors["spec_id"] = "Specialization cannot be empty";
+            errors["spec_id"] = "Specialization cannot be empty"
         }
-        if (!fields["sub_spec_id"]) {
+        if (props.drawerType === 'add' && !fields["sub_spec_id" ]) {
             formIsValid = false;
-            errors["sub_spec_id"] = "Sub specialization cannot be empty";
+            errors["sub_spec_id"] = "Sub specialization cannot be empty"
         }
         if (fields.active === undefined) {
             formIsValid = false;
@@ -92,31 +96,12 @@ const DrawerContent = (props) => {
     const handleSubmit = (e) => {
         let newData = state;
         const id = state.id
+        console.log("handleSubmit", state)
         if (formValidation() && formSubmit) {
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];
                 delete newData["id"];
-                delete newData["spec_title"];
-                delete newData["spec_data"];
-                delete newData["sub_spec_data"];
-                // if (props.type === "Qui") {
-                //     dispatch(updateQuiz(id, newData))
-                //         .then((res) => {
-                //             setState({});
-                //             res != undefined ? (message.success('Quiz edited successfully')) : (message.error("Quiz already exists with this name"));
-                //         });
-                // }
-
             }
-            // else {
-            //     if (props.type === "Qui")
-            //     dispatch(postQuiz(newData))
-            //         .then((res) => {
-            //             setState({});
-            //             res != undefined ? (message.success('Quiz added successfully')) : (message.error("Quiz already exists with this name"));
-            //         });
-            // }
-
             setState({});
             props.onFormSubmit(newData)
         }
@@ -150,7 +135,7 @@ const DrawerContent = (props) => {
                             isMulti={false}
                             isSearchable={true}
                             value={state.sub_spec_data || ''}
-                            onChange={handleSubChange}
+                            onChange={(e) => handleSubChange(e)}
                             options={sub_spec}
                         />
                         <div className="errorMsg">{errors && errors.errors && errors.errors.sub_spec_id}</div>
