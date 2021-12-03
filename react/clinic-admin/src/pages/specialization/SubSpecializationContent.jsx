@@ -63,6 +63,7 @@ const SubSpecializationContent = () => {
       key++;
       items.push({
         sl_no: key,
+        key: item.id,
         id: item.id,
         name: item.name,
         icon: item.icon

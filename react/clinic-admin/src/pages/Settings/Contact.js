@@ -23,6 +23,7 @@ const Contact = () => {
             key++
            return contacts.push({
                 id: item.id,
+                key: item.id,
                 sl_no: serialNo,
                 name: item.name,
                 phone: item.phone,

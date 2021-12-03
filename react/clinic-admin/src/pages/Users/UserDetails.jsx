@@ -121,6 +121,7 @@ const UserDetails = () => {
       key++;
       return items.push({
         sl_no: key,
+        key: item.id,
         id: item.id,
         title: item.title,
         image: item.image,
