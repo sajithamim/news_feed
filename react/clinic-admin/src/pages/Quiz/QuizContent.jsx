@@ -18,6 +18,7 @@ const QuizContent = () => {
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
   const { quizList, addData, updateData, page } = useSelector(state => state.Quiz);
+  console.log(" quizList", quizList)
 
   useEffect(() => {
     dispatch(getQuiz(page))
