@@ -36,11 +36,10 @@ const Reset = () => {
       formIsValid = false;
       errors["password"] = "Password cannot be empty"
     }
-    if (!input["confirm_password"]) {
+    if (input["password"].length < 6) {
       formIsValid = false;
-      errors["confirm_password"] = "Confirm Password cannot be empty";
+      errors["password"] = "Minimum 6 characters are required"
     }
-
     if (typeof input["password"] !== "undefined" && typeof input["confirm_password"] !== "undefined") {
       if (input["password"] !== input["confirm_password"]) {
         formIsValid = false;
