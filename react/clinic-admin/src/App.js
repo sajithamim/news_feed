@@ -31,10 +31,6 @@ import { logout } from "./actions/auth.js"
 import { useHistory } from "react-router-dom";
 function App() {
 
-  // const { user } = useSelector(state => {
-  //   return state.auth;
-  // });
-
   const [signoutTime, setSignoutTime] = useState(900000);
   const [warningTime, setWarningTime] = useState(900000);
   let warnTimeout;

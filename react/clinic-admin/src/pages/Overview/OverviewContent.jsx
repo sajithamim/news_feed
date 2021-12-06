@@ -1,13 +1,13 @@
-import React,{ useEffect } from "react";
+import React, { useEffect } from "react";
 import "./Overview.css";
 import { useHistory } from "react-router-dom";
 
 const OverviewContent = () => {
-  
+
   const accessToken = localStorage.getItem("accessToken");
   let history = useHistory();
   useEffect(() => {
-    if (accessToken === null || accessToken === undefined ){
+    if (accessToken === null || accessToken === undefined) {
       history.push("/login");
     }
   }, [])
