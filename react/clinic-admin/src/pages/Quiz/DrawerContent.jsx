@@ -50,12 +50,9 @@ const DrawerContent = (props) => {
     const handleSpecChange = (value) => {
         setState({ ...state, spec_data: value, spec_id: value.value });
         dispatch(getSubSpecialisation(value.value));
-       
-        console.log("state", state);
     };
 
     const handleSubChange = (value) => {
-        console.log("value", value);
         setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
     };
     const formValidation = () => {
@@ -97,8 +94,7 @@ const DrawerContent = (props) => {
 
     const handleSubmit = (e) => {
         let newData = state;
-        const id = state.id
-        console.log("handleSubmit", state)
+        const id = state.id;
         if (formValidation() && formSubmit) {
             if (props.drawerType === 'edit') {
                 delete newData["sl_no"];

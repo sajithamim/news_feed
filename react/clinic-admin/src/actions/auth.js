@@ -8,8 +8,8 @@ import {
 
 import AuthService from "../services/auth.service";
 
-export const login = (email, password) => (dispatch) => {
-  return AuthService.login(email, password)
+export const login = (state) => (dispatch) => {
+  return AuthService.login(state.email, state.password)
   .then(
     (res) => {
       localStorage.setItem("refreshToken", res.data.tokens.refresh);
@@ -43,19 +43,16 @@ export const postRequestEmail = (state) => async (dispatch) => {
   try {
       const res = await AuthService.postEmail(state);
       if(res){
-        console.log("res", res);
         dispatch({
           type: POST_EMAIL,
           payload: res.data,
       })
       }else{
-        console.log("error");
         dispatch({
           type: POST_EMAIL_ERROR,
       })
       }
   } catch (err) {
-    console.log("error", err);
     dispatch({
       type: POST_EMAIL_ERROR,
   })
@@ -71,7 +68,6 @@ export const passwordReset = (state) => async (dispatch) => {
     })
     return res;
   }catch(err) {
-    console.log("error" , err);
     return err;
   }
 }
