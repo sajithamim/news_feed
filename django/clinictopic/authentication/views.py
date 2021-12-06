@@ -264,19 +264,17 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-
         email = request.data.get('email', '')
-        user_type = self.request.user.is_superuser
-        if not user_type:
-            status_code = status.HTTP_400_BAD_REQUEST
-            response = {
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            if not user.is_superuser:
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
                     'success': 'False',
                     'status code': status.HTTP_400_BAD_REQUEST,
                     'message': 'invlaid user'
                     }
-            return Response(response, status=status_code)
-        if User.objects.filter(email=email).exists():
-            user = User.objects.get(email=email)
+                return Response(response, status=status_code)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
             redirect_url = request.data.get('redirect_url', '')
