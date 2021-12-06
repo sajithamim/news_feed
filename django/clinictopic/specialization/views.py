@@ -352,14 +352,11 @@ class QuizView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 class QuizSubView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     @csrf_exempt
     def get(self,request):
         # quiz= Specialization.objects.filter(specialization_id__quiz_subspec_id__active=True).exclude(specialization_id__quiz_subspec_id__sub_spec_id__id__isnull=False).distinct()
         quiz= Specialization.objects.filter(specialization_id__quiz_subspec_id__sub_spec_id__id__isnull=False,specialization_id__quiz_subspec_id__active=True).distinct()
-
-        # print(quiz.query)
-        # print(quiz)
         serializers=GetSpecializationquiz(quiz,many=True)
         status_code = status.HTTP_200_OK
         response = {
