@@ -230,7 +230,7 @@ class LoginAPIView(generics.GenericAPIView):
         now = datetime.datetime.utcnow()
         try:
             user = User.objects.get(phone=request.data['phone'])
-            
+        except User.DoesNotExist:
             response = {
                 'success' : 'False',
                 'status code' : status_code,
