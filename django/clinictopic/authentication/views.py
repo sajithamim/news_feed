@@ -230,7 +230,7 @@ class LoginAPIView(generics.GenericAPIView):
         now = datetime.datetime.utcnow()
         try:
             user = User.objects.get(phone=request.data['phone'])
-        except User.DoesNotExist:
+            
             response = {
                 'success' : 'False',
                 'status code' : status_code,
@@ -266,7 +266,15 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
 
         email = request.data.get('email', '')
-
+        user_type = self.request.user.is_superuser
+        if user_type:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                    'success': 'False',
+                    'status code': status.HTTP_400_BAD_REQUEST,
+                    'message': 'invlaid user'
+                    }
+            return Response(response, status=status_code)
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
