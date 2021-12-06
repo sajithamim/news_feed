@@ -267,7 +267,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
         email = request.data.get('email', '')
         user_type = self.request.user.is_superuser
-        if user_type:
+        if not user_type:
             status_code = status.HTTP_400_BAD_REQUEST
             response = {
                     'success': 'False',
