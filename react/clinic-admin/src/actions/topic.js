@@ -36,6 +36,7 @@ export const getSpecialization = () => async (dispatch) => {
 export const getCategory = () => async (dispatch) => {
     try {
         const res = await Topic.getCategory();
+        console.log("response", res);
         dispatch({
             type: 'GET_CATEGORY',
             payload: res.data,

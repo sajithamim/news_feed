@@ -20,7 +20,7 @@ const DrawerContent = (props) => {
             setState(props.editData);
         }
         else {
-            setState({});
+            setState({sub_spec_id: []});
         }
     }, [props.editData])
 
@@ -42,24 +42,23 @@ const DrawerContent = (props) => {
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     };
+
     const radioOnChange = (val, e) => {
         setState({ ...state, active: e.target.value })
     }
-    // const changeSelectOptionHandler = (event) => {
-    //     setSelected(event.target.value);
-    //   };
+    
     const handleSpecChange = (value) => {
-        console.log("value", value)
         setState({ ...state, spec_data: value, spec_id: value.value });
-
         dispatch(getSubSpecialisation(value.value));
+       
+        console.log("state", state);
     };
+
     const handleSubChange = (value) => {
-        console.log("value", value)
+        console.log("value", value);
         setState({ ...state, sub_spec_data: value, sub_spec_id: value.value });
     };
     const formValidation = () => {
-        console.log("state validate", state)
         let fields = state;
         let errors = {};
         let formIsValid = true;

@@ -21,6 +21,7 @@ const ModalContent = (props) => {
   const [crntDateTime, setCrntDateTime] = useState('');
   const [state, setState] = useState({});
   const { specList, catList, userList } = useSelector(state => state.topic);
+  console.log("cATLIST",catList );
   const [err, setErrors] = useState({});
   const [data, setData] = useState([]);
 
@@ -55,6 +56,7 @@ const ModalContent = (props) => {
 
   const category = [];
   catList && catList.data && catList.data.map(item => {
+    console.log("category", category);
     return category.push(
       { value: item.id, label: item.title }
     );
