@@ -94,6 +94,10 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'User with this phone number already exists',
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            notverifiedphone = User.objects.filter(phone=user['phone'],phone_verified=False,auth_provider='email').first()
+            if notverifiedphone:
+               unverified =  User.objects.get(phone=user['phone'],phone_verified=False,auth_provider='email')
+               unverified.delete()
             serializer.is_valid(raise_exception=True)
             serializer.save()
             user_data = serializer.data
