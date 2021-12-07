@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
-import {  useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
+import Login from './Login';
+import { Redirect } from 'react-router';
 import { passwordReset } from '../../actions/auth';
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 import "./Login.css";
 
@@ -23,9 +25,10 @@ const Reset = () => {
   }
 
   useEffect(() => {
-    if(success) {
+    if (success) {
       message.success(success);
-      dispatch({type: 'RESET_DATA'})
+      dispatch({ type: 'RESET_DATA' })
+      history.push("/data");
     }
   }, [success])
   const validate = () => {
@@ -61,42 +64,44 @@ const Reset = () => {
   }
 
   return (
-    <Form name="basic" onFinish={handleSubmit} layout="vertical" validateMessages={validate}>
-      <div className="main">
-        <div className="sign">Reset Password</div>
-        <Form.Item label="Password" name="password" >
-          <Input
-            style={{ borderRadius: "8px" }}
-            name="password"
-            type="password"
-            className="un"
-            value={state.password}
-            placeholder="Password"
-            onChange={handleChange}
-          />
-          <div className="errorMsg">{errors && errors.errors && errors.errors.password}</div>
-        </Form.Item>
+    <div>
+      <Form name="basic" onFinish={handleSubmit} layout="vertical" validateMessages={validate}>
+        <div className="main">
+          <div className="sign">Reset Password</div>
+          <Form.Item label="Password" name="password" >
+            <Input
+              style={{ borderRadius: "8px" }}
+              name="password"
+              type="password"
+              className="un"
+              value={state.password}
+              placeholder="Password"
+              onChange={handleChange}
+            />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.password}</div>
+          </Form.Item>
 
-        <Form.Item label="Confirm Password" name="confirm_password">
-          <Input
-            style={{ borderRadius: "8px" }}
-            name="confirm_password"
-            type="password"
-            className="un"
-            value={state.confirm_password}
-            placeholder="Confirm Password"
-            onChange={handleChange}
-          />
-          <div className="errorMsg">{errors && errors.errors && errors.errors.confirm_password}</div>
-        </Form.Item>
+          <Form.Item label="Confirm Password" name="confirm_password">
+            <Input
+              style={{ borderRadius: "8px" }}
+              name="confirm_password"
+              type="password"
+              className="un"
+              value={state.confirm_password}
+              placeholder="Confirm Password"
+              onChange={handleChange}
+            />
+            <div className="errorMsg">{errors && errors.errors && errors.errors.confirm_password}</div>
+          </Form.Item>
 
-        <div className="submit">
-          <Button type="primary" htmlType="submit" >
-            Submit
-          </Button>
+          <div className="submit">
+            <Button type="primary" htmlType="submit" >
+              Submit
+            </Button>
+          </div>
         </div>
-      </div>
-    </Form>
+      </Form>
+    </div>
   );
 };
 
