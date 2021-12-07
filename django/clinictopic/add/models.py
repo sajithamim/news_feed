@@ -68,10 +68,10 @@ class AllUserAdd(models.Model):
       if self.addimage:
         filename = "%s.jpg" % self.addimage.name.split('.')[0]
 
-        im = Image.open(self.addimage)
-        new_width  = 320
-        new_height = 200
-        image = im.resize((new_width, new_height), Image.ANTIALIAS)
+        image = Image.open(self.addimage)
+        # new_width  = 320
+        # new_height = 200
+        # image = im.resize((new_width, new_height), Image.ANTIALIAS)
          # for PNG images discarding the alpha channel and fill it with some color
         if image.mode in ('RGBA', 'LA'):
             background = Image.new(image.mode[:-1], image.size, '#fff')
