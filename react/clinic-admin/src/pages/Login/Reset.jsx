@@ -28,7 +28,7 @@ const Reset = () => {
     if (success) {
       message.success(success);
       dispatch({ type: 'RESET_DATA' })
-      history.push("/data");
+      history.push("/login");
     }
   }, [success])
   const validate = () => {
