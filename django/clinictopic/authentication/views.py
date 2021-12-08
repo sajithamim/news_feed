@@ -168,6 +168,7 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'error',
                 'error': str(e)
                 }
+            print(str(e))
             return Response(response, status=status_code)
 
 class EmailActivatelinkView(views.APIView):
