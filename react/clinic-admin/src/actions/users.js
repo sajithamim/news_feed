@@ -5,14 +5,19 @@ import DataService from "../services/data.service";
 export const getUsersList = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try {
-        const res = await Users.getUsers(page);
+        const url = `auth/userlist/?page=${page}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER',
             payload: res.data,
             page: page
         })
     } catch (err) {
-
+        dispatch({
+            type: 'HANDLE_ERROR',
+            error: 'Some errors occured.',
+            status: err,
+        })
     }
 }
 

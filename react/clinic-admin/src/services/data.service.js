@@ -1,4 +1,4 @@
-import { http, instance } from "../http-common";
+import { http, http1, instance } from "../http-common";
 import axios from 'axios';
 
 const addData = (url, state) => {
@@ -52,7 +52,7 @@ const genAds = {
     deleteData,
     editData,
     imageUpload,
-    uploadDoc
+    uploadDoc,
 }
 
 
