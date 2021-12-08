@@ -94,15 +94,15 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'User with this phone number already exists',
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
-            # socialmobile = User.objects.filter(phone=user['phone'],~Q(auth_provider='email')).first()
-            # if socialmobile:
-            #     status_code = status.HTTP_400_BAD_REQUEST
-            #     response = {
-            #     'success' : 'False',
-            #     'status code' : status_code,
-            #     'message': 'User with this phone number already exists',
-            #     }
-            #     return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            socialmobile = User.objects.filter(~Q(auth_provider='email'),phone=user['phone']).first()
+            if socialmobile:
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'User with this phone number already exists',
+                }
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
             notverifiedphone = User.objects.filter(phone=user['phone'],phone_verified=False,auth_provider='email').first()
             if notverifiedphone:
                unverified =  User.objects.get(phone=user['phone'],phone_verified=False,auth_provider='email')
