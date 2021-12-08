@@ -94,6 +94,15 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'User with this phone number already exists',
                 }
                 return Response(response,status=status.HTTP_400_BAD_REQUEST)
+            socialmobile = User.objects.filter(phone=user['phone'],~Q(auth_provider='email'))
+            if socialmobile:
+                status_code = status.HTTP_400_BAD_REQUEST
+                response = {
+                'success' : 'False',
+                'status code' : status_code,
+                'message': 'User with this phone number already exists',
+                }
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
             notverifiedphone = User.objects.filter(phone=user['phone'],phone_verified=False,auth_provider='email').first()
             if notverifiedphone:
                unverified =  User.objects.get(phone=user['phone'],phone_verified=False,auth_provider='email')
@@ -168,7 +177,7 @@ class RegisterView(generics.GenericAPIView):
                 'message': 'error',
                 'error': str(e)
                 }
-            print(str(e))
+            # print(str(e))
             return Response(response, status=status_code)
 
 class EmailActivatelinkView(views.APIView):
