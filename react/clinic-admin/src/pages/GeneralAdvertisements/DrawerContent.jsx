@@ -8,15 +8,15 @@ const DrawerContent = (props) => {
   const [errors, setErrors] = useState({ name: '' });
   const [image, setImage] = useState();
   const [imgData, setImgData] = useState(props.editData.image);
-  
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(Object.keys(props.editData).length !== 0) 
+    if (Object.keys(props.editData).length !== 0)
       setState(props.editData)
-    else 
-    setState({active: true})
-      
+    else
+      setState({ active: true })
+
     setErrors({});
     if (props.editData.image && props.editData.image) {
       setImgData(props.editData.image);
@@ -54,17 +54,21 @@ const DrawerContent = (props) => {
     if (!fields["url"]) {
       formIsValid = false;
       errors["url"] = "URL is required";
-    } else{
+    } else {
       var myUrl = fields.url;
-            var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-            if (res === null) {
-              formIsValid = false;
-              errors["url"] = "Enter a valid URL";
-            }
+      var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      if (res === null) {
+        formIsValid = false;
+        errors["url"] = "Enter a valid URL";
+      }
     }
-    if (props.drawerType === 'add' && image.name === undefined) {
+    if (image.name === undefined && state.image === undefined) {
       formIsValid = false;
-      errors["image"] = "Image is required"
+      errors["image"] = "Image is mandatory";
+    }
+    if (image.name && !image.name.match(/\.(jpg|jpeg|png|gif|jfif|PNG|BAT|Exif|BMP|TIFF)$/)) { 
+      formIsValid = false;
+      errors["image"] = "Please select valid image.";
     }
     setErrors({ errors });
     return formIsValid;
@@ -101,8 +105,8 @@ const DrawerContent = (props) => {
               accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
-          <Form.Item label="Status" wrapperCol={{ offset: 2}}>
-            <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active} style={{marginLeft: '-6px'}}>
+          <Form.Item label="Status" wrapperCol={{ offset: 2 }}>
+            <Radio.Group onChange={(e) => radioOnChange('status', e)} value={state.active} style={{ marginLeft: '-6px' }}>
               <Radio value={true}>
                 Enable
               </Radio>
