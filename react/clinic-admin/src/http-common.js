@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const accessToken = localStorage.getItem("accessToken");
+
 export const http = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
@@ -9,7 +10,7 @@ export const http = axios.create({
 });
 
 export const http1 = axios.create({
-  baseURL: process.env.REACT_APP_ECAPS_API,
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "Authorization": accessToken,
   }
@@ -19,6 +20,8 @@ export const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: { 'content-type': 'multipart/form-data' },
 });
+
+// ............................................................................
 
 http.interceptors.request.use(async (config) => {
   let accessToken = localStorage.getItem("accessToken");
@@ -31,6 +34,8 @@ instance.interceptors.request.use(async (config) => {
   config.headers["authorization"] = `Bearer ${accessToken}`;
   return config;
 });
+
+// ............................................................................
 
 instance.interceptors.response.use(
   async (response) => {
@@ -48,8 +53,9 @@ instance.interceptors.response.use(
       !originalRequest._retry &&
       !serverCallUrl.pathname.includes("/auth")
     ) {
+      console.log("coming instance");
       let token = await refresh();
-      if (token === undefined){
+      if (token === undefined) {
         sessionlogout();
       }
       originalRequest._retry = true;
@@ -73,19 +79,24 @@ http.interceptors.response.use(
     );
 
     const status = error.response.status;
+    console.log("status", status);
     if (
       (status === 401 || status === 404) &&
-      !originalRequest._retry &&
-      !serverCallUrl.pathname.includes("/auth")
+      !originalRequest._retry ||
+      serverCallUrl.pathname.includes("/auth")
     ) {
+      console.log("coming http");
       let token = await refresh();
-      if (token === undefined){
+      if (token === undefined) {
         sessionlogout();
       }
       originalRequest._retry = true;
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
       return instance(originalRequest);
+    }
+    else{
+      console.log("error");
     }
     return Promise.reject(error);
   }
@@ -100,13 +111,15 @@ export const refresh = async () => {
       { refresh: refreshToken },
       { headers: { Authorization: `Bearer ${accessToken}` } }
     )
-    .then((res) => {
-      return res;
-    }).catch((err) => {
-      const clearToken = localStorage.clear();
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("accessToken");
-    });
+      .then((res) => {
+        console.log("coming refresh");
+        return res;
+      }).catch((err) => {
+        console.log("coming error");
+        const clearToken = localStorage.clear();
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessToken");
+      });
   }
 };
 

@@ -12,10 +12,12 @@ const UserContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
+  
   useEffect(() => {
-    dispatch(getUsersList())
+    dispatch(getUsersList(page))
   }, [ addUser,  updateUser])
 
+  
   useEffect(() => {
     if(success) {
       message.success(success);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Alert } from "antd";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +9,6 @@ import { components } from "react-select";
 
 const Login = () => {
   const [state, setState] = useState({});
-  const [email, setEmail] = useState("" || null);
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState("");
   let history = useHistory();
 
@@ -18,13 +16,17 @@ const Login = () => {
   const { error } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
 
+  useEffect(() => {
+    console.log("email", state.email);
+  },[state])
+
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
   }
   const signin = (e) => {
     setLoading(true);
     dispatch(login(state))
-    setState({email: '', password: ''});
+    setState({});
   };
 
   if (window.navigator.onLine == true) {
@@ -40,7 +42,6 @@ const Login = () => {
     },
   };
   const reset = () => {
-    setState({email: null, password: null});
   }
  
   return (
@@ -49,7 +50,7 @@ const Login = () => {
       <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
         <div className="main">
           <div className="sign">Login</div>
-          <p>{email}</p>
+          <p>{state.email}</p>
           <Form.Item label="Email" name="email" rules={[
             {
               required: true,
@@ -59,6 +60,7 @@ const Login = () => {
           >
             <Input
               style={{ borderRadius: "8px", marginLeft: '2px' }}
+              ref="fieldName"
               name= "email"
               className="un"
               autoComplete="off"
