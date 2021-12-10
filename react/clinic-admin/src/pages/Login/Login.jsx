@@ -50,7 +50,6 @@ const Login = () => {
       <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
         <div className="main">
           <div className="sign">Login</div>
-          <p>{state.email}</p>
           <Form.Item label="Email" name="email" rules={[
             {
               required: true,
