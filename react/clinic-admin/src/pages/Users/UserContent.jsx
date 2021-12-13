@@ -1,31 +1,37 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Table, Spin, Space, Popconfirm, Button, message } from "antd";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
+import { useHistory } from "react-router-dom";
+import { logout } from "../../actions/auth.js"
 
 const UserContent = () => {
-  const { userList , addUser , updateUser, page, success, error} = useSelector(state => state.users);
+  const { userList, addUser, updateUser, page, success, error } = useSelector(state => state.users);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
-  
+  let history = useHistory();
+
   useEffect(() => {
     dispatch(getUsersList(page))
-  }, [ addUser,  updateUser])
+  }, [addUser, updateUser])
 
-  
+
   useEffect(() => {
-    if(success) {
+    if (success) {
       message.success(success);
-      dispatch({type: 'RESET_DATA'})
+      dispatch({ type: 'RESET_DATA' })
     }
-    else if(error) {
+    else if (error) {
       message.error(error);
-      dispatch({type: 'RESET_DATA'})
+      dispatch({ type: 'RESET_DATA' })
+      const clearToken = localStorage.clear();
+      dispatch(logout());
+      history.push("/login");
     }
   }, [success, error])
 
@@ -39,7 +45,7 @@ const UserContent = () => {
 
   const handleChange = (page, size, sorter) => {
     setCurrent(page);
-    setSlNo(page-1)
+    setSlNo(page - 1)
     dispatch(getUsersList(page));
   }
 
@@ -50,20 +56,24 @@ const UserContent = () => {
   const userGenerator = () => {
     let serialNo = pageSize * slNo;
     const Items = [];
-    userList && userList.results && userList.results.map((item, key) => {
+    userList && userList.results && userList.results.filter((user) => {
+      return user.phone_verified === true;
+    }).map((user, key) => {
       key++;
       serialNo++;
-      return Items.push({
-        key: item.id,
+      Items.push({
+        key: user.id,
         sl_no: serialNo,
-        id: item.id,
-        name: item.name,
-        email: item.email,
-        phone: item.phone,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        phone_verified: user.phone_verified === true ? 'True' : 'False',
       })
     })
     return Items;
   }
+
   const User = userGenerator();
   const columns = [
     {
@@ -87,6 +97,11 @@ const UserContent = () => {
       key: 'phone',
     },
     {
+      title: 'ph_verified',
+      dataIndex: 'phone_verified',
+      key: 'phone_verified',
+    },
+    {
       title: "Action",
       key: "action",
       align: "center",
@@ -97,7 +112,7 @@ const UserContent = () => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this user?"
-            onConfirm={() =>dispatch(deleteUser(record.id, current))}
+            onConfirm={() => dispatch(deleteUser(record.id, current))}
             onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -116,7 +131,7 @@ const UserContent = () => {
       <Card
         title="Users"
       > {userList && userList.results && page == current ?
-        (<Table columns={columns} dataSource={User} pagination={pagination}/>) :
+        (<Table columns={columns} dataSource={User} pagination={pagination} />) :
         (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
       </Card>
     </div>
