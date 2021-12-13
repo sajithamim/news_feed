@@ -3,11 +3,9 @@ import { Form, Button, message, Card, Spin } from "antd";
 import { useDispatch } from "react-redux";
 import { getPrivacy, postPrivacy } from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
+import { EditorState,  ContentState, convertFromHTML } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { Scrollbars } from 'react-custom-scrollbars';
-import "./Settings.css";
 
 const Policy = () => {
     const dispatch = useDispatch();
@@ -15,20 +13,19 @@ const Policy = () => {
     useEffect(() => {
         dispatch(getPrivacy())
             .then(res => {
-                console.log("response", res);
                 if (res.data[0]) {
                     setId(res.data[0].id);
-                    setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
+                    const contentBlocks = convertFromHTML(res.data && res.data[0] && res.data[0].privacy_policy);
+                    const contentState = ContentState.createFromBlockArray(contentBlocks);
+                    setEditorState(EditorState.createWithContent(contentState));
                 }
             })
     }, [])
 
-    const [contentState, setContentState] = useState();
     const [convertedContent, setConvertedContent] = useState();
 
     const handleSubmit = () => {
         let newData = {}
-        // newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
         newData.privacy_policy = convertedContent;
         dispatch(postPrivacy(newData))
             .then(() => {
@@ -38,13 +35,6 @@ const Policy = () => {
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty())
 
-    // const onEditorStateChange = (editorState) => {
-    //     const contentState = convertToRaw(editorState.getCurrentContent()).blocks;
-    //     const value = contentState.map(block => (!block.text.trim() && '\n') || block.text).join(' ');
-
-    //     setContentState(value);
-    //     setEditorState(editorState)
-    // }
     const handleEditorChange = (state) => {
         setEditorState(state);
         convertContentToHTML();
@@ -52,12 +42,10 @@ const Policy = () => {
     const convertContentToHTML = () => {
         let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
         setConvertedContent(currentContentAsHTML);
-        console.log("currentContentAsHTML", currentContentAsHTML);
     }
 
     return (
-        <div class="privacy" style={{ margin: "10px" }}>
-            <Card title="Policy" style={{ width: "100%", height: '500px' }}>
+            <Card title="Policy" style={{ width: "100%", height: 'auto' }}>
                 <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
                     {editorState ?
                         (<Editor
@@ -73,7 +61,6 @@ const Policy = () => {
                     </Form.Item>
                 </Form>
             </Card>
-        </div>
     )
 }
 export default Policy;
