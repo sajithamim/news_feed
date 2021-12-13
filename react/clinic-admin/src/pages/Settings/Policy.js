@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { getPrivacy, postPrivacy } from "../../actions/settings";
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
+import { convertToHTML } from 'draft-convert';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Scrollbars } from 'react-custom-scrollbars';
 import "./Settings.css";
@@ -14,6 +15,7 @@ const Policy = () => {
     useEffect(() => {
         dispatch(getPrivacy())
             .then(res => {
+                console.log("response", res);
                 if (res.data[0]) {
                     setId(res.data[0].id);
                     setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(res.data && res.data[0] && res.data[0].privacy_policy))));
@@ -22,10 +24,12 @@ const Policy = () => {
     }, [])
 
     const [contentState, setContentState] = useState();
+    const [convertedContent, setConvertedContent] = useState();
 
     const handleSubmit = () => {
         let newData = {}
-        newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
+        // newData.privacy_policy = JSON.stringify(convertToRaw(contentState));
+        newData.privacy_policy = convertedContent;
         dispatch(postPrivacy(newData))
             .then(() => {
                 message.success('Policy added successfully')
@@ -34,10 +38,21 @@ const Policy = () => {
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty())
 
-    const onEditorStateChange = (editorState) => {
-        const contentState = editorState.getCurrentContent();
-        setContentState(contentState);
-        setEditorState(editorState)
+    // const onEditorStateChange = (editorState) => {
+    //     const contentState = convertToRaw(editorState.getCurrentContent()).blocks;
+    //     const value = contentState.map(block => (!block.text.trim() && '\n') || block.text).join(' ');
+
+    //     setContentState(value);
+    //     setEditorState(editorState)
+    // }
+    const handleEditorChange = (state) => {
+        setEditorState(state);
+        convertContentToHTML();
+    }
+    const convertContentToHTML = () => {
+        let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+        setConvertedContent(currentContentAsHTML);
+        console.log("currentContentAsHTML", currentContentAsHTML);
     }
 
     return (
@@ -50,7 +65,7 @@ const Policy = () => {
                             toolbarClassName="toolbarClassName"
                             wrapperClassName="wrapperClassName"
                             editorClassName="editorClassName"
-                            onEditorStateChange={onEditorStateChange}
+                            onEditorStateChange={handleEditorChange}
                         />
                         ) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
