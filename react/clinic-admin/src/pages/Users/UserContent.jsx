@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Card, Table, Spin, Space, Popconfirm, Button, message } from "antd";
+import { Card, Table, Spin, Space, Popconfirm, message } from "antd";
 import "antd/dist/antd.css";
 import { Link } from 'react-router-dom';
 import { Icon, IconButton } from "@material-ui/core";
+import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersList, deleteUser } from "../../actions/users"
 import { useHistory } from "react-router-dom";
@@ -68,7 +69,6 @@ const UserContent = () => {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        phone_verified: user.phone_verified === true ? 'True' : 'False',
       })
     })
     return Items;
@@ -92,14 +92,9 @@ const UserContent = () => {
       key: 'email',
     },
     {
-      title: 'phone',
+      title: 'Phone',
       dataIndex: 'phone',
       key: 'phone',
-    },
-    {
-      title: 'ph_verified',
-      dataIndex: 'phone_verified',
-      key: 'phone_verified',
     },
     {
       title: "Action",
@@ -107,9 +102,7 @@ const UserContent = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link">
-            <Link to={"/userdetails/" + record.email}>View Details</Link>
-          </Button>
+          <Link to={"/userdetails/" + record.email} style={{ color: 'black' }}><RemoveRedEyeTwoToneIcon /></Link>
           <Popconfirm
             title="Are you sure to delete this user?"
             onConfirm={() => dispatch(deleteUser(record.id, current))}
