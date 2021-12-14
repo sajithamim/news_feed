@@ -114,9 +114,12 @@ const CategoriesContent = (props) => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => onEdit(record)}>
+          <IconButton onClick={() => onEdit(record)}>
+            <Icon>edit</Icon>
+          </IconButton>
+          {/* <Button type="link" onClick={() => onEdit(record)}>
             Edit
-          </Button>
+          </Button> */}
           <Popconfirm
             title="Topics are created under categories , are you sure you want to delete this category?"
             onConfirm={() => onConfirm(record.id)}
@@ -124,7 +127,10 @@ const CategoriesContent = (props) => {
             okText="Yes"
             cancelText="No"
           >
-            <Button type="link">Delete</Button>
+            {/* <Button type="link">Delete</Button> */}
+            <IconButton >
+              <Icon>delete</Icon>
+            </IconButton>
           </Popconfirm>
         </Space>
       ),
