@@ -9,13 +9,13 @@ export const routes = [
     title: 'Home',
     path: '/data',
     key: "data",
-    icon: <IoIcons.IoIosPaper />
+    icon: <IoIcons.IoIosHome />
   },
   {
     title: 'Users',
     path: '/users',
     key: "users",
-    icon: <IoIcons.IoIosPaper />
+    icon: <IoIcons.IoIosPerson />
   },
   {
     title: 'Specialities',
@@ -33,7 +33,7 @@ export const routes = [
     title: 'Topics',
     path: '/topics',
     key: "topics",
-    icon: <AiFillContainer />
+    icon: <IoIcons.IoMdJournal />
   },
   {
     title: 'Speciality Advertisements',
@@ -51,31 +51,31 @@ export const routes = [
     title: 'Settings',
     path: '/data',
     key: "settings",
-    icon: <IoIcons.IoIosPaper />,
+    icon: <IoIcons.IoIosSettings />,
     subNav: [
       {
         title: 'Privacy policy',
         path: '/privacy_policy',
         key: "privacy_policy",
-        icon: <IoIcons.IoIosPaper />,
+        icon: <IoIcons.IoIosSettings />,
       },
       {
         title: 'Terms And Conditions',
         path: '/terms',
         key: "terms",
-        icon: <IoIcons.IoIosPaper />,
+        icon: <IoIcons.IoIosSettings />,
       },
       {
         title: 'Contact Us',
         path: '/contact',
         key: "Contact",
-        icon: <IoIcons.IoIosPaper />,
+        icon: <IoIcons.IoIosCall />,
       },
       {
         title: 'About Us',
         path: '/about',
         key: "About",
-        icon: <IoIcons.IoIosPaper />,
+        icon: <IoIcons.IoIosSettings />,
       },
     ]
   },
@@ -98,13 +98,13 @@ export const routes = [
     layout: "/admin",
     path: '/Configuration',
     key: "Configuration",
-    icon: <MdConfirmationNumber/>
+    icon: <IoIcons.IoMdInformationCircleOutline/>
   },
   {
     title: 'Logout',
     layout: "/auth",
     path: '',
     key: "logout",
-    icon: <AiTwotoneLock />
+    icon: <IoIcons.IoMdLogOut />
   },
 ];

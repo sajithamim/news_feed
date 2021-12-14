@@ -30,25 +30,25 @@ import ClinicRoute from './Layouts/ClinicRoute';
 import { useDispatch } from "react-redux";
 import { logout } from "./actions/auth.js"
 import { useHistory } from "react-router-dom";
-import isReachable from "is-reachable";
+// import isReachable from "is-reachable";
 
 function App() {
-  const _isMounted = true;
-  const URL = "google.com:443";
-  const EVERY_SECOND = 1000;
+  // const _isMounted = true;
+  // const URL = "google.com:443";
+  // const EVERY_SECOND = 1000;
   const [signoutTime, setSignoutTime] = useState(900000);
   const [warningTime, setWarningTime] = useState(900000);
   const [status, setStatus] = useState({ online: false })
 
-  useEffect(() => {
-    setInterval(async () => {
-      const online = await isReachable(URL);
+  // useEffect(() => {
+  //   setInterval(async () => {
+  //     const online = await isReachable(URL);
 
-      if (_isMounted) {
-        setStatus({ online });
-      }
-    }, EVERY_SECOND);
-  }, [])
+  //     if (_isMounted) {
+  //       setStatus({ online });
+  //     }
+  //   }, EVERY_SECOND);
+  // }, [])
 
   let warnTimeout;
   let logoutTimeout;

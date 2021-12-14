@@ -3,7 +3,7 @@ import DataService from "../services/data.service";
 
 
 export const getUsersList = (page) => async (dispatch) => {
-    page = page != undefined ? page : 1;
+    page = page !== undefined ? page : 1;
     try {
         const url = `auth/userlist/?page=${page}`;
         const res = await DataService.getData(url);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Space, Table, Card, Popconfirm, Button, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getContact, deleteContactMessage } from "../../actions/settings";
+import { Icon, IconButton } from "@material-ui/core";
 
 const Contact = () => {
     const dispatch = useDispatch();
@@ -9,10 +10,10 @@ const Contact = () => {
     const [current, setCurrent] = useState(1);;
     const [pageSize, setPageSize] = useState(10);
     const [slNo, setSlNo] = useState(0);
-    const  {page}  = useSelector(state => state.settings);
+    const { page } = useSelector(state => state.settings);
 
     useEffect(() => {
-        dispatch(getContact( page))
+        dispatch(getContact(page))
     }, [])
 
     const conatctGenerator = () => {
@@ -21,7 +22,7 @@ const Contact = () => {
         contactList && contactList.results && contactList.results.map((item, key) => {
             serialNo++;
             key++
-           return contacts.push({
+            return contacts.push({
                 id: item.id,
                 key: item.id,
                 sl_no: serialNo,
@@ -40,9 +41,9 @@ const Contact = () => {
 
     const onConfirm = (id) => {
         dispatch(deleteContactMessage(id))
-        .then((res) => {
-            message.success("Contact deleted successfully");
-        })
+            .then((res) => {
+                message.success("Contact deleted successfully");
+            })
     }
     const handleChange = (page, size, sorter) => {
         setCurrent(page)
@@ -98,7 +99,9 @@ const Contact = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button type="link">Delete</Button>
+                        <IconButton >
+                            <Icon>delete</Icon>
+                        </IconButton>
                     </Popconfirm>
                 </Space>
             ),
