@@ -57,7 +57,6 @@ const SpecializationContent = () => {
   const specGenerator = () => {
     let serialNo = pageSize * slNo;
     const items = [];
-    console.log("test");
     specList && specList.results && specList.results.map((item, key) => {
       serialNo++;
       return items.push({
