@@ -50,8 +50,7 @@ instance.interceptors.response.use(
     const status = error.response.status;
     if (
       (status === 401 || status === 403) &&
-      !originalRequest._retry &&
-      !serverCallUrl.pathname.includes("/auth")
+      !originalRequest._retry 
     ) {
       console.log("coming instance");
       let token = await refresh();
@@ -79,11 +78,9 @@ http.interceptors.response.use(
     );
 
     const status = error.response.status;
-    console.log("status", status);
     if (
       (status === 401 || status === 404) &&
-      !originalRequest._retry ||
-      serverCallUrl.pathname.includes("/auth")
+      !originalRequest._retry
     ) {
       console.log("coming http");
       let token = await refresh();

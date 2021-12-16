@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, passwordReset } from "../../actions/auth.js"
 import { Link } from 'react-router-dom';
 import "./Login.css";
-import { components } from "react-select";
 
 const Login = () => {
   const [state, setState] = useState({});
@@ -19,9 +18,8 @@ const Login = () => {
   useEffect(() => {
     if (payload){
       message.error(payload);
-      document.getElementById("password").value = "";
       dispatch({ type: 'RESET_DATA' })
-
+      setState({email: ""})
     }
   }, [payload])
 
@@ -49,7 +47,6 @@ const Login = () => {
 
   return (
     <>
-      {/* {error ? (<Alert type="error" message="Invalid username or password" banner closable onClick={reset} />) : (null)} */}
       <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
         <div className="main">
           <div className="sign">Login</div>
@@ -62,11 +59,11 @@ const Login = () => {
           >
             <Input
               style={{ borderRadius: "8px", marginLeft: '2px' }}
-              ref="fieldName"
+              id="email"
               name="email"
               className="un"
               autoComplete="off"
-              value={state.email}
+              value={state.email || ""}
               placeholder="Email"
               // onChange={(e) => setEmail(e.target.value ?? '')}
               onChange={handleChange}
