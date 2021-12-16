@@ -474,6 +474,7 @@ const ModalContent = (props) => {
             <SelectBox
               isMulti={false}
               isSearchable={true}
+              maxMenuHeight={190}
               value={state.category_data || ''}
               onChange={handleCategoryChange}
               options={category}

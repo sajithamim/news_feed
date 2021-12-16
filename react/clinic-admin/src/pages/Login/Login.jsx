@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Alert } from "antd";
+import { Form, Input, Button, Alert, message } from "antd";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, passwordReset } from "../../actions/auth.js"
@@ -13,12 +13,17 @@ const Login = () => {
   let history = useHistory();
 
   const dispatch = useDispatch();
-  const { error } = useSelector(state => state.auth);
+  const { error, payload } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    console.log("email", state.email);
-  },[state])
+    if (payload){
+      message.error(payload);
+      document.getElementById("password").value = "";
+      dispatch({ type: 'RESET_DATA' })
+
+    }
+  }, [payload])
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
@@ -41,12 +46,10 @@ const Login = () => {
       email: "'${label}' is not a valid email!",
     },
   };
-  const reset = () => {
-  }
- 
+
   return (
     <>
-      {error ? (<Alert type="error" message="Invalid username or password" banner closable onClick={reset} />) : (null)}
+      {/* {error ? (<Alert type="error" message="Invalid username or password" banner closable onClick={reset} />) : (null)} */}
       <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
         <div className="main">
           <div className="sign">Login</div>
@@ -60,10 +63,10 @@ const Login = () => {
             <Input
               style={{ borderRadius: "8px", marginLeft: '2px' }}
               ref="fieldName"
-              name= "email"
+              name="email"
               className="un"
               autoComplete="off"
-              value= {state.email} 
+              value={state.email}
               placeholder="Email"
               // onChange={(e) => setEmail(e.target.value ?? '')}
               onChange={handleChange}
@@ -80,9 +83,10 @@ const Login = () => {
             ]}
           >
             <Input
-              style={{ borderRadius: "8px" ,  marginLeft: "2px" }}
+              style={{ borderRadius: "8px", marginLeft: "2px" }}
               className="pass"
-              name= "password"
+              name="password"
+              id= "password"
               value={state.password}
               type="password"
               placeholder="Password"

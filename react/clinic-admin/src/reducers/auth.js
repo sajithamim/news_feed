@@ -35,6 +35,7 @@ export default function (state = initialState, action) {
         ...state,
         isLoggedIn: false,
         error: action.error,
+        payload: action.payload,
       };
     case POST_EMAIL:
       return { ...state,  success: action.payload.success};
@@ -49,7 +50,7 @@ export default function (state = initialState, action) {
         user: null,
       };
     case 'RESET_DATA':
-            return { ...state , success: '', error: ''}
+            return { ...state , success: '', error: '', payload: ''}
     default:
       return state;
   }

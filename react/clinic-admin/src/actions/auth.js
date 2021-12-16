@@ -12,6 +12,7 @@ export const login = (state) => (dispatch) => {
   return AuthService.login(state.email, state.password)
   .then(
     (res) => {
+      console.log("response", res);
       localStorage.setItem("refreshToken", res.data.tokens.refresh);
       localStorage.setItem("accessToken", res.data.tokens.access);
       localStorage.setItem("success", res.data.success);
@@ -23,6 +24,7 @@ export const login = (state) => (dispatch) => {
       });
     },
     (error) => {
+      console.log("error", error);
       dispatch({
         type: LOGIN_FAIL,
         error: "Network Error",
