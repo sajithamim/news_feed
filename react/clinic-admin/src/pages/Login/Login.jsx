@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import "./Login.css";
 
 const Login = () => {
+  const [form] = Form.useForm();
   const [state, setState] = useState({});
   const [loading, setLoading] = useState("");
   let history = useHistory();
@@ -14,12 +15,13 @@ const Login = () => {
   const dispatch = useDispatch();
   const { error, payload } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
+  
 
   useEffect(() => {
     if (payload){
       message.error(payload);
       dispatch({ type: 'RESET_DATA' })
-      setState({email: ""})
+      form.resetFields();
     }
   }, [payload])
 
@@ -29,7 +31,6 @@ const Login = () => {
   const signin = (e) => {
     setLoading(true);
     dispatch(login(state))
-    setState({});
   };
 
   if (window.navigator.onLine == true) {
@@ -47,7 +48,7 @@ const Login = () => {
 
   return (
     <>
-      <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
+      <Form form={form} onFinish={signin} layout="vertical" validateMessages={validateMessages}>
         <div className="main">
           <div className="sign">Login</div>
           <Form.Item label="Email" name="email" rules={[
@@ -93,7 +94,7 @@ const Login = () => {
             />
           </Form.Item>
           <div className="submit">
-            <Button type="primary" htmlType="submit" disabled={loading}>
+            <Button type="primary" htmlType="submit">
               Login
             </Button>
           </div>
