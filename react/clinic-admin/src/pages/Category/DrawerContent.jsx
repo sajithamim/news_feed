@@ -18,7 +18,6 @@ const DrawerContent = (props) => {
       setImgData(props.editData.image);
     }
     else {
-      // document.getElementById('uploadFile').value = null;
       setImgData("");
       setImage("");
     }
