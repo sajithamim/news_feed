@@ -17,8 +17,9 @@ const CategoriesContent = (props) => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist, updateData, addData, page, success } = useSelector(state => state.category);
-  
+  const { catlist, updateData, addData, page, success, error, payload } = useSelector(state => state.category);
+  console.log("payload", payload);
+  console.log("error", error);
   useEffect(() => {
     dispatch(getCategory());
     onClose();
@@ -31,7 +32,11 @@ const CategoriesContent = (props) => {
     if(success && updateData){
       message.success("Category edited successfully");
     }
-  }, [success, addData, updateData])
+    if(error){
+      message.error("Category name exist");
+      dispatch({ type: 'RESET_DATA' })
+    }
+  }, [success, addData, updateData, error])
 
   const onClose = () => {
     setShowDrawer(false);
