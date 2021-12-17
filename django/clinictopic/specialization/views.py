@@ -136,7 +136,7 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
 class SpecializationView(viewsets.ModelViewSet):
     queryset = Specialization.objects.all().order_by('-id')
     serializer_class = GetSpecializationseriallizer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def create(self, request):
         name = request.data['name']
         if Specialization.objects.filter(name__iexact=name):
@@ -347,7 +347,7 @@ class GetAdvisoryUser(APIView):
 
 
 class QuizView(viewsets.ModelViewSet):
-    queryset = Quiz.objects.all().order_by('title')
+    queryset = Quiz.objects.all().order_by('-id')
     serializer_class = QuizSerializer
     permission_classes = (IsAuthenticated,)
 
