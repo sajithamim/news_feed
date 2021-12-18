@@ -134,9 +134,9 @@ class UserSpecializationApiView(generics.ListCreateAPIView):
 
 
 class SpecializationView(viewsets.ModelViewSet):
-    queryset = Specialization.objects.all().order_by('name')
+    queryset = Specialization.objects.all().order_by('-id')
     serializer_class = GetSpecializationseriallizer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def create(self, request):
         name = request.data['name']
         if Specialization.objects.filter(name__iexact=name):
@@ -187,9 +187,9 @@ class SpecializationView(viewsets.ModelViewSet):
                                  status.HTTP_400_BAD_REQUEST)
 
 class SubSpecializationView(viewsets.ModelViewSet):
-    queryset = SubSpecialization.objects.all().order_by('name')
+    queryset = SubSpecialization.objects.all().order_by('-id')
     serializer_class = PostSubspecializationSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     # def destroy(self, request, pk=None):
     #     try:
     #         sub=SubSpecialization.objects.get(id=pk).delete()
@@ -347,7 +347,7 @@ class GetAdvisoryUser(APIView):
 
 
 class QuizView(viewsets.ModelViewSet):
-    queryset = Quiz.objects.all().order_by('title')
+    queryset = Quiz.objects.all().order_by('-id')
     serializer_class = QuizSerializer
     permission_classes = (IsAuthenticated,)
 

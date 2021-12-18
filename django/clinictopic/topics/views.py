@@ -135,7 +135,7 @@ class GetAllCategoryApiview(APIView):
             return Response(response, status=status_code)
             
 class UploadedImagesViewSet(viewsets.ModelViewSet):
-    queryset = Categoeries.objects.all().order_by('title')
+    queryset = Categoeries.objects.all().order_by('-id')
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
     
