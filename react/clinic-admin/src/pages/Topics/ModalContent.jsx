@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect } from "antd";
+import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect, notification } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ const ModalContent = (props) => {
   const [lastFetchId, setLastFetchId] = useState(0);
   const [fetching, setFetching] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [crntDateTime, setCrntDateTime] = useState('');
   const [state, setState] = useState({});
@@ -35,6 +36,11 @@ const ModalContent = (props) => {
     }
     else {
       setState({ topic_subspec: [], imageFormData: [] });
+    }
+    if(props.drawerType === 'edit' && props.editData.old_image.length > 3){
+      setLoading(true);
+    }else{
+      setLoading(false);
     }
   }, [props.editData])
 
@@ -106,10 +112,23 @@ const ModalContent = (props) => {
           }
         });
         reader.readAsDataURL(e.target.files[i]);
+        if(props.drawerType === 'add' && state.imageFormData.length  > 2 ){
+          setLoading(true);
+          openNotification();
+        }else if(props.drawerType === 'edit' && (state.old_image.length + state.imageFormData.length > 2)){
+          setLoading(true);
+          openNotification();
+        }
       }
     }
   }
 
+  const openNotification = () => {
+    notification.info({
+      description:
+        'You are allowed to insert max 4 images only.',
+    });
+  };
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
@@ -406,6 +425,7 @@ const ModalContent = (props) => {
   }
 
   const deleteImage = (id, image) => {
+    setLoading(false);
     if (id !== null) {
       const oldImages = state.old_image;
       const oldImageList = oldImages.filter(item => { return item.id !== id });
@@ -559,7 +579,7 @@ const ModalContent = (props) => {
                 </div>))}
             </div>
               <div className="inputStyle">
-                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
+                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple disabled={loading} /></div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?

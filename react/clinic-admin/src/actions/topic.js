@@ -4,7 +4,6 @@ import DataService from "../services/data.service";
 export const getTopic = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try {
-        console.log("action topic");
         const url = `topic/topic/?page=${page}`;
         const res = await DataService.getData(url); 
         dispatch({
@@ -37,7 +36,6 @@ export const getSpecialization = () => async (dispatch) => {
 export const getCategory = () => async (dispatch) => {
     try {
         const res = await Topic.getCategory();
-        console.log("response", res);
         dispatch({
             type: 'GET_CATEGORY',
             payload: res.data,
