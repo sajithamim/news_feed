@@ -3,7 +3,9 @@ import { Form, Button, Input } from "antd";
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-  const ref = useRef();
+  console.log("props", props);
+  const ref = React.useRef();
+  const [form] = Form.useForm();
   const [image, setImage] = useState("");
   const [imgData, setImgData] = useState(props.editData.image);
   const [state, setState] = useState(props.editData);
@@ -85,6 +87,21 @@ const DrawerContent = (props) => {
         setErrors(newErrorsState);
         return false;
       }
+<<<<<<< HEAD
+        delete newData["sl_no"];
+        delete newData["id"];
+        delete newData["image"];
+        form.resetFields(["image"]);
+        props.onFormSubmit(id, state, form_data);
+    }
+  }
+
+  const handledelete = () => {
+    ref.current.value = ""
+  }
+ 
+ 
+=======
       delete newData["sl_no"];
       delete newData["id"];
       delete newData["image"];
@@ -94,8 +111,9 @@ const DrawerContent = (props) => {
 
 
 
+>>>>>>> 1a6e6bb1b5f1ec7bdd0db7301a25f7fdeee7ac84
   return (
-    <Form name="basic" className="categoryForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
+    <Form form={form} name="basic" className="categoryForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
       <div>
         <div className="modalStyle">
           <Form.Item label="Name">
@@ -104,7 +122,11 @@ const DrawerContent = (props) => {
           </Form.Item>
           <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
+<<<<<<< HEAD
+            <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" ref={ref} onChange={handleFileChange}  />
+=======
             <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" key={inputKey} onChange={handleFileChange} />
+>>>>>>> 1a6e6bb1b5f1ec7bdd0db7301a25f7fdeee7ac84
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
         </div>
@@ -113,8 +135,14 @@ const DrawerContent = (props) => {
         <Button type="primary" htmlType="submit" >
           Save
         </Button>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 1a6e6bb1b5f1ec7bdd0db7301a25f7fdeee7ac84
       </Form.Item>
+      <Button type="primary" onClick={handledelete}  >
+          Clear
+        </Button>
     </Form>
   );
 };
