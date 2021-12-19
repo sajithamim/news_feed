@@ -51,6 +51,7 @@ const About = () => {
                 <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
                     <Editor
                         editorState={editorState}
+                        editorStyle={{border: "1px solid", overflowY: "scroll", height: '500px'}}
                         toolbarClassName="toolbarClassName"
                         wrapperClassName="wrapperClassName"
                         editorClassName="editorClassName"
