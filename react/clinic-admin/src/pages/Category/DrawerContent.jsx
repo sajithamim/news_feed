@@ -3,7 +3,6 @@ import { Form, Button, Input } from "antd";
 import "./Drawer.css";
 
 const DrawerContent = (props) => {
-  console.log("props", props);
   const ref = React.useRef();
   const [form] = Form.useForm();
   const [image, setImage] = useState("");
@@ -87,7 +86,6 @@ const DrawerContent = (props) => {
         setErrors(newErrorsState);
         return false;
       }
-<<<<<<< HEAD
         delete newData["sl_no"];
         delete newData["id"];
         delete newData["image"];
@@ -95,23 +93,8 @@ const DrawerContent = (props) => {
         props.onFormSubmit(id, state, form_data);
     }
   }
-
-  const handledelete = () => {
-    ref.current.value = ""
-  }
  
  
-=======
-      delete newData["sl_no"];
-      delete newData["id"];
-      delete newData["image"];
-      props.onFormSubmit(id, state, form_data);
-    }
-  }
-
-
-
->>>>>>> 1a6e6bb1b5f1ec7bdd0db7301a25f7fdeee7ac84
   return (
     <Form form={form} name="basic" className="categoryForm" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} initialValues={{ remember: true }} onFinish={handleSubmit}>
       <div>
@@ -122,11 +105,7 @@ const DrawerContent = (props) => {
           </Form.Item>
           <Form.Item label="Image">
             {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
-<<<<<<< HEAD
-            <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" ref={ref} onChange={handleFileChange}  />
-=======
-            <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" key={inputKey} onChange={handleFileChange} />
->>>>>>> 1a6e6bb1b5f1ec7bdd0db7301a25f7fdeee7ac84
+            <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" key={inputKey} onChange={handleFileChange}  />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
         </div>
@@ -135,14 +114,7 @@ const DrawerContent = (props) => {
         <Button type="primary" htmlType="submit" >
           Save
         </Button>
-<<<<<<< HEAD
-=======
-
->>>>>>> 1a6e6bb1b5f1ec7bdd0db7301a25f7fdeee7ac84
       </Form.Item>
-      <Button type="primary" onClick={handledelete}  >
-          Clear
-        </Button>
     </Form>
   );
 };
