@@ -53,6 +53,7 @@ const Terms = () => {
                     {editorState ?
                         (<Editor
                             editorState={editorState}
+                            editorStyle={{border: "1px solid", overflowY: "scroll", height: '500px'}}
                             toolbarClassName="toolbarClassName"
                             wrapperClassName="wrapperClassName"
                             editorClassName="editorClassName"
@@ -60,7 +61,7 @@ const Terms = () => {
                         />
                         ) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit"> Save </Button>
+                        <Button type="primary" htmlType="submit" style={{ position: 'absolute'}}> Save </Button>
                     </Form.Item>
                 </Form>
             </Card>
