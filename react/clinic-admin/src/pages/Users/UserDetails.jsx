@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Checkbox , Table, Col, Row, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
+import { Form, Input, Checkbox, Table, Col, Row, Card, Tabs, DatePicker, Button, Upload, Space, message, Drawer, Popconfirm, Progress } from "antd";
 import { Container } from "react-bootstrap";
 import { Icon, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,14 +32,14 @@ const customStyles = {
 }
 
 const UserDetails = () => {
-  const [state, setState] = useState({current:false});
+  const [state, setState] = useState({ current: false });
   const [inputVisible, setinputVisible] = useState(true);
   const dispatch = useDispatch();
   const { userCategory, userSpec, userDetails, userProfile, qualifications, publicationList, updatePublicationData, addPublicationData, success, error } = useSelector(state => state.users);
   const { emailId } = useParams();
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState({});
-  const [otherQualification, setOtherQualification] = useState({ name: ''});
+  const [otherQualification, setOtherQualification] = useState({ name: '' });
   const [activeInput, setActiveInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -73,7 +73,6 @@ const UserDetails = () => {
               if (res) {
                 // to get the qualification details of user
                 const getUserQualificationList = []
-                console.log("getUserQualificationList", getUserQualificationList);
                 res && res.data && res.data.data && res.data.data.qualifications && res.data.data.qualifications.map(item => {
                   return getUserQualificationList.push(
                     { value: item, label: item }
@@ -87,15 +86,14 @@ const UserDetails = () => {
             })
         }
       }).catch((err) => {
-        console.log("error", error);
-        dispatch({type: 'HANDLE_ERROR'})
+        dispatch({ type: 'HANDLE_ERROR' })
       })
     dispatch(getQualifications());
   }, [addPublicationData, updatePublicationData])
 
   let history = useHistory();
   const dateFormat = 'YYYY-MM-DD';
- 
+
   const catList = []
   userCategory && userCategory.data && userCategory.data.map(item => {
     return catList.push({
@@ -117,7 +115,7 @@ const UserDetails = () => {
 
   const publicationGenerator = () => {
     const items = [];
-    publicationList && publicationList.data  && publicationList.data.map((item, key) => {
+    publicationList && publicationList.data && publicationList.data.map((item, key) => {
       key++;
       return items.push({
         sl_no: key,
@@ -178,7 +176,7 @@ const UserDetails = () => {
     const data = [];
     item.map(item => {
       data.push(item.label)
-      item.label === "Other" ?  setActiveInput(true) : setActiveInput(false);
+      item.label === "Other" ? setActiveInput(true) : setActiveInput(false);
     })
     setState({ ...state, qualification: item, qualifications: data });
   }
@@ -208,7 +206,7 @@ const UserDetails = () => {
 
   const renderTable = () => {
     const specList = [];
-    
+
     userSpec && userSpec.data && userSpec.data.map(item => {
       specList.push(<tr><td>{item.spec_id.name}</td></tr>)
       item.sub_userspec_id && item.sub_userspec_id.map(subItem => {
@@ -302,10 +300,10 @@ const UserDetails = () => {
       formIsValid = false;
       errors["qualification"] = "Qualification is required";
     }
-    if (!fields["media"]){
+    if (!fields["media"]) {
       formIsValid = false;
       errors["media"] = "Media is required";
-    }else{
+    } else {
       var media_url = fields.media.toString();
       var res = media_url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
       if (res === null) {
@@ -317,10 +315,9 @@ const UserDetails = () => {
     return formIsValid;
   }
   const onChange = (e) => {
-    e.target.checked === true ? setState({...state ,current: true}) : setState({...state ,current: false})
+    e.target.checked === true ? setState({ ...state, current: true }) : setState({ ...state, current: false })
   }
   const handleUserProfileSubmit = () => {
-    console.log("state", state);
     if (handleValidation()) {
       let newData = state;
       delete newData["empolyment_value"];
@@ -386,20 +383,20 @@ const UserDetails = () => {
   ];
 
   useEffect(() => {
-    if(success) {
+    if (success) {
       message.success(success);
-      dispatch({type: 'RESET_DATA'})
+      dispatch({ type: 'RESET_DATA' })
     }
-    else if(error) {
+    else if (error) {
       message.error(error);
-      dispatch({type: 'RESET_DATA'})
+      dispatch({ type: 'RESET_DATA' })
     }
-   
+
   }, [success, error])
 
   const publicationSubmit = (newData, form_data) => {
     onClose();
-    if(drawerType == 'edit') {
+    if (drawerType == 'edit') {
       delete newData["image"];
       delete newData["sl_no"];
       dispatch(updatePublicationDetails(data.id, newData, form_data))
@@ -449,7 +446,7 @@ const UserDetails = () => {
               }
               key="1"
             >
-              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit} initialValues={{current: true }}>
+              <Form name="basic" labelCol={{ span: 3 }} wrapperCol={{ span: 7 }} onFinish={handleUserProfileSubmit} initialValues={{ current: true }}>
                 <Form.Item label="About">
                   <TextArea name="about" addonAfter="About Us" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.about} style={{ marginLeft: '47px' }} />
                 </Form.Item>
@@ -486,19 +483,19 @@ const UserDetails = () => {
                   <Input name="location" className="form-control" type="text" value={state.location} onChange={handleChange} />
                 </Form.Item>
                 <Form.Item >
-                <Checkbox name="current"  checked={state.current} onChange={onChange} style = {{ marginLeft: '180px', width: '250px' }}>I am currently working here</Checkbox>
+                  <Checkbox name="current" checked={state.current} onChange={onChange} style={{ marginLeft: '180px', width: '250px' }}>I am currently working here</Checkbox>
                 </Form.Item>
                 <Form.Item label="Start Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="start_date" onChange={onStartDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.start_date ? moment(state.start_date) : null} />
                   </Space>
                 </Form.Item>
-                {state.current === true ? null :(<Form.Item label="End Date" >
+                {state.current === true ? null : (<Form.Item label="End Date" >
                   <Space direction="vertical" size={30} style={{ marginLeft: '50px', width: '450px' }} >
                     <DatePicker name="end_date" onChange={onEndDateChange} format={dateFormat} disabledDate={disabledDate} style={{ width: '337px', height: '36px' }} value={state.end_date ? moment(state.end_date) : null} />
                   </Space>
                   <div className="errorMsg">{errors && errors.errors && errors.errors.end_date}</div>
-                </Form.Item>) }
+                </Form.Item>)}
                 <Form.Item label="Industry">
                   <Input name="industry" className="form-control" type="text" value={state.industry} onChange={handleChange} />
                 </Form.Item>

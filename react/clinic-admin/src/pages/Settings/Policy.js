@@ -20,8 +20,6 @@ const Policy = () => {
                     setEditorState(EditorState.createWithContent(contentState));
                 }
             })
-
-            console.log("editorState", editorState);
     }, [])
 
     const [convertedContent, setConvertedContent] = useState();
