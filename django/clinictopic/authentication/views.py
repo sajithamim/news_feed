@@ -500,10 +500,10 @@ class UserProfilepicView(viewsets.ModelViewSet):
 
 
 class Userlist(APIView,PageNumberPagination):
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            queryset =User.objects.filter(is_superuser=False).order_by('email')
+            queryset =User.objects.filter(is_superuser=False).exclude(auth_provider='email',phone_verified=False).order_by('email')
             results = self.paginate_queryset(queryset, request, view=self)
             serializer = UserProfileSerializer(results,many=True)
             return self.get_paginated_response(serializer.data)
@@ -737,7 +737,7 @@ class AccomplilshmentsView(viewsets.ModelViewSet):
     def image(self, request,pk=None):
             obj = Accomplishments.objects.get(id=pk)
             serializer = self.serializer_class(obj, data=request.data,
-                                            partial=True)
+                                            partial=True,context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -773,7 +773,7 @@ class getUserAccomplishementView(APIView):
     def get(self, request,pk, *args, **kwargs):
         try:
             user = Accomplishments.objects.filter(user_id=pk)
-            serializers = AccomplishmentSerializer(user,many=True)
+            serializers = AccomplishmentSerializer(user,many=True,context={'request': request})
             # response={
             #     "success":"True",
             #     "message":"user accomplishments",
