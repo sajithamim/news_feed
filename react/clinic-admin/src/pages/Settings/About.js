@@ -58,7 +58,7 @@ const About = () => {
                         onEditorStateChange={handleEditorChange}
                     />
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit"> Save </Button>
+                        <Button type="primary" htmlType="submit" style={{ position: 'absolute'}}> Save </Button>
                     </Form.Item>
                 </Form>
             </Card>
