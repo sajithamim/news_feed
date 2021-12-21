@@ -116,13 +116,14 @@ const UserDetails = () => {
   const publicationGenerator = () => {
     const items = [];
     publicationList && publicationList.data && publicationList.data.map((item, key) => {
+      console.log("item", item);
       key++;
       return items.push({
         sl_no: key,
         key: item.id,
         id: item.id,
         title: item.title,
-        image: item.image,
+        image: item && item.image && item.image,
         publisher: item.publisher,
         authors: item.authors,
         publicationdate: item.publicationdate,
@@ -349,7 +350,7 @@ const UserDetails = () => {
       dataIndex: "image",
       key: "image",
       render: (text, record) => {
-        return (<img src={`${process.env.REACT_APP_API_BASE_URL}${record.image}`} style={{ width: '70px', height: '70px' }} />);
+        return (<img src={`${record.image}`} style={{ width: '70px', height: '70px' }} />);
       }
     },
     {
@@ -395,6 +396,8 @@ const UserDetails = () => {
   }, [success, error])
 
   const publicationSubmit = (newData, form_data) => {
+    console.log("new data", newData);
+    console.log("new data", form_data);
     onClose();
     if (drawerType == 'edit') {
       delete newData["image"];

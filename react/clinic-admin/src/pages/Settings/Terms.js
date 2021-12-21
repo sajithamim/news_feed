@@ -43,7 +43,6 @@ const Terms = () => {
     const convertContentToHTML = () => {
         let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
         setConvertedContent(currentContentAsHTML);
-        console.log("converte", convertedContent);
     }
 
     return (

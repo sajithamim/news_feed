@@ -168,8 +168,10 @@ export const postPublicationDetails = (state, image) => async (dispatch) => {
     try {
         const res = await Users.postPublicationDetails(state);
         if(res.status == 200) {
-            if (image) {
-                const res1 = await Users.putpublicationImage(res.data.id, image)
+            if (image && res.data.id) {
+                const imageUrl = `${process.env.REACT_APP_API_URL}auth/accomplishments/${res.data.id}/image/`;
+                const res1 = await DataService.putImage(imageUrl, image)
+                res.data.image = res1.data.image
             }
             dispatch({
                 type: 'POST_PUBLICATION_LIST',
