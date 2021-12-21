@@ -5,26 +5,26 @@ const getUsers = (page) => {
     return http.get(`auth/userlist/?page=${page}`);
 }
 
-const getUserCategory = (emailId) => {
-    return http.get(`topic/getusercategory/${emailId}`)
-}
+// const getUserCategory = (emailId) => {
+//     return http.get(`topic/getusercategory/${emailId}`)
+// }
 
 const getTopic = () => {
     return http.get(`topic/topic`)
 }
 
-const getUserSpec = (emailId) => {
-    return http.get(`spec/getuserspecialization/${emailId}`)
-}
-const getUserData = (emailId) => {
-    return http.get(`auth/userdetail/${emailId}`)
-}
+// const getUserSpec = (emailId) => {
+//     return http.get(`spec/getuserspecialization/${emailId}`)
+// }
+// const getUserData = (emailId) => {
+//     return http.get(`auth/userdetail/${emailId}`)
+// }
 const deleteUser = (id) => {
     return http.delete(`auth/deleteuser/${id}`)
 }
-const postUserProfile = (state) => {
-    return http.post(`auth/userprofile/` ,state);
-}
+// const postUserProfile = (state) => {
+//     return http.post(`auth/userprofile/` ,state);
+// }
 const getUserProfile = (id) => {
     return http.get(`auth/getuserprofile/${id}`);
 }
@@ -66,9 +66,9 @@ const putProfilePic = (id, imageData) => {
     })
     .catch(err => err)
 }
-const postOtherQualifications = (otherQualification) => {
-    return http.post(`auth/qualifications/` , otherQualification);
-}
+// const postOtherQualifications = (otherQualification) => {
+//     return http.post(`auth/qualifications/` , otherQualification);
+// }
 const getPublicationList = (id) => {
     return http.get(`auth/getuseraccomplishment/${id}/`);
 }
@@ -85,16 +85,16 @@ const deleteUserPublication = (id) => {
   }
 const Users = {
     getUsers,
-    getUserCategory,
+    // getUserCategory,
     getTopic,
-    getUserSpec,
-    getUserData,
+    // getUserSpec,
+    // getUserData,
     deleteUser,
-    postUserProfile,
+    // postUserProfile,
     getUserProfile,
     getQualifications,
     putProfilePic,
-    postOtherQualifications,
+    // postOtherQualifications,
     updateUserProfile,
     getPublicationList,
     postPublicationDetails,

@@ -23,7 +23,8 @@ export const getUsersList = (page) => async (dispatch) => {
 
 export const getUserCategory = (emailId) => async (dispatch) => {
     try {
-        const res = await Users.getUserCategory(emailId);
+        const url = `topic/getusercategory/${emailId}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER_CATEGORY',
             payload: res.data,
@@ -35,7 +36,8 @@ export const getUserCategory = (emailId) => async (dispatch) => {
 
 export const getUserSpecialization = (emailId) => async (dispatch) => {
     try {
-        const res = await Users.getUserSpec(emailId);
+        const url = `spec/getuserspecialization/${emailId}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER_SPEC',
             payload: res.data,
@@ -47,7 +49,8 @@ export const getUserSpecialization = (emailId) => async (dispatch) => {
 
 export const getUserDetails = (emailId) => async (dispatch) => {
     try {
-        const res = await Users.getUserData(emailId);
+        const url = `auth/userdetail/${emailId}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER_DETAILS',
             payload: res.data,
@@ -81,16 +84,17 @@ export const deleteUser = (id, page) => async (dispatch) => {
 
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
     try {
-        const res = await Users.postUserProfile(state);
-        if (otherQualification){
-            const resQuali = await Users.postOtherQualifications(otherQualification);
+        const url = `auth/userprofile/`;
+        const res = await DataService.addData(url, state);
+        if (otherQualification &&  otherQualification){
+            const qualfiUrl = `auth/qualifications/`;
+            const resQuali = await DataService.addData(qualfiUrl, otherQualification);
         }
         dispatch({
             type: 'POST_USER_PROFILE',
             payload: res.data,
         })
     } catch (err) {
-
     }
 }
 export const getUserProfile = (id) => async (dispatch) => {
