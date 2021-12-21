@@ -503,7 +503,7 @@ class Userlist(APIView,PageNumberPagination):
     # permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            queryset =User.objects.filter(is_superuser=False).exclude(auth_provider='email',phone_verified=False).order_by('email')
+            queryset =User.objects.filter(is_superuser=False).exclude(Q(auth_provider='email') & Q(phone_verified=False)).order_by('email')
             results = self.paginate_queryset(queryset, request, view=self)
             serializer = UserProfileSerializer(results,many=True)
             return self.get_paginated_response(serializer.data)
