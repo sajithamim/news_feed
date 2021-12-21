@@ -500,7 +500,7 @@ class UserProfilepicView(viewsets.ModelViewSet):
 
 
 class Userlist(APIView,PageNumberPagination):
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
             queryset =User.objects.filter(is_superuser=False).exclude(Q(auth_provider='email') & Q(phone_verified=False)).order_by('email')
