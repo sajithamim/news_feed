@@ -46,8 +46,9 @@ const putpublicationImage = (id , image) => {
         'authorization': `Bearer ${accessToken}`
       }
     })
-    .then(res => {
-    return res
+    .then((res) => {
+        console.log("response image", res);
+    return res;
     })
     .catch(err => err)
 }

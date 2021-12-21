@@ -20,6 +20,21 @@ const postImage = (url, imageData) => {
     return instance.put(url, imageData);
 }
 
+const putImage = (url, imageData) => {
+    let accessToken = localStorage.getItem("accessToken");
+    axios.put(url, imageData, {
+        headers: {
+            'content-type': 'multipart/form-data',
+            'authorization': `Bearer ${accessToken}`
+        }
+    })
+        .then(res => {
+            return res
+        })
+        .catch(err => err)
+    return instance.put(url, imageData);
+}
+
 const imageUpload = (url, imageData) => {
     return instance.post(url, imageData);
 }
@@ -53,6 +68,7 @@ const genAds = {
     editData,
     imageUpload,
     uploadDoc,
+    putImage,
 }
 
 

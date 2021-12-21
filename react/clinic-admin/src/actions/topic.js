@@ -104,6 +104,7 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
                 image_data.append('topic_id', res.data.id);
                 const imageUrl = `topic/topicimages/`;
                 const imageRes = await DataService.imageUpload(imageUrl, image_data); 
+                console.log("imageRes", imageRes);
                 res.data.topic_image = imageRes.data;
             }
             
