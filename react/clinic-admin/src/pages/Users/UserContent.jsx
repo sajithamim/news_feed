@@ -11,6 +11,7 @@ import { logout } from "../../actions/auth.js"
 
 const UserContent = () => {
   const { userList, addUser, updateUser, page, success, error } = useSelector(state => state.users);
+  console.log("userList", userList);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
@@ -57,9 +58,7 @@ const UserContent = () => {
   const userGenerator = () => {
     let serialNo = pageSize * slNo;
     const Items = [];
-    userList && userList.results && userList.results.filter((user) => {
-      return user.phone_verified === true;
-    }).map((user, key) => {
+    userList && userList.results && userList.results.filter((user, key) => {
       key++;
       serialNo++;
       Items.push({
