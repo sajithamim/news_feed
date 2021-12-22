@@ -518,7 +518,7 @@ class Userlist(APIView,PageNumberPagination):
 
 class VerifyPhone(generics.GenericAPIView):
     serializer_class = VerifyPhoneSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self, request,*args, **kwargs):
         try:
             user =User.objects.get(email=request.user)
