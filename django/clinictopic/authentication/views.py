@@ -533,13 +533,15 @@ class VerifyPhone(generics.GenericAPIView):
                 if not user.phone_verified:
                     user.phone_verified = True
                     user.save()
+                return Response(response,status=status.HTTP_200_OK)
+
             else:
                 response={
                 "success":"False",
                 "message":"Invalid Otp",
                 "status":status.HTTP_200_OK,
                     }
-            return Response(response,status=status.HTTP_200_OK)
+                return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
             response={
                 "success":"False",
