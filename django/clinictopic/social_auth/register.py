@@ -29,7 +29,7 @@ def register_social_user(provider, user_id, email, name):
         if user_iddata.is_superuser:
         	raise AuthenticationFailed(
                 # detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
-                detail = 'You are a super user')
+                detail = 'You are a super user! use different email..')
 
         userid = user_iddata.id
         # print(filtered_user_by_email[0].auth_provider)
