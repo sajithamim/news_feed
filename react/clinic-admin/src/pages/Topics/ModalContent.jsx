@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect, notification } from "antd";
+import { Input, Radio, Button, Popover, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect, notification } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import SelectBox from 'react-select';
 
 const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
+
 
 const ModalContent = (props) => {
   const { TextArea } = Input;
@@ -37,13 +38,16 @@ const ModalContent = (props) => {
     else {
       setState({ topic_subspec: [], imageFormData: [] });
     }
-    if(props.drawerType === 'edit' && props.editData.old_image.length > 3){
+    if (props.drawerType === 'edit' && props.editData.old_image.length > 3) {
       setLoading(true);
-    }else{
+    } else {
       setLoading(false);
     }
   }, [props.editData])
 
+  const content = (
+    (state.format === '1') ? (<div><p>Upload PDF Front and PDF Back.Title and description won't be seen in mobile app.</p></div>) : ((state.format === '2') ? (<div><p>Add image, PDF or External video URL</p></div>) : (<div><p>Add Video URL and PDF/External Url in detail page</p></div>))
+  );
 
   const treeData = [];
   specList && specList.data && specList.data.map((specitem, index) => {
@@ -112,10 +116,10 @@ const ModalContent = (props) => {
           }
         });
         reader.readAsDataURL(e.target.files[i]);
-        if(props.drawerType === 'add' && state.imageFormData.length  > 2 ){
+        if (props.drawerType === 'add' && state.imageFormData.length > 2) {
           setLoading(true);
           openNotification();
-        }else if(props.drawerType === 'edit' && (state.old_image.length + state.imageFormData.length > 2)){
+        } else if (props.drawerType === 'edit' && (state.old_image.length + state.imageFormData.length > 2)) {
           setLoading(true);
           openNotification();
         }
@@ -519,15 +523,21 @@ const ModalContent = (props) => {
           </Form.Item> */}
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
-              <Radio value="1">
-                Format 1
-              </Radio>
-              <Radio value="2">
-                Format 2
-              </Radio>
-              <Radio value="3">
-                Format 3
-              </Radio>
+              <Popover placement="top" content={content} trigger="click">
+                <Radio value="1">
+                  Format 1
+                </Radio>
+              </Popover>
+              <Popover placement="top" content={content} trigger="click">
+                <Radio value="2">
+                  Format 2
+                </Radio>
+              </Popover>
+              <Popover placement="top" content={content} trigger="click">
+                <Radio value="3">
+                  Format 3
+                </Radio>
+              </Popover>
             </Radio.Group>
           </Form.Item>
           {(state.format === '1') ?
@@ -538,7 +548,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
+                  <TextArea name="description1" maxLength="1000" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
+                  <div style={{marginLeft: '95px'}}>*Enter only 1000 characters</div>
                 <div className="errorMsg">{err && err.errors && err.errors.description1}</div>
               </Form.Item></>) : null}
           {(state.format === '2') ?
@@ -549,7 +560,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description2" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
+                  <TextArea name="description2" maxLength="1000" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
+                  <div style={{marginLeft: '95px'}}>*Enter only 1000 characters</div>
                 <div className="errorMsg">{err && err.errors && err.errors.description2}</div>
               </Form.Item>
             </>) : null
@@ -562,7 +574,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description3" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
+                  <TextArea name="description3" maxLength="1000" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
+                  <div style={{marginLeft: '95px'}}>*Enter only 1000 characters</div>
                 <div className="errorMsg">{err && err.errors && err.errors.description3}</div>
               </Form.Item></>) : null
           }
@@ -571,15 +584,16 @@ const ModalContent = (props) => {
               <img key={item} src={item.image} alt="" />
               <div className="close">
                 <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
-              </div>))}
+            </div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
                 <img key={url} src={url} alt="" />
                 <div className="close">
                   <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
-                </div>))}
+              </div>))}
             </div>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple disabled={loading} /></div>
+                <div>*Supported File extensions: jpg,jpeg,png</div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
