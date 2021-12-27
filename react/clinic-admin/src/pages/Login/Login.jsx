@@ -15,10 +15,10 @@ const Login = () => {
   const dispatch = useDispatch();
   const { error, payload } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
-  
+
 
   useEffect(() => {
-    if (payload){
+    if (payload) {
       message.error(payload);
       dispatch({ type: 'RESET_DATA' })
       form.resetFields();
@@ -49,56 +49,58 @@ const Login = () => {
   return (
     <>
       <Form form={form} onFinish={signin} layout="vertical" validateMessages={validateMessages}>
-        <div className="main">
-          <div className="sign">Login</div>
-          <Form.Item label="Email" name="email" rules={[
-            {
-              required: true,
-              type: 'email',
-            },
-          ]}
-          >
-            <Input
-              style={{ borderRadius: "8px", marginLeft: '2px' }}
-              id="email"
-              name="email"
-              className="un"
-              autoComplete="off"
-              value={state.email || ""}
-              placeholder="Email"
-              // onChange={(e) => setEmail(e.target.value ?? '')}
-              onChange={handleChange}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
+        <div>
+          <div className="main">
+            <div className="sign">Login</div>
+            <Form.Item label="Email" name="email" rules={[
               {
                 required: true,
-                message: 'Please input your password!',
+                type: 'email',
               },
             ]}
-          >
-            <Input
-              style={{ borderRadius: "8px", marginLeft: "2px" }}
-              className="pass"
+            >
+              <Input
+                style={{ borderRadius: "8px", marginLeft: '2px' }}
+                id="email"
+                name="email"
+                className="un"
+                autoComplete="off"
+                value={state.email || ""}
+                placeholder="Email"
+                // onChange={(e) => setEmail(e.target.value ?? '')}
+                onChange={handleChange}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Password"
               name="password"
-              id= "password"
-              value={state.password}
-              type="password"
-              placeholder="Password"
-              rules={[{ required: true, message: 'Please input your password' }]}
-              // onChange={(e) => setPassword(e.target.value)}
-              onChange={handleChange}
-            />
-          </Form.Item>
-          <div className="submit">
-            <Button type="primary" htmlType="submit">
-              Login
-            </Button>
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your password!',
+                },
+              ]}
+            >
+              <Input
+                style={{ borderRadius: "8px", marginLeft: "2px" }}
+                className="pass"
+                name="password"
+                id="password"
+                value={state.password}
+                type="password"
+                placeholder="Password"
+                rules={[{ required: true, message: 'Please input your password' }]}
+                // onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange}
+              />
+            </Form.Item>
+            <div className="submit">
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+            </div>
+            <Form.Item wrapperCol={{ offset: 8, span: 10 }}><Link to={"/forgot_password"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
           </div>
-          <Form.Item wrapperCol={{ offset: 8, span: 10 }}><Link to={"/forgot_password"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
         </div>
       </Form>
     </>
