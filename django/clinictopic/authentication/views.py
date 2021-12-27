@@ -522,7 +522,7 @@ class VerifyPhone(generics.GenericAPIView):
     def post(self, request,*args, **kwargs):
         try:
             user =User.objects.get(email=request.user)
-            otp= request.data['otp']
+            otp = request.data['otp']
             userotp = user.otp
             if int(otp) == int(userotp):
                 response={
