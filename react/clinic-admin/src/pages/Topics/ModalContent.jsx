@@ -548,8 +548,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description1" maxLength="1000" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
-                  <div style={{marginLeft: '95px'}}>*Enter only 1000 characters</div>
+                  <TextArea name="description1" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
+                  <div style={{marginLeft: '95px'}}>*Enter only 150 characters</div>
                 <div className="errorMsg">{err && err.errors && err.errors.description1}</div>
               </Form.Item></>) : null}
           {(state.format === '2') ?
@@ -560,8 +560,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description2" maxLength="1000" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
-                  <div style={{marginLeft: '95px'}}>*Enter only 1000 characters</div>
+                  <TextArea name="description2" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
+                  <div style={{marginLeft: '95px'}}>*Enter only 150 characters</div>
                 <div className="errorMsg">{err && err.errors && err.errors.description2}</div>
               </Form.Item>
             </>) : null
@@ -574,8 +574,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description3" maxLength="1000" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
-                  <div style={{marginLeft: '95px'}}>*Enter only 1000 characters</div>
+                  <TextArea name="description3" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
+                  <div style={{marginLeft: '95px'}}>*Enter only 150 characters</div>
                 <div className="errorMsg">{err && err.errors && err.errors.description3}</div>
               </Form.Item></>) : null
           }
