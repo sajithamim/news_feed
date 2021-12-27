@@ -95,6 +95,8 @@ const ModalContent = (props) => {
         setErrors({ errors });
         setFormSubmit(false);
       } else {
+        console.log("coming here");
+        setErrors({});
         setFormSubmit(true);
         const reader = new FileReader();
         reader.addEventListener("load", () => {

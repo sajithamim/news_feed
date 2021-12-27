@@ -5,6 +5,7 @@
 }
 .main {
   background-color: hsl(180, 23%, 73%);
+  width: 350px;
   padding: 10px;
   flex-direction: row;
   -ms-flex-align: center;
