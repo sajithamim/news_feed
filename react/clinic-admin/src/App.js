@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import OverviewContent from './pages/Overview/OverviewContent';
 import Login from './pages/Login/Login';
 import Forgot from './pages/Login/Forgot';
@@ -135,6 +135,7 @@ function App() {
         <AuthRoute exact path={["/", "/login"]} component={Login} />
         <ClinicRoute path="/verify" exact component={Verify} />
         <ClinicRoute path="/netstatus" exact component={NoInternet} />
+        <Route path="/" component={Login } />
       </Switch>
     </Router>
   );
