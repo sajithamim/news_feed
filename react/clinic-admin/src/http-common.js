@@ -81,6 +81,7 @@ http.interceptors.response.use(
       (status === 401 || status === 404) &&
       !originalRequest._retry
     ) {
+      console.log("coming to refesh", token);
       let token = await refresh();
       if (token === undefined) {
         sessionlogout();
