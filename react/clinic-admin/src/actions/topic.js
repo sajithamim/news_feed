@@ -129,15 +129,20 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
 }
 
 export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
+    console.log("coming update");
     newData.topic_audience = "doctor";
     try {
         const url = `topic/topic/${id}/`;
         const res = await DataService.updateData(url, newData);
+        console.log("res", res);    
         if(res.status == 200) {
+            console.log("res.status", res.status);
             if (form_data !== null) {
-                await Topic.putPdfdata(id, form_data);
+                console.log("form  not null");
                 let pdfUrl = `topic/topic/${id}/pdf/`;
+                await DataService.uploadDoc(pdfUrl, form_data);
                 const frontPdfRes = await  DataService.uploadDoc(pdfUrl, form_data);
+                console.log("frontPdfRes", frontPdfRes);
                 res.data.pdf = frontPdfRes.data.pdf;
             } 
             if(form_data_back) {

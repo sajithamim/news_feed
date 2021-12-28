@@ -152,6 +152,7 @@ const ModalContent = (props) => {
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
+    console.log("pdfFile",pdfFile);
     let errors = { ...err };
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
@@ -445,6 +446,7 @@ const ModalContent = (props) => {
   }
 
   const deleteImage = (id, image) => {
+    console.log("id", id);
     setLoading(false);
     if (id !== null) {
       const oldImages = state.old_image;
