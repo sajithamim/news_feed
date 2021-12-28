@@ -105,7 +105,7 @@ const ModalContent = (props) => {
     const errors = { ...err };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
       var file = e.target.files[i];
-      if (!file.name.match(/\.(jpg|jpeg|png|gif|jfif|tiff|raw|bmp)$/)) {
+      if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
         errors["multi_image"] = "Please select valid image.";
         setErrors({ errors });
         setFormSubmit(false);
@@ -273,6 +273,10 @@ const ModalContent = (props) => {
       if (props.drawerType == 'add' && fields["pdfUrlBack"] === undefined) {
         formIsValid = false;
         errors["pdfsecond"] = "Please upload Back Pdf"
+      }
+      if (state.deliverytype === 'pdf' && fields["pdfUrlSecond"] === undefined) {
+        formIsValid = false;
+        errors["pdf2"] = "PDF cannot be empty";
       }
       if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
         formIsValid = false;
