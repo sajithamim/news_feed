@@ -66,9 +66,24 @@ export const deleteTopic = (id, page) => async (dispatch) => {
     }
 }
 
+// export const deleteImages = (id) => async (dispatch) => {
+//     try {
+//         const url = `topic/deletetopicimage/${id}`;
+//         const res = await DataService.deleteData(url, id); 
+//         dispatch({
+//             type: 'DELETE_IMAGE',
+//             payload: res.data,
+//         })
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+
+
 export const deleteImages = (id) => async (dispatch) => {
     try {
-        const res = await Topic.deleteImage(id);   
+        const url = `topic/deletetopicimage/${id}`;
+        const res = await DataService.deleteData(url, id);   
         return res;
     } catch (err) {
         console.log("error",err);
@@ -182,15 +197,16 @@ export const updateTopic = (id, newData, form_data,form_data_back, form_data2, f
     }
 }
 
-export const searchUsers = (value) => async(dispatch) => {
-    try{
-        const res = await Topic.searchUsers(value);
-        return res;
-        // dispatch({
-        //     type: 'SEARCH_USERS',
-        //     payload: res.data,
-        // })
-    }catch (err) {
-
+export const searchUsers = (value) => async (dispatch) => {
+    try {
+        const url = `auth/usersearck/${value}/`;
+        const res = await DataService.getData(url);
+        dispatch({
+            type: 'SEARCH_USERS',
+            payload: res.data,
+        })
+    } catch (err) {
+        console.log(err);
     }
+
 }
