@@ -160,6 +160,7 @@ const DrawerContent = (props) => {
             <Form.Item label="Image">
                 {imgData ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={imgData} src={imgData} />) : null}
                 <Input type="file" id="image" name="image" accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
+                <div style={{ marginLeft: '50px',  width:'267px' }}>*Supported File extensions: jpg,jpeg,png </div>
                 <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
             </Form.Item>
             <Form.Item label="Publication URL">
