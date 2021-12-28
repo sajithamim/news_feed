@@ -25,6 +25,7 @@ const ModalContent = (props) => {
   const { specList, catList, userList } = useSelector(state => state.topic);
   const [err, setErrors] = useState({});
   const [data, setData] = useState([]);
+  const [descLength, setDescLength] = useState();
 
 
   useEffect(() => {
@@ -79,6 +80,20 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
+    const maxLength = 150 - e.target.value.length;
+    const errors = { ...err };
+    if (e.target.name === "description1"){
+      errors["description1"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
+      setDescLength({ errors });
+    }
+    else if (e.target.name === "description2"){
+      errors["description2"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
+      setDescLength({ errors });
+    }
+    else if (e.target.name === "description3"){
+      errors["description3"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
+      setDescLength({ errors });
+    }
   };
 
   const handleCategoryChange = (value) => {
@@ -95,7 +110,6 @@ const ModalContent = (props) => {
         setErrors({ errors });
         setFormSubmit(false);
       } else {
-        console.log("coming here");
         setErrors({});
         setFormSubmit(true);
         const reader = new FileReader();
@@ -551,8 +565,7 @@ const ModalContent = (props) => {
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description1" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
-                  <div style={{marginLeft: '95px'}}>*Enter only 150 characters</div>
-                <div className="errorMsg">{err && err.errors && err.errors.description1}</div>
+                  {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description1}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description1}</div>)}
               </Form.Item></>) : null}
           {(state.format === '2') ?
             (<><Form.Item label="Title">
@@ -562,9 +575,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description2" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
-                  <div style={{marginLeft: '95px'}}>*Enter only 150 characters</div>
-                <div className="errorMsg">{err && err.errors && err.errors.description2}</div>
+                  <TextArea name="description2" id="description2" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
+                {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description2}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description2}</div>)}
               </Form.Item>
             </>) : null
           }
@@ -577,9 +589,7 @@ const ModalContent = (props) => {
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description3" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
-                  <div style={{marginLeft: '95px'}}>*Enter only 150 characters</div>
-                <div className="errorMsg">{err && err.errors && err.errors.description3}</div>
-              </Form.Item></>) : null
+                  {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description3}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description3}</div>)}              </Form.Item></>) : null
           }
           {state.format === '2' ?
             (<Form.Item label="Images"><div>{state.old_image && state.old_image.map((item) => (<div className="img-wrap">
@@ -595,7 +605,7 @@ const ModalContent = (props) => {
             </div>
               <div className="inputStyle">
                 <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple disabled={loading} /></div>
-                <div>*Supported File extensions: jpg,jpeg,png</div>
+              <div>*Supported File extensions: jpg,jpeg,png</div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?
