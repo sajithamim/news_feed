@@ -77,12 +77,10 @@ http.interceptors.response.use(
     );
       
     const status = error.response.status;
-    console.log("before token", status);
     if (
       (status === 401 || status === 403) &&
       !originalRequest._retry
     ) {
-      console.log("coming to refesh");
       let token = await refresh();
       if (token === undefined) {
         sessionlogout();
