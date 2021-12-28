@@ -75,13 +75,14 @@ http.interceptors.response.use(
       originalRequest.url,
       process.env.REACT_APP_API_URL
     );
-
+      
     const status = error.response.status;
+    console.log("before token", status);
     if (
-      (status === 401 || status === 404) &&
+      (status === 401 || status === 403) &&
       !originalRequest._retry
     ) {
-      console.log("coming to refesh", token);
+      console.log("coming to refesh");
       let token = await refresh();
       if (token === undefined) {
         sessionlogout();
