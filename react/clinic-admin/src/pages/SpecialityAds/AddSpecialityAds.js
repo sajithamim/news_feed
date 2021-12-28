@@ -209,6 +209,7 @@ const SpecialityAds = () => {
                     <Form.Item label="Add Image">
                         {state.image ? (<img className="playerProfilePic_home_tile" style={{ marginLeft: '50px' }} width="128px" height="128px" alt={state.image} src={state.image} />) : null}
                         <Input type="file" name="image" onChange={handleFileChange} style={{ marginLeft: '50px', marginTop: '15px' }} />
+                        <div style={{ marginLeft: '50px',  width:'267px' }}>*Supported File extensions: jpg,jpeg,png </div>
                         <div className="errorMsg" style={{ marginLeft: '50px' }}>{errors && errors.errors && errors.errors.image}</div>
                     </Form.Item>
                     <Form.Item wrapperCol={{ offset: 4, span: 9 }}>
