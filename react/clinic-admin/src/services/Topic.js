@@ -1,5 +1,5 @@
-// import { http, instance} from "../http-common";
-// import axios from 'axios';
+import { http, instance} from "../http-common";
+import axios from 'axios';
 
 // const getTopic = (page) => {
 //   return http.get(`topic/topic/?page=${page}`);
@@ -9,9 +9,9 @@
 //   return http.delete(`topic/topic/${id}`);
 // };
 
-// const deleteImage = (id) => {
-//   return http.delete(`topic/deletetopicimage/${id}`);
-// };
+const deleteImage = (id) => {
+  return http.delete(`topic/deletetopicimage/${id}`);
+};
 
 // const postTopic = (state) => {
 //   return http.post(`topic/topic/`, state);
@@ -60,18 +60,18 @@
 //   return instance.post(url, imageData);
 // }
 
-// const Topic = {
+const Topic = {
 //   getTopic,
 //   deleteTopic,
 //   postTopic,
 //   putPdfdata,
 //   //putImagedata,
-//   deleteImage,
+  deleteImage,
 //   updateTopic,
 //   putPdfdata2,
 //   getSpecialization,
 //   getCategory,
 //   searchUsers
-// };
+};
 
-// export default Topic;
+export default Topic;
