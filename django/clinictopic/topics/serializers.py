@@ -221,6 +221,9 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.format = validated_data.get('format', instance.format)
             if 'source_url' in validated_data:
                 instance.source_url = validated_data.get('source_url', instance.source_url)
+            if 'deliverytype' in validated_data:
+                instance.deliverytype = validated_data.get('deliverytype', instance.deliverytype)
+
             # if 'email' in validated_data:
             #     author = User.objects.get(email=validated_data['email'])
             #     instance.author = author
@@ -248,6 +251,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.source_url = validated_data.get('source_url', instance.source_url)
             if 'video_url' in validated_data:
                 instance.video_url = validated_data.get('video_url', instance.video_url)
+            if 'deliverytype' in validated_data:
+                instance.deliverytype = validated_data.get('deliverytype', instance.deliverytype)
             # if 'email' in validated_data:
             #     author = User.objects.get(email=validated_data['email'])
             #     instance.author = author
