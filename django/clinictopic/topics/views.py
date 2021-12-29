@@ -33,6 +33,9 @@ from add.models import AllUserAdd
 from rest_framework.pagination import LimitOffsetPagination
 from django.contrib.sites.shortcuts import get_current_site
 
+class AdminPagination(pagination.PageNumberPagination): 
+    # add = AddSetting.objects.latest('id')
+    page_size = 10
 
 class TwentyPagination(pagination.PageNumberPagination): 
     # add = AddSetting.objects.latest('id')
@@ -190,7 +193,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topics.objects.all().order_by('-created_at')
     serializer_class = TopicSeriaizer
-    pagination_class = TwentyPagination
+    pagination_class = AdminPagination
     permission_classes = (IsAuthenticated,)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     # ordering = ('title')
