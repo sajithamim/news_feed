@@ -4,7 +4,7 @@ from rest_framework import routers
 from .views import (UploadedImagesViewSet,TopicViewSet,UserCategoryApiView,
 UserFavouriteApiView,FavouriteDeleteView,CategoryselectedView,GetUserCategoryApiview,
 TopicImageView,Deleteimage,UpdateTopicSpecialization,Authortest,TopicSuggestionView,
-GetAllCategoryApiview,FeedView)
+GetAllCategoryApiview,FeedView,MultipleImageDeleteView)
 from clinictopic.settings.base import MEDIA_ROOT,MEDIA_URL
  
 
@@ -32,6 +32,7 @@ urlpatterns = [
         path('topicSuggestion/<str:pk>/',TopicSuggestionView.as_view()),
         path('getallcategory/',GetAllCategoryApiview.as_view()),
         path('feed/',FeedView.as_view()),
+        path('deletemultipleimage/',MultipleImageDeleteView.as_view()),
 
 
 ]

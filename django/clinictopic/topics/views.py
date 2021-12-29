@@ -373,6 +373,8 @@ class FavouriteDeleteView(APIView):
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
 class CategoryselectedView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
@@ -459,6 +461,25 @@ class Deleteimage(APIView):
                 'message': 'invalid request',
                 'error': str(e)
                 }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+class MultipleImageDeleteView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, *args, **kwargs):
+        try:
+            delete_id = request.data["deleteid"]
+            if not delete_id:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            for i in delete_id:
+                get_object_or_404(Image, pk=int(i)).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            response={
+                "success":"False",
+                "message":"not deleted",
+                "status": status.HTTP_400_BAD_REQUEST,
+                "error":str(e)
+            }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
 class StandardResultsSetPagination(PageNumberPagination):
