@@ -15,7 +15,7 @@ const TopicsContent = (props) => {
   const [data, setData] = useState({});
   const { topicList, success, error, page } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem("accessToken");
@@ -31,13 +31,13 @@ const TopicsContent = (props) => {
       dispatch(getTopic(page))
       dispatch({ type: 'RESET_DATA' })
     }
-    else if (error) {
-      message.error(error);
-      dispatch({ type: 'RESET_DATA' })
-      const clearToken = localStorage.clear();
-      dispatch(logout());
-      history.push("/login");
-    }
+    // else if (error) {
+    //   message.error(error);
+    //   dispatch({ type: 'RESET_DATA' })
+    //   const clearToken = localStorage.clear();
+    //   dispatch(logout());
+    //   history.push("/login");
+    // }
   }, [success, error])
 
   useEffect(() => {
@@ -73,6 +73,8 @@ const TopicsContent = (props) => {
   const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data) => {
     onClose();
     if (drawerType == 'edit') {
+      console.log("newdata", newData);
+      console.log("newdata", data.id);
       dispatch(updateTopic(data.id, newData, form_data, form_data_back, form_data2, form_data3, image_data));
     } else {
       dispatch(postTopic(newData, form_data, form_data_back, form_data2, form_data3, image_data));
