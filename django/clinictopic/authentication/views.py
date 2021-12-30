@@ -503,7 +503,7 @@ class Userlist(APIView,PageNumberPagination):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            queryset =User.objects.filter(is_superuser=False).order_by('email')
+            queryset =User.objects.filter(is_superuser=False).exclude(Q(auth_provider='email') & Q(phone_verified=False)).order_by('email')
             results = self.paginate_queryset(queryset, request, view=self)
             serializer = UserProfileSerializer(results,many=True)
             return self.get_paginated_response(serializer.data)
@@ -518,11 +518,11 @@ class Userlist(APIView,PageNumberPagination):
 
 class VerifyPhone(generics.GenericAPIView):
     serializer_class = VerifyPhoneSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self, request,*args, **kwargs):
         try:
             user =User.objects.get(email=request.user)
-            otp= request.data['otp']
+            otp = request.data['otp']
             userotp = user.otp
             if int(otp) == int(userotp):
                 response={
@@ -533,13 +533,15 @@ class VerifyPhone(generics.GenericAPIView):
                 if not user.phone_verified:
                     user.phone_verified = True
                     user.save()
+                return Response(response,status=status.HTTP_200_OK)
+
             else:
                 response={
                 "success":"False",
                 "message":"Invalid Otp",
                 "status":status.HTTP_200_OK,
                     }
-            return Response(response,status=status.HTTP_200_OK)
+                return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
             response={
                 "success":"False",
@@ -737,7 +739,7 @@ class AccomplilshmentsView(viewsets.ModelViewSet):
     def image(self, request,pk=None):
             obj = Accomplishments.objects.get(id=pk)
             serializer = self.serializer_class(obj, data=request.data,
-                                            partial=True)
+                                            partial=True,context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -773,7 +775,7 @@ class getUserAccomplishementView(APIView):
     def get(self, request,pk, *args, **kwargs):
         try:
             user = Accomplishments.objects.filter(user_id=pk)
-            serializers = AccomplishmentSerializer(user,many=True)
+            serializers = AccomplishmentSerializer(user,many=True,context={'request': request})
             # response={
             #     "success":"True",
             #     "message":"user accomplishments",

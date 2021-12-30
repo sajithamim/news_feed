@@ -20,7 +20,6 @@ const addData = (state, action) => {
 }
 
 export default (state = initialState , action) => {
-    console.log("hjhjh",action);
     switch(action.type) {
         case 'GET_TOPIC':
             return {...state , topicList: action.payload,  page: action.page }

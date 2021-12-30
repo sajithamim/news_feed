@@ -103,6 +103,7 @@ const DrawerContent = (props) => {
               id="image"
               name="image"
               accept="image/png, image/jpeg" onChange={handleFileChange} style={{ marginLeft: '50px' }} />
+               <div style={{ marginLeft: '50px',  width:'267px' }}>*Supported File extensions: jpg,jpeg,png </div>
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
           </Form.Item>
           <Form.Item label="Status" wrapperCol={{ offset: 2 }}>

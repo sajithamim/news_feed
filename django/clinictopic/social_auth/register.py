@@ -26,6 +26,12 @@ def register_social_user(provider, user_id, email, name):
     filtered_user_by_email = User.objects.filter(email=email)
     if filtered_user_by_email.exists():
         user_iddata = User.objects.get(email=email)
+        if user_iddata.is_superuser:
+        	raise AuthenticationFailed(
+                detail = 'You are a super user! use different email..')
+        if user_iddata.auth_provider == 'email' and user_iddata.phone_verified:
+        	raise AuthenticationFailed(
+                detail = 'User with this email already exists in otp login!.Please use another email..')
         userid = user_iddata.id
         # print(filtered_user_by_email[0].auth_provider)
         count = UserSpecialization.objects.filter(user_id=userid).count()
@@ -48,7 +54,7 @@ def register_social_user(provider, user_id, email, name):
         else:
             raise AuthenticationFailed(
                 # detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
-                detail = 'User with this email already exists!.Please continue your login using '+ filtered_user_by_email[0].auth_provider)
+                detail = 'User with this email already exists in otp login!.Please use another email..')
 
     else:
         user = {

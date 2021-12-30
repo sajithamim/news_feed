@@ -107,6 +107,7 @@ const DrawerContent = (props) => {
             {imgData ? (<img className="playerProfilePic_home_tile" alt={imgData} src={imgData} />) : null}
             <Input type="file" name="image" id="uploadFile" accept="image/png, image/jpeg" key={inputKey} onChange={handleFileChange}  />
             <div className="errorMsg">{errors && errors.errors && errors.errors.image}</div>
+            <div style={{ marginLeft: '50px',  width:'267px' }}>*Supported File extensions: jpg,jpeg,png </div>
           </Form.Item>
         </div>
       </div>
