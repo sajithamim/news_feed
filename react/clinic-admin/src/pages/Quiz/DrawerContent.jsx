@@ -48,7 +48,7 @@ const DrawerContent = (props) => {
     }
     
     const handleSpecChange = (value) => {
-        setState({ ...state, spec_data: value, spec_id: value.value });
+        setState({ ...state, spec_data: value, spec_id: value.value ,sub_spec_data: '', sub_spec_id: '' }); 
         dispatch(getSubSpecialisation(value.value));
     };
 

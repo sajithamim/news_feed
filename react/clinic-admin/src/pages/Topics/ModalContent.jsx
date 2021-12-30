@@ -8,16 +8,11 @@ import { deleteImages, getSpecialization, getCategory, searchUsers } from "../..
 import moment from 'moment';
 import SelectBox from 'react-select';
 
-
 const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
 
-
 const ModalContent = (props) => {
   const { TextArea } = Input;
-  const [lastFetchId, setLastFetchId] = useState(0);
-  const [fetching, setFetching] = useState(0);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [crntDateTime, setCrntDateTime] = useState('');
@@ -82,18 +77,19 @@ const ModalContent = (props) => {
     setState({ ...state, [e.target.name]: e.target.value })
     const maxLength = 150 - e.target.value.length;
     const errors = { ...err };
-    if (e.target.name === "description1"){
+    if (e.target.name === "description1") {
       errors["description1"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
-    else if (e.target.name === "description2"){
+    else if (e.target.name === "description2") {
       errors["description2"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
-    else if (e.target.name === "description3"){
+    else if (e.target.name === "description3") {
       errors["description3"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
+    console.log("state external", e.target.value);
   };
 
   const handleCategoryChange = (value) => {
@@ -152,7 +148,7 @@ const ModalContent = (props) => {
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
-    console.log("pdfFile",pdfFile);
+    console.log("pdfFile", pdfFile);
     let errors = { ...err };
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
@@ -183,6 +179,7 @@ const ModalContent = (props) => {
     }
   }
   const handleFileChangeSecond = (e) => {
+
     setState({ ...state, pdfUrlSecond: e.target.files[0] });
     const pdfSecondFile = e.target.files[0];
     let errors = { ...err };
@@ -218,6 +215,7 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
+    console.log("value", val);
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
@@ -230,6 +228,7 @@ const ModalContent = (props) => {
       setState({ ...state, format: e.target.value })
     }
     else if (val === 'deliverytype') {
+      console.log("e.target.value", e.target.value);
       setState({ ...state, deliverytype: e.target.value })
     }
   };
@@ -425,6 +424,11 @@ const ModalContent = (props) => {
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
+        if (state.deliverytype === 'pdf') {
+          delete newData['external_url2']
+        }else if(state.deliverytype === 'external') {
+          delete newData['pdfUrlSecond']
+        }
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
@@ -434,6 +438,9 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
+      console.log("new data", newData);
+      console.log("state.deliveryType", state.deliveryType);
+      console.log("state.deliverytype", state.deliverytype);
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -451,7 +458,7 @@ const ModalContent = (props) => {
     if (id !== null) {
       const oldImages = state.old_image;
       const oldImageList = oldImages.filter(item => { return item.id !== id });
-      dispatch(deleteImages(id));
+      //dispatch(deleteImages(id));
       setState({ ...state, old_image: oldImageList });
     } else {
       const newImages = state.topic_image;
@@ -567,7 +574,7 @@ const ModalContent = (props) => {
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description1" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
-                  {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description1}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description1}</div>)}
+                {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description1}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description1}</div>)}
               </Form.Item></>) : null}
           {(state.format === '2') ?
             (<><Form.Item label="Title">
@@ -591,18 +598,18 @@ const ModalContent = (props) => {
               <Form.Item label="Description">
                 <div className="inputStyle">
                   <TextArea name="description3" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
-                  {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description3}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description3}</div>)}              </Form.Item></>) : null
+                {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description3}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description3}</div>)}              </Form.Item></>) : null
           }
           {state.format === '2' ?
             (<Form.Item label="Images"><div>{state.old_image && state.old_image.map((item) => (<div className="img-wrap">
               <img key={item} src={item.image} alt="" />
               <div className="close">
-                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+                <Popconfirm title="Are you sure to delete this image ?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
             </div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
                 <img key={url} src={url} alt="" />
                 <div className="close">
-                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+                  <Popconfirm title="Are you sure to delete this image ?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
               </div>))}
             </div>
               <div className="inputStyle">

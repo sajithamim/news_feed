@@ -50,7 +50,7 @@ instance.interceptors.response.use(
     const status = error.response.status;
     if (
       (status === 401 || status === 403) &&
-      !originalRequest._retry 
+      !originalRequest._retry
     ) {
       let token = await refresh();
       if (token === undefined) {
@@ -60,6 +60,9 @@ instance.interceptors.response.use(
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
       return instance(originalRequest);
+    }
+    else{
+      console.log("error");
     }
     return Promise.reject(error);
   }
