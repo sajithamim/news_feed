@@ -23,7 +23,8 @@ export const getUsersList = (page) => async (dispatch) => {
 
 export const getUserCategory = (emailId) => async (dispatch) => {
     try {
-        const res = await Users.getUserCategory(emailId);
+        const url = `topic/getusercategory/${emailId}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER_CATEGORY',
             payload: res.data,
@@ -35,7 +36,8 @@ export const getUserCategory = (emailId) => async (dispatch) => {
 
 export const getUserSpecialization = (emailId) => async (dispatch) => {
     try {
-        const res = await Users.getUserSpec(emailId);
+        const url = `spec/getuserspecialization/${emailId}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER_SPEC',
             payload: res.data,
@@ -47,7 +49,8 @@ export const getUserSpecialization = (emailId) => async (dispatch) => {
 
 export const getUserDetails = (emailId) => async (dispatch) => {
     try {
-        const res = await Users.getUserData(emailId);
+        const url = `auth/userdetail/${emailId}`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_USER_DETAILS',
             payload: res.data,
@@ -81,24 +84,28 @@ export const deleteUser = (id, page) => async (dispatch) => {
 
 export const postUserProfile = (state, otherQualification) => async (dispatch) => {
     try {
-        const res = await Users.postUserProfile(state);
-        console.log("post user deatsil", res);
-        if (otherQualification){
-            const resQuali = await Users.postOtherQualifications(otherQualification);
+        const url = `auth/userprofile/`;
+        const res = await DataService.addData(url, state);
+        if (otherQualification &&  otherQualification){
+            const qualfiUrl = `auth/qualifications/`;
+            const resQuali = await DataService.addData(qualfiUrl, otherQualification);
         }
         dispatch({
             type: 'POST_USER_PROFILE',
             payload: res.data,
         })
     } catch (err) {
-
     }
 }
 export const getUserProfile = (id) => async (dispatch) => {
     try {
-        const res = await Users.getUserProfile(id);
+        const url = `auth/getuserprofile/${id}`;
+        const res = await DataService.getData(url);
+        // const res = await Users.getUserProfile(id);
         if (res) {
-            const res1 = await Users.getUserProfilePic(id);
+            const url = `auth/profilepic/${id}`;
+            const res = await DataService.getData(url);
+            // const res1 = await Users.getUserProfilePic(id);
         }
         dispatch({
             type: 'GET_USER_PROFILE',
@@ -111,7 +118,9 @@ export const getUserProfile = (id) => async (dispatch) => {
 }
 export const updateUserProfile = (id, state) => async (dispatch) => {
     try {
-        const res = await Users.updateUserProfile(id, state);
+        const url = `/auth/userprofile/${id}/`;
+        const res = await DataService.updateData(url, state);
+        // const res = await Users.updateUserProfile(id, state);
         dispatch({
             type: 'UPDATE_USER_PROFILE',
             payload: res.data,
@@ -121,9 +130,11 @@ export const updateUserProfile = (id, state) => async (dispatch) => {
 
     }
 }
+
 export const getQualifications = () => async (dispatch) => {
     try {
-        const res = await Users.getQualifications();
+        const url = `auth/qualifications/`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_QUALIFICATIONS',
             payload: res.data,
@@ -141,7 +152,8 @@ export const putProfilePic = (id, image) => async (dispatch) => {
         form_data = new FormData();
         form_data.append('profilepic', image[0]);
         try {
-            const res = await Users.putProfilePic(id, form_data);
+            const imageUrl = `${process.env.REACT_APP_API_URL}auth/profilepic/${id}/profilepicaddadmin/`;
+            const res= await DataService.putImage(imageUrl, image, form_data)
             dispatch({
                 type: 'PUT_PROFILEPIC',
                 payload: res.data,
@@ -154,7 +166,8 @@ export const putProfilePic = (id, image) => async (dispatch) => {
 
 export const getPublicationList = (id) => async (dispatch) => {
     try {
-        const res = await Users.getPublicationList(id);
+        const url = `auth/getuseraccomplishment/${id}/`;
+        const res = await DataService.getData(url);
         dispatch({
             type: 'GET_PUBLICATION_LIST',
             payload: res,
@@ -167,10 +180,13 @@ export const getPublicationList = (id) => async (dispatch) => {
 
 export const postPublicationDetails = (state, image) => async (dispatch) => {
     try {
-        const res = await Users.postPublicationDetails(state);
+        const url = `auth/accomplishments/`;
+        const res = await DataService.addData(url, state);
         if(res.status == 200) {
-            if (image) {
-                const res1 = await Users.putpublicationImage(res.data.id, image)
+            if (image && res.data.id) {
+                const imageUrl = `${process.env.REACT_APP_API_URL}auth/accomplishments/${res.data.id}/image/`;
+                const res1 = await DataService.putImage(imageUrl, image)
+                res.data.image = res1.data.image
             }
             dispatch({
                 type: 'POST_PUBLICATION_LIST',
@@ -187,13 +203,17 @@ export const postPublicationDetails = (state, image) => async (dispatch) => {
 
     }
 }
+
 export const updatePublicationDetails = (id, state, image) => async (dispatch) => {
     try {
-        const res = await Users.updatePublicationDetails(id, state);
+        const url = `auth/accomplishments/${id}/`;
+        const res = await DataService.updateData(url, state);
+        // const res = await Users.updatePublicationDetails(id, state);
         if(res.status == 200) {
            
             if (res && image) {
-                const res1 = await Users.putpublicationImage(res.data.id, image)
+                const res1 = await DataService.putImage(res.data.id, image)
+                const url = `${process.env.REACT_APP_API_URL}auth/accomplishments/${id}/image/`;
             }
             
             dispatch({
@@ -214,7 +234,9 @@ export const updatePublicationDetails = (id, state, image) => async (dispatch) =
 }
 export const deleteUserPublication = (id) => async (dispatch) => {
     try {
-        const res = await Users.deleteUserPublication(id);
+        const url = `auth/accomplishments/${id}`;
+        const res = await DataService.deleteData(url);
+        // const res = await Users.deleteUserPublication(id);
         dispatch({
             type: 'DELETE_USER_PUBLICATION',
             payload: id,

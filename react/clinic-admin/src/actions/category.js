@@ -34,7 +34,11 @@ export const postCategory = (state, imageData) => async (dispatch) => {
         }
     }
     catch (err) {
-        console.log("error", err);
+        dispatch({
+            type: 'CATEGORY_ERROR',
+            error: 'CATEGORY NAME EXIST',
+            payload: err,
+        });
     }
 }
 

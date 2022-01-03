@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, passwordReset } from "../../actions/auth.js"
 import { Link } from 'react-router-dom';
 import "./Login.css";
-import { components } from "react-select";
 
 const Login = () => {
+  const [form] = Form.useForm();
   const [state, setState] = useState({});
   const [loading, setLoading] = useState("");
   let history = useHistory();
@@ -16,12 +16,12 @@ const Login = () => {
   const { error, payload } = useSelector(state => state.auth);
   const accessToken = localStorage.getItem("accessToken");
 
-  useEffect(() => {
-    if (payload){
-      message.error(payload);
-      document.getElementById("password").value = "";
-      dispatch({ type: 'RESET_DATA' })
 
+  useEffect(() => {
+    if (payload) {
+      message.error(payload);
+      dispatch({ type: 'RESET_DATA' })
+      form.resetFields();
     }
   }, [payload])
 
@@ -31,7 +31,6 @@ const Login = () => {
   const signin = (e) => {
     setLoading(true);
     dispatch(login(state))
-    setState({});
   };
 
   if (window.navigator.onLine == true) {
@@ -49,58 +48,59 @@ const Login = () => {
 
   return (
     <>
-      {/* {error ? (<Alert type="error" message="Invalid username or password" banner closable onClick={reset} />) : (null)} */}
-      <Form onFinish={signin} layout="vertical" validateMessages={validateMessages}>
-        <div className="main">
-          <div className="sign">Login</div>
-          <Form.Item label="Email" name="email" rules={[
-            {
-              required: true,
-              type: 'email',
-            },
-          ]}
-          >
-            <Input
-              style={{ borderRadius: "8px", marginLeft: '2px' }}
-              ref="fieldName"
-              name="email"
-              className="un"
-              autoComplete="off"
-              value={state.email}
-              placeholder="Email"
-              // onChange={(e) => setEmail(e.target.value ?? '')}
-              onChange={handleChange}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
+      <Form form={form} onFinish={signin} layout="vertical" validateMessages={validateMessages}>
+        <div>
+          <div className="main">
+            <div className="sign">Login</div>
+            <Form.Item label="Email" name="email" rules={[
               {
                 required: true,
-                message: 'Please input your password!',
+                type: 'email',
               },
             ]}
-          >
-            <Input
-              style={{ borderRadius: "8px", marginLeft: "2px" }}
-              className="pass"
+            >
+              <Input
+                style={{ borderRadius: "8px", marginLeft: '2px' }}
+                id="email"
+                name="email"
+                className="un"
+                autoComplete="off"
+                value={state.email || ""}
+                placeholder="Email"
+                // onChange={(e) => setEmail(e.target.value ?? '')}
+                onChange={handleChange}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Password"
               name="password"
-              id= "password"
-              value={state.password}
-              type="password"
-              placeholder="Password"
-              rules={[{ required: true, message: 'Please input your password' }]}
-              // onChange={(e) => setPassword(e.target.value)}
-              onChange={handleChange}
-            />
-          </Form.Item>
-          <div className="submit">
-            <Button type="primary" htmlType="submit" disabled={loading}>
-              Login
-            </Button>
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your password!',
+                },
+              ]}
+            >
+              <Input
+                style={{ borderRadius: "8px", marginLeft: "2px" }}
+                className="pass"
+                name="password"
+                id="password"
+                value={state.password}
+                type="password"
+                placeholder="Password"
+                rules={[{ required: true, message: 'Please input your password' }]}
+                // onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange}
+              />
+            </Form.Item>
+            <div className="submit">
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+            </div>
+            <Form.Item wrapperCol={{ offset: 8, span: 10 }}><Link to={"/forgot_password"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
           </div>
-          <Form.Item wrapperCol={{ offset: 8, span: 10 }}><Link to={"/forgot_password"} style={{ alignItems: "center" }}>Forgot Password</Link></Form.Item>
         </div>
       </Form>
     </>

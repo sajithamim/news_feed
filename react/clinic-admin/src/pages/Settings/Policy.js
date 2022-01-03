@@ -47,9 +47,10 @@ const Policy = () => {
     return (
             <Card title="Policy" style={{ width: "100%", height: 'auto' }}>
                 <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
-                    {editorState ?
+                    {editorState && editorState ?
                         (<Editor
                             editorState={editorState}
+                            editorStyle={{border: "1px solid", overflowY: "scroll", height: '400px'}}
                             toolbarClassName="toolbarClassName"
                             wrapperClassName="wrapperClassName"
                             editorClassName="editorClassName"
@@ -57,7 +58,7 @@ const Policy = () => {
                         />
                         ) : (<div className="spinner"><Spin tip="Loading..." style={{ align: "center" }} /></div>)}
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit"> Save </Button>
+                        <Button type="primary" htmlType="submit" style={{ position: 'absolute'}}> Save </Button>
                     </Form.Item>
                 </Form>
             </Card>

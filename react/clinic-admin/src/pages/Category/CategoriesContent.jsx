@@ -17,7 +17,7 @@ const CategoriesContent = (props) => {
   const [slNo, setSlNo] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [editData, setEditData] = useState({});
-  const { catlist, updateData, addData, page, success } = useSelector(state => state.category);
+  const { catlist, updateData, addData, page, success, error, payload } = useSelector(state => state.category);
   
   useEffect(() => {
     dispatch(getCategory());
@@ -31,7 +31,11 @@ const CategoriesContent = (props) => {
     if(success && updateData){
       message.success("Category edited successfully");
     }
-  }, [success, addData, updateData])
+    if(error === "CATEGORY NAME EXIST" && payload){
+      message.error("Category name exist");
+      dispatch({ type: 'RESET_DATA' })
+    }
+  }, [success, addData, updateData, error])
 
   const onClose = () => {
     setShowDrawer(false);
@@ -117,9 +121,6 @@ const CategoriesContent = (props) => {
           <IconButton onClick={() => onEdit(record)}>
             <Icon>edit</Icon>
           </IconButton>
-          {/* <Button type="link" onClick={() => onEdit(record)}>
-            Edit
-          </Button> */}
           <Popconfirm
             title="Topics are created under categories , are you sure you want to delete this category?"
             onConfirm={() => onConfirm(record.id)}
@@ -127,7 +128,6 @@ const CategoriesContent = (props) => {
             okText="Yes"
             cancelText="No"
           >
-            {/* <Button type="link">Delete</Button> */}
             <IconButton >
               <Icon>delete</Icon>
             </IconButton>

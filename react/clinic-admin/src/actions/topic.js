@@ -4,7 +4,6 @@ import DataService from "../services/data.service";
 export const getTopic = (page) => async (dispatch) => {
     page = page != undefined ? page : 1;
     try {
-        console.log("action topic");
         const url = `topic/topic/?page=${page}`;
         const res = await DataService.getData(url); 
         dispatch({
@@ -38,7 +37,6 @@ export const getCategory = () => async (dispatch) => {
     try {
         const url = `topic/getallcategory/`;
         const res = await DataService.getData(url);
-        console.log("response", res);
         dispatch({
             type: 'GET_CATEGORY',
             payload: res.data,
@@ -68,12 +66,27 @@ export const deleteTopic = (id, page) => async (dispatch) => {
     }
 }
 
+// export const deleteImages = (id) => async (dispatch) => {
+//     try {
+//         const url = `topic/deletetopicimage/${id}`;
+//         const res = await DataService.deleteData(url, id); 
+//         dispatch({
+//             type: 'DELETE_IMAGE',
+//             payload: res.data,
+//         })
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+
+
 export const deleteImages = (id) => async (dispatch) => {
     try {
-        const res = await Topic.deleteImage(id);   
+        const url = `topic/deletetopicimage/${id}`;
+        const res = await DataService.deleteData(url, id);   
         return res;
     } catch (err) {
-        console.log(err);
+        console.log("error",err);
     }
 }
 
@@ -107,6 +120,7 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
                 image_data.append('topic_id', res.data.id);
                 const imageUrl = `topic/topicimages/`;
                 const imageRes = await DataService.imageUpload(imageUrl, image_data); 
+                console.log("imageRes", imageRes);
                 res.data.topic_image = imageRes.data;
             }
             
@@ -130,15 +144,20 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
 }
 
 export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
+    console.log("coming update");
     newData.topic_audience = "doctor";
     try {
         const url = `topic/topic/${id}/`;
         const res = await DataService.updateData(url, newData);
+        console.log("res", res);    
         if(res.status == 200) {
+            console.log("res.status", res.status);
             if (form_data !== null) {
-                await Topic.putPdfdata(id, form_data);
+                console.log("form  not null");
                 let pdfUrl = `topic/topic/${id}/pdf/`;
+                await DataService.uploadDoc(pdfUrl, form_data);
                 const frontPdfRes = await  DataService.uploadDoc(pdfUrl, form_data);
+                console.log("frontPdfRes", frontPdfRes);
                 res.data.pdf = frontPdfRes.data.pdf;
             } 
             if(form_data_back) {
@@ -183,15 +202,16 @@ export const updateTopic = (id, newData, form_data,form_data_back, form_data2, f
     }
 }
 
-export const searchUsers = (value) => async(dispatch) => {
-    try{
-        const res = await Topic.searchUsers(value);
-        return res;
-        // dispatch({
-        //     type: 'SEARCH_USERS',
-        //     payload: res.data,
-        // })
-    }catch (err) {
-
+export const searchUsers = (value) => async (dispatch) => {
+    try {
+        const url = `auth/usersearck/${value}/`;
+        const res = await DataService.getData(url);
+        dispatch({
+            type: 'SEARCH_USERS',
+            payload: res.data,
+        })
+    } catch (err) {
+        console.log(err);
     }
+
 }

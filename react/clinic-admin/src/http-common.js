@@ -50,10 +50,8 @@ instance.interceptors.response.use(
     const status = error.response.status;
     if (
       (status === 401 || status === 403) &&
-      !originalRequest._retry &&
-      !serverCallUrl.pathname.includes("/auth")
+      !originalRequest._retry
     ) {
-      console.log("coming instance");
       let token = await refresh();
       if (token === undefined) {
         sessionlogout();
@@ -62,6 +60,9 @@ instance.interceptors.response.use(
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
       return instance(originalRequest);
+    }
+    else{
+      console.log("error");
     }
     return Promise.reject(error);
   }
@@ -77,15 +78,12 @@ http.interceptors.response.use(
       originalRequest.url,
       process.env.REACT_APP_API_URL
     );
-
+      
     const status = error.response.status;
-    console.log("status", status);
     if (
-      (status === 401 || status === 404) &&
-      !originalRequest._retry ||
-      serverCallUrl.pathname.includes("/auth")
+      (status === 401 || status === 403) &&
+      !originalRequest._retry
     ) {
-      console.log("coming http");
       let token = await refresh();
       if (token === undefined) {
         sessionlogout();
@@ -112,10 +110,8 @@ export const refresh = async () => {
       { headers: { Authorization: `Bearer ${accessToken}` } }
     )
       .then((res) => {
-        console.log("coming refresh");
         return res;
       }).catch((err) => {
-        console.log("coming error");
         const clearToken = localStorage.clear();
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("accessToken");

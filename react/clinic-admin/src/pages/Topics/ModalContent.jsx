@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Input, Radio, Button, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect } from "antd";
+import { Input, Radio, Button, Popover, DatePicker, Space, message, Form, Popconfirm, Select, TreeSelect, notification } from "antd";
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,21 +8,19 @@ import { deleteImages, getSpecialization, getCategory, searchUsers } from "../..
 import moment from 'moment';
 import SelectBox from 'react-select';
 
-
 const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
 
 const ModalContent = (props) => {
   const { TextArea } = Input;
-  const [lastFetchId, setLastFetchId] = useState(0);
-  const [fetching, setFetching] = useState(0);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
   const [crntDateTime, setCrntDateTime] = useState('');
   const [state, setState] = useState({});
   const { specList, catList, userList } = useSelector(state => state.topic);
   const [err, setErrors] = useState({});
   const [data, setData] = useState([]);
+  const [descLength, setDescLength] = useState();
 
 
   useEffect(() => {
@@ -36,8 +34,16 @@ const ModalContent = (props) => {
     else {
       setState({ topic_subspec: [], imageFormData: [] });
     }
+    if (props.drawerType === 'edit' && props.editData.old_image.length > 3) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
   }, [props.editData])
 
+  const content = (
+    (state.format === '1') ? (<div><p>Upload PDF Front and PDF Back.Title and description won't be seen in mobile app.</p></div>) : ((state.format === '2') ? (<div><p>Add image, PDF or External video URL</p></div>) : (<div><p>Add Video URL and PDF/External Url in detail page</p></div>))
+  );
 
   const treeData = [];
   specList && specList.data && specList.data.map((specitem, index) => {
@@ -69,6 +75,21 @@ const ModalContent = (props) => {
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
+    const maxLength = 150 - e.target.value.length;
+    const errors = { ...err };
+    if (e.target.name === "description1") {
+      errors["description1"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
+      setDescLength({ errors });
+    }
+    else if (e.target.name === "description2") {
+      errors["description2"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
+      setDescLength({ errors });
+    }
+    else if (e.target.name === "description3") {
+      errors["description3"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
+      setDescLength({ errors });
+    }
+    console.log("state external", e.target.value);
   };
 
   const handleCategoryChange = (value) => {
@@ -80,11 +101,12 @@ const ModalContent = (props) => {
     const errors = { ...err };
     for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
       var file = e.target.files[i];
-      if (!file.name.match(/\.(jpg|jpeg|png|gif|jfif|tiff|raw|bmp)$/)) {
+      if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
         errors["multi_image"] = "Please select valid image.";
         setErrors({ errors });
         setFormSubmit(false);
       } else {
+        setErrors({});
         setFormSubmit(true);
         const reader = new FileReader();
         reader.addEventListener("load", () => {
@@ -106,13 +128,27 @@ const ModalContent = (props) => {
           }
         });
         reader.readAsDataURL(e.target.files[i]);
+        if (props.drawerType === 'add' && state.imageFormData.length > 2) {
+          setLoading(true);
+          openNotification();
+        } else if (props.drawerType === 'edit' && (state.old_image.length + state.imageFormData.length > 2)) {
+          setLoading(true);
+          openNotification();
+        }
       }
     }
   }
 
+  const openNotification = () => {
+    notification.info({
+      description:
+        'You are allowed to insert max 4 images only.',
+    });
+  };
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
+    console.log("pdfFile", pdfFile);
     let errors = { ...err };
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
@@ -143,6 +179,7 @@ const ModalContent = (props) => {
     }
   }
   const handleFileChangeSecond = (e) => {
+
     setState({ ...state, pdfUrlSecond: e.target.files[0] });
     const pdfSecondFile = e.target.files[0];
     let errors = { ...err };
@@ -178,6 +215,7 @@ const ModalContent = (props) => {
   }
 
   const radioOnChange = (val, e) => {
+    console.log("value", val);
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
@@ -190,6 +228,7 @@ const ModalContent = (props) => {
       setState({ ...state, format: e.target.value })
     }
     else if (val === 'deliverytype') {
+      console.log("e.target.value", e.target.value);
       setState({ ...state, deliverytype: e.target.value })
     }
   };
@@ -234,6 +273,10 @@ const ModalContent = (props) => {
       if (props.drawerType == 'add' && fields["pdfUrlBack"] === undefined) {
         formIsValid = false;
         errors["pdfsecond"] = "Please upload Back Pdf"
+      }
+      if (state.deliverytype === 'pdf' && fields["pdfUrlSecond"] === undefined) {
+        formIsValid = false;
+        errors["pdf2"] = "PDF cannot be empty";
       }
       if (fields["pdfUrl"] && fields["pdfUrl"].name.match(/\.(pdf)$/) == null) {
         formIsValid = false;
@@ -385,6 +428,11 @@ const ModalContent = (props) => {
         newData['description'] = newData['description2'];
         newData['title2'] && delete newData['title2']
         newData['description2'] && delete newData['description2']
+        if (state.deliverytype === 'pdf') {
+          delete newData['external_url2']
+        }else if(state.deliverytype === 'external') {
+          delete newData['pdfUrlSecond']
+        }
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
@@ -394,6 +442,9 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
+      console.log("new data", newData);
+      console.log("state.deliveryType", state.deliveryType);
+      console.log("state.deliverytype", state.deliverytype);
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
     }
   }
@@ -406,10 +457,12 @@ const ModalContent = (props) => {
   }
 
   const deleteImage = (id, image) => {
+    console.log("id", id);
+    setLoading(false);
     if (id !== null) {
       const oldImages = state.old_image;
       const oldImageList = oldImages.filter(item => { return item.id !== id });
-      dispatch(deleteImages(id));
+      //dispatch(deleteImages(id));
       setState({ ...state, old_image: oldImageList });
     } else {
       const newImages = state.topic_image;
@@ -474,7 +527,7 @@ const ModalContent = (props) => {
             <SelectBox
               isMulti={false}
               isSearchable={true}
-              maxMenuHeight={190}
+              maxMenuHeight={130}
               value={state.category_data || ''}
               onChange={handleCategoryChange}
               options={category}
@@ -499,15 +552,21 @@ const ModalContent = (props) => {
           </Form.Item> */}
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
-              <Radio value="1">
-                Format 1
-              </Radio>
-              <Radio value="2">
-                Format 2
-              </Radio>
-              <Radio value="3">
-                Format 3
-              </Radio>
+              <Popover placement="top" content={content} trigger="click">
+                <Radio value="1">
+                  Format 1
+                </Radio>
+              </Popover>
+              <Popover placement="top" content={content} trigger="click">
+                <Radio value="2">
+                  Format 2
+                </Radio>
+              </Popover>
+              <Popover placement="top" content={content} trigger="click">
+                <Radio value="3">
+                  Format 3
+                </Radio>
+              </Popover>
             </Radio.Group>
           </Form.Item>
           {(state.format === '1') ?
@@ -518,8 +577,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description1" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
-                <div className="errorMsg">{err && err.errors && err.errors.description1}</div>
+                  <TextArea name="description1" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description1} /></div>
+                {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description1}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description1}</div>)}
               </Form.Item></>) : null}
           {(state.format === '2') ?
             (<><Form.Item label="Title">
@@ -529,8 +588,8 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description2" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
-                <div className="errorMsg">{err && err.errors && err.errors.description2}</div>
+                  <TextArea name="description2" id="description2" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
+                {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description2}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description2}</div>)}
               </Form.Item>
             </>) : null
           }
@@ -542,24 +601,24 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description3" maxLength="152" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
-                <div className="errorMsg">{err && err.errors && err.errors.description3}</div>
-              </Form.Item></>) : null
+                  <TextArea name="description3" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
+                {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description3}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description3}</div>)}              </Form.Item></>) : null
           }
           {state.format === '2' ?
             (<Form.Item label="Images"><div>{state.old_image && state.old_image.map((item) => (<div className="img-wrap">
               <img key={item} src={item.image} alt="" />
               <div className="close">
-                <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
-              </div>))}
+                <Popconfirm title="Are you sure to delete this image ?" onConfirm={() => deleteImage(item.id, item.image)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+            </div>))}
               {state.topic_image && state.topic_image.map((url) => (<div className="img-wrap">
                 <img key={url} src={url} alt="" />
                 <div className="close">
-                  <Popconfirm title="Are you sure to delete this image?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
-                </div>))}
+                  <Popconfirm title="Are you sure to delete this image ?" onConfirm={() => deleteImage(null, url)} onCancel={cancel} okText="Yes" cancelText="No">&times;</Popconfirm></div>
+              </div>))}
             </div>
               <div className="inputStyle">
-                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple /></div>
+                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple disabled={loading} /></div>
+              <div>*Supported File extensions: jpg,jpeg,png</div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
             </Form.Item>) : null}
           {state.format === '3' ?

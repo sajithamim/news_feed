@@ -51,13 +51,14 @@ const About = () => {
                 <Form name="basic" wrapperCol={{ span: 10 }} onFinish={handleSubmit}>
                     <Editor
                         editorState={editorState}
+                        editorStyle={{border: "1px solid", overflowY: "scroll", height: '500px'}}
                         toolbarClassName="toolbarClassName"
                         wrapperClassName="wrapperClassName"
                         editorClassName="editorClassName"
                         onEditorStateChange={handleEditorChange}
                     />
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit"> Save </Button>
+                        <Button type="primary" htmlType="submit" style={{ position: 'absolute'}}> Save </Button>
                     </Form.Item>
                 </Form>
             </Card>

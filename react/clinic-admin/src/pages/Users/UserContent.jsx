@@ -57,9 +57,7 @@ const UserContent = () => {
   const userGenerator = () => {
     let serialNo = pageSize * slNo;
     const Items = [];
-    userList && userList.results && userList.results.filter((user) => {
-      return user.phone_verified === true;
-    }).map((user, key) => {
+    userList && userList.results && userList.results.filter((user, key) => {
       key++;
       serialNo++;
       Items.push({

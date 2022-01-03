@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import OverviewContent from './pages/Overview/OverviewContent';
 import Login from './pages/Login/Login';
 import Forgot from './pages/Login/Forgot';
@@ -30,26 +30,11 @@ import ClinicRoute from './Layouts/ClinicRoute';
 import { useDispatch } from "react-redux";
 import { logout } from "./actions/auth.js"
 import { useHistory } from "react-router-dom";
-// import isReachable from "is-reachable";
 
 function App() {
-  // const _isMounted = true;
-  // const URL = "google.com:443";
-  // const EVERY_SECOND = 1000;
   const [signoutTime, setSignoutTime] = useState(900000);
   const [warningTime, setWarningTime] = useState(900000);
   const [status, setStatus] = useState({ online: false })
-
-  // useEffect(() => {
-  //   setInterval(async () => {
-  //     const online = await isReachable(URL);
-
-  //     if (_isMounted) {
-  //       setStatus({ online });
-  //     }
-  //   }, EVERY_SECOND);
-  // }, [])
-
   let warnTimeout;
   let logoutTimeout;
   const accessToken = localStorage.getItem("accessToken");
@@ -124,7 +109,6 @@ function App() {
   }, []);
 
   return (
-    // <div>{status.online ? "you're online" : "you are offline"}
     <Router>
       <Switch>
         <AdminRoute path="/data" exact component={OverviewContent} />
@@ -151,9 +135,9 @@ function App() {
         <AuthRoute exact path={["/", "/login"]} component={Login} />
         <ClinicRoute path="/verify" exact component={Verify} />
         <ClinicRoute path="/netstatus" exact component={NoInternet} />
+        <Route path="/" component={Login } />
       </Switch>
     </Router>
-    // </div>
   );
 }
 
