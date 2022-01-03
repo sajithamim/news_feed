@@ -574,6 +574,8 @@ class UserDetailApiview(APIView):
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
+
+
 class UsernameAddview(viewsets.ModelViewSet):
         queryset = User.objects.all()
         serializer_class = UsernameChangeSerializer
