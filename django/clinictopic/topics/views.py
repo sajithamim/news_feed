@@ -465,7 +465,7 @@ class Deleteimage(APIView):
 
 class MultipleImageDeleteView(APIView):
     permission_classes = (IsAuthenticated,)
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
             delete_id = request.data["deleteid"]
             if not delete_id:
