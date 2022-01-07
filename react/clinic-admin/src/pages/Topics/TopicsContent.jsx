@@ -70,12 +70,10 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
 
-  const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data) => {
+  const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds) => {
     onClose();
     if (drawerType == 'edit') {
-      console.log("newdata", newData);
-      console.log("newdata", data.id);
-      dispatch(updateTopic(data.id, newData, form_data, form_data_back, form_data2, form_data3, image_data));
+      dispatch(updateTopic(data.id, newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds));
     } else {
       dispatch(postTopic(newData, form_data, form_data_back, form_data2, form_data3, image_data));
     }

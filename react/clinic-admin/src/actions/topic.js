@@ -66,20 +66,6 @@ export const deleteTopic = (id, page) => async (dispatch) => {
     }
 }
 
-// export const deleteImages = (id) => async (dispatch) => {
-//     try {
-//         const url = `topic/deletetopicimage/${id}`;
-//         const res = await DataService.deleteData(url, id); 
-//         dispatch({
-//             type: 'DELETE_IMAGE',
-//             payload: res.data,
-//         })
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-
-
 export const deleteImages = (id) => async (dispatch) => {
     try {
         const url = `topic/deletetopicimage/${id}`;
@@ -143,21 +129,22 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
     }
 }
 
-export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
-    console.log("coming update");
+export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data, imageIds) => async (dispatch) => {
     newData.topic_audience = "doctor";
+    console.log('newData', newData)
+    // if(imageIds) {
+    //     const delImages = {'deleteid' : imageIds}
+    //     const url = `topic/deletemultipleimage/`;
+    //     await DataService.deleteImages(url, delImages); 
+    // }
     try {
         const url = `topic/topic/${id}/`;
-        const res = await DataService.updateData(url, newData);
-        console.log("res", res);    
+        const res = await DataService.updateData(url, newData);   
         if(res.status == 200) {
-            console.log("res.status", res.status);
             if (form_data !== null) {
-                console.log("form  not null");
                 let pdfUrl = `topic/topic/${id}/pdf/`;
                 await DataService.uploadDoc(pdfUrl, form_data);
                 const frontPdfRes = await  DataService.uploadDoc(pdfUrl, form_data);
-                console.log("frontPdfRes", frontPdfRes);
                 res.data.pdf = frontPdfRes.data.pdf;
             } 
             if(form_data_back) {

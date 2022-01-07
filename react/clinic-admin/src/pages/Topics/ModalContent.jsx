@@ -15,12 +15,13 @@ const ModalContent = (props) => {
   const { TextArea } = Input;
   const [loading, setLoading] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
-  const [crntDateTime, setCrntDateTime] = useState('');
+  const [crntDateTime, setCrntDateTime] = useState(''); 
   const [state, setState] = useState({});
   const { specList, catList, userList } = useSelector(state => state.topic);
   const [err, setErrors] = useState({});
   const [data, setData] = useState([]);
   const [descLength, setDescLength] = useState();
+  const [imageIds, setImageIds] = useState([]);
 
 
   useEffect(() => {
@@ -148,7 +149,6 @@ const ModalContent = (props) => {
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
-    console.log("pdfFile", pdfFile);
     let errors = { ...err };
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
@@ -424,15 +424,16 @@ const ModalContent = (props) => {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
         newData['external_url'] = newData['external_url2']
-        newData['deliveryType'] = newData['deliveryType'];
+        //newData['deliveryType'] = newData['deliveryType'];
         newData['description'] = newData['description2'];
-        newData['title2'] && delete newData['title2']
-        newData['description2'] && delete newData['description2']
-        if (state.deliverytype === 'pdf') {
-          delete newData['external_url2']
-        }else if(state.deliverytype === 'external') {
-          delete newData['pdfUrlSecond']
-        }
+        newData['title2'] && delete newData['title2'];
+        newData['description2'] && delete newData['description2'];
+        newData['deliverytype'] === 'pdf' ? newData['external_url'] = '' : form_data2 = null;
+        // if (state.deliverytype === 'pdf') {
+        //   delete newData['external_url2']
+        // }else if(state.deliverytype === 'external') {
+        //   delete newData['pdfUrlSecond']
+        // }
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
@@ -442,10 +443,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      console.log("new data", newData);
-      console.log("state.deliveryType", state.deliveryType);
-      console.log("state.deliverytype", state.deliverytype);
-      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
+      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds);
     }
   }
 
@@ -463,7 +461,8 @@ const ModalContent = (props) => {
       const oldImages = state.old_image;
       const oldImageList = oldImages.filter(item => { return item.id !== id });
       //dispatch(deleteImages(id));
-      setState({ ...state, old_image: oldImageList });
+      setImageIds(oldArray => [...oldArray, id]);
+      setState({ ...state, old_image: oldImageList});
     } else {
       const newImages = state.topic_image;
       const imageFormData = state.imageFormData;
