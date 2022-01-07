@@ -471,7 +471,7 @@ class MultipleImageDeleteView(APIView):
             if not delete_id:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             for i in delete_id:
-                get_object_or_404(Image, pk=int(i)).delete()
+                get_object_or_404(Image, pk=i).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             response={
