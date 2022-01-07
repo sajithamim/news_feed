@@ -131,12 +131,12 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
 
 export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data, imageIds) => async (dispatch) => {
     newData.topic_audience = "doctor";
-    console.log('newData', newData)
-    // if(imageIds) {
-    //     const delImages = {'deleteid' : imageIds}
-    //     const url = `topic/deletemultipleimage/`;
-    //     await DataService.deleteImages(url, delImages); 
-    // }
+    console.log('newData', imageIds.length)
+    if(imageIds.length > 0) {
+        const delImages = {'deleteid' : imageIds}
+        const url = `topic/deletemultipleimage/`;
+        await DataService.deleteImages(url, delImages); 
+    }
     try {
         const url = `topic/topic/${id}/`;
         const res = await DataService.updateData(url, newData);   

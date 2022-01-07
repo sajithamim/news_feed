@@ -82,6 +82,7 @@ const TopicsContent = (props) => {
   const topicGenerator = () => {
     let serialNo = pageSize * slNo;
     const items = [];
+    console.log('topicList', topicList)
     topicList && topicList.results && topicList.results.map((item, key) => {
       serialNo++;
       const topics = [];
@@ -130,12 +131,12 @@ const TopicsContent = (props) => {
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url: item.video_url,
-        pdfFront: item.pdf,
+        pdfFront: item.format == '1' ? item.pdf : null,
         pdfBack: item.pdfsecond,
-        pdfSecond: item.pdf,
-        pdfThird: item.pdf,
-        pdfUrlSecond: item.pdf,
-        pdfUrlThird: item.pdf,
+        pdfSecond: item.format == '2' ? item.pdf : null,
+        pdfThird: item.format == '3' ? item.pdf : null,
+        pdfUrlSecond:item.format == '2' ? item.pdf : null,
+        pdfUrlThird: item.format == '3' ? item.pdf : null,
         format: item.format,
         external_url: item.external_url,
         external_url2: item.external_url,
