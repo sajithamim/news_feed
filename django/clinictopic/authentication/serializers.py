@@ -348,16 +348,16 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 class PhoneUpdateSerializer(serializers.ModelSerializer):
 
     default_error_messages = {
-        'phone': 'The phone should only contain numeric characters'}
+        'phone': 'User with phone number already exists'}
 
     class Meta:
         model = User
         fields = ['phone']
     def validate(self, attrs):
         phone = attrs.get('phone', '')
-        # if not phone.isnumeric():
-        #     raise serializers.ValidationError(
-        #         self.default_error_messages)
+        if User.objects.filter(phone='phone').exists():
+            raise serializers.ValidationError(
+                self.default_error_messages)
         return attrs
 
 class UsernameChangeSerializer(serializers.ModelSerializer):
