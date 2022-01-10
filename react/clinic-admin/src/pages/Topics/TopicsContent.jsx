@@ -31,13 +31,13 @@ const TopicsContent = (props) => {
       dispatch(getTopic(page))
       dispatch({ type: 'RESET_DATA' })
     }
-    // else if (error) {
-    //   message.error(error);
-    //   dispatch({ type: 'RESET_DATA' })
-    //   const clearToken = localStorage.clear();
-    //   dispatch(logout());
-    //   history.push("/login");
-    // }
+    else if (error) {
+      message.error(error);
+      dispatch({ type: 'RESET_DATA' })
+      const clearToken = localStorage.clear();
+      dispatch(logout());
+      history.push("/login");
+    }
   }, [success, error])
 
   useEffect(() => {
