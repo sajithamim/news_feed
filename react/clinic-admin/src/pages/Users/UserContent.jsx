@@ -11,6 +11,7 @@ import { logout } from "../../actions/auth.js"
 
 const UserContent = () => {
   const { userList, addUser, updateUser, page, success, error } = useSelector(state => state.users);
+  console.log("uselist", userList);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [slNo, setSlNo] = useState(0);
@@ -67,6 +68,7 @@ const UserContent = () => {
         name: user.name,
         email: user.email,
         phone: user.phone,
+        phone_verified: user.phone_verified ? "Verified" : "Not Verified"
       })
     })
     return Items;
@@ -92,6 +94,11 @@ const UserContent = () => {
     {
       title: 'Phone',
       dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Phone Verified',
+      dataIndex: 'phone_verified',
       key: 'phone',
     },
     {
