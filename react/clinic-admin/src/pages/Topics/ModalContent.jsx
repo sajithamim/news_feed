@@ -3,8 +3,7 @@ import { Input, Radio, Button, Popover, DatePicker, Space, message, Form, Popcon
 import { useState } from "react";
 import "./ModalContent.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersList } from "../../actions/users";
-import { deleteImages, getSpecialization, getCategory, searchUsers } from "../../actions/topic";
+import { getSpecialization, getCategory } from "../../actions/topic";
 import moment from 'moment';
 import SelectBox from 'react-select';
 
@@ -15,19 +14,18 @@ const ModalContent = (props) => {
   const { TextArea } = Input;
   const [loading, setLoading] = useState(false);
   const [formSubmit, setFormSubmit] = useState(true);
-  const [crntDateTime, setCrntDateTime] = useState('');
   const [state, setState] = useState({});
-  const { specList, catList, userList } = useSelector(state => state.topic);
+  const { specList, catList } = useSelector(state => state.topic);
   const [err, setErrors] = useState({});
-  const [data, setData] = useState([]);
   const [descLength, setDescLength] = useState();
+  const [imageIds, setImageIds] = useState([]);
 
 
   useEffect(() => {
     setErrors({});
+    setImageIds([]);
     dispatch(getSpecialization());
     dispatch(getCategory());
-    dispatch(getUsersList())
     if (props.editData !== null) {
       setState(props.editData)
     }
@@ -66,13 +64,6 @@ const ModalContent = (props) => {
     );
   })
 
-  const author = [];
-  userList && userList.results && userList.results.map(item => {
-    return author.push(
-      { value: item.email, label: item.username }
-    );
-  })
-
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value })
     const maxLength = 150 - e.target.value.length;
@@ -89,7 +80,6 @@ const ModalContent = (props) => {
       errors["description3"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
-    console.log("state external", e.target.value);
   };
 
   const handleCategoryChange = (value) => {
@@ -145,10 +135,10 @@ const ModalContent = (props) => {
         'You are allowed to insert max 4 images only.',
     });
   };
+
   const handleFileChange = (e) => {
     setState({ ...state, pdfUrl: e.target.files[0] });
     const pdfFile = e.target.files[0];
-    console.log("pdfFile", pdfFile);
     let errors = { ...err };
     if (pdfFile.name.match(/\.(pdf)$/) == null) {
       errors["pdf"] = "Please select valid pdf";
@@ -195,6 +185,7 @@ const ModalContent = (props) => {
       reader.readAsDataURL(e.target.files[0]);
     }
   }
+
   const handleFileChangeThird = (e) => {
     setState({ ...state, pdfUrlThird: e.target.files[0] });
     const pdfThirdFile = e.target.files[0];
@@ -211,11 +202,11 @@ const ModalContent = (props) => {
       reader.readAsDataURL(e.target.files[0]);
     }
   }
+
   const onOk = (value) => {
   }
 
   const radioOnChange = (val, e) => {
-    console.log("value", val);
     if (val === 'publishtype') {
       const crntDateTime = new Date().toISOString();
       setState({ ...state, publishtype: e.target.value, publishingtime: (e.target.value === 'now') ? crntDateTime : "", published: (e.target.value === 'now') ? '1' : '0' })
@@ -228,7 +219,6 @@ const ModalContent = (props) => {
       setState({ ...state, format: e.target.value })
     }
     else if (val === 'deliverytype') {
-      console.log("e.target.value", e.target.value);
       setState({ ...state, deliverytype: e.target.value })
     }
   };
@@ -367,8 +357,7 @@ const ModalContent = (props) => {
         }
       }
     }
-    //state.deliverytype === 'pdf' ? state.deliverytype = 'pdf' : state.deliverytype = 'external'
-    // setState({ ...state, publishingtime: crntDateTime })
+
     setErrors({ errors });
     return formIsValid;
   }
@@ -410,7 +399,6 @@ const ModalContent = (props) => {
       delete newData["topic_image"];
       delete newData["pdf"];
       delete newData["category_data"];
-      delete newData["username"];
       delete newData["topic_val"];
       if (newData.format === '1') {
         newData['external_url'] && delete newData['external_url'];
@@ -424,15 +412,10 @@ const ModalContent = (props) => {
         newData['video_url'] && delete newData['video_url'];
         newData['title'] = newData['title2'];
         newData['external_url'] = newData['external_url2']
-        newData['deliveryType'] = newData['deliveryType'];
         newData['description'] = newData['description2'];
-        newData['title2'] && delete newData['title2']
-        newData['description2'] && delete newData['description2']
-        if (state.deliverytype === 'pdf') {
-          delete newData['external_url2']
-        }else if(state.deliverytype === 'external') {
-          delete newData['pdfUrlSecond']
-        }
+        newData['title2'] && delete newData['title2'];
+        newData['description2'] && delete newData['description2'];
+        newData['deliverytype'] === 'pdf' ? newData['external_url'] = '' : form_data2 = null;
       } else if (newData.format === '3') {
         newData['title'] = newData['title3'];
         newData['description'] = newData['description3'];
@@ -442,10 +425,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      console.log("new data", newData);
-      console.log("state.deliveryType", state.deliveryType);
-      console.log("state.deliverytype", state.deliverytype);
-      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data);
+      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds);
     }
   }
 
@@ -457,13 +437,12 @@ const ModalContent = (props) => {
   }
 
   const deleteImage = (id, image) => {
-    console.log("id", id);
     setLoading(false);
     if (id !== null) {
       const oldImages = state.old_image;
       const oldImageList = oldImages.filter(item => { return item.id !== id });
-      //dispatch(deleteImages(id));
-      setState({ ...state, old_image: oldImageList });
+      setImageIds(oldArray => [...oldArray, id]);
+      setState({ ...state, old_image: oldImageList});
     } else {
       const newImages = state.topic_image;
       const imageFormData = state.imageFormData;
@@ -472,22 +451,6 @@ const ModalContent = (props) => {
       setState({ ...state, topic_image: newImageList, imageFormData: imageFormDataList });
     }
   }
-  // const handleSearch = value => {
-  //   if (value) {
-  //     dispatch(searchUsers(value))
-  //       .then((res) => {
-  //         if (res.data)
-  //           setData(res.data.data);
-  //       })
-  //   } else {
-  //     setData([]);
-  //   }
-  // };
-  // const handleSearchChange = value => {
-  //   setState({ ...state, email: value, username: value });
-  // };
-
-  const options = data.map(d => <Option key={d.email}>{d.username}</Option>);
 
   const onSpecChange = (value) => {
     const topic = [];
@@ -534,22 +497,6 @@ const ModalContent = (props) => {
             />
             <div className="errorMsg">{err && err.errors && err.errors.category_id}</div>
           </Form.Item>
-          {/* <Form.Item label="Author">
-            <Select
-              showSearch
-              value={state.username || null}
-              placeholder="Search users"
-              style={{ width: '100%' }}
-              defaultActiveFirstOption={false}
-              showArrow={false}
-              filterOption={false}
-              onSearch={handleSearch}
-              onChange={handleSearchChange}
-              notFoundContent={null}
-            >
-              {options}
-            </Select>
-          </Form.Item> */}
           <Form.Item wrapperCol={{ offset: 8, span: 14 }}>
             <Radio.Group onChange={(e) => radioOnChange('format', e)} value={state.format}>
               <Popover placement="top" content={content} trigger="click">

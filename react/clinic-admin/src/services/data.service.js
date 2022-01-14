@@ -51,6 +51,10 @@ const deleteData = (url) => {
     return http.delete(url)
 }
 
+const deleteImages = (url, imageIds) => {
+    return http.post(url, imageIds)
+}
+
 const updateData = (url, newData) => {
     return http.put(url, newData);
 }
@@ -65,6 +69,7 @@ const genAds = {
     getData,
     postImage,
     deleteData,
+    deleteImages,
     editData,
     imageUpload,
     uploadDoc,
