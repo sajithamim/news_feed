@@ -58,7 +58,7 @@ const UserDetails = () => {
             uid: '-1',
             name: userDetails.profilepic,
             status: 'done',
-            url: `https://clinictopic.metrictreelabs.com${userDetails.profilepic}`,
+            url: `${process.env.REACT_APP_API_BASE_URL}${userDetails.profilepic}`,
           }]);
         }
 
