@@ -465,13 +465,13 @@ class Deleteimage(APIView):
 
 class MultipleImageDeleteView(APIView):
     permission_classes = (IsAuthenticated,)
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
             delete_id = request.data["deleteid"]
             if not delete_id:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             for i in delete_id:
-                get_object_or_404(Image, pk=int(i)).delete()
+                get_object_or_404(Image, pk=i).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             response={

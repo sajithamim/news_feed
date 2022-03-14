@@ -70,12 +70,10 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
 
-  const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data) => {
+  const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds) => {
     onClose();
     if (drawerType == 'edit') {
-      console.log("newdata", newData);
-      console.log("newdata", data.id);
-      dispatch(updateTopic(data.id, newData, form_data, form_data_back, form_data2, form_data3, image_data));
+      dispatch(updateTopic(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds));
     } else {
       dispatch(postTopic(newData, form_data, form_data_back, form_data2, form_data3, image_data));
     }
@@ -128,21 +126,21 @@ const TopicsContent = (props) => {
         deliverytype: item.deliverytype,
         topic_val: subspec,
         topic_subspec: topicSubspec,
-        P: item.deliverytype,
+        //P: item.deliverytype,
         media_type: item.media_type !== null ? 'image' : item.video_type !== null ? 'video' : '',
         old_image: images,
         video_url: item.video_url,
-        pdfFront: item.pdf,
+        pdfFront: item.format == '1' ? item.pdf : null,
         pdfBack: item.pdfsecond,
-        pdfSecond: item.pdf,
-        pdfThird: item.pdf,
-        pdfUrlSecond: item.pdf,
-        pdfUrlThird: item.pdf,
+        pdfSecond: item.format == '2' ? item.pdf : null,
+        pdfThird: item.format == '3' ? item.pdf : null,
+        pdfUrlSecond:item.format == '2' ? item.pdf : null,
+        pdfUrlThird: item.format == '3' ? item.pdf : null,
         format: item.format,
         external_url: item.external_url,
         external_url2: item.external_url,
         external_url3: item.external_url,
-        email: item.author && item.author.email,
+        //email: item.author && item.author.email,
         username: item.author && item.author.username,
         published_status: item.published,
         imageFormData: []

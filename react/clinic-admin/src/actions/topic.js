@@ -66,20 +66,6 @@ export const deleteTopic = (id, page) => async (dispatch) => {
     }
 }
 
-// export const deleteImages = (id) => async (dispatch) => {
-//     try {
-//         const url = `topic/deletetopicimage/${id}`;
-//         const res = await DataService.deleteData(url, id); 
-//         dispatch({
-//             type: 'DELETE_IMAGE',
-//             payload: res.data,
-//         })
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-
-
 export const deleteImages = (id) => async (dispatch) => {
     try {
         const url = `topic/deletetopicimage/${id}`;
@@ -120,7 +106,6 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
                 image_data.append('topic_id', res.data.id);
                 const imageUrl = `topic/topicimages/`;
                 const imageRes = await DataService.imageUpload(imageUrl, image_data); 
-                console.log("imageRes", imageRes);
                 res.data.topic_image = imageRes.data;
             }
             
@@ -143,40 +128,40 @@ export const postTopic = (state, form_data, form_data_back , form_data2, form_da
     }
 }
 
-export const updateTopic = (id, newData, form_data,form_data_back, form_data2, form_data3, image_data) => async (dispatch) => {
-    console.log("coming update");
+export const updateTopic = (newData, form_data,form_data_back, form_data2, form_data3, image_data, imageIds) => async (dispatch) => {
     newData.topic_audience = "doctor";
+    if(imageIds.length > 0) {
+        const delImages = {'deleteid' : imageIds}
+        const url = `topic/deletemultipleimage/`;
+        await DataService.deleteImages(url, delImages); 
+    }
     try {
-        const url = `topic/topic/${id}/`;
-        const res = await DataService.updateData(url, newData);
-        console.log("res", res);    
+        const url = `topic/topic/${newData.key}/`;
+        const res = await DataService.updateData(url, newData);   
         if(res.status == 200) {
-            console.log("res.status", res.status);
             if (form_data !== null) {
-                console.log("form  not null");
-                let pdfUrl = `topic/topic/${id}/pdf/`;
+                let pdfUrl = `topic/topic/${newData.key}/pdf/`;
                 await DataService.uploadDoc(pdfUrl, form_data);
                 const frontPdfRes = await  DataService.uploadDoc(pdfUrl, form_data);
-                console.log("frontPdfRes", frontPdfRes);
                 res.data.pdf = frontPdfRes.data.pdf;
             } 
             if(form_data_back) {
-                let backPdfUrl = `topic/topic/${id}/secondpdf/`;
+                let backPdfUrl = `topic/topic/${newData.key}/secondpdf/`;
                 const backPdfRes = await  DataService.uploadDoc(backPdfUrl, form_data_back);
                 res.data.pdfsecond = backPdfRes.data.pdfsecond;
             }
             if(form_data2) {
-                let pdfUrl = `topic/topic/${id}/pdf/`;
+                let pdfUrl = `topic/topic/${newData.key}/pdf/`;
                 const pdfSecondRes = await  DataService.uploadDoc(pdfUrl, form_data2);
                 res.data.pdf = pdfSecondRes.data.pdf;
             }
             if(form_data3) {
-                let thirdPdfUrl = `topic/topic/${id}/pdf/`;
+                let thirdPdfUrl = `topic/topic/${newData.key}/pdf/`;
                 const pdfThirdRes = await  DataService.uploadDoc(thirdPdfUrl, form_data3);
                 res.data.pdf = pdfThirdRes.data.pdf;
             }
             if(image_data !== null) {
-                image_data.append('topic_id', id);
+                image_data.append('topic_id', newData.key);
                 const imageUrl = `topic/topicimages/`;
                 const imageRes = await DataService.imageUpload(imageUrl, image_data);
                 const newImageRes = [...res.data.topic_image, ...imageRes.data];

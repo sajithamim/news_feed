@@ -196,9 +196,6 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.publishingtime = validated_data.get('publishingtime', instance.publishingtime)
             if 'format' in validated_data:
                 instance.format = validated_data.get('format', instance.format)
-            # if 'email' in validated_data:
-            #     author = User.objects.get(email=validated_data['email'])
-            #     instance.author = author
             instance.deliverytype='pdf'
             instance.source_url=''
             instance.external_url=''
@@ -223,11 +220,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.source_url = validated_data.get('source_url', instance.source_url)
             if 'deliverytype' in validated_data:
                 instance.deliverytype = validated_data.get('deliverytype', instance.deliverytype)
-
-            # if 'email' in validated_data:
-            #     author = User.objects.get(email=validated_data['email'])
-            #     instance.author = author
-            # instance.deliverytype='external'
+            if 'pdf' in validated_data:
+                instance.pdf = validated_data.get('pdf', instance.pdf)
             instance.media_type ='image'
             instance.video_url=''
             # instance.pdf=''
@@ -253,10 +247,8 @@ class TopicSeriaizer(serializers.ModelSerializer):
                 instance.video_url = validated_data.get('video_url', instance.video_url)
             if 'deliverytype' in validated_data:
                 instance.deliverytype = validated_data.get('deliverytype', instance.deliverytype)
-            # if 'email' in validated_data:
-            #     author = User.objects.get(email=validated_data['email'])
-            #     instance.author = author
-            # instance.deliverytype='external'
+            if 'pdf' in validated_data:
+                instance.pdf = validated_data.get('pdf', instance.pdf)
             instance.media_type ='video'
             instance.pdfsecond=''
             # instance.video_url=''
