@@ -116,7 +116,6 @@ const UserDetails = () => {
   const publicationGenerator = () => {
     const items = [];
     publicationList && publicationList.data && publicationList.data.map((item, key) => {
-      console.log("item", item);
       key++;
       return items.push({
         sl_no: key,
@@ -243,11 +242,10 @@ const UserDetails = () => {
     fmData.append("profilepic", file);
     try {
       const res = await axios.put(
-        `https://clinictopic.metrictreelabs.com/api/auth/profilepic/${userDetails.data.id}/profilepicaddadmin/`,
+        `${process.env.REACT_APP_API_URL}auth/profilepic/${userDetails.data.id}/profilepicaddadmin/`,
         fmData,
         config
       );
-
       onSuccess("Ok");
     } catch (err) {
       const error = new Error("Some error");
@@ -396,10 +394,8 @@ const UserDetails = () => {
   }, [success, error])
 
   const publicationSubmit = (newData, form_data) => {
-    console.log("new data", newData);
-    console.log("new data", form_data);
     onClose();
-    if (drawerType == 'edit') {
+    if (drawerType === 'edit') {
       delete newData["image"];
       delete newData["sl_no"];
       dispatch(updatePublicationDetails(data.id, newData, form_data))
