@@ -2,7 +2,7 @@
   hosts: contabo
   vars:
     bit_user: nineesh_met
-    bit_pass: 100thousand@
+    bit_pass: Q3kh7dL7S89K3x2XL8DP
   tasks:
     - name: pull from git
       git:
