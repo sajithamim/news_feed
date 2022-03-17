@@ -360,7 +360,7 @@ class userFavouriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("invalid user!")
         return attrs
     def create(self, validated_data):
-        return Favourite.objects.create(**validated_data)
+        return Favourite.objects.get_or_create(**validated_data)
 
 
 class UpdateTopicSpecializationSerializer(serializers.ModelSerializer):
