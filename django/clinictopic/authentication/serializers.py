@@ -97,7 +97,7 @@ class Signinserializer(serializers.ModelSerializer):
                 tid= os.environ.get('SMS_TEMPLATE_ID')
                 mno= smsnumber
                 msg=str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
-                url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
+                url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=0&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
                 # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=c93f7373-3ae8-4079-92d1-78c91c23e939&senderid=PROMDH&channel=2&DCS=0&flashsms=1&number='+smsnumber+'&text='+str(user['otp'])+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED&route=31&EntityId=1301162608442932167&dlttemplateid=1307162669392280167'
                 r = requests.get(url)
             else :
@@ -110,7 +110,7 @@ class Signinserializer(serializers.ModelSerializer):
                 mno= smsnumber
                 # 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=yourapicode&senderid=SMSHUB&channel=INT&DCS=0&flashsms=0&number=12093158246&text=test message&route=16'
                 msg=str(otp)+' is your account verification code PROMEDICA HEALTH COMMUNICATION PRIVATE LIMITED'
-                url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=INT&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route=16'
+                url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=INT&DCS=0&flashsms=0&number='+mno+'&text='+msg+'&route=16'
                 # print()
                 # url='https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey='+api_key+'&senderid='+sid+'&channel=2&DCS=0&flashsms=1&number='+mno+'&text='+msg+'&route='+route+'&EntityId='+eid+'&dlttemplateid='+tid
                 r = requests.get(url)
