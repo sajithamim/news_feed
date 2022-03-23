@@ -115,7 +115,7 @@ class Topics(models.Model):
     format = models.CharField(max_length=2,choices=FORMAT_CHOICES)
     category_id = models.ForeignKey(Categoeries,on_delete=models.CASCADE,related_name="topic_category")
     title = models.CharField(max_length=255)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=10000)
     TYPE_CHOICES = (
         ('pdf', 'pdf'),
         ('external', 'external')
