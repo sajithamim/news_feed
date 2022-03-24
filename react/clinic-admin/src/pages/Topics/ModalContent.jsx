@@ -65,18 +65,22 @@ const ModalContent = (props) => {
   })
 
   const handleChange = (e) => {
+    console.log("maxLength", e.target.value.length);
     setState({ ...state, [e.target.name]: e.target.value })
-    const maxLength = 150 - e.target.value.length;
+    // const maxLength = 150 - e.target.value.length;
     const errors = { ...err };
     if (e.target.name === "description1") {
+      let maxLength = 150 - e.target.value.length;
       errors["description1"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
     else if (e.target.name === "description2") {
+      let maxLength = 1000 - e.target.value.length;
       errors["description2"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
     else if (e.target.name === "description3") {
+      let maxLength = 150 - e.target.value.length;
       errors["description3"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
@@ -535,7 +539,7 @@ const ModalContent = (props) => {
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description2" id="description2" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
+                  <TextArea name="description2" id="description2" maxLength="1000" rows={6} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description2} /></div>
                 {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description2}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description2}</div>)}
               </Form.Item>
             </>) : null
