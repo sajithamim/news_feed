@@ -174,7 +174,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         return Response(serializer.data)
-    @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser],)
+    @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser,FormParser,],)
     def icon(self, request, pk,*args,**kwargs):
         # try:
             obj = self.get_object()
@@ -232,7 +232,7 @@ class TopicViewSet(viewsets.ModelViewSet):
             # print(query_set.query)
         return query_set
 
-    @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser],)
+    @action(detail=True,methods=['PUT'],serializer_class=Topicpdfserializer,parser_classes=[MultiPartParser,FormParser,],)
     def pdf(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(obj, data=request.data,
@@ -276,7 +276,7 @@ class TopicViewSet(viewsets.ModelViewSet):
     #     # serializer.data["page_size"]=add.addaftertopic
     #     return Response(serializer.data) # print(query_set.query)
     #     # return query_set
-    @action(detail=True,methods=['PUT'],serializer_class=TopicSecondpdfserializer,parser_classes=[MultiPartParser],)
+    @action(detail=True,methods=['PUT'],serializer_class=TopicSecondpdfserializer,parser_classes=[MultiPartParser,FormParser,],)
     def secondpdf(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(obj, data=request.data,
