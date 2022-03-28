@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin, Form } from "antd";
+import { Button, Card, Table, Space, Drawer, Popconfirm, message, Spin, notification } from "antd";
 import "antd/dist/antd.css";
 import ModalContent from "./ModalContent";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import { logout } from "../../actions/auth.js"
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
+  const [timeout, setTimeOut] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
   const [data, setData] = useState({});
@@ -28,6 +29,7 @@ const TopicsContent = (props) => {
   useEffect(() => {
     if (success) {
       message.success(success);
+      setTimeOut(1)
       dispatch(getTopic(page))
       dispatch({ type: 'RESET_DATA' })
     }
@@ -69,12 +71,21 @@ const TopicsContent = (props) => {
   const cancel = (e) => {
     message.error('Cancelled');
   }
-
+  const openNotification = (notice) => {
+    
+    notification.info({
+      description:
+        "Data is uploading , Please do not refresh your page untill success message comes",
+      duration: 4.5
+    });
+  };
   const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds) => {
     onClose();
-    if (drawerType == 'edit') {
+    if (drawerType === 'edit') {
+      openNotification()
       dispatch(updateTopic(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds));
     } else {
+      openNotification()
       dispatch(postTopic(newData, form_data, form_data_back, form_data2, form_data3, image_data));
     }
   }
@@ -166,7 +177,7 @@ const TopicsContent = (props) => {
 
   const columns = [
     {
-      title: "Sl No",
+      title: "#",
       dataIndex: "sl_no",
       key: "sl_no",
     },
@@ -205,8 +216,8 @@ const TopicsContent = (props) => {
 
   return (
     <div style={{ margin: "10px" }}>
-      {accessToken === null || accessToken === undefined ? (sessionlogout()) :
-        (<>
+      {/* {accessToken === null || accessToken === undefined ? (sessionlogout()) : (*/}
+        <>
           <Card
             title="Topics"
             extra={
@@ -229,7 +240,7 @@ const TopicsContent = (props) => {
             <ModalContent drawerType={drawerType} editData={(drawerType === 'edit') ? data : null} onFormSubmit={onFormSubmit} />
           </Drawer>
         </>
-        )}
+        {/* )} */}
     </div>
   );
 };
