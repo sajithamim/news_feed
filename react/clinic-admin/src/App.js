@@ -54,9 +54,6 @@ function App() {
     alert("The window is closing now!");
   }
 
-  const destroy = () => {
-    console.log('Session destroyed');
-  }
   const setTimeouts = () => {
     warnTimeout = setTimeout(warn, warningTime);
     logoutTimeout = setTimeout(sessionlogout, signoutTime);
