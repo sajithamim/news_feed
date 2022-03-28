@@ -8,26 +8,30 @@ export const http = axios.create({
     "Content-type": "application/json",
   }
 });
-
+http.interceptors.request.use(async (config) => {
+  let accessToken = localStorage.getItem("accessToken");
+  config.headers["authorization"] = `Bearer ${accessToken}`;
+  return config;
+});
+//............................................................................
 export const http1 = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "Authorization": accessToken,
   }
 });
+http1.interceptors.request.use(async (config) => {
+  let accessToken = localStorage.getItem("accessToken");
+  config.headers["authorization"] = `Bearer ${accessToken}`;
+  return config;
+});
 
+// ............................................................................
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: { 'content-type': 'multipart/form-data' },
 });
 
-// ............................................................................
-
-http.interceptors.request.use(async (config) => {
-  let accessToken = localStorage.getItem("accessToken");
-  config.headers["authorization"] = `Bearer ${accessToken}`;
-  return config;
-});
 
 instance.interceptors.request.use(async (config) => {
   let accessToken = localStorage.getItem("accessToken");
@@ -69,6 +73,38 @@ instance.interceptors.response.use(
 );
 
 http.interceptors.response.use(
+  async (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+    const serverCallUrl = new URL(
+      originalRequest.url,
+      process.env.REACT_APP_API_URL
+    );
+      
+    const status = error.response.status;
+    if (
+      (status === 401 || status === 403) &&
+      !originalRequest._retry
+    ) {
+      let token = await refresh();
+      if (token === undefined) {
+        sessionlogout();
+      }
+      originalRequest._retry = true;
+      originalRequest.headers.authorization = `Bearer ${token.data.access}`;
+      localStorage.setItem("accessToken", token.data.access);
+      return instance(originalRequest);
+    }
+    else{
+      console.log("error");
+    }
+    return Promise.reject(error);
+  }
+);
+
+http1.interceptors.response.use(
   async (response) => {
     return response;
   },
