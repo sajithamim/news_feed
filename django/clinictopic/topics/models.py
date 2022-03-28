@@ -149,6 +149,24 @@ class Image(models.Model):
     # image = models.CharField(blank=True, null=True, max_length=50)
     image = models.ImageField(blank=True, null=True, upload_to=get_image_path_topic)
 
+    def save(self,force_insert=False, force_update=False, using=None,*args, **kwargs):
+        if self.image:
+            image = self.image
+            if image.size > 0.3*1024*1024: #if size greater than 300kb then it will send to compress image function
+                self.image = compress_image(image)
+        super(Image, self).save(*args, **kwargs)
+
+
+def compress_image(image):
+    im = ImagePil.open(image)
+    if im.mode != 'RGB':
+        im = im.convert('RGB')
+    im_io = BytesIO()
+    im.save(im_io, 'jpeg', quality=70,optimize=True)
+    new_image = File(im_io, name=image.name)
+    return new_image
+
+
 # @receiver(models.signals.post_delete,sender=Image)
 # def auto_delete_file_on_delete(sender,instance,**kwargs):
 #     if instance.image:
