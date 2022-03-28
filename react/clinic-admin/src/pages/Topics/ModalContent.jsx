@@ -96,7 +96,8 @@ const ModalContent = (props) => {
     const file = e.target.files[0];
     if (props.drawerType === 'add' && e.target.files.length === 1) {
       setLoading(true);
-      openNotification();
+      let notice = "You are allowed to insert only 1 image.";
+      openNotification(notice);
     } else if (props.drawerType === 'edit' && e.target.files.length === 1) {
       setLoading(true);
       openNotification();
@@ -139,10 +140,10 @@ const ModalContent = (props) => {
     // }
   }
 
-  const openNotification = () => {
+  const openNotification = (notice) => {
     notification.info({
       description:
-        'You are allowed to insert only 1 image.',
+        notice,
     });
   };
 
@@ -452,7 +453,8 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
-      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds);
+      let notice = "Data is uploading"
+      props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds, notice);
     }
   }
 
