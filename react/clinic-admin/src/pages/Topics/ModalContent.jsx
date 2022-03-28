@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSpecialization, getCategory } from "../../actions/topic";
 import moment from 'moment';
 import SelectBox from 'react-select';
+import Compressor from 'compressorjs';
 
 const { Option } = Select;
 const { SHOW_PARENT } = TreeSelect;
@@ -65,7 +66,6 @@ const ModalContent = (props) => {
   })
 
   const handleChange = (e) => {
-    console.log("maxLength", e.target.value.length);
     setState({ ...state, [e.target.name]: e.target.value })
     // const maxLength = 150 - e.target.value.length;
     const errors = { ...err };
@@ -91,52 +91,58 @@ const ModalContent = (props) => {
   };
 
   const handleMultipleFile = (e) => {
-    var numFiles = e.target.files.length;
     const errors = { ...err };
-    for (var i = 0, numFiles = e.target.files.length; i < numFiles; i++) {
-      var file = e.target.files[i];
-      if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
-        errors["multi_image"] = "Please select valid image.";
-        setErrors({ errors });
-        setFormSubmit(false);
-      } else {
-        setErrors({});
-        setFormSubmit(true);
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-          file.url = reader.result;
-          if (!state.topic_image) {
-            setState({ ...state, topic_image: [reader.result] });
-            if (!state.imageFormData) {
-              setState({ ...state, topic_image: [reader.result], imageFormData: [file] });
-            } else {
-              setState({ ...state, topic_image: [reader.result], imageFormData: [...state.imageFormData, file] });
-            }
-          } else {
-            setState({ ...state, topic_image: [...state.topic_image, reader.result] });
-            if (!state.imageFormData) {
-              setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [file] });
-            } else {
-              setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, file] });
-            }
-          }
-        });
-        reader.readAsDataURL(e.target.files[i]);
-        if (props.drawerType === 'add' && state.imageFormData.length > 2) {
-          setLoading(true);
-          openNotification();
-        } else if (props.drawerType === 'edit' && (state.old_image.length + state.imageFormData.length > 2)) {
-          setLoading(true);
-          openNotification();
-        }
-      }
+    // for (var i = 0, numFiles = 1; i < numFiles; i++) {
+    const file = e.target.files[0];
+    if (props.drawerType === 'add' && e.target.files.length === 1) {
+      setLoading(true);
+      openNotification();
+    } else if (props.drawerType === 'edit' && e.target.files.length === 1) {
+      setLoading(true);
+      openNotification();
     }
+    if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
+      errors["multi_image"] = "Please select valid image.";
+      setErrors({ errors });
+      setFormSubmit(false);
+    } else {
+      setErrors({});
+      setFormSubmit(true);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        file.url = reader.result;
+        if (!state.topic_image) {
+          setState({ ...state, topic_image: [reader.result] });
+          if (!state.imageFormData) {
+            setState({ ...state, topic_image: [reader.result], imageFormData: [file] });
+          } else {
+            setState({ ...state, topic_image: [reader.result], imageFormData: [...state.imageFormData, file] });
+          }
+        } else {
+          setState({ ...state, topic_image: [...state.topic_image, reader.result] });
+          if (!state.imageFormData) {
+            setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [file] });
+          } else {
+            setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [...state.imageFormData, file] });
+          }
+        }
+      });
+      reader.readAsDataURL(e.target.files[0]);
+      // if (props.drawerType === 'add' && state.imageFormData.length >= 0) {
+      //   setLoading(true);
+      //   openNotification();
+      // } else if (props.drawerType === 'edit' && (state.old_image.length + state.imageFormData.length > 2)) {
+      //   setLoading(true);
+      //   openNotification();
+      // }
+    }
+    // }
   }
 
   const openNotification = () => {
     notification.info({
       description:
-        'You are allowed to insert max 4 images only.',
+        'You are allowed to insert only 1 image.',
     });
   };
 
@@ -260,11 +266,11 @@ const ModalContent = (props) => {
         formIsValid = false;
         errors["description1"] = "Description cannot be empty";
       }
-      if (props.drawerType == 'add' && fields["pdfUrl"] === undefined) {
+      if (props.drawerType === 'add' && fields["pdfUrl"] === undefined) {
         formIsValid = false;
         errors["pdf"] = "Please upload Front Pdf"
       }
-      if (props.drawerType == 'add' && fields["pdfUrlBack"] === undefined) {
+      if (props.drawerType === 'add' && fields["pdfUrlBack"] === undefined) {
         formIsValid = false;
         errors["pdfsecond"] = "Please upload Back Pdf"
       }
@@ -393,8 +399,25 @@ const ModalContent = (props) => {
       if (state.format !== '1' && state.format !== '3' && state.imageFormData && state.imageFormData.length > 0) {
         image_data = new FormData();
         state.imageFormData.forEach((file, key) => {
-          image_data.append('image', file, file.name);
+          if (file.size > 300000) {
+            new Compressor(file, {
+              quality: 0.6,
+              // The compression process is asynchronous,
+              // which means you have to access the `result` in the `success` hook function.
+              success(result) {
+                // The third parameter is required for server
+                image_data.append('image', result, result.name);
+                // Send the compressed image file to server with XMLHttpRequest.
+              },
+              error(err) {
+              },
+            });
+          } else {
+            image_data.append('image', file, file.name);
+          }
         });
+
+
       }
       let newData = state;
       delete newData["sl_no"];
@@ -446,7 +469,7 @@ const ModalContent = (props) => {
       const oldImages = state.old_image;
       const oldImageList = oldImages.filter(item => { return item.id !== id });
       setImageIds(oldArray => [...oldArray, id]);
-      setState({ ...state, old_image: oldImageList});
+      setState({ ...state, old_image: oldImageList });
     } else {
       const newImages = state.topic_image;
       const imageFormData = state.imageFormData;
@@ -568,7 +591,7 @@ const ModalContent = (props) => {
               </div>))}
             </div>
               <div className="inputStyle">
-                <Input type="file" name="multi_image" accept="image/png, image/jpeg" onChange={handleMultipleFile} multiple disabled={loading} /></div>
+                <Input type="file" name="multi_image" accept="image/png, image/jpeg" maxCount={1} onChange={handleMultipleFile} multiple disabled={loading} /></div>
               <div>*Supported File extensions: jpg,jpeg,png</div>
               <div className="errorMsg">{err && err.errors && err.errors.multi_image}</div>
             </Form.Item>) : null}
