@@ -13,7 +13,7 @@ from rest_framework import viewsets, filters
 from .models import (Categoeries,TopicSpecialization,Topics,UserCategory,Favourite,Image)
 from django_filters import rest_framework as filters
 import django_filters.rest_framework
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import generics, status, views, permissions
@@ -195,6 +195,8 @@ class TopicViewSet(viewsets.ModelViewSet):
     serializer_class = TopicSeriaizer
     pagination_class = AdminPagination
     permission_classes = (IsAuthenticated,)
+    parser_classes = (FormParser,JSONParser,)
+
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     # ordering = ('title')
     def retrieve(self, request, pk=None):
