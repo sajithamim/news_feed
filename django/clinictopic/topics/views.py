@@ -175,7 +175,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
     @action(detail=True,methods=['PUT'],serializer_class=Categorypicserializer,parser_classes=[MultiPartParser,FormParser,],)
-    def icon(self, request, pk(
+    def icon(self, request, pk,*args,**kwargs):
         # try:
             obj = self.get_object()
             serializer = self.serializer_class(obj, data=request.data,
