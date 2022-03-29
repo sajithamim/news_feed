@@ -10,9 +10,9 @@ import { logout } from "../../actions/auth.js"
 
 const TopicsContent = (props) => {
   const [showDrawer, setShowDrawer] = useState(false);
-  const [timeout, setTimeOut] = useState(0);
   const [drawerType, setDrawerType] = useState("");
   const [expended, setExpended] = useState()
+  const [noticeTime, setNoticeTime] = useState(false)
   const [data, setData] = useState({});
   const { topicList, success, error, page } = useSelector(state => state.topic);
   const [current, setCurrent] = useState(1);
@@ -24,29 +24,29 @@ const TopicsContent = (props) => {
 
   useEffect(() => {
     dispatch(getTopic(page))
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (success) {
       message.success(success);
-      setTimeOut(1)
+      setNoticeTime(true);
       dispatch(getTopic(page))
       dispatch({ type: 'RESET_DATA' })
     }
     else if (error) {
       message.error(error);
       dispatch({ type: 'RESET_DATA' })
-      const clearToken = localStorage.clear();
-      dispatch(logout());
-      history.push("/login");
+      // const clearToken = localStorage.clear();
+      // dispatch(logout());
+      // history.push("/login");
     }
   }, [success, error])
 
-  useEffect(() => {
-    if (accessToken === null || accessToken === undefined) {
-      history.push("/login");
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (accessToken === null || accessToken === undefined) {
+  //     history.push("/login");
+  //   }
+  // }, [])
 
   const sessionlogout = () => {
     const clearToken = localStorage.clear();
@@ -72,12 +72,11 @@ const TopicsContent = (props) => {
     message.error('Cancelled');
   }
   const openNotification = (notice) => {
-    
     notification.info({
       description:
         "Data is uploading , Please do not refresh your page untill success message comes",
       duration: 4.5
-    });
+    });   
   };
   const onFormSubmit = (newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds) => {
     onClose();

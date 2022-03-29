@@ -51,9 +51,10 @@ instance.interceptors.response.use(
       originalRequest.url,
       process.env.REACT_APP_API_URL
     );
+      
     const status = error.response.status;
     if (
-      (status === 401 || status === 403) &&
+      (status === 401 || status === 403 || status === 415) ||
       !originalRequest._retry
     ) {
       let token = await refresh();
@@ -95,7 +96,7 @@ http.interceptors.response.use(
       originalRequest._retry = true;
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
-      return instance(originalRequest);
+      return http(originalRequest);
     }
     else{
       console.log("error");
@@ -127,7 +128,7 @@ http1.interceptors.response.use(
       originalRequest._retry = true;
       originalRequest.headers.authorization = `Bearer ${token.data.access}`;
       localStorage.setItem("accessToken", token.data.access);
-      return instance(originalRequest);
+      return http1(originalRequest);
     }
     else{
       console.log("error");
