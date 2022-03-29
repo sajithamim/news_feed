@@ -74,7 +74,7 @@ const TopicsContent = (props) => {
   const openNotification = (notice) => {
     notification.info({
       description:
-        "Data is uploading , Please do not refresh your page untill success message comes",
+        "Please do not refresh the page",
       duration: 4.5
     });   
   };

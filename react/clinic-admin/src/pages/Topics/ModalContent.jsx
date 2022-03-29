@@ -89,6 +89,7 @@ const ModalContent = (props) => {
   };
 
   const handleMultipleFile = (e) => {
+    console.log("state.topic");
     const errors = { ...err };
     // for (var i = 0, numFiles = 1; i < numFiles; i++) {
     const file = e.target.files[0];
@@ -104,6 +105,7 @@ const ModalContent = (props) => {
       reader.addEventListener("load", () => {
         file.url = reader.result;
         if (!state.topic_image) {
+          console.log("if consdit")
           setState({ ...state, topic_image: [reader.result] });
           if (!state.imageFormData) {
             setState({ ...state, topic_image: [reader.result], imageFormData: [file] });
@@ -111,6 +113,7 @@ const ModalContent = (props) => {
             setState({ ...state, topic_image: [reader.result], imageFormData: [...state.imageFormData, file] });
           }
         } else {
+          console.log("else if consdit")
           setState({ ...state, topic_image: [...state.topic_image, reader.result] });
           if (!state.imageFormData) {
             setState({ ...state, topic_image: [...state.topic_image, reader.result], imageFormData: [file] });
@@ -375,6 +378,7 @@ const ModalContent = (props) => {
 
 
   const handleSubmit = (e) => {
+    console.log("topic_image", state.topic_image);
     if (handleValidation() && formSubmit) {
       let form_data = null;
       if (state.format !== '2' && state.format !== '3' && state.pdfUrl && state.pdfUrl.name) {
@@ -469,12 +473,15 @@ const ModalContent = (props) => {
     setLoading(false);
     if (id !== null) {
       const oldImages = state.old_image;
+      console.log("oldImages", oldImages);      
       const oldImageList = oldImages.filter(item => { return item.id !== id });
       setImageIds(oldArray => [...oldArray, id]);
       setState({ ...state, old_image: oldImageList });
     } else {
       const newImages = state.topic_image;
       const imageFormData = state.imageFormData;
+      console.log("imageFormData", imageFormData);
+      console.log("topic_image", newImages);
       const newImageList = newImages.filter(item => { return item !== image });
       const imageFormDataList = imageFormData.filter(item => { return item.url !== image });
       setState({ ...state, topic_image: newImageList, imageFormData: imageFormDataList });
