@@ -21,7 +21,6 @@ const ModalContent = (props) => {
   const [descLength, setDescLength] = useState();
   const [imageIds, setImageIds] = useState([]);
 
-
   useEffect(() => {
     setErrors({});
     setImageIds([]);
@@ -33,10 +32,9 @@ const ModalContent = (props) => {
     else {
       setState({ topic_subspec: [], imageFormData: [] });
     }
-    if (props.drawerType === 'edit' && props.editData.old_image.length > 3) {
+    // if (props.drawerType === 'edit' && props.editData.old_image.length > 3) {
+    if (props.drawerType === 'edit'){
       setLoading(true);
-    } else {
-      setLoading(false);
     }
   }, [props.editData])
 
@@ -94,16 +92,10 @@ const ModalContent = (props) => {
     const errors = { ...err };
     // for (var i = 0, numFiles = 1; i < numFiles; i++) {
     const file = e.target.files[0];
-    if (props.drawerType === 'add' && e.target.files.length === 1) {
-      setLoading(true);
-      openNotification();
-    } else if (props.drawerType === 'edit' && e.target.files.length === 1) {
-      setLoading(true);
-      openNotification();
-    }
     if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
       errors["multi_image"] = "Please select valid image.";
       setErrors({ errors });
+      setLoading(false);
       setFormSubmit(false);
     } else {
       setErrors({});
@@ -128,6 +120,15 @@ const ModalContent = (props) => {
         }
       });
       reader.readAsDataURL(e.target.files[0]);
+      if (props.drawerType === 'add' && e.target.files.length === 1) {
+        setLoading(true);
+        let notice = "You are allowed to insert only 1 image.";
+        openNotification(notice);
+      } else if (props.drawerType === 'edit' && e.target.files.length === 1) {
+        setLoading(true);
+        let notice = "You are allowed to insert only 1 image.";
+        openNotification(notice);
+      }
       // if (props.drawerType === 'add' && state.imageFormData.length >= 0) {
       //   setLoading(true);
       //   openNotification();
@@ -139,10 +140,10 @@ const ModalContent = (props) => {
     // }
   }
 
-  const openNotification = () => {
+  const openNotification = (notice) => {
     notification.info({
       description:
-        'You are allowed to insert only 1 image.',
+        notice,
     });
   };
 
@@ -452,6 +453,7 @@ const ModalContent = (props) => {
         newData['description3'] && delete newData['description3']
       }
       setState({});
+      setLoading(false);
       props.onFormSubmit(newData, form_data, form_data_back, form_data2, form_data3, image_data, imageIds);
     }
   }

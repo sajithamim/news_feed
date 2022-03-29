@@ -2,7 +2,7 @@ import Topic from "../services/Topic";
 import DataService from "../services/data.service";
 
 export const getTopic = (page) => async (dispatch) => {
-    page = page != undefined ? page : 1;
+    page = page !== undefined ? page : 1;
     try {
         const url = `topic/topic/?page=${page}`;
         const res = await DataService.getData(url); 
