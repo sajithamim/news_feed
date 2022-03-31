@@ -394,7 +394,16 @@ class TopicSearchSerializer(serializers.ModelSerializer):
 #search topic suggestion
 class categoryTopicSerializer(serializers.ModelSerializer):
     topic_category =TopicSearchSerializer(many=True)
+    def get_topic_category(self, product):
+        key = self.context.get("key")
+        qs = Topics.objects.filter(title__icontains=pk)
+        serializer = TopicSearchSerializer(instance=qs, many=True)
+        return serializer.data
     class Meta:
         model = Categoeries
         fields = ['id','title','topic_category']
 
+    # def to_representation(self, instance):
+    #     key = self.context.get("key")
+    #     data = data.filter(title__icontains=pk)
+    #     return super(categoryTopicSerializer,self).to_representation(data)
