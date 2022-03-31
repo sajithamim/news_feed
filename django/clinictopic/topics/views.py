@@ -500,7 +500,7 @@ class TopicSuggestionView(APIView,PageNumberPagination):
             queryset = Categoeries.objects.filter(id__in=idscat).filter(topic_category__title__icontains=pk).distinct().order_by('title')
             # serializers = categoryTopicSerializer(category,many=True)
             results = self.paginate_queryset(queryset, request, view=self)
-            serializer = categoryTopicSerializer(results, many=True)
+            serializer = categoryTopicSerializer(results, many=True,context={'key': pk})
             return self.get_paginated_response(serializer.data)
         except Exception as e:
             response={
