@@ -393,7 +393,8 @@ class TopicSearchSerializer(serializers.ModelSerializer):
     #     return response
 #search topic suggestion
 class categoryTopicSerializer(serializers.ModelSerializer):
-    topic_category =TopicSearchSerializer(many=True)
+    topic_category = serializers.SerializerMethodField()
+
     def get_topic_category(self, product):
         key = self.context.get("key")
         qs = Topics.objects.filter(title__icontains=pk)
