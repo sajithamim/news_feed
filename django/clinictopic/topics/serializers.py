@@ -383,17 +383,17 @@ class authorserializer(serializers.ModelSerializer):
             return topic
 
 
-# class FilteredListSerializer(serializers.ListSerializer):
+class FilteredListSerializer(serializers.ListSerializer):
 
-#     def to_representation(self, data):
-#         data = data.filter(title__icontains=self.context['key'])
-#         return super(FilteredListSerializer, self).to_representation(data)
+    def to_representation(self, data):
+        data = data.filter(title__icontains=self.context['key'])
+        return super(FilteredListSerializer, self).to_representation(data)
 
 
 class TopicSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topics
-        # list_serializer_class = FilteredListSerializer
+        list_serializer_class = FilteredListSerializer
         fields = ['id','title']
     # def to_representation(self, instance):
     #     response = super().to_representation(instance)
