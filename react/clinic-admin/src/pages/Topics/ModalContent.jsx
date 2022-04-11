@@ -78,7 +78,7 @@ const ModalContent = (props) => {
       setDescLength({ errors });
     }
     else if (e.target.name === "description3") {
-      let maxLength = 150 - e.target.value.length;
+      let maxLength = 720 - e.target.value.length;
       errors["description3"] = maxLength === 0 ? "Limit Exceeded" : `Remaining ${maxLength} characters`;
       setDescLength({ errors });
     }
@@ -473,7 +473,7 @@ const ModalContent = (props) => {
     setLoading(false);
     if (id !== null) {
       const oldImages = state.old_image;
-      console.log("oldImages", oldImages);      
+      console.log("oldImages", oldImages);
       const oldImageList = oldImages.filter(item => { return item.id !== id });
       setImageIds(oldArray => [...oldArray, id]);
       setState({ ...state, old_image: oldImageList });
@@ -555,7 +555,7 @@ const ModalContent = (props) => {
           {(state.format === '1') ?
             (<><Form.Item label="Title">
               <div className="inputStyle">
-                <Input name="title1" type="text" onChange={handleChange} value={state.title1} /></div>
+                <Input name="title1"  maxLength="140" type="text" onChange={handleChange} value={state.title1} /></div>
               <div className="errorMsg">{err && err.errors && err.errors.title1}</div>
             </Form.Item>
               <Form.Item label="Description">
@@ -566,7 +566,7 @@ const ModalContent = (props) => {
           {(state.format === '2') ?
             (<><Form.Item label="Title">
               <div className="inputStyle">
-                <Input name="title2" type="text" onChange={handleChange} value={state.title2} /></div>
+                <Input name="title2" tmaxLength="140" ype="text" onChange={handleChange} value={state.title2} /></div>
               <div className="errorMsg">{err && err.errors && err.errors.title2}</div>
             </Form.Item>
               <Form.Item label="Description">
@@ -579,12 +579,12 @@ const ModalContent = (props) => {
           {(state.format === '3') ?
             (<><Form.Item label="Title">
               <div className="inputStyle">
-                <Input name="title3" type="text" onChange={handleChange} value={state.title3} /></div>
+                <Input name="title3" maxLength="140" type="text" onChange={handleChange} value={state.title3} /></div>
               <div className="errorMsg">{err && err.errors && err.errors.title3}</div>
             </Form.Item>
               <Form.Item label="Description">
                 <div className="inputStyle">
-                  <TextArea name="description3" maxLength="150" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
+                  <TextArea name="description3" maxLength="720" rows={4} wrapperCol={{ span: 7 }} onChange={handleChange} value={state.description3} /></div>
                 {descLength ? (<div>{descLength && descLength.errors && descLength.errors.description3}</div>) : (<div className="errorMsg">{err && err.errors && err.errors.description3}</div>)}              </Form.Item></>) : null
           }
           {state.format === '2' ?

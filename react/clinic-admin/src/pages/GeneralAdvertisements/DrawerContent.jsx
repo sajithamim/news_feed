@@ -51,16 +51,13 @@ const DrawerContent = (props) => {
       formIsValid = false;
       errors["title"] = "Title is required";
     }
-    if (!fields["url"]) {
-      formIsValid = false;
-      errors["url"] = "URL is required";
-    } else {
+    if (fields["url"]) {
       var myUrl = fields.url;
       var res = myUrl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-      if (res === null) {
-        formIsValid = false;
-        errors["url"] = "Enter a valid URL";
-      }
+        if (res === null) {
+          formIsValid = false;
+          errors["url"] = "Enter a valid URL";
+        }
     }
     if (image.name === undefined && state.image === undefined) {
       formIsValid = false;
